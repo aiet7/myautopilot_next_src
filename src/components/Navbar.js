@@ -13,7 +13,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="w-full bg-black text-white font-bold flex justify-between items-center py-5 px-10">
+    <nav className="w-full bg-black text-white font-bold flex justify-between items-center py-3 px-10">
       <h1>MyAutoPilot</h1>
       <AiOutlinePoweroff onClick={handleLogout} size={30} />
     </nav>
