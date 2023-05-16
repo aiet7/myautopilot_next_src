@@ -3,7 +3,7 @@ export const parseList = (content) => {
 
   if (items.length > 1) {
     return (
-      <ol className="flex flex-col gap-2">
+      <ol className="flex flex-col gap-1">
         {items.map((item, index) => (
           <li key={index}>{index + 1}. {item}</li>
         ))}

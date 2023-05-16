@@ -2,7 +2,7 @@
 
 const Intro = () => {
   return (
-    <div className="max-h-[75vh] overflow-auto px-10 py-4 no-scrollbar">
+    <div className="max-h-[80vh] overflow-auto px-10 py-4 no-scrollbar">
       <h2 className="text-2xl text-center my-6">
         🤖 Welcome to MyAutoPilot: Your Ultimate Voice Assistant for Seamless
         Workflows! 🤖
