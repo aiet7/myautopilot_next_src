@@ -49,14 +49,14 @@ const ChatInteraction = ({
       try {
         const encodedMessage = encodeURIComponent(userInput);
         const response = await fetch(
-          `http://localhost:8081/jarvis4?text=${encodedMessage}`
+          `https://etech7-wf-etech7-worflow-2.azuremicroservices.io/send?message=${encodedMessage}`
         );
         if (response.status === 200) {
           const responseBody = await response.json();
           handleProcessResponse(
             responseBody.intent,
             responseBody.mailEntities,
-            responseBody.message
+            responseBody.data
           );
         }
       } catch (e) {
@@ -120,22 +120,22 @@ const ChatInteraction = ({
 
   return (
     <div
-      className={`${
+      className={`flex flex-col h-full w-full  ${
         (openChatHistory && "opacity-5") || (openChatAssistant && "opacity-5")
-      } dark:bg-black transition-all duration-300 ease-in-out flex-1 flex flex-col bg-white `}
+      } dark:bg-black transition-all duration-300 ease-in-out bg-white`}
     >
-      <div className="flex-1 max-h-[64vh] overflow-y-auto no-scrollbar sm:max-h-[75vh] lg:max-h-[80vh]">
+      <div className="flex-grow overflow-auto no-scrollbar ">
         {conversationHistory[currentConversationIndex]?.map((item, index) => {
           return (
             <div
               key={index}
-              className={`p-6 text-sm ${
+              className={`p-2 py-4 text-md  ${
                 item.role === "user"
                   ? "dark:border-white/40 bg-black/5 border-b"
                   : "dark:bg-white/10 dark:border-white/40 border-b"
               }`}
             >
-              <div className="flex gap-2">
+              <div className="flex gap-2 mx-auto max-w-[600px]">
                 <span>
                   {item.role === "user" ? (
                     <AiOutlineUser size={20} />
@@ -149,12 +149,12 @@ const ChatInteraction = ({
           );
         })}
       </div>
-      <div className="p-4">
+      <div className="px-4 py-2 ">
         <FaSpinner
           className={`${isWaiting ? "opacity-100" : "opacity-0"} animate-spin`}
         />
       </div>
-      <div className="flex items-center gap-3 px-4 w-full">
+      <div className="flex items-center gap-3 px-4 py-2">
         <input
           onChange={(e) => setUserInput(e.target.value)}
           onKeyDown={(e) => {
@@ -165,7 +165,7 @@ const ChatInteraction = ({
           }}
           value={userInput}
           placeholder="Command Your AutoPilot..."
-          className="border outline-blue-500 rounded-md w-full p-4 h-[50px]"
+          className="border outline-blue-500 w-full px-4 h-[50px]"
         />
         <BsFillSendFill
           size={25}

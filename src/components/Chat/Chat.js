@@ -17,7 +17,7 @@ const Chat = ({
   handleConversationSelected,
 }) => {
   return (
-    <div className="relative flex w-full h-full overflow-hidden">
+    <div className="flex flex-1 relative overflow-hidden">
       <ChatHistory
         openChatHistory={openChatHistory}
         conversationHistory={conversationHistory}

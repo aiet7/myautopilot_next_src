@@ -5,9 +5,9 @@ import { RxAvatar } from "react-icons/rx";
 
 const Account = () => {
   return (
-    <div className="max-h-[80vh] flex flex-col w-full h-full items-center sm:max-h-full">
-      <div className="flex flex-col h-full items-center gap-2 max-w-[800px]  overflow-y-auto px-4 no-scrollbar ">
-        <div className="flex flex-col items-center pt-2">
+    <div className="overflow-y-auto px-4 py-2 no-scrollbar w-full flex items-center justify-center">
+      <div className="flex flex-col h-full items-center gap-2 max-w-[800px]">
+        <div className="flex flex-col items-center pt-2 text-center">
           <h1 className="text-xl">Personal Info</h1>
           <h2>Info about you and your preferences across MyAutoPilot</h2>
         </div>

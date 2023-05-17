@@ -15,7 +15,7 @@ const ChatHistory = ({
         openChatHistory
           ? "translate-x-0 w-[300px]"
           : "-translate-x-[600px] w-[300px]"
-      } lg:relative lg:translate-x-0 lg:w-[300px] lg:static`}
+      } md:relative md:translate-x-0 md:min-w-[300px] md:static`}
     >
       <button
         onClick={handleNewConversation}
@@ -23,7 +23,7 @@ const ChatHistory = ({
       >
         + New Chat
       </button>
-      <div className="flex flex-col gap-2 my-4  overflow-y-auto max-h-[60vh] no-scrollbar lg:max-h-[75vh]">
+      <div className="flex flex-col gap-2 my-4  overflow-y-auto max-h-[60vh] no-scrollbar md:max-h-[75vh]">
         {conversationHistory.map((conversation, index) => {
           return (
             <div

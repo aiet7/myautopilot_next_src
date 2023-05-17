@@ -31,11 +31,11 @@ const ChatAssistant = ({ openChatAssistant }) => {
   ];
   return (
     <div
-      className={`px-4 py-6 bg-gray-100 dark:bg-black dark:shadow-white shadow-lg shadow-black/50 absolute z-[995] top-0 bottom-0 right-0 transition-all duration-300 ease-in-out transform ${
+      className={`px-4 py-6 bg-gray-100 dark:bg-black dark:shadow-white shadow-lg shadow-black/50 absolute z-10 top-0 bottom-0 right-0 transition-all duration-300 ease-in-out transform ${
         openChatAssistant
           ? "translate-x-0 w-[300px]"
           : "translate-x-[600px] w-[300px]"
-      } lg:relative lg:translate-x-0 lg:w-[300px] lg:static`}
+      } md:relative md:translate-x-0 md:min-w-[300px] md:static `}
     >
       <h2 className="text-2xl font-bold mb-4">Intent Prompts Guide</h2>
       <p className=" mb-6">

@@ -15,7 +15,7 @@ const SettingsNavRail = () => {
   };
 
   return (
-    <div className="dark:bg-black dark:rounded-lg flex  items-center justify-between p-2 gap-3 sm:flex-col sm:justify-start sm:dark:bg-[#424242]">
+    <div className="dark:bg-black dark:rounded-lg h-[10vh] flex  items-center justify-between p-2 gap-3 sm:flex-col sm:justify-start sm:dark:bg-[#424242]">
       <MdOutlineDashboard size={25} className="cursor-pointer" />
       <IoMdNotificationsOutline size={25} className="cursor-pointer" />
       <AiOutlineSetting size={25} className="cursor-pointer" />

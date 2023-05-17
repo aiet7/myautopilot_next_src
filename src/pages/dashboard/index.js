@@ -4,16 +4,16 @@ import { ThemeProvider } from "next-themes";
 
 import Navbar from "../../components/Navbar.js";
 import TabNavRail from "../../components/TabNavRail.js";
-import SettingsNavRail from "../../components/SettingsNavRail.js";
+import ChatSettingsRail from "../../components/ChatSettingsRail.js";
 import Intro from "../../components/Intro.js";
 import Chat from "../../components/Chat/Chat.js";
 import Account from "../../components/Account.js";
-import { useState } from "react";
 
-import { AiOutlineMenu } from "react-icons/ai";
-import { BiBrain } from "react-icons/bi";
+import { useState, useEffect } from "react";
 
 const DashboardPage = () => {
+  const [height, setHeight] = useState(null);
+
   const [activeTab, setActiveTab] = useState("intro");
 
   const [openChatHistory, setOpenChatHistory] = useState(false);
@@ -52,17 +52,35 @@ const DashboardPage = () => {
     setOpenChatAssistant(!openChatAssistant);
   };
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setHeight(window.innerHeight);
+
+      const handleResize = () => setHeight(window.innerHeight);
+      window.addEventListener("resize", handleResize);
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }
+  }, []);
+
   return (
     <ThemeProvider attribute="class">
-      <div className="flex flex-col h-screen">
-        <Navbar />
-        <div className="flex flex-col-reverse h-full w-full sm:flex-row">
-          <TabNavRail activeTab={activeTab} handleTabChange={handleTabChange} />
-
-          <div className="dark:bg-black flex h-full w-full relative lg:static">
+      {height && (
+        <div className="flex flex-col h-full w-full" style={{ height: `${height}px` }}>
+          <Navbar />
+          <div
+            className="flex flex-col h-full w-full md:flex-row-reverse"
+            style={{ height: `calc(${height}px - 60px)` }}
+          >
             {activeTab === "intro" && <Intro />}
             {activeTab === "chat" && (
-              <div className="flex flex-col-reverse w-full h-full">
+              <div className="flex flex-col h-full w-full overflow-hidden" >
+                <ChatSettingsRail
+                  handleOpenChatHistory={handleOpenChatHistory}
+                  handleOpenChatAssistant={handleOpenChatAssistant}
+                />
+
                 <Chat
                   openChatHistory={openChatHistory}
                   openChatAssistant={openChatAssistant}
@@ -72,31 +90,18 @@ const DashboardPage = () => {
                   handleNewConversation={handleNewConversation}
                   handleDeleteConversation={handleDeleteConversation}
                   handleConversationSelected={handleConversationSelected}
-                  handleOpenChatHistory={handleOpenChatHistory}
-                  handleOpenChatAssistant={handleOpenChatAssistant}
                 />
-                {activeTab === "chat" && (
-                  <div className="w-full flex justify-between px-2 pb-2 sm:pt-2 lg:hidden">
-                    <AiOutlineMenu
-                      size={25}
-                      className="cursor-pointer"
-                      onClick={handleOpenChatHistory}
-                    />
-                    <BiBrain
-                      size={25}
-                      className="cursor-pointer"
-                      onClick={handleOpenChatAssistant}
-                    />
-                  </div>
-                )}
               </div>
             )}
             {activeTab === "account" && <Account />}
-          </div>
 
-          <SettingsNavRail />
+            <TabNavRail
+              activeTab={activeTab}
+              handleTabChange={handleTabChange}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </ThemeProvider>
   );
 };

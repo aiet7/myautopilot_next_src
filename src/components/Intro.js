@@ -2,12 +2,12 @@
 
 const Intro = () => {
   return (
-    <div className="max-h-[80vh] overflow-auto px-10 py-4 no-scrollbar">
+    <div className="overflow-auto px-4 py-2 no-scrollbar flex flex-col items-center w-full">
       <h2 className="text-2xl text-center my-6">
         🤖 Welcome to MyAutoPilot: Your Ultimate Voice Assistant for Seamless
         Workflows! 🤖
       </h2>
-      <p className="text-center">
+      <p className="text-center max-w-[800px]">
         🚀 Revolutionize Your Workday! 🚀 Welcome to MyAutoPilot: Your Ultimate
         Voice Assistant for Seamless Workflows! 🤖 🚀 Revolutionize Your
         Workday! 🚀 Picture this: a cutting-edge voice assistant that learns
