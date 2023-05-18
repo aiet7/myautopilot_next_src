@@ -17,29 +17,13 @@ const ChatInteraction = ({
   const [userInput, setUserInput] = useState("");
   const [isWaiting, setIsWaiting] = useState(false);
 
-  const handleSendMail = (mailEntities) => {
-    console.log(mailEntities);
-  };
+  const [selectedEmailIndex, setSelectedEmailIndex] = useState(null);
+  const [selectedEmailId, setSelectedEmailId] = useState("");
 
-  const handleScheduleEvent = (message) => {
-    console.log(message);
-  };
-
-  const handleCreateTicket = (message) => {
-    console.log(message);
-  };
-
-  const handleAddContact = (message) => {
-    console.log(message);
-  };
-
-  const handleGetEvents = (message) => {
-    console.log(message);
-  };
-
-  const handleDefaultAction = (message) => {
-    handleAddAssistantMessage(message);
-  };
+  const [currentEmailId, setCurrentEmailId] = useState("");
+  const [currentEmailSubject, setCurrentEmailSubject] = useState("");
+  const [currentEmailBody, setCurrentEmailBody] = useState("");
+  const [availableEmailIds, setAvailableEmailIds] = useState([]);
 
   const handleSendUserMessage = async () => {
     if (userInput.trim() !== "") {
@@ -49,14 +33,14 @@ const ChatInteraction = ({
       try {
         const encodedMessage = encodeURIComponent(userInput);
         const response = await fetch(
-          `https://etech7-wf-etech7-worflow-2.azuremicroservices.io/send?message=${encodedMessage}`
+          `http://localhost:8081/jarvis4?text=${encodedMessage}`
         );
         if (response.status === 200) {
           const responseBody = await response.json();
           handleProcessResponse(
             responseBody.intent,
             responseBody.mailEntities,
-            responseBody.data
+            responseBody.message
           );
         }
       } catch (e) {
@@ -67,27 +51,92 @@ const ChatInteraction = ({
     }
   };
 
+  const handleEmailSelection = (email, emailIndex) => {
+    setSelectedEmailIndex(emailIndex);
+    setSelectedEmailId(email);
+  };
+
+  const handleEmailConfirmation = async (isConfirmed) => {
+    if (isConfirmed) {
+      try {
+        const encodedEmailId = encodeURIComponent(selectedEmailId);
+        const encodedSubject = encodeURIComponent(currentEmailSubject);
+        const encodedBody = encodeURIComponent(currentEmailBody);
+
+        const emailResponse = await fetch(
+          `http://localhost:8082/graph?mailId=${encodedEmailId}&subject=${encodedSubject}&body=${encodedBody}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        if (emailResponse.status === 200) {
+          handleAddAssistantMessage("Email Sent!", null);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      handleAddAssistantMessage("Email Cancelled!", null);
+    }
+  };
+
   const handleProcessResponse = (intent, mailEntities, message) => {
     switch (intent) {
       case "sendMail":
-        handleSendMail(mailEntities);
+        handleEmailProcess(mailEntities);
         break;
       case "scheduleEvent":
-        handleScheduleEvent(message);
+        handleScheduleProcess(message);
         break;
       case "createTicket":
-        handleCreateTicket(message);
+        handleCreateTicketProcess(message);
         break;
       case "addContact":
-        handleAddContact(message);
+        handleAddContactProcess(message);
         break;
       case "getEvents":
-        handleGetEvents(message);
+        handleGetEventsProcess(message);
         break;
       default:
-        handleDefaultAction(message);
+        handleDefaultActionProcess(message);
         break;
     }
+  };
+
+  const handleEmailProcess = (mailEntities) => {
+    const { mailID, subject, body, emailIDs } = mailEntities;
+    if (emailIDs && emailIDs.length !== 0) {
+      handleAddAssistantMessage(null, "emailButtons + emailForm");
+      setAvailableEmailIds(emailIDs);
+      setCurrentEmailSubject(subject);
+      setCurrentEmailBody(body);
+    } else {
+      handleAddAssistantMessage(null, "emailForm");
+      setCurrentEmailId(mailID);
+      setCurrentEmailSubject(subject);
+      setCurrentEmailBody(body);
+    }
+  };
+
+  const handleScheduleProcess = (message) => {
+    console.log(message);
+  };
+
+  const handleCreateTicketProcess = (message) => {
+    console.log(message);
+  };
+
+  const handleAddContactProcess = (message) => {
+    console.log(message);
+  };
+
+  const handleGetEventsProcess = (message) => {
+    console.log(message);
+  };
+
+  const handleDefaultActionProcess = (message) => {
+    handleAddAssistantMessage(message, null);
   };
 
   const handleAddUserMessage = (message) => {
@@ -104,7 +153,7 @@ const ChatInteraction = ({
     });
   };
 
-  const handleAddAssistantMessage = (message) => {
+  const handleAddAssistantMessage = (message, componentType) => {
     setConversationHistory((prevState) => {
       const newConversationHistory = [...prevState];
       if (!newConversationHistory[currentConversationIndex]) {
@@ -113,6 +162,7 @@ const ChatInteraction = ({
       newConversationHistory[currentConversationIndex].push({
         content: message,
         role: "assistant",
+        componentType: componentType,
       });
       return newConversationHistory;
     });
@@ -124,18 +174,18 @@ const ChatInteraction = ({
         (openChatHistory && "opacity-5") || (openChatAssistant && "opacity-5")
       } dark:bg-black transition-all duration-300 ease-in-out bg-white`}
     >
-      <div className="flex-grow overflow-auto no-scrollbar ">
+      <div className=" flex-grow overflow-auto no-scrollbar ">
         {conversationHistory[currentConversationIndex]?.map((item, index) => {
           return (
             <div
               key={index}
-              className={`p-2 py-4 text-md  ${
+              className={`px-4 py-4 text-md w-full  ${
                 item.role === "user"
                   ? "dark:border-white/40 bg-black/5 border-b"
                   : "dark:bg-white/10 dark:border-white/40 border-b"
               }`}
             >
-              <div className="flex gap-2 mx-auto max-w-[600px]">
+              <div className="flex items-start max-w-[800px] mx-auto gap-4">
                 <span>
                   {item.role === "user" ? (
                     <AiOutlineUser size={20} />
@@ -143,7 +193,145 @@ const ChatInteraction = ({
                     <AiOutlineRobot size={20} />
                   )}
                 </span>
-                {parseList(item.content)}
+                <div className="flex-grow">
+                  {item.componentType
+                    ? (() => {
+                        switch (item.componentType) {
+                          case "emailButtons + emailForm":
+                            return (
+                              <div className="flex flex-col gap-6">
+                                <p>Please select an email address.</p>
+                                <div className="flex gap-2">
+                                  {availableEmailIds.map((email, index) => (
+                                    <button
+                                      key={index}
+                                      onClick={() =>
+                                        handleEmailSelection(email, index)
+                                      }
+                                      className={`${
+                                        selectedEmailIndex === index
+                                          ? "bg-blue-900"
+                                          : "bg-gray-500"
+                                      }  text-white px-4 py-2 rounded-md`}
+                                    >
+                                      {email}
+                                    </button>
+                                  ))}
+                                </div>
+                                <div>
+                                  <div>
+                                    <span className="font-bold">Email</span>
+                                    <input
+                                      className="h-[50px] border outline-blue-500 w-full px-4"
+                                      value={selectedEmailId}
+                                      onChange={(e) =>
+                                        setSelectedEmailId(e.target.value)
+                                      }
+                                    />
+                                  </div>
+                                  <div>
+                                    <span className="font-bold">Subject</span>
+                                    <input
+                                      className="h-[50px] border outline-blue-500 w-full px-4"
+                                      value={currentEmailSubject}
+                                      onChange={(e) =>
+                                        setCurrentEmailSubject(e.target.value)
+                                      }
+                                    />
+                                  </div>
+                                  <div>
+                                    <span className="font-bold">Body</span>
+                                    <textarea
+                                      className="h-[200px] border outline-blue-500 w-full px-4 resize-none"
+                                      value={currentEmailBody}
+                                      onChange={(e) =>
+                                        setCurrentEmailBody(e.target.value)
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                  <button
+                                    className="bg-green-300 rounded-md px-3 py-2 text-white"
+                                    onClick={() =>
+                                      handleEmailConfirmation(true)
+                                    }
+                                  >
+                                    Send Email
+                                  </button>
+                                  <button
+                                    className="bg-red-300 rounded-md px-3 py-2 text-white"
+                                    onClick={() =>
+                                      handleEmailConfirmation(false)
+                                    }
+                                  >
+                                    Cancel
+                                  </button>
+                                </div>
+                              </div>
+                            );
+                          case "emailForm":
+                            return (
+                              <div className="flex flex-col gap-6">
+                                <div>
+                                  <div>
+                                    <span className="font-bold">Email</span>
+                                    <input
+                                      className="h-[50px] border outline-blue-500 w-full px-4"
+                                      value={currentEmailId}
+                                      onChange={(e) =>
+                                        setCurrentEmailId(e.target.value)
+                                      }
+                                    />
+                                  </div>
+                                  <div>
+                                    <span className="font-bold">Subject</span>
+                                    <input
+                                      className="h-[50px] border outline-blue-500 w-full px-4"
+                                      value={currentEmailSubject}
+                                      onChange={(e) =>
+                                        setCurrentEmailSubject(e.target.value)
+                                      }
+                                    />
+                                  </div>
+                                  <div>
+                                    <span className="font-bold">Body</span>
+                                    <textarea
+                                      className="h-[200px] border outline-blue-500 w-full px-4 resize-none"
+                                      value={currentEmailBody}
+                                      onChange={(e) =>
+                                        setCurrentEmailBody(e.target.value)
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                  <button
+                                    className="bg-green-300 rounded-md px-3 py-2 text-white"
+                                    onClick={() =>
+                                      handleEmailConfirmation(true)
+                                    }
+                                  >
+                                    Send Email
+                                  </button>
+                                  <button
+                                    className="bg-red-300 rounded-md px-3 py-2 text-white"
+                                    onClick={() =>
+                                      handleEmailConfirmation(false)
+                                    }
+                                  >
+                                    Cancel
+                                  </button>
+                                </div>
+                              </div>
+                            );
+
+                          default:
+                            return null;
+                        }
+                      })()
+                    : parseList(item.content)}
+                </div>
               </div>
             </div>
           );

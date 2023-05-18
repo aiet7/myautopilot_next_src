@@ -17,7 +17,7 @@ const TabNavRail = ({ activeTab, handleTabChange }) => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
   return (
-    <div className="dark:bg-[#424242] bg-black/5 flex items-center justify-evenly p-3  md:flex-col md:justify-start md:bg-white">
+    <div className="dark:bg-[#424242] bg-black/5 flex items-center justify-evenly p-3 gap-4 md:flex-col md:justify-start md:bg-white">
       <div
         onClick={() => handleTabChange("intro")}
         className="flex flex-col items-center cursor-pointer "
