@@ -22,18 +22,26 @@ const DashboardPage = () => {
   const [currentConversationIndex, setCurrentConversationIndex] = useState(0);
   const [conversationHistory, setConversationHistory] = useState([]);
 
+
   const handleNewConversation = () => {
     setConversationHistory([...conversationHistory, []]);
     setCurrentConversationIndex(conversationHistory.length);
   };
 
   const handleDeleteConversation = (index) => {
-    const updatedConversations = conversationHistory.filter(
-      (_, conversationIndex) => conversationIndex !== index
-    );
-    setConversationHistory(updatedConversations);
-    if (currentConversationIndex >= index)
-      setCurrentConversationIndex((prevState) => prevState - 1);
+    if (index < conversationHistory.length) {
+      const updatedConversationHistory = conversationHistory.filter(
+        (_, conversationIndex) => conversationIndex !== index
+      );
+
+      setConversationHistory(updatedConversationHistory);
+
+      if (currentConversationIndex > 0) {
+        setCurrentConversationIndex((prevState) => prevState - 1);
+      } else if (updatedConversationHistory.length > 0) {
+        setCurrentConversationIndex(0);
+      }
+    }
   };
 
   const handleConversationSelected = (index) => {
@@ -67,7 +75,10 @@ const DashboardPage = () => {
   return (
     <ThemeProvider attribute="class">
       {height && (
-        <div className="flex flex-col h-full w-full" style={{ height: `${height}px` }}>
+        <div
+          className="flex flex-col h-full w-full"
+          style={{ height: `${height}px` }}
+        >
           <Navbar />
           <div
             className="flex flex-col h-full w-full md:flex-row-reverse"
@@ -75,7 +86,7 @@ const DashboardPage = () => {
           >
             {activeTab === "intro" && <Intro />}
             {activeTab === "chat" && (
-              <div className="flex flex-col h-full w-full overflow-hidden" >
+              <div className="flex flex-col h-full w-full overflow-hidden">
                 <ChatSettingsRail
                   handleOpenChatHistory={handleOpenChatHistory}
                   handleOpenChatAssistant={handleOpenChatAssistant}

@@ -12,6 +12,6 @@ export const parseList = (content) => {
       </ol>
     );
   } else {
-    return <p dangerouslySetInnerHTML={{ __html: content }}></p>;
+    return <div className="whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: content }}></div>;
   }
 };

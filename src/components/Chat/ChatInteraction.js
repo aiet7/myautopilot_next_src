@@ -19,15 +19,9 @@ const ChatInteraction = ({
   const [isWaiting, setIsWaiting] = useState(false);
 
   const [formVisibility, setFormVisibility] = useState({});
-  const [confirmationMessages, setConfirmationMessages] = useState({
-    emailForm: "",
-    eventForm: "",
-    contactForm: "",
-    ticketForm: "",
-  });
+  const [confirmationMessages, setConfirmationMessages] = useState({});
 
   const [selectedEmailIndex, setSelectedEmailIndex] = useState(null);
-  const [selectedEmailId, setSelectedEmailId] = useState("");
 
   const [currentEmailId, setCurrentEmailId] = useState("");
   const [currentEmailSubject, setCurrentEmailSubject] = useState("");
@@ -73,7 +67,7 @@ const ChatInteraction = ({
         );
         if (response.status === 200) {
           const responseBody = await response.json();
-
+          console.log(responseBody)
           handleProcessResponse(
             responseBody.intent,
             responseBody.mailEntities,
@@ -90,13 +84,13 @@ const ChatInteraction = ({
 
   const handleEmailSelection = (email, emailIndex) => {
     setSelectedEmailIndex(emailIndex);
-    setSelectedEmailId(email);
+    setCurrentEmailId(email);
   };
 
   const handleEmailConfirmation = async (isConfirmed, formId) => {
     if (isConfirmed) {
       try {
-        const encodedEmailId = encodeURIComponent(selectedEmailId);
+        const encodedEmailId = encodeURIComponent(currentEmailId);
         const encodedSubject = encodeURIComponent(currentEmailSubject);
         const encodedBody = encodeURIComponent(currentEmailBody);
 
@@ -108,14 +102,16 @@ const ChatInteraction = ({
           }
         );
         if (emailResponse.status === 200) {
-          console.log("email sent");
           setFormVisibility((prevState) => ({ ...prevState, [formId]: false }));
+          setConfirmationMessages((prevState) => ({
+            ...prevState,
+            [formId]: `Email Sent!\nTo: ${currentEmailId}\nSubject: ${currentEmailSubject}\nBody: ${currentEmailBody}`,
+          }));
         }
       } catch (e) {
         console.log(e);
       }
     } else {
-      console.log("email cancelled");
       setFormVisibility((prevState) => ({ ...prevState, [formId]: false }));
     }
   };
@@ -141,14 +137,16 @@ const ChatInteraction = ({
           }
         );
         if (contactResponse.status === 200) {
-          console.log("added");
           setFormVisibility((prevState) => ({ ...prevState, [formId]: false }));
+          setConfirmationMessages((prevState) => ({
+            ...prevState,
+            [formId]: `Contact Added!\nGiven Name: ${currentContactGivenName}\nSurname: ${currentContactSurname}\nEmail: ${currentContactEmailId}\nMobile Number: ${currentContactMobileNumber}`,
+          }));
         }
       } catch (e) {
         console.log(e);
       }
     } else {
-      console.log("not added");
       setFormVisibility((prevState) => ({ ...prevState, [formId]: false }));
     }
   };
@@ -172,14 +170,16 @@ const ChatInteraction = ({
           }
         );
         if (scheduleResponse.status === 200) {
-          console.log("scheduled");
           setFormVisibility((prevState) => ({ ...prevState, [formId]: false }));
+          setConfirmationMessages((prevState) => ({
+            ...prevState,
+            [formId]: `Event Scheduled!\nSubject: ${currentEventSubject}\nBody: ${currentEventBody}\nStart Time: ${currentEventStartTime}\nEnd Time: ${currentEventEndTime}\nLocation: ${currentEventLocation}\nName: ${currentEventUserInfo[0].name}\nEmail:${currentEventUserInfo[0].email}.`,
+          }));
         }
       } catch (e) {
         console.log(e);
       }
     } else {
-      console.log("not scheduled");
       setFormVisibility((prevState) => ({ ...prevState, [formId]: false }));
     }
   };
@@ -204,18 +204,16 @@ const ChatInteraction = ({
           }
         );
         if (ticketResponse.status === 200) {
-          console.log(ticketResponse);
           setFormVisibility((prevState) => ({ ...prevState, [formId]: false }));
           setConfirmationMessages((prevState) => ({
             ...prevState,
-            [formId]: `Ticket Created! Title: ${currentTicketTitle}, Description: ${currentTicketDescription}, Category: ${currentTicketCategory}, Subcategory: ${currentTicketSubCategory}, Name: ${currentTicketName}, Email: ${currentTicketEmailId}, Phone: ${currentTicketPhoneNumber}.`,
+            [formId]: `Ticket Created!\nTitle: ${currentTicketTitle}\nDescription: ${currentTicketDescription}\nCategory: ${currentTicketCategory}\nSubcategory: ${currentTicketSubCategory}\nName: ${currentTicketName}\nEmail: ${currentTicketEmailId}\nPhone: ${currentTicketPhoneNumber}.`,
           }));
         }
       } catch (e) {
         console.log(e);
       }
     } else {
-      console.log("ticket cancelled");
       setFormVisibility((prevState) => ({ ...prevState, [formId]: false }));
     }
   };
@@ -235,7 +233,16 @@ const ChatInteraction = ({
         handleAddContactProcess(JSON.parse(message));
         break;
       case "getEvents":
-        handleGetEventsProcess(message);
+        handleGetEventsProcess();
+        break;
+      case "getNews":
+        handleGetNewsProcess();
+        break;
+      case "getStocks":
+        handleGetStocksProcess();
+        break;
+      case "getWeather":
+        handleGetWeatherProcess();
         break;
       default:
         handleDefaultActionProcess(message);
@@ -300,9 +307,61 @@ const ChatInteraction = ({
     setCurrentContactMobileNumber(mobileNumber);
   };
 
-  const handleGetEventsProcess = (message) => {
-    console.log(message);
+  const handleGetEventsProcess = async () => {
+    const getEventsRequest = await fetch("http://localhost:8082/getEvents");
+    const getEventsResponse = await getEventsRequest.json();
+    if (getEventsResponse.events.length > 0) {
+      let eventCards = "";
+      getEventsResponse.events.forEach((event) => {
+        const {
+          subject,
+          start: { dateTime: startDateTime },
+          end: { dateTime: endDateTime },
+          webLink,
+        } = event;
+        const formattedStartDateTime = new Date(startDateTime).toLocaleString();
+        const formattedEndDateTime = new Date(endDateTime).toLocaleString();
+
+        eventCards += `Subject: ${subject}<br>Start Time: ${formattedStartDateTime}<br>End Time: ${formattedEndDateTime}<br><a class="text-purple-800" href="${webLink}" target="_blank">Meeting Link</a><br><br>`;
+      });
+      handleAddAssistantMessage(eventCards);
+    } else {
+      handleAddAssistantMessage("No events scheduled.");
+    }
   };
+
+  const handleGetNewsProcess = async () => {
+    const getNewsRequest = await fetch("http://localhost:8085/news");
+    const getNewsResponse = await getNewsRequest.json();
+    console.log(getNewsResponse);
+    if (getNewsResponse.articles.length > 0) {
+      let newsCards = `<div class="flex flex-col gap-2">`;
+      getNewsResponse.articles.forEach((article) => {
+        const { description, title, url, urlToImage, publishedAt } = article;
+        const formattedPublishedAt = new Date(publishedAt).toLocaleString();
+
+        newsCards += `<div class="flex items-start">
+        <img class="w-48 h-32 object-cover flex-shrink-0" src="${urlToImage}" alt="Article image"/>
+        <div class="flex flex-col p-2">
+          <div class="font-bold line-clamp-1">${title}</div>
+          <div class="text-xs text-gray-500">${formattedPublishedAt}</div>
+          <div class="text-gray-700 line-clamp-2">${description}</div>
+          <div class="text-blue-500 underline"><a href="${url}" target="_blank">Read more</a></div>
+        </div>
+      </div>`;
+      });
+      newsCards += `</div>`;
+      handleAddAssistantMessage(newsCards);
+    }
+  };
+
+  const handleGetStocksProcess = async () => {
+    const getStocksRequest = await fetch("http://localhost:8085/stock");
+    const getStocksResponse = await getStocksRequest.json();
+    console.log(getStocksResponse);
+  };
+
+  const handleGetWeatherProcess = async () => {};
 
   const handleDefaultActionProcess = (message) => {
     handleAddAssistantMessage(message);
@@ -401,12 +460,19 @@ const ChatInteraction = ({
                       case "form":
                         if (!formVisibility[item.id]) {
                           return (
-                            <button
-                              className="bg-blue-300 rounded-md px-3 py-2 text-white"
-                              onClick={() => handleToggleForm(item.id)}
-                            >
-                              Show form
-                            </button>
+                            <div className="flex items-start gap-3">
+                              <button
+                                className="bg-blue-300 rounded-md px-3 py-2 text-white flex-shrink-0"
+                                onClick={() => handleToggleForm(item.id)}
+                              >
+                                Show form
+                              </button>
+                              {confirmationMessages[item.id] && (
+                                <pre className="whitespace-pre-wrap">
+                                  {confirmationMessages[item.id]}
+                                </pre>
+                              )}
+                            </div>
                           );
                         }
                         switch (item.formType) {
@@ -436,9 +502,9 @@ const ChatInteraction = ({
                                     <span className="font-bold">Email</span>
                                     <input
                                       className="h-[50px] border outline-blue-500 w-full px-4"
-                                      value={selectedEmailId}
+                                      value={currentEmailId}
                                       onChange={(e) =>
-                                        setSelectedEmailId(e.target.value)
+                                        setCurrentEmailId(e.target.value)
                                       }
                                     />
                                   </div>
@@ -493,7 +559,10 @@ const ChatInteraction = ({
                           case "contactForm + emailForm":
                             return (
                               <div className="flex flex-col gap-6">
-                                <p>Add email to contact.</p>
+                                <p>
+                                  Would you like to add this email to your
+                                  contacts?.
+                                </p>
 
                                 <div>
                                   <div>
@@ -553,14 +622,6 @@ const ChatInteraction = ({
                                     }
                                   >
                                     Add Contact
-                                  </button>
-                                  <button
-                                    className="bg-red-300 rounded-md px-3 py-2 text-white"
-                                    onClick={() =>
-                                      handleContactConfirmation(false)
-                                    }
-                                  >
-                                    Cancel
                                   </button>
                                 </div>
                                 <div>
@@ -837,7 +898,6 @@ const ChatInteraction = ({
                                   >
                                     Hide form
                                   </button>
-                                  <span>{confirmationMessages[item.id]}</span>
                                 </div>
                               </div>
                             );
