@@ -23,7 +23,7 @@ const ChatHistory = ({
       >
         + New Chat
       </button>
-      <div className="flex flex-col gap-2 my-4  overflow-y-auto max-h-[60vh] no-scrollbar md:max-h-[75vh]">
+      <div className="flex flex-col gap-2 my-4 overflow-y-auto max-h-[50vh] no-scrollbar md:max-h-[75vh]">
         {conversationHistory.map((conversation, index) => {
           return (
             <div

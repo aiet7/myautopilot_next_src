@@ -1,19 +1,36 @@
 "use client";
 
 import Image from "next/image";
-
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { TiVendorMicrosoft } from "react-icons/ti";
 
 const Signup = () => {
+  const [height, setHeight] = useState(null);
   const router = useRouter();
 
   const handleShowLogin = () => {
     router.push("/auth/login");
   };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setHeight(window.innerHeight);
+
+      const handleResize = () => setHeight(window.innerHeight);
+      window.addEventListener("resize", handleResize);
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }
+  }, []);
+
   return (
-    <div className="bg-gradient-to-b from-white via-white to-gray-400 min-h-screen flex justify-center items-center">
+    <div
+      className="bg-gradient-to-b from-white via-white to-gray-400 h-full flex justify-center items-center"
+      style={{ height: `${height}px` }}
+    >
       <form className="w-[250px] flex flex-col items-center gap-4">
         <h1 className="text-2xl font-bold text-black">Sign Up To MyJarvis</h1>
         <Image

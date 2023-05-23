@@ -1,9 +1,10 @@
-"use client"
-
+"use client";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 const WelcomePage = () => {
+  const [height, setHeight] = useState(null);
   const router = useRouter();
 
   const handleShowLogin = () => {
@@ -14,8 +15,23 @@ const WelcomePage = () => {
     router.push("auth/signup");
   };
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setHeight(window.innerHeight);
+
+      const handleResize = () => setHeight(window.innerHeight);
+      window.addEventListener("resize", handleResize);
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }
+  }, []);
+
   return (
-    <div className="h-screen flex items-center justify-center bg-gradient-to-b from-white to-gray-100">
+    <div
+      className="h-full flex items-center justify-center bg-gradient-to-b from-white to-gray-100"
+      style={{ height: `${height}px` }}
+    >
       <div className="relative w-full max-w-2xl p-8 bg-white bg-opacity-5 ">
         <div className="absolute inset-0 z-0 flex justify-center items-center">
           <Image
@@ -23,7 +39,6 @@ const WelcomePage = () => {
             width={700}
             height={700}
             quality={100}
-            
             alt="Circuit board in the shape of a human brain"
             className="opacity-5"
           />

@@ -1,8 +1,8 @@
 "use client";
 
-const Intro = () => {
+const Intro = ({ activeTab }) => {
   return (
-    <div className="overflow-auto px-4 py-2 no-scrollbar flex flex-col items-center w-full">
+    <div className="px-4 py-2 no-scrollbar flex flex-col items-center w-full">
       <h2 className="text-2xl text-center my-6">
         🤖 Welcome to MyAutoPilot: Your Ultimate Voice Assistant for Seamless
         Workflows! 🤖

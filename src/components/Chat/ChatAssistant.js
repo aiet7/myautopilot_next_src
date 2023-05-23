@@ -42,19 +42,21 @@ const ChatAssistant = ({ openChatAssistant }) => {
         Try different combinations of words and watch our chatbot understand
         exactly what you want.
       </p>
-      {prompts.map((prompt, index) => (
-        <div key={index} className="mb-6">
-          <h3 className="text-lg font-semibold mb-2">{prompt.title}</h3>
-          <ul className="list-disc ml-5">
-            {prompt.examples.map((example, i) => (
-              <li key={i} className=" mb-1">
-                <AiOutlineArrowRight className="inline mr-1" />
-                {example}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+      <div className="overflow-y-auto max-h-[50vh] no-scrollbar md:overflow-hidden md:max-h-full">
+        {prompts.map((prompt, index) => (
+          <div key={index} className="mb-6">
+            <h3 className="text-lg font-semibold mb-2">{prompt.title}</h3>
+            <ul className="list-disc ml-5">
+              {prompt.examples.map((example, i) => (
+                <li key={i} className=" mb-1">
+                  <AiOutlineArrowRight className="inline mr-1" />
+                  {example}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

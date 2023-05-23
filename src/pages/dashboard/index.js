@@ -22,7 +22,6 @@ const DashboardPage = () => {
   const [currentConversationIndex, setCurrentConversationIndex] = useState(0);
   const [conversationHistory, setConversationHistory] = useState([]);
 
-
   const handleNewConversation = () => {
     setConversationHistory([...conversationHistory, []]);
     setCurrentConversationIndex(conversationHistory.length);
@@ -43,6 +42,7 @@ const DashboardPage = () => {
       }
     }
   };
+  console.log(conversationHistory);
 
   const handleConversationSelected = (index) => {
     setCurrentConversationIndex(index);
@@ -84,27 +84,45 @@ const DashboardPage = () => {
             className="flex flex-col h-full w-full md:flex-row-reverse"
             style={{ height: `calc(${height}px - 60px)` }}
           >
-            {activeTab === "intro" && <Intro />}
-            {activeTab === "chat" && (
-              <div className="flex flex-col h-full w-full overflow-hidden">
-                <ChatSettingsRail
-                  handleOpenChatHistory={handleOpenChatHistory}
-                  handleOpenChatAssistant={handleOpenChatAssistant}
-                />
+            <div
+              className={
+                activeTab === "intro" ? "overflow-auto w-full" : "hidden"
+              }
+            >
+              <Intro />
+            </div>
 
-                <Chat
-                  openChatHistory={openChatHistory}
-                  openChatAssistant={openChatAssistant}
-                  currentConversationIndex={currentConversationIndex}
-                  conversationHistory={conversationHistory}
-                  setConversationHistory={setConversationHistory}
-                  handleNewConversation={handleNewConversation}
-                  handleDeleteConversation={handleDeleteConversation}
-                  handleConversationSelected={handleConversationSelected}
-                />
-              </div>
-            )}
-            {activeTab === "account" && <Account />}
+            <div
+              className={
+                activeTab === "chat"
+                  ? `flex flex-col h-full w-full overflow-hidden`
+                  : "hidden"
+              }
+            >
+              <ChatSettingsRail
+                handleOpenChatHistory={handleOpenChatHistory}
+                handleOpenChatAssistant={handleOpenChatAssistant}
+              />
+
+              <Chat
+                openChatHistory={openChatHistory}
+                openChatAssistant={openChatAssistant}
+                currentConversationIndex={currentConversationIndex}
+                conversationHistory={conversationHistory}
+                setConversationHistory={setConversationHistory}
+                handleNewConversation={handleNewConversation}
+                handleDeleteConversation={handleDeleteConversation}
+                handleConversationSelected={handleConversationSelected}
+              />
+            </div>
+
+            <div
+              className={
+                activeTab === "account" ? "overflow-auto w-full" : "hidden"
+              }
+            >
+              <Account />
+            </div>
 
             <TabNavRail
               activeTab={activeTab}

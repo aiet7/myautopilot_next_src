@@ -7,6 +7,8 @@ import { FaSpinner } from "react-icons/fa";
 
 import { parseList } from "../../utils/detectContentType.js";
 import { categories, subCategories } from "../../utils/ticketCreation.js";
+import { convertKelvinToFahrenheit } from "../../utils/conversions.js";
+import { generateTitle } from "../../utils/titleGenerator.js";
 
 const ChatInteraction = ({
   openChatHistory,
@@ -22,7 +24,6 @@ const ChatInteraction = ({
   const [confirmationMessages, setConfirmationMessages] = useState({});
 
   const [selectedEmailIndex, setSelectedEmailIndex] = useState(null);
-
   const [currentEmailId, setCurrentEmailId] = useState("");
   const [currentEmailSubject, setCurrentEmailSubject] = useState("");
   const [currentEmailBody, setCurrentEmailBody] = useState("");
@@ -63,15 +64,16 @@ const ChatInteraction = ({
       try {
         const encodedMessage = encodeURIComponent(userInput);
         const response = await fetch(
-          `http://localhost:8081/jarvis4?text=${encodedMessage}`
+          `https://etech7-wf-etech7-worflow-2.azuremicroservices.io/send?message=${encodedMessage}`
+          /*`http://localhost:8081/jarvis4?text=${encodedMessage}`*/
         );
         if (response.status === 200) {
           const responseBody = await response.json();
-          console.log(responseBody)
+
           handleProcessResponse(
             responseBody.intent,
             responseBody.mailEntities,
-            responseBody.message
+            responseBody.data
           );
         }
       } catch (e) {
@@ -204,10 +206,12 @@ const ChatInteraction = ({
           }
         );
         if (ticketResponse.status === 200) {
+          const ticketResponseJson = await ticketResponse.json();
+          const { id } = ticketResponseJson;
           setFormVisibility((prevState) => ({ ...prevState, [formId]: false }));
           setConfirmationMessages((prevState) => ({
             ...prevState,
-            [formId]: `Ticket Created!\nTitle: ${currentTicketTitle}\nDescription: ${currentTicketDescription}\nCategory: ${currentTicketCategory}\nSubcategory: ${currentTicketSubCategory}\nName: ${currentTicketName}\nEmail: ${currentTicketEmailId}\nPhone: ${currentTicketPhoneNumber}.`,
+            [formId]: `Ticket Created!\nID: ${id}\nTitle: ${currentTicketTitle}\nDescription: ${currentTicketDescription}\nCategory: ${currentTicketCategory}\nSubcategory: ${currentTicketSubCategory}\nName: ${currentTicketName}\nEmail: ${currentTicketEmailId}\nPhone: ${currentTicketPhoneNumber}.`,
           }));
         }
       } catch (e) {
@@ -236,13 +240,13 @@ const ChatInteraction = ({
         handleGetEventsProcess();
         break;
       case "getNews":
-        handleGetNewsProcess();
+        handleGetNewsProcess(JSON.parse(message));
         break;
       case "getStocks":
-        handleGetStocksProcess();
+        handleGetStocksProcess(JSON.parse(message));
         break;
       case "getWeather":
-        handleGetWeatherProcess();
+        handleGetWeatherProcess(JSON.parse(message));
         break;
       default:
         handleDefaultActionProcess(message);
@@ -330,22 +334,25 @@ const ChatInteraction = ({
     }
   };
 
-  const handleGetNewsProcess = async () => {
-    const getNewsRequest = await fetch("http://localhost:8085/news");
-    const getNewsResponse = await getNewsRequest.json();
-    console.log(getNewsResponse);
-    if (getNewsResponse.articles.length > 0) {
+  const handleGetNewsProcess = (message) => {
+    const { articles } = message;
+
+    if (articles.length > 0) {
       let newsCards = `<div class="flex flex-col gap-2">`;
-      getNewsResponse.articles.forEach((article) => {
-        const { description, title, url, urlToImage, publishedAt } = article;
+      articles.forEach((article) => {
+        const description = article.description || "Description not available";
+        const title = article.title || "Title not available";
+        const url = article.url || "#";
+        const urlToImage = article.urlToImage || "/image_not_available.png";
+        const publishedAt = article.publishedAt;
         const formattedPublishedAt = new Date(publishedAt).toLocaleString();
 
-        newsCards += `<div class="flex items-start">
+        newsCards += `<div class="dark:rounded-lg dark:shadow-lg dark:shadow-gray-500 flex items-start rounded-lg shadow-lg shadow-gray-500">
         <img class="w-48 h-32 object-cover flex-shrink-0" src="${urlToImage}" alt="Article image"/>
         <div class="flex flex-col p-2">
           <div class="font-bold line-clamp-1">${title}</div>
           <div class="text-xs text-gray-500">${formattedPublishedAt}</div>
-          <div class="text-gray-700 line-clamp-2">${description}</div>
+          <div class="dark:text-gray-300 text-gray-500 line-clamp-2">${description}</div>
           <div class="text-blue-500 underline"><a href="${url}" target="_blank">Read more</a></div>
         </div>
       </div>`;
@@ -355,19 +362,67 @@ const ChatInteraction = ({
     }
   };
 
-  const handleGetStocksProcess = async () => {
-    const getStocksRequest = await fetch("http://localhost:8085/stock");
-    const getStocksResponse = await getStocksRequest.json();
-    console.log(getStocksResponse);
+  const handleGetStocksProcess = (message) => {
+    const c = message.c || "Current price not available";
+    const d = message.d || "Absolute change not available";
+    const dp = message.dp || "Percentage change not available";
+    const h = message.h || "Highest price not available";
+    const l = message.l || "Lowest price not available";
+    const o = message.o || "Opening price not available";
+    const pc = message.pc || "Closing price certificaties not available";
+    const t = message.t || "Timestamp not available";
+    let stockCards = "";
+    stockCards += `
+      <div class="dark:rounded-lg dark:shadow-lg dark:shadow-gray-500 flex flex-col items-center rounded-lg shadow-lg shadow-gray-500">
+       <div class="flex flex-col py-4">
+        <h2 class="text-4xl py-2">Stock Information</h2>
+        <p><strong>Current Price</strong>: $${c.toFixed(2)}</p>
+        <p><strong>Change</strong>: $${d.toFixed(2)} (${dp.toFixed(2)}%)</p>
+        <p><strong>Highest Price Today</strong>: $${h.toFixed(2)}</p>
+        <p><strong>Lowest Price Today</strong>: $${l.toFixed(2)}</p>
+        <p><strong>Opening Price Today</strong>: $${o.toFixed(2)}</p>
+        <p><strong>Previous Closing Price</strong>: $${pc.toFixed(2)}</p>
+        <p><strong>Timestamp</strong>: ${new Date(
+          t * 1000
+        ).toLocaleString()}</p>
+       </div>
+      </div>
+    `;
+    handleAddAssistantMessage(stockCards);
   };
 
-  const handleGetWeatherProcess = async () => {};
+  const handleGetWeatherProcess = (message) => {
+    const { main, weather } = message;
+    if (main && weather.length > 0) {
+      const temp =
+        convertKelvinToFahrenheit(main.temp) || "Temperature not available";
+      const category = weather[0].main || "Category not available";
+      const temp_max =
+        convertKelvinToFahrenheit(main.temp_max) || "High not available";
+      const temp_min =
+        convertKelvinToFahrenheit(main.temp_min) || "Low not available";
+      let weatherCards = `
+      <div class="dark:rounded-lg dark:shadow-lg dark:shadow-gray-500 flex justify-between items-center px-6 py-2 rounded-lg shadow-lg shadow-gray-500">
+        <div class="flex flex-col">
+          <div class="self-start text-9xl">${temp}</div>
+          <div class="self-start">${category}</div>
+          <div class="self-start flex gap-2">
+            <div>High ${temp_max}</div>
+            <div>Low ${temp_min}</div>
+          </div>
+        </div>
+        <img class="w-38 h-28 flex-shrink-0 object-cover" src="/cloudy.png" alt="cloudy"/>
+      </div>
+      `;
+      handleAddAssistantMessage(weatherCards);
+    }
+  };
 
   const handleDefaultActionProcess = (message) => {
     handleAddAssistantMessage(message);
   };
 
-  const handleAddUserMessage = (message) => {
+  const handleAddUserMessage = async (message) => {
     setConversationHistory((prevState) => {
       const newConversationHistory = [...prevState];
       if (!newConversationHistory[currentConversationIndex]) {
