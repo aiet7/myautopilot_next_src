@@ -10,6 +10,7 @@ import Chat from "../../components/Chat/Chat.js";
 import Account from "../../components/Account.js";
 
 import { useState, useEffect } from "react";
+import { generateTitle } from "../../utils/titleGenerator.js";
 
 const DashboardPage = () => {
   const [height, setHeight] = useState(null);
@@ -21,9 +22,25 @@ const DashboardPage = () => {
 
   const [currentConversationIndex, setCurrentConversationIndex] = useState(0);
   const [conversationHistory, setConversationHistory] = useState([]);
+  const [conversationTitles, setConversationTitles] = useState([]);
+
+  /*const handleCheckAndGenerateTitle = async (message) => {
+    if (
+      conversationHistory.length === 0 ||
+      conversationHistory[currentConversationIndex].length === 0
+    ) {
+      const title = await generateTitle(message);
+      setConversationTitles((prevTitles) => {
+        const newTitles = [...prevTitles];
+        newTitles[currentConversationIndex] = title;
+        return newTitles;
+      });
+    }
+  };*/
 
   const handleNewConversation = () => {
     setConversationHistory([...conversationHistory, []]);
+    /*setConversationTitles([...conversationTitles, ""]);*/
     setCurrentConversationIndex(conversationHistory.length);
   };
 
@@ -32,8 +49,12 @@ const DashboardPage = () => {
       const updatedConversationHistory = conversationHistory.filter(
         (_, conversationIndex) => conversationIndex !== index
       );
+      /*const updatedConversationTitles = conversationTitles.filter(
+        (_, conversationIndex) => conversationIndex !== index
+      );*/
 
       setConversationHistory(updatedConversationHistory);
+      /*setConversationTitles(updatedConversationTitles);*/
 
       if (currentConversationIndex > 0) {
         setCurrentConversationIndex((prevState) => prevState - 1);
@@ -42,7 +63,6 @@ const DashboardPage = () => {
       }
     }
   };
-  console.log(conversationHistory);
 
   const handleConversationSelected = (index) => {
     setCurrentConversationIndex(index);

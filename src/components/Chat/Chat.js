@@ -20,6 +20,7 @@ const Chat = ({
     <div className="flex flex-1 relative overflow-hidden">
       <ChatHistory
         openChatHistory={openChatHistory}
+        currentConversationIndex={currentConversationIndex}
         conversationHistory={conversationHistory}
         handleNewConversation={handleNewConversation}
         handleDeleteConversation={handleDeleteConversation}

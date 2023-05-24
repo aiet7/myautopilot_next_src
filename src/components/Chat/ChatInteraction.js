@@ -8,7 +8,6 @@ import { FaSpinner } from "react-icons/fa";
 import { parseList } from "../../utils/detectContentType.js";
 import { categories, subCategories } from "../../utils/ticketCreation.js";
 import { convertKelvinToFahrenheit } from "../../utils/conversions.js";
-import { generateTitle } from "../../utils/titleGenerator.js";
 
 const ChatInteraction = ({
   openChatHistory,
@@ -64,8 +63,8 @@ const ChatInteraction = ({
       try {
         const encodedMessage = encodeURIComponent(userInput);
         const response = await fetch(
-          `https://etech7-wf-etech7-worflow-2.azuremicroservices.io/send?message=${encodedMessage}`
-          /*`http://localhost:8081/jarvis4?text=${encodedMessage}`*/
+          /*`https://etech7-wf-etech7-worflow-2.azuremicroservices.io/send?message=${encodedMessage}`*/
+          `http://localhost:8081/jarvis4?text=${encodedMessage}`
         );
         if (response.status === 200) {
           const responseBody = await response.json();
@@ -73,7 +72,7 @@ const ChatInteraction = ({
           handleProcessResponse(
             responseBody.intent,
             responseBody.mailEntities,
-            responseBody.data
+            responseBody.message /*responseBody.data*/
           );
         }
       } catch (e) {
@@ -486,7 +485,8 @@ const ChatInteraction = ({
   return (
     <div
       className={`flex flex-col h-full w-full  ${
-        (openChatHistory && "opacity-5") || (openChatAssistant && "opacity-5")
+        (openChatHistory && "md:opacity-100 opacity-5") ||
+        (openChatAssistant && "md:opacity-100 opacity-5")
       } dark:bg-black transition-all duration-300 ease-in-out bg-white`}
     >
       <div className=" flex-grow overflow-auto no-scrollbar ">
