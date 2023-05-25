@@ -10,6 +10,7 @@ import { categories, subCategories } from "../../utils/ticketCreation.js";
 import { convertKelvinToFahrenheit } from "../../utils/conversions.js";
 
 const ChatInteraction = ({
+  promptAssistantInput,
   openChatHistory,
   openChatAssistant,
   currentConversationIndex,
@@ -17,6 +18,7 @@ const ChatInteraction = ({
   setConversationHistory,
 }) => {
   const [userInput, setUserInput] = useState("");
+
   const [isWaiting, setIsWaiting] = useState(false);
 
   const [formVisibility, setFormVisibility] = useState({});
@@ -33,7 +35,6 @@ const ChatInteraction = ({
   const [currentContactEmailId, setCurrentContactEmailId] = useState("");
   const [currentContactMobileNumber, setCurrentContactMobileNumber] =
     useState("");
-
   const [currentTicketTitle, setCurrentTicketTitle] = useState("");
   const [currentTicketDescription, setCurrentTicketDescription] = useState("");
   const [currentTicketCategory, setCurrentTicketCategory] =
@@ -481,6 +482,10 @@ const ChatInteraction = ({
     );
     setFilteredSubCategories(filtered);
   }, [currentTicketCategory, subCategories]);
+
+  useEffect(() => {
+    setUserInput(promptAssistantInput);
+  }, [promptAssistantInput]);
 
   return (
     <div

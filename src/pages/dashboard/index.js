@@ -17,6 +17,8 @@ const DashboardPage = () => {
 
   const [activeTab, setActiveTab] = useState("intro");
 
+  const [promptAssistantInput, setPromptAssistantInput] = useState("");
+
   const [openChatHistory, setOpenChatHistory] = useState(false);
   const [openChatAssistant, setOpenChatAssistant] = useState(false);
 
@@ -37,6 +39,10 @@ const DashboardPage = () => {
       });
     }
   };*/
+
+  const handlePromptAssistantInput = (prompt) => {
+    setPromptAssistantInput(prompt);
+  };
 
   const handleNewConversation = () => {
     setConversationHistory([...conversationHistory, []]);
@@ -125,11 +131,13 @@ const DashboardPage = () => {
               />
 
               <Chat
+                promptAssistantInput={promptAssistantInput}
                 openChatHistory={openChatHistory}
                 openChatAssistant={openChatAssistant}
                 currentConversationIndex={currentConversationIndex}
                 conversationHistory={conversationHistory}
                 setConversationHistory={setConversationHistory}
+                handlePromptAssistantInput={handlePromptAssistantInput}
                 handleNewConversation={handleNewConversation}
                 handleDeleteConversation={handleDeleteConversation}
                 handleConversationSelected={handleConversationSelected}

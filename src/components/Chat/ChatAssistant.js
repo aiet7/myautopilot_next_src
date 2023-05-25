@@ -7,7 +7,7 @@ import {
   generalPrompts,
 } from "../../utils/prompts/generalPromptLibrary.js";
 
-const ChatAssistant = ({ openChatAssistant }) => {
+const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
   const options = ["General", "IT", "Law", "Math"];
   const [selectedAssistant, setSelectedAssistant] = useState("General");
 
@@ -41,10 +41,13 @@ const ChatAssistant = ({ openChatAssistant }) => {
         <div className="flex flex-col gap-3 py-2 overflow-y-auto flex-grow h-[22vh] no-scrollbar md:h-[35vh]">
           {selectedAssistant === "General" &&
             generalSkills.map((generalSkill, index) => {
-              const { name, description } = generalSkill;
+              const { name, description, prompt } = generalSkill;
               return (
                 <div key={index} className="flex flex-col items-start gap-1">
-                  <button className="text-white font-bold bg-red-500 rounded-sm py-1 w-[100px]">
+                  <button
+                    onClick={() => handlePromptAssistantInput(prompt)}
+                    className="text-white font-bold bg-red-500 rounded-sm py-1 w-[100px]"
+                  >
                     {name}
                   </button>
                   <pre className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 rounded-md text-sm w-full">
@@ -66,8 +69,9 @@ const ChatAssistant = ({ openChatAssistant }) => {
                     {examples.map((example, index) => {
                       return (
                         <pre
+                          onClick={() => handlePromptAssistantInput(example)}
                           key={index}
-                          className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 rounded-md text-sm w-full"
+                          className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 rounded-md text-sm w-full cursor-pointer"
                         >
                           {example}
                         </pre>
