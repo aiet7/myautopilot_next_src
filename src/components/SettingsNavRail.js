@@ -5,6 +5,7 @@ import { IoMdNotificationsOutline } from "react-icons/io";
 import { AiOutlineSetting } from "react-icons/ai";
 import { MdOutlineDarkMode } from "react-icons/md";
 
+
 import { useTheme } from "next-themes";
 
 const SettingsNavRail = () => {
@@ -19,6 +20,7 @@ const SettingsNavRail = () => {
       <MdOutlineDashboard size={25} className="cursor-pointer" />
       <IoMdNotificationsOutline size={25} className="cursor-pointer" />
       <AiOutlineSetting size={25} className="cursor-pointer" />
+     
       <MdOutlineDarkMode
         size={25}
         onClick={handleTheme}

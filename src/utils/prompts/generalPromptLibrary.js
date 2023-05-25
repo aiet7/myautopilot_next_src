@@ -48,7 +48,6 @@ export const generalPrompts = [
     title: "To ask for general knowledge, prompt with:",
     examples: [
       "What is the capital of Australia?",
-      "Who won the Nobel Prize in Literature in 2020?",
       "Can you explain the theory of relativity?",
     ],
   },

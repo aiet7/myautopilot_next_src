@@ -7,6 +7,7 @@ import {
   MdOutlineDarkMode,
   MdOutlineLightMode,
 } from "react-icons/md";
+import { DiMagento } from "react-icons/di";
 
 import { useTheme } from "next-themes";
 
@@ -47,6 +48,16 @@ const TabNavRail = ({ activeTab, handleTabChange }) => {
           className={`${activeTab === "account" && "text-blue-600"}`}
         />
         <span className="text-sm">Account</span>
+      </div>
+      <div
+        onClick={() => handleTabChange("agents")}
+        className="flex flex-col items-center cursor-pointer"
+      >
+        <DiMagento
+          size={30}
+          className={`${activeTab === "agents" && "text-blue-600"}`}
+        />
+        <span className="text-sm">Agents</span>
       </div>
       <div
         onClick={handleTheme}

@@ -3,8 +3,11 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { FcGoogle } from "react-icons/fc";
+import { GoogleLogin } from "@react-oauth/google";
+import MicrosoftLogin from "react-microsoft-login";
 import { TiVendorMicrosoft } from "react-icons/ti";
+import { FcGoogle } from "react-icons/fc";
+
 
 const Signup = () => {
   const [height, setHeight] = useState(null);
@@ -59,20 +62,27 @@ const Signup = () => {
         <div className="flex items-center ">
           <span className="mx-2">or</span>
         </div>
-        <button
-          type="button"
-          className="w-full p-2 bg-red-500 text-white font-bold flex items-center justify-start rounded-md gap-2"
-        >
-          <FcGoogle size={30} />
-          Sign up with Google
-        </button>
-        <button
-          type="button"
-          className="w-full p-2 py-2 bg-blue-500 text-white font-bold flex items-center justify-start rounded-md gap-2"
-        >
-          <TiVendorMicrosoft size={30} />
-          Sign up with Microsoft
-        </button>
+        <div className="flex flex-col gap-1">
+              <button
+                onClick={() => handleGoogleLogin()}
+                type="button"
+                className="w-[250px] p-2 bg-red-500 text-white font-bold flex items-center justify-start rounded-md gap-2"
+              >
+                <FcGoogle size={30} />
+                Sign up with Google
+              </button>
+
+              <MicrosoftLogin clientId="f8c7976f-3e93-482d-88a3-62a1133cbbc3">
+                <button
+                  onClick={() => handleGoogleLogin()}
+                  type="button"
+                  className="w-[250px] p-2 bg-blue-500 text-white font-bold flex items-center justify-start rounded-md gap-2"
+                >
+                  <TiVendorMicrosoft size={30} />
+                  Sign up with Microsoft
+                </button>
+              </MicrosoftLogin>
+            </div>
         <button
           onClick={() => handleShowLogin()}
           type="button"
