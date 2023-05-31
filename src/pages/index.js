@@ -45,7 +45,7 @@ const WelcomePage = () => {
         </div>
         <div className="relative z-10 flex flex-col gap-4">
           <div className="flex flex-col items-center gap-2">
-            <h1 className="text-3xl">Welcome to MyAutoPilot</h1>
+            <h1 className="text-4xl">Welcome to MyAutoPilot</h1>
             <p className="text-xl text-center">
               Login with your AutoPilot account to continue
             </p>
@@ -53,13 +53,13 @@ const WelcomePage = () => {
           <div className="flex justify-center items-center gap-8">
             <button
               onClick={handleShowLogin}
-              className="w-[120px] bg-red-500 text-white py-3 rounded focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50"
+              className="w-[120px] bg-red-500 text-white py-3 rounded-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50"
             >
               Login
             </button>
             <button
               onClick={handleShowSigmup}
-              className="w-[120px]  bg-red-500 text-white py-3 rounded focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50"
+              className="w-[120px]  bg-red-500 text-white py-3 rounded-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50"
             >
               Signup
             </button>

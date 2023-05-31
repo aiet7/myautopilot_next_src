@@ -8,6 +8,7 @@ import { FaSpinner } from "react-icons/fa";
 import { parseList } from "../../utils/detectContentType.js";
 import { categories, subCategories } from "../../utils/ticketCreation.js";
 import { convertKelvinToFahrenheit } from "../../utils/conversions.js";
+import { recognition } from "../../utils/speechToText.js";
 
 const ChatInteraction = ({
   promptAssistantInput,
@@ -18,8 +19,8 @@ const ChatInteraction = ({
   setConversationHistory,
 }) => {
   const [userInput, setUserInput] = useState("");
-
   const [isWaiting, setIsWaiting] = useState(false);
+  const [isListening, setIsListening] = useState(false);
 
   const [formVisibility, setFormVisibility] = useState({});
   const [confirmationMessages, setConfirmationMessages] = useState({});
@@ -56,13 +57,14 @@ const ChatInteraction = ({
     { name: "", email: "" },
   ]);
 
-  const handleSendUserMessage = async () => {
-    if (userInput.trim() !== "") {
-      handleAddUserMessage(userInput);
+  const handleSendUserMessage = async (message) => {
+    if (message.trim() !== "") {
+      handleAddUserMessage(message);
       setIsWaiting(true);
       setUserInput("");
+
       try {
-        const encodedMessage = encodeURIComponent(userInput);
+        const encodedMessage = encodeURIComponent(message);
         const response = await fetch(
           /*`https://etech7-wf-etech7-worflow-2.azuremicroservices.io/send?message=${encodedMessage}`*/
           `http://localhost:8081/jarvis4?text=${encodedMessage}`
@@ -82,6 +84,29 @@ const ChatInteraction = ({
         setIsWaiting(false);
       }
     }
+  };
+
+  const handleTriggerSpeech = () => {
+    recognition.start();
+
+    recognition.onresult = (event) => {
+      const speechResult = event.results[0][0].transcript;
+      handleSendUserMessage(speechResult);
+      recognition.stop();
+      setIsListening(false);
+    };
+
+    recognition.onspeechend = () => {
+      recognition.stop();
+      setIsListening(false);
+    };
+
+    recognition.onerror = (event) => {
+      console.log("Error occurred in recognition: " + event.error);
+      setIsListening(false);
+    };
+
+    setIsListening(true);
   };
 
   const handleEmailSelection = (email, emailIndex) => {
@@ -1108,7 +1133,7 @@ const ChatInteraction = ({
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault();
-              handleSendUserMessage();
+              handleSendUserMessage(userInput);
             }
           }}
           value={userInput}
@@ -1117,10 +1142,14 @@ const ChatInteraction = ({
         />
         <BsFillSendFill
           size={25}
-          onClick={handleSendUserMessage}
+          onClick={() => handleSendUserMessage(userInput)}
           className="cursor-pointer"
         />
-        <BsFillMicFill size={25} className="cursor-pointer" />
+        <BsFillMicFill
+          onClick={handleTriggerSpeech}
+          className={`${isListening ? "text-blue-500" : null} cursor-pointer`}
+          size={25}
+        />
         <BsFillStopFill size={25} className="cursor-pointer" />
       </div>
     </div>
