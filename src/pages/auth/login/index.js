@@ -8,6 +8,11 @@ import MicrosoftLogin from "react-microsoft-login";
 import { TiVendorMicrosoft } from "react-icons/ti";
 import { FcGoogle } from "react-icons/fc";
 
+import {
+  isInputEmpty,
+  isEmailInputValid,
+} from "../../../utils/formValidations.js";
+
 import Cookie from "js-cookie";
 
 const Login = () => {
@@ -64,16 +69,57 @@ const Login = () => {
     },
   });
 
-  const handleEmailCheck = async () => {
+  const handleMicrosoftLogin = async (err, data) => {
+    const {
+      accessToken,
+      account: { name, username },
+    } = data;
+    console.log(data);
+    const fullName = name.split(" ");
+
+    const user = {
+      firstName: fullName[0],
+      lastName: fullName[1],
+      businessEmail: username,
+    };
+
     const response = await fetch(
-      `http://localhost:9019/getUser?email=${email}`
+      `http://localhost:9019/validateUser?token=${Boolean(accessToken)}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      }
+    );
+
+    if (response.ok) {
+      const microsoftUser = await response.json();
+      router.push(`/dashboard/${microsoftUser.id}`);
+      Cookie.set("session_token", accessToken, { expires: 7 });
+      Cookie.set("user_id", microsoftUser.id, { expires: 7 });
+    } else {
+      setErrorMessage("Error with Microsoft Login.");
+    }
+  };
+
+  const handleEmailCheck = async () => {
+    
+    if (isInputEmpty(email) || !isEmailInputValid(email)) {
+      setErrorMessage("A valid email is required.");
+      return;
+    }
+
+    const response = await fetch(
+      `http://localhost:9019/getUserByEmail?email=${email}`
     );
     const user = await response.json();
     if (user.message === "No Users") {
       setErrorMessage("Account does not exists.  Please sign up.");
     } else if (user.password === null) {
       setErrorMessage(
-        "Account was created with Google sign in.  Please sign in with Google."
+        "Account was created with a provider sign in.  Please sign in with your provider."
       );
     } else {
       setErrorMessage("");
@@ -82,6 +128,11 @@ const Login = () => {
   };
 
   const handleEmailLogin = async () => {
+    if (isInputEmpty(password)) {
+      setErrorMessage("A password is required.");
+      return;
+    }
+
     const user = {
       businessEmail: email,
       password: password,
@@ -93,6 +144,7 @@ const Login = () => {
       },
       body: JSON.stringify(user),
     });
+    setErrorMessage("");
     if (response.ok) {
       const user = await response.json();
       router.push(`/dashboard/${user.id}`);
@@ -148,9 +200,15 @@ const Login = () => {
               <>
                 <input
                   onChange={(e) => setEmail(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleEmailCheck();
+                    }
+                  }}
                   type="email"
                   placeholder="Enter your email"
-                  className="w-full p-2 border border-gray-300 rounded-sm bg-white"
+                  className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
                 />
 
                 <button
@@ -162,7 +220,7 @@ const Login = () => {
                 </button>
                 <div className="flex items-center w-full">
                   <div className="border border-black/10 w-full" />
-                  <span className="mx-2">or</span>
+                  <span className="mx-2 text-black">or</span>
                   <div className="border border-black/10 w-full" />
                 </div>
                 <div className="flex flex-col gap-1">
@@ -175,7 +233,11 @@ const Login = () => {
                     Sign in with Google
                   </button>
 
-                  <MicrosoftLogin clientId="f8c7976f-3e93-482d-88a3-62a1133cbbc3">
+                  <MicrosoftLogin
+                    clientId="14a9d59a-1d19-486e-a4db-d81c5410a453"
+                    authCallback={handleMicrosoftLogin}
+                    redirectUri="http://localhost:3000"
+                  >
                     <button
                       type="button"
                       className="w-[300px] p-2 bg-blue-500 text-white font-bold flex items-center justify-start rounded-sm gap-2"
@@ -191,9 +253,15 @@ const Login = () => {
               <>
                 <input
                   onChange={(e) => setPassword(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleEmailLogin();
+                    }
+                  }}
                   type="password"
                   placeholder="Enter your password"
-                  className="w-full p-2 border border-gray-300 rounded-sm bg-white"
+                  className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
                 />
                 <button
                   onClick={handleEmailLogin}

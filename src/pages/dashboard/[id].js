@@ -12,7 +12,7 @@ import Account from "../../components/Account.js";
 import { useState, useEffect } from "react";
 import { generateTitle } from "../../utils/titleGenerator.js";
 
-const DashboardPage = () => {
+const DashboardPage = ({ initialUser }) => {
   const [height, setHeight] = useState(null);
 
   const [activeTab, setActiveTab] = useState("intro");
@@ -112,7 +112,9 @@ const DashboardPage = () => {
           >
             <div
               className={
-                activeTab === "intro" ? "overflow-auto w-full" : "hidden"
+                activeTab === "intro"
+                  ? "overflow-auto w-full no-scrollbar"
+                  : "hidden"
               }
             >
               <Intro />
@@ -146,10 +148,12 @@ const DashboardPage = () => {
 
             <div
               className={
-                activeTab === "account" ? "overflow-auto w-full" : "hidden"
+                activeTab === "account"
+                  ? "overflow-auto w-full no-scrollbar"
+                  : "hidden"
               }
             >
-              <Account />
+              <Account initialUser={initialUser} />
             </div>
 
             <TabNavRail
@@ -163,11 +167,21 @@ const DashboardPage = () => {
   );
 };
 
-/*export const getServerSideProps = async (context) => {
+export const getServerSideProps = async (context) => {
   const { params } = context;
-  const id = params.id
-  
+  const userId = params.id;
 
-};*/
+  const userApi = await fetch(
+    `http://localhost:9019/getUserById?userId=${userId}`
+  );
+
+  const userResponse = await userApi.json();
+
+  return {
+    props: {
+      initialUser: userResponse,
+    },
+  };
+};
 
 export default DashboardPage;

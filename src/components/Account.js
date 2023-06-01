@@ -3,9 +3,19 @@
 import { IoMdFingerPrint } from "react-icons/io";
 import { RxAvatar } from "react-icons/rx";
 
-const Account = () => {
+const Account = ({ initialUser }) => {
+  
+  const {
+    businessEmail,
+    businessName,
+    businessPhone,
+    firstName,
+    lastName,
+    address: { street, city, zipcode, state },
+  } = initialUser;
+
   return (
-    <div className="overflow-y-auto px-4 py-2 no-scrollbar w-full flex items-center justify-center">
+    <div className="overflow-y-auto px-4 py-2 w-full flex items-center justify-center">
       <div className="flex flex-col h-full items-center gap-2 max-w-[800px]">
         <div className="flex flex-col items-center pt-2 text-center">
           <h1 className="text-xl">Personal Info</h1>
@@ -30,33 +40,42 @@ const Account = () => {
           </div>
           <div className="flex items-center justify-between ">
             <p>Name</p>
-            <p>Tim Mukhamedov</p>
+            <p>{firstName + " " + lastName}</p>
           </div>
           <div className="flex items-center justify-between ">
-            <p>Birthday</p>
-            <p>October 21, 1993</p>
+            <p>Business Name</p>
+            <p>{businessName}</p>
           </div>
         </div>
         <div className="flex flex-col w-full border dark:border-white/40 rounded-md p-5 gap-6">
           <p className="text-lg">Contact Info</p>
           <div className="flex items-center justify-between ">
             <p>Email</p>
-            <p>tim@etech7.com</p>
+            <p>{businessEmail}</p>
           </div>
           <div className="flex items-center justify-between ">
             <p>Phone</p>
-            <p>1-347-679-9994</p>
+            <p>{businessPhone}</p>
           </div>
         </div>
         <div className="flex flex-col w-full border dark:border-white/40 rounded-md p-5 gap-6">
-          <p className="text-lg">Addresses</p>
+          <p className="text-lg">Address</p>
+
           <div className="flex items-center justify-between ">
-            <p>Home</p>
-            <p>9830 67th Avenue, Rego Park</p>
+            <p>Street</p>
+            <p>{street} Street</p>
           </div>
           <div className="flex items-center justify-between ">
-            <p>Work</p>
-            <p>30W 47th Street #300</p>
+            <p>City</p>
+            <p>{city}</p>
+          </div>
+          <div className="flex items-center justify-between ">
+            <p>Zipcode</p>
+            <p>{zipcode}</p>
+          </div>
+          <div className="flex items-center justify-between ">
+            <p>State</p>
+            <p>{state}</p>
           </div>
         </div>
       </div>

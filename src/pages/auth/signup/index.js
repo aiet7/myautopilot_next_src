@@ -8,9 +8,18 @@ import MicrosoftLogin from "react-microsoft-login";
 import { TiVendorMicrosoft } from "react-icons/ti";
 import { FcGoogle } from "react-icons/fc";
 
+import {
+  isInputEmpty,
+  isEmailInputValid,
+} from "../../../utils/formValidations.js";
+
+import { UsaStates } from "usa-states";
+
 import Cookie from "js-cookie";
 
 const Signup = () => {
+  const usStates = new UsaStates();
+
   const [height, setHeight] = useState(null);
 
   const [errorMessage, setErrorMessage] = useState("");
@@ -18,6 +27,14 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [businessName, setBusinessName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [address, setAddress] = useState({
+    street: "",
+    city: "",
+    zipcode: "",
+    state: "",
+  });
   const [password, setPassword] = useState("");
 
   const [showSignupForm, setShowSignupForm] = useState(false);
@@ -59,16 +76,59 @@ const Signup = () => {
         const googleUser = await response.json();
         router.push(`/dashboard/${googleUser.id}`);
         Cookie.set("session_token", tokenResponse.access_token, { expires: 7 });
+        Cookie.set("user_id", googleUser.id, { expires: 7 });
       } else {
         setErrorMessage("Error with Google Login.");
       }
     },
   });
-  const handleEmailCheck = async () => {
+
+  const handleMicrosoftSignup = async (err, data) => {
+    const {
+      accessToken,
+      account: { name, username },
+    } = data;
+
+    const fullName = name.split(" ");
+
+    const user = {
+      firstName: fullName[0],
+      lastName: fullName[1],
+      businessEmail: username,
+    };
+
     const response = await fetch(
-      `http://localhost:9019/getUser?email=${email}`
+      `http://localhost:9019/validateUser?token=${Boolean(accessToken)}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      }
+    );
+
+    if (response.ok) {
+      const microsoftUser = await response.json();
+      router.push(`/dashboard/${microsoftUser.id}`);
+      Cookie.set("session_token", accessToken, { expires: 7 });
+      Cookie.set("user_id", microsoftUser.id, { expires: 7 });
+    } else {
+      setErrorMessage("Error with Microsoft Login.");
+    }
+  };
+
+  const handleEmailCheck = async () => {
+    if (isInputEmpty(email) || !isEmailInputValid(email)) {
+      setErrorMessage("A valid email is required.");
+      return;
+    }
+
+    const response = await fetch(
+      `http://localhost:9019/getUserByEmail?email=${email}`
     );
     const user = await response.json();
+    setErrorMessage("");
     if (user.message === "No Users") {
       setShowSignupForm(true);
     } else {
@@ -77,12 +137,21 @@ const Signup = () => {
   };
 
   const handleEmailSignup = async () => {
+    if (isInputEmpty(password)) {
+      setErrorMessage("A password is required.");
+      return;
+    }
+
     const user = {
       firstName: firstName,
       lastName: lastName,
+      businessName: businessName,
       businessEmail: email,
+      businessPhone: phoneNumber,
+      address: address,
       password: password,
     };
+
     const response = await fetch(`http://localhost:9019/validateUser`, {
       method: "POST",
       headers: {
@@ -90,6 +159,7 @@ const Signup = () => {
       },
       body: JSON.stringify(user),
     });
+    setErrorMessage("");
     if (response.ok) {
       router.push("/auth/login");
     } else {
@@ -134,9 +204,15 @@ const Signup = () => {
           <>
             <input
               onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleEmailCheck();
+                }
+              }}
               type="email"
               placeholder="Enter your email"
-              className="w-full p-2 border border-gray-300 rounded-sm bg-white"
+              className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
             />
             <button
               onClick={handleEmailCheck}
@@ -148,7 +224,7 @@ const Signup = () => {
 
             <div className="flex items-center w-full">
               <div className="border border-black/10 w-full" />
-              <span className="mx-2">or</span>
+              <span className="mx-2 text-black">or</span>
               <div className="border border-black/10 w-full" />
             </div>
             <div className="flex flex-col gap-1">
@@ -161,7 +237,11 @@ const Signup = () => {
                 Sign up with Google
               </button>
 
-              <MicrosoftLogin clientId="f8c7976f-3e93-482d-88a3-62a1133cbbc3">
+              <MicrosoftLogin
+                clientId="14a9d59a-1d19-486e-a4db-d81c5410a453"
+                authCallback={handleMicrosoftSignup}
+                redirectUri="http://localhost:3000"
+              >
                 <button
                   type="button"
                   className="w-[300px] p-2 bg-blue-500 text-white font-bold flex items-center justify-start rounded-sm gap-2"
@@ -177,21 +257,148 @@ const Signup = () => {
           <>
             <input
               onChange={(e) => setFirstName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleEmailSignup();
+                }
+              }}
               type="text"
-              placeholder="Enter your first name"
-              className="w-full p-2 border border-gray-300 rounded-sm bg-white"
+              placeholder="First name (Optional)"
+              className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
             />
             <input
               onChange={(e) => setLastName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleEmailSignup();
+                }
+              }}
               type="text"
-              placeholder="Enter your last name"
-              className="w-full p-2 border border-gray-300 rounded-sm bg-white"
+              placeholder="Last name (Optional)"
+              className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
             />
             <input
+              onChange={(e) => setBusinessName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleEmailSignup();
+                }
+              }}
+              type="text"
+              placeholder="Business name (Optional)"
+              className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
+            />
+            <input
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleEmailSignup();
+                }
+              }}
+              type="text"
+              placeholder="Phone number (Optional)"
+              className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
+            />
+
+            <input
+              onChange={(e) =>
+                setAddress((prevState) => ({
+                  ...prevState,
+                  street: e.target.value,
+                }))
+              }
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleEmailSignup();
+                }
+              }}
+              type="text"
+              placeholder="Street (Optional)"
+              className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
+            />
+
+            <input
+              onChange={(e) =>
+                setAddress((prevState) => ({
+                  ...prevState,
+                  city: e.target.value,
+                }))
+              }
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleEmailSignup();
+                }
+              }}
+              type="text"
+              placeholder="City (Optional)"
+              className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
+            />
+            <div className="w-full flex gap-2">
+              <input
+                onChange={(e) =>
+                  setAddress((prevState) => ({
+                    ...prevState,
+                    zipcode: e.target.value,
+                  }))
+                }
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleEmailSignup();
+                  }
+                }}
+                type="text"
+                placeholder="Zipcode (Optional)"
+                className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
+              />
+              <select
+                
+                onChange={(e) =>
+                  setAddress((prevState) => ({
+                    ...prevState,
+                    state: e.target.value,
+                  }))
+                }
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleEmailSignup();
+                  }
+                }}
+                className={`w-full p-2 border border-gray-300 rounded-sm ${
+                  address.state
+                    ? "bg-white text-black"
+                    : "bg-white text-gray-400"
+                }`}
+              >
+                <option value="">
+                  State (Optional)
+                </option>
+                {usStates.states.map((state) => (
+                  <option key={state.abbreviation} value={state.abbreviation}>
+                    {state.abbreviation}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <input
               onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleEmailSignup();
+                }
+              }}
               type="password"
-              placeholder="Enter your password"
-              className="w-full p-2 border border-gray-300 rounded-sm bg-white"
+              placeholder="Password"
+              className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
             />
             <button
               onClick={handleEmailSignup}
