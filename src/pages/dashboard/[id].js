@@ -12,7 +12,11 @@ import Account from "../../components/Account.js";
 import { useState, useEffect } from "react";
 import { generateTitle } from "../../utils/titleGenerator.js";
 
-const DashboardPage = ({ initialUser }) => {
+const DashboardPage = ({
+  initialUser,
+  initialConversations,
+  initialMessages,
+}) => {
   const [height, setHeight] = useState(null);
 
   const [activeTab, setActiveTab] = useState("intro");
@@ -24,48 +28,57 @@ const DashboardPage = ({ initialUser }) => {
 
   const [currentConversationIndex, setCurrentConversationIndex] = useState(0);
   const [conversationHistory, setConversationHistory] = useState([]);
-  const [conversationTitles, setConversationTitles] = useState([]);
-
-  /*const handleCheckAndGenerateTitle = async (message) => {
-    if (
-      conversationHistory.length === 0 ||
-      conversationHistory[currentConversationIndex].length === 0
-    ) {
-      const title = await generateTitle(message);
-      setConversationTitles((prevTitles) => {
-        const newTitles = [...prevTitles];
-        newTitles[currentConversationIndex] = title;
-        return newTitles;
-      });
-    }
-  };*/
 
   const handlePromptAssistantInput = (prompt) => {
     setPromptAssistantInput(prompt);
   };
 
-  const handleNewConversation = () => {
-    setConversationHistory([...conversationHistory, []]);
-    /*setConversationTitles([...conversationTitles, ""]);*/
-    setCurrentConversationIndex(conversationHistory.length);
+  const handleNewConversation = async (index) => {
+    const newConversation = {
+      userID: initialUser.id,
+      conversationName: `Chat ${index + 1}`,
+    };
+
+    try {
+      const response = await fetch(`http://localhost:9019/addConversation`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newConversation),
+      });
+
+      if (response.ok) {
+        const addedConversation = await response.json();
+        setConversationHistory([...conversationHistory, addedConversation]);
+        setCurrentConversationIndex(conversationHistory.length);
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
 
-  const handleDeleteConversation = (index) => {
+  const handleDeleteConversation = async (index) => {
     if (index < conversationHistory.length) {
-      const updatedConversationHistory = conversationHistory.filter(
-        (_, conversationIndex) => conversationIndex !== index
-      );
-      /*const updatedConversationTitles = conversationTitles.filter(
-        (_, conversationIndex) => conversationIndex !== index
-      );*/
-
-      setConversationHistory(updatedConversationHistory);
-      /*setConversationTitles(updatedConversationTitles);*/
-
-      if (currentConversationIndex > 0) {
-        setCurrentConversationIndex((prevState) => prevState - 1);
-      } else if (updatedConversationHistory.length > 0) {
-        setCurrentConversationIndex(0);
+      const conversationToDelete = conversationHistory[index];
+      
+      try {
+        const response = await fetch(
+          `http://localhost:9019/deleteConversation?conversationId=${conversationToDelete.id}`
+        );
+        if (response.ok) {
+          const updatedConversationHistory = conversationHistory.filter(
+            (_, currentConversationIndex) => currentConversationIndex !== index
+          );
+          setConversationHistory(updatedConversationHistory);
+          if (currentConversationIndex > 0) {
+            setCurrentConversationIndex((prevState) => prevState - 1);
+          } else if (updatedConversationHistory.length > 0) {
+            setCurrentConversationIndex(0);
+          }
+        }
+      } catch (e) {
+        console.log(e);
       }
     }
   };
@@ -97,6 +110,35 @@ const DashboardPage = ({ initialUser }) => {
       };
     }
   }, []);
+
+  useEffect(() => {
+    const updatedConversationHistory = initialConversations.map(
+      (conversation, index) => {
+        return {
+          ...conversation,
+          messages:
+            initialMessages[index]
+              ?.flatMap((message) => [
+                {
+                  id: message.id + "-user",
+                  content: message.userContent,
+                  role: "user",
+                  timeStamp: message.timeStamp,
+                },
+                {
+                  id: message.id + "-ai",
+                  content: message.aiContent,
+                  role: "assistant",
+                  timeStamp: message.timeStamp,
+                },
+              ])
+              .sort((a, b) => new Date(a.timeStamp) - new Date(b.timeStamp)) ||
+            [],
+        };
+      }
+    );
+    setConversationHistory(updatedConversationHistory);
+  }, [initialConversations, initialMessages]);
 
   return (
     <ThemeProvider attribute="class">
@@ -133,6 +175,8 @@ const DashboardPage = ({ initialUser }) => {
               />
 
               <Chat
+                initialUser={initialUser}
+                initialConversations={initialConversations}
                 promptAssistantInput={promptAssistantInput}
                 openChatHistory={openChatHistory}
                 openChatAssistant={openChatAssistant}
@@ -171,15 +215,32 @@ export const getServerSideProps = async (context) => {
   const { params } = context;
   const userId = params.id;
 
-  const userApi = await fetch(
-    `http://localhost:9019/getUserById?userId=${userId}`
-  );
+  const userApi = `http://localhost:9019/getUserById?userId=${userId}`;
+  const conversationApi = `http://localhost:9019/getConversations?userId=${userId}`;
 
-  const userResponse = await userApi.json();
+  const [userResponse, conversationResponse] = await Promise.all([
+    fetch(userApi),
+    fetch(conversationApi),
+  ]);
+
+  const [initialUser, initialConversations] = await Promise.all([
+    userResponse.json(),
+    conversationResponse.json(),
+  ]);
+
+  const messagePromises = initialConversations.map(async (conversation) => {
+    const messageApi = `http://localhost:9019/getMessages?conversationId=${conversation.id}`;
+    const response = await fetch(messageApi);
+    return await response.json();
+  });
+
+  const initialMessages = await Promise.all(messagePromises);
 
   return {
     props: {
-      initialUser: userResponse,
+      initialUser,
+      initialConversations,
+      initialMessages,
     },
   };
 };

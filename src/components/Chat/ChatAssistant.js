@@ -19,7 +19,7 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
 
   return (
     <div
-      className={`px-4 py-6 bg-gray-100 dark:bg-black  absolute z-10 top-0 bottom-0 right-0 transition-all duration-300 ease-in-out transform ${
+      className={`px-4 py-6 bg-gray-100 dark:bg-black absolute z-10 top-0 bottom-0 right-0 transition-all duration-300 ease-in-out transform ${
         openChatAssistant
           ? "translate-x-0 w-[300px] dark:shadow-white shadow-lg shadow-black/50"
           : "translate-x-full w-[300px]"

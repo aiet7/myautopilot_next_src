@@ -11,6 +11,9 @@ import { convertKelvinToFahrenheit } from "../../utils/conversions.js";
 import { recognition } from "../../utils/speechToText.js";
 
 const ChatInteraction = ({
+  initialUser,
+  initialConversations,
+
   promptAssistantInput,
   openChatHistory,
   openChatAssistant,
@@ -65,9 +68,10 @@ const ChatInteraction = ({
 
       try {
         const encodedMessage = encodeURIComponent(message);
+
         const response = await fetch(
           /*`https://etech7-wf-etech7-worflow-2.azuremicroservices.io/send?message=${encodedMessage}`*/
-          `http://localhost:8081/jarvis4?text=${encodedMessage}`
+          `http://localhost:8081/jarvis4?text=${encodedMessage}&conversationId=${conversationHistory[currentConversationIndex].id}&userId=${initialUser.id}`
         );
         if (response.status === 200) {
           const responseBody = await response.json();
@@ -450,13 +454,14 @@ const ChatInteraction = ({
   const handleAddUserMessage = async (message) => {
     setConversationHistory((prevState) => {
       const newConversationHistory = [...prevState];
-      if (!newConversationHistory[currentConversationIndex]) {
-        newConversationHistory[currentConversationIndex] = [];
+      if (!newConversationHistory[currentConversationIndex].messages) {
+        newConversationHistory[currentConversationIndex].messages = [];
       }
-      newConversationHistory[currentConversationIndex].push({
-        id: Date.now(),
+      newConversationHistory[currentConversationIndex].messages.push({
+        id: Date.now() + "-user",
         content: message,
         role: "user",
+        timeStamp: new Date().toISOString(),
       });
       return newConversationHistory;
     });
@@ -465,13 +470,14 @@ const ChatInteraction = ({
   const handleAddAssistantMessage = (message) => {
     setConversationHistory((prevState) => {
       const newConversationHistory = [...prevState];
-      if (!newConversationHistory[currentConversationIndex]) {
-        newConversationHistory[currentConversationIndex] = [];
+      if (!newConversationHistory[currentConversationIndex].messages) {
+        newConversationHistory[currentConversationIndex].messages = [];
       }
-      newConversationHistory[currentConversationIndex].push({
-        id: Date.now(),
+      newConversationHistory[currentConversationIndex].messages.push({
+        id: Date.now() + "-ai",
         content: message,
         role: "assistant",
+        timeStamp: new Date().toISOString(),
       });
       return newConversationHistory;
     });
@@ -520,607 +526,645 @@ const ChatInteraction = ({
       } dark:bg-black transition-all duration-300 ease-in-out bg-white`}
     >
       <div className=" flex-grow overflow-auto no-scrollbar ">
-        {conversationHistory[currentConversationIndex]?.map((item, index) => {
-          return (
-            <div
-              key={item.id}
-              className={`px-4 py-4 text-md w-full  ${
-                item.role === "user"
-                  ? "dark:border-white/40 bg-black/5 border-b"
-                  : "dark:bg-white/10 dark:border-white/40 border-b"
-              }`}
-            >
-              <div className="flex items-start max-w-[800px] mx-auto gap-4">
-                <span>
-                  {item.role === "user" ? (
-                    <AiOutlineUser size={20} />
-                  ) : (
-                    <AiOutlineRobot size={20} />
-                  )}
-                </span>
+        {conversationHistory[currentConversationIndex]?.messages?.map(
+          (item, index) => {
+            return (
+              <div
+                key={item.id}
+                className={`px-4 py-4 text-md w-full  ${
+                  item.role === "user"
+                    ? "dark:border-white/40 bg-black/5 border-b"
+                    : "dark:bg-white/10 dark:border-white/40 border-b"
+                }`}
+              >
+                <div className="flex items-start max-w-[800px] mx-auto gap-4">
+                  <span>
+                    {item.role === "user" ? (
+                      <AiOutlineUser size={20} />
+                    ) : (
+                      <AiOutlineRobot size={20} />
+                    )}
+                  </span>
 
-                <div className="flex-grow">
-                  {(() => {
-                    switch (item.type) {
-                      case "form":
-                        if (!formVisibility[item.id]) {
-                          return (
-                            <div className="flex items-start gap-3">
-                              <button
-                                className="bg-blue-300 rounded-md px-3 py-2 text-white flex-shrink-0"
-                                onClick={() => handleToggleForm(item.id)}
-                              >
-                                Show form
-                              </button>
-                              {confirmationMessages[item.id] && (
-                                <pre className="whitespace-pre-wrap">
-                                  {confirmationMessages[item.id]}
-                                </pre>
-                              )}
-                            </div>
-                          );
-                        }
-                        switch (item.formType) {
-                          case "emailButtons + emailForm":
+                  <div className="flex-grow">
+                    {(() => {
+                      switch (item.type) {
+                        case "form":
+                          if (!formVisibility[item.id]) {
                             return (
-                              <div className="flex flex-col gap-6">
-                                <p>Please select an email address.</p>
-                                <div className="flex gap-2">
-                                  {availableEmailIds.map((email, index) => (
+                              <div className="flex items-start gap-3">
+                                <button
+                                  className="bg-blue-300 rounded-md px-3 py-2 text-white flex-shrink-0"
+                                  onClick={() => handleToggleForm(item.id)}
+                                >
+                                  Show form
+                                </button>
+                                {confirmationMessages[item.id] && (
+                                  <pre className="whitespace-pre-wrap">
+                                    {confirmationMessages[item.id]}
+                                  </pre>
+                                )}
+                              </div>
+                            );
+                          }
+                          switch (item.formType) {
+                            case "emailButtons + emailForm":
+                              return (
+                                <div className="flex flex-col gap-6">
+                                  <p>Please select an email address.</p>
+                                  <div className="flex gap-2">
+                                    {availableEmailIds.map((email, index) => (
+                                      <button
+                                        key={index}
+                                        onClick={() =>
+                                          handleEmailSelection(email, index)
+                                        }
+                                        className={`${
+                                          selectedEmailIndex === index
+                                            ? "bg-blue-900"
+                                            : "bg-gray-500"
+                                        }  text-white px-4 py-2 rounded-md`}
+                                      >
+                                        {email}
+                                      </button>
+                                    ))}
+                                  </div>
+                                  <div>
+                                    <div>
+                                      <span className="font-bold">Email</span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                        value={currentEmailId}
+                                        onChange={(e) =>
+                                          setCurrentEmailId(e.target.value)
+                                        }
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">Subject</span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                        value={currentEmailSubject}
+                                        onChange={(e) =>
+                                          setCurrentEmailSubject(e.target.value)
+                                        }
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">Body</span>
+                                      <textarea
+                                        className="h-[200px] border outline-blue-500 w-full px-4 resize-none"
+                                        value={currentEmailBody}
+                                        onChange={(e) =>
+                                          setCurrentEmailBody(e.target.value)
+                                        }
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-4">
                                     <button
-                                      key={index}
-                                      onClick={() =>
-                                        handleEmailSelection(email, index)
-                                      }
-                                      className={`${
-                                        selectedEmailIndex === index
-                                          ? "bg-blue-900"
-                                          : "bg-gray-500"
-                                      }  text-white px-4 py-2 rounded-md`}
+                                      className="bg-green-300 rounded-md px-3 py-2 text-white"
+                                      onClick={() => {
+                                        handleEmailConfirmation(true, item.id);
+                                      }}
                                     >
-                                      {email}
+                                      Send Email
                                     </button>
-                                  ))}
-                                </div>
-                                <div>
-                                  <div>
-                                    <span className="font-bold">Email</span>
-                                    <input
-                                      className="h-[50px] border outline-blue-500 w-full px-4"
-                                      value={currentEmailId}
-                                      onChange={(e) =>
-                                        setCurrentEmailId(e.target.value)
-                                      }
-                                    />
-                                  </div>
-                                  <div>
-                                    <span className="font-bold">Subject</span>
-                                    <input
-                                      className="h-[50px] border outline-blue-500 w-full px-4"
-                                      value={currentEmailSubject}
-                                      onChange={(e) =>
-                                        setCurrentEmailSubject(e.target.value)
-                                      }
-                                    />
-                                  </div>
-                                  <div>
-                                    <span className="font-bold">Body</span>
-                                    <textarea
-                                      className="h-[200px] border outline-blue-500 w-full px-4 resize-none"
-                                      value={currentEmailBody}
-                                      onChange={(e) =>
-                                        setCurrentEmailBody(e.target.value)
-                                      }
-                                    />
-                                  </div>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                  <button
-                                    className="bg-green-300 rounded-md px-3 py-2 text-white"
-                                    onClick={() => {
-                                      handleEmailConfirmation(true, item.id);
-                                    }}
-                                  >
-                                    Send Email
-                                  </button>
-                                  <button
-                                    className="bg-red-300 rounded-md px-3 py-2 text-white"
-                                    onClick={() => {
-                                      handleEmailConfirmation(false, item.id);
-                                    }}
-                                  >
-                                    Cancel
-                                  </button>
-                                  <button
-                                    className="bg-blue-300 rounded-md px-3 py-2 text-white"
-                                    onClick={() => handleToggleForm(item.id)}
-                                  >
-                                    Hide form
-                                  </button>
-                                </div>
-                              </div>
-                            );
-
-                          case "contactForm + emailForm":
-                            return (
-                              <div className="flex flex-col gap-6">
-                                <p>
-                                  Would you like to add this email to your
-                                  contacts?.
-                                </p>
-
-                                <div>
-                                  <div>
-                                    <span className="font-bold">
-                                      First Name
-                                    </span>
-                                    <input
-                                      className="h-[50px] border outline-blue-500 w-full px-4"
-                                      value={currentContactGivenName}
-                                      onChange={(e) =>
-                                        setCurrentContactGivenName(
-                                          e.target.value
-                                        )
-                                      }
-                                    />
-                                  </div>
-                                  <div>
-                                    <span className="font-bold">Last Name</span>
-                                    <input
-                                      className="h-[50px] border outline-blue-500 w-full px-4"
-                                      value={currentContactSurname}
-                                      onChange={(e) =>
-                                        setCurrentContactSurname(e.target.value)
-                                      }
-                                    />
-                                  </div>
-                                  <div>
-                                    <span className="font-bold">Email</span>
-                                    <input
-                                      className="h-[50px] border outline-blue-500 w-full px-4 "
-                                      value={currentEmailId}
-                                      onChange={(e) =>
-                                        setCurrentEmailId(e.target.value)
-                                      }
-                                    />
-                                  </div>
-                                  <div>
-                                    <span className="font-bold">
-                                      Phone Number
-                                    </span>
-                                    <input
-                                      className="h-[50px] border outline-blue-500 w-full px-4 "
-                                      value={currentContactMobileNumber}
-                                      onChange={(e) =>
-                                        setCurrentContactMobileNumber(
-                                          e.target.value
-                                        )
-                                      }
-                                    />
-                                  </div>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                  <button
-                                    className="bg-green-300 rounded-md px-3 py-2 text-white"
-                                    onClick={() =>
-                                      handleContactConfirmation(true)
-                                    }
-                                  >
-                                    Add Contact
-                                  </button>
-                                </div>
-                                <div>
-                                  <div>
-                                    <span className="font-bold">Email</span>
-                                    <input
-                                      className="h-[50px] border outline-blue-500 w-full px-4"
-                                      value={currentEmailId}
-                                      onChange={(e) =>
-                                        setCurrentEmailId(e.target.value)
-                                      }
-                                    />
-                                  </div>
-                                  <div>
-                                    <span className="font-bold">Subject</span>
-                                    <input
-                                      className="h-[50px] border outline-blue-500 w-full px-4"
-                                      value={currentEmailSubject}
-                                      onChange={(e) =>
-                                        setCurrentEmailSubject(e.target.value)
-                                      }
-                                    />
-                                  </div>
-                                  <div>
-                                    <span className="font-bold">Body</span>
-                                    <textarea
-                                      className="h-[200px] border outline-blue-500 w-full px-4 resize-none"
-                                      value={currentEmailBody}
-                                      onChange={(e) =>
-                                        setCurrentEmailBody(e.target.value)
-                                      }
-                                    />
-                                  </div>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                  <button
-                                    className="bg-green-300 rounded-md px-3 py-2 text-white"
-                                    onClick={() => {
-                                      handleEmailConfirmation(true, item.id);
-                                    }}
-                                  >
-                                    Send Email
-                                  </button>
-                                  <button
-                                    className="bg-red-300 rounded-md px-3 py-2 text-white"
-                                    onClick={() => {
-                                      handleEmailConfirmation(false, item.id);
-                                    }}
-                                  >
-                                    Cancel
-                                  </button>
-                                  <button
-                                    className="bg-blue-300 rounded-md px-3 py-2 text-white"
-                                    onClick={() => handleToggleForm(item.id)}
-                                  >
-                                    Hide form
-                                  </button>
-                                </div>
-                              </div>
-                            );
-                          case "contactForm":
-                            return (
-                              <div className="flex flex-col gap-6">
-                                <p>Add email to contact.</p>
-                                <div>
-                                  <div>
-                                    <span className="font-bold">
-                                      First Name
-                                    </span>
-                                    <input
-                                      className="h-[50px] border outline-blue-500 w-full px-4"
-                                      value={currentContactGivenName}
-                                      onChange={(e) =>
-                                        setCurrentContactGivenName(
-                                          e.target.value
-                                        )
-                                      }
-                                    />
-                                  </div>
-                                  <div>
-                                    <span className="font-bold">Last Name</span>
-                                    <input
-                                      className="h-[50px] border outline-blue-500 w-full px-4"
-                                      value={currentContactSurname}
-                                      onChange={(e) =>
-                                        setCurrentContactSurname(e.target.value)
-                                      }
-                                    />
-                                  </div>
-                                  <div>
-                                    <span className="font-bold">Email</span>
-                                    <input
-                                      className="h-[50px] border outline-blue-500 w-full px-4 "
-                                      value={currentContactEmailId}
-                                      onChange={(e) =>
-                                        setCurrentContactEmailId(e.target.value)
-                                      }
-                                    />
-                                  </div>
-                                  <div>
-                                    <span className="font-bold">
-                                      Phone Number
-                                    </span>
-                                    <input
-                                      className="h-[50px] border outline-blue-500 w-full px-4 "
-                                      value={currentContactMobileNumber}
-                                      onChange={(e) =>
-                                        setCurrentContactMobileNumber(
-                                          e.target.value
-                                        )
-                                      }
-                                    />
-                                  </div>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                  <button
-                                    className="bg-green-300 rounded-md px-3 py-2 text-white"
-                                    onClick={() =>
-                                      handleContactConfirmation(true, item.id)
-                                    }
-                                  >
-                                    Add Contact
-                                  </button>
-                                  <button
-                                    className="bg-red-300 rounded-md px-3 py-2 text-white"
-                                    onClick={() =>
-                                      handleContactConfirmation(false, item.id)
-                                    }
-                                  >
-                                    Cancel
-                                  </button>
-                                  <button
-                                    className="bg-blue-300 rounded-md px-3 py-2 text-white"
-                                    onClick={() => handleToggleForm(item.id)}
-                                  >
-                                    Hide form
-                                  </button>
-                                </div>
-                              </div>
-                            );
-                          case "ticketForm":
-                            return (
-                              <div className="flex flex-col gap-6">
-                                <div>
-                                  <div>
-                                    <span className="font-bold">
-                                      Ticket Name
-                                    </span>
-                                    <input
-                                      className="h-[50px] border outline-blue-500 w-full px-4"
-                                      value={currentTicketTitle}
-                                      onChange={(e) =>
-                                        setCurrentTicketTitle(e.target.value)
-                                      }
-                                    />
-                                  </div>
-                                  <div>
-                                    <span className="font-bold">
-                                      Description
-                                    </span>
-                                    <input
-                                      className="h-[50px] border outline-blue-500 w-full px-4"
-                                      value={currentTicketDescription}
-                                      onChange={(e) =>
-                                        setCurrentTicketDescription(
-                                          e.target.value
-                                        )
-                                      }
-                                    />
-                                  </div>
-                                  <div>
-                                    <span className="font-bold">Category</span>
-
-                                    <select
-                                      value={currentTicketCategory}
-                                      onChange={(e) =>
-                                        setCurrentTicketCategory(e.target.value)
-                                      }
-                                      className="h-[50px] border outline-blue-500 w-full px-4"
+                                    <button
+                                      className="bg-red-300 rounded-md px-3 py-2 text-white"
+                                      onClick={() => {
+                                        handleEmailConfirmation(false, item.id);
+                                      }}
                                     >
-                                      <option value="">
-                                        Select a category
-                                      </option>
-                                      {categories.map((category, index) => (
-                                        <option key={index} value={category.id}>
-                                          {category.title}
+                                      Cancel
+                                    </button>
+                                    <button
+                                      className="bg-blue-300 rounded-md px-3 py-2 text-white"
+                                      onClick={() => handleToggleForm(item.id)}
+                                    >
+                                      Hide form
+                                    </button>
+                                  </div>
+                                </div>
+                              );
+
+                            case "contactForm + emailForm":
+                              return (
+                                <div className="flex flex-col gap-6">
+                                  <p>
+                                    Would you like to add this email to your
+                                    contacts?.
+                                  </p>
+
+                                  <div>
+                                    <div>
+                                      <span className="font-bold">
+                                        First Name
+                                      </span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                        value={currentContactGivenName}
+                                        onChange={(e) =>
+                                          setCurrentContactGivenName(
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">
+                                        Last Name
+                                      </span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                        value={currentContactSurname}
+                                        onChange={(e) =>
+                                          setCurrentContactSurname(
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">Email</span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4 "
+                                        value={currentEmailId}
+                                        onChange={(e) =>
+                                          setCurrentEmailId(e.target.value)
+                                        }
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">
+                                        Phone Number
+                                      </span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4 "
+                                        value={currentContactMobileNumber}
+                                        onChange={(e) =>
+                                          setCurrentContactMobileNumber(
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-4">
+                                    <button
+                                      className="bg-green-300 rounded-md px-3 py-2 text-white"
+                                      onClick={() =>
+                                        handleContactConfirmation(true)
+                                      }
+                                    >
+                                      Add Contact
+                                    </button>
+                                  </div>
+                                  <div>
+                                    <div>
+                                      <span className="font-bold">Email</span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                        value={currentEmailId}
+                                        onChange={(e) =>
+                                          setCurrentEmailId(e.target.value)
+                                        }
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">Subject</span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                        value={currentEmailSubject}
+                                        onChange={(e) =>
+                                          setCurrentEmailSubject(e.target.value)
+                                        }
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">Body</span>
+                                      <textarea
+                                        className="h-[200px] border outline-blue-500 w-full px-4 resize-none"
+                                        value={currentEmailBody}
+                                        onChange={(e) =>
+                                          setCurrentEmailBody(e.target.value)
+                                        }
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-4">
+                                    <button
+                                      className="bg-green-300 rounded-md px-3 py-2 text-white"
+                                      onClick={() => {
+                                        handleEmailConfirmation(true, item.id);
+                                      }}
+                                    >
+                                      Send Email
+                                    </button>
+                                    <button
+                                      className="bg-red-300 rounded-md px-3 py-2 text-white"
+                                      onClick={() => {
+                                        handleEmailConfirmation(false, item.id);
+                                      }}
+                                    >
+                                      Cancel
+                                    </button>
+                                    <button
+                                      className="bg-blue-300 rounded-md px-3 py-2 text-white"
+                                      onClick={() => handleToggleForm(item.id)}
+                                    >
+                                      Hide form
+                                    </button>
+                                  </div>
+                                </div>
+                              );
+                            case "contactForm":
+                              return (
+                                <div className="flex flex-col gap-6">
+                                  <p>Add email to contact.</p>
+                                  <div>
+                                    <div>
+                                      <span className="font-bold">
+                                        First Name
+                                      </span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                        value={currentContactGivenName}
+                                        onChange={(e) =>
+                                          setCurrentContactGivenName(
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">
+                                        Last Name
+                                      </span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                        value={currentContactSurname}
+                                        onChange={(e) =>
+                                          setCurrentContactSurname(
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">Email</span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4 "
+                                        value={currentContactEmailId}
+                                        onChange={(e) =>
+                                          setCurrentContactEmailId(
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">
+                                        Phone Number
+                                      </span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4 "
+                                        value={currentContactMobileNumber}
+                                        onChange={(e) =>
+                                          setCurrentContactMobileNumber(
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-4">
+                                    <button
+                                      className="bg-green-300 rounded-md px-3 py-2 text-white"
+                                      onClick={() =>
+                                        handleContactConfirmation(true, item.id)
+                                      }
+                                    >
+                                      Add Contact
+                                    </button>
+                                    <button
+                                      className="bg-red-300 rounded-md px-3 py-2 text-white"
+                                      onClick={() =>
+                                        handleContactConfirmation(
+                                          false,
+                                          item.id
+                                        )
+                                      }
+                                    >
+                                      Cancel
+                                    </button>
+                                    <button
+                                      className="bg-blue-300 rounded-md px-3 py-2 text-white"
+                                      onClick={() => handleToggleForm(item.id)}
+                                    >
+                                      Hide form
+                                    </button>
+                                  </div>
+                                </div>
+                              );
+                            case "ticketForm":
+                              return (
+                                <div className="flex flex-col gap-6">
+                                  <div>
+                                    <div>
+                                      <span className="font-bold">
+                                        Ticket Name
+                                      </span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                        value={currentTicketTitle}
+                                        onChange={(e) =>
+                                          setCurrentTicketTitle(e.target.value)
+                                        }
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">
+                                        Description
+                                      </span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                        value={currentTicketDescription}
+                                        onChange={(e) =>
+                                          setCurrentTicketDescription(
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">
+                                        Category
+                                      </span>
+
+                                      <select
+                                        value={currentTicketCategory}
+                                        onChange={(e) =>
+                                          setCurrentTicketCategory(
+                                            e.target.value
+                                          )
+                                        }
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                      >
+                                        <option value="">
+                                          Select a category
                                         </option>
-                                      ))}
-                                    </select>
-                                  </div>
-                                  <div>
-                                    <span className="font-bold">
-                                      Subcategory
-                                    </span>
-                                    <select
-                                      value={currentTicketSubCategory}
-                                      onChange={(e) =>
-                                        setCurrentTicketSubCategory(
-                                          e.target.value
-                                        )
-                                      }
-                                      className="h-[50px] border outline-blue-500 w-full px-4"
-                                    >
-                                      <option value="">
-                                        Select a subcategory
-                                      </option>
-                                      {filteredSubCategories.map(
-                                        (subCategory, index) => (
+                                        {categories.map((category, index) => (
                                           <option
                                             key={index}
-                                            value={subCategory.id}
+                                            value={category.id}
                                           >
-                                            {subCategory.title}
+                                            {category.title}
                                           </option>
-                                        )
-                                      )}
-                                    </select>
+                                        ))}
+                                      </select>
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">
+                                        Subcategory
+                                      </span>
+                                      <select
+                                        value={currentTicketSubCategory}
+                                        onChange={(e) =>
+                                          setCurrentTicketSubCategory(
+                                            e.target.value
+                                          )
+                                        }
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                      >
+                                        <option value="">
+                                          Select a subcategory
+                                        </option>
+                                        {filteredSubCategories.map(
+                                          (subCategory, index) => (
+                                            <option
+                                              key={index}
+                                              value={subCategory.id}
+                                            >
+                                              {subCategory.title}
+                                            </option>
+                                          )
+                                        )}
+                                      </select>
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">Name</span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                        value={currentTicketName}
+                                        onChange={(e) =>
+                                          setCurrentTicketName(e.target.value)
+                                        }
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">Email</span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                        value={currentTicketEmailId}
+                                        onChange={(e) =>
+                                          setCurrentTicketEmailId(
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">
+                                        Phone Number
+                                      </span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                        value={currentTicketPhoneNumber}
+                                        onChange={(e) =>
+                                          setCurrentTicketPhoneNumber(
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    </div>
                                   </div>
-                                  <div>
-                                    <span className="font-bold">Name</span>
-                                    <input
-                                      className="h-[50px] border outline-blue-500 w-full px-4"
-                                      value={currentTicketName}
-                                      onChange={(e) =>
-                                        setCurrentTicketName(e.target.value)
-                                      }
-                                    />
-                                  </div>
-                                  <div>
-                                    <span className="font-bold">Email</span>
-                                    <input
-                                      className="h-[50px] border outline-blue-500 w-full px-4"
-                                      value={currentTicketEmailId}
-                                      onChange={(e) =>
-                                        setCurrentTicketEmailId(e.target.value)
-                                      }
-                                    />
-                                  </div>
-                                  <div>
-                                    <span className="font-bold">
-                                      Phone Number
-                                    </span>
-                                    <input
-                                      className="h-[50px] border outline-blue-500 w-full px-4"
-                                      value={currentTicketPhoneNumber}
-                                      onChange={(e) =>
-                                        setCurrentTicketPhoneNumber(
-                                          e.target.value
-                                        )
-                                      }
-                                    />
-                                  </div>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                  <button
-                                    className="bg-green-300 rounded-md px-3 py-2 text-white"
-                                    onClick={() => {
-                                      handleTicketConfirmation(true, item.id);
-                                    }}
-                                  >
-                                    Create Ticket
-                                  </button>
-                                  <button
-                                    className="bg-red-300 rounded-md px-3 py-2 text-white"
-                                    onClick={() => {
-                                      handleTicketConfirmation(false, item.id);
-                                    }}
-                                  >
-                                    Cancel
-                                  </button>
-                                  <button
-                                    className="bg-blue-300 rounded-md px-3 py-2 text-white"
-                                    onClick={() => handleToggleForm(item.id)}
-                                  >
-                                    Hide form
-                                  </button>
-                                </div>
-                              </div>
-                            );
-                          case "eventForm":
-                            return (
-                              <div className="flex flex-col gap-6">
-                                <div>
-                                  <div>
-                                    <span className="font-bold">Subject</span>
-                                    <input
-                                      className="h-[50px] border outline-blue-500 w-full px-4"
-                                      value={currentEventSubject}
-                                      onChange={(e) =>
-                                        setCurrentEventSubject(e.target.value)
-                                      }
-                                    />
-                                  </div>
-                                  <div>
-                                    <span className="font-bold">Body</span>
-                                    <input
-                                      className="h-[50px] border outline-blue-500 w-full px-4"
-                                      value={currentEventBody}
-                                      onChange={(e) =>
-                                        setCurrentEventBody(e.target.value)
-                                      }
-                                    />
-                                  </div>
-                                  <div>
-                                    <span className="font-bold">
-                                      Start Time
-                                    </span>
-                                    <input
-                                      type="datetime-local"
-                                      className="h-[50px] border outline-blue-500 w-full px-4"
-                                      value={currentEventStartTime}
-                                      onChange={(e) =>
-                                        setCurrentEventStartTime(e.target.value)
-                                      }
-                                    />
-                                  </div>
-                                  <div>
-                                    <span className="font-bold">End Time</span>
-                                    <input
-                                      type="datetime-local"
-                                      className="h-[50px] border outline-blue-500 w-full px-4"
-                                      value={currentEventEndTime}
-                                      onChange={(e) =>
-                                        setCurrentEventEndTime(e.target.value)
-                                      }
-                                    />
-                                  </div>
-                                  <div>
-                                    <span className="font-bold">Location</span>
-                                    <input
-                                      className="h-[50px] border outline-blue-500 w-full px-4"
-                                      value={currentEventLocation}
-                                      onChange={(e) =>
-                                        setCurrentEventLocation(e.target.value)
-                                      }
-                                    />
-                                  </div>
-                                  <div>
-                                    <span className="font-bold">Name</span>
-                                    <input
-                                      className="h-[50px] border outline-blue-500 w-full px-4"
-                                      value={
-                                        currentEventUserInfo[0]?.name || ""
-                                      }
-                                      onChange={(e) =>
-                                        setCurrentEventUserInfo([
-                                          {
-                                            ...currentEventUserInfo[0],
-                                            name: e.target.value,
-                                          },
-                                        ])
-                                      }
-                                    />
-                                  </div>
-                                  <div>
-                                    <span className="font-bold">Email</span>
-                                    <input
-                                      className="h-[50px] border outline-blue-500 w-full px-4"
-                                      value={
-                                        currentEventUserInfo[0]?.email || ""
-                                      }
-                                      onChange={(e) =>
-                                        setCurrentEventUserInfo([
-                                          {
-                                            ...currentEventUserInfo[0],
-                                            email: e.target.value,
-                                          },
-                                        ])
-                                      }
-                                    />
+                                  <div className="flex items-center gap-4">
+                                    <button
+                                      className="bg-green-300 rounded-md px-3 py-2 text-white"
+                                      onClick={() => {
+                                        handleTicketConfirmation(true, item.id);
+                                      }}
+                                    >
+                                      Create Ticket
+                                    </button>
+                                    <button
+                                      className="bg-red-300 rounded-md px-3 py-2 text-white"
+                                      onClick={() => {
+                                        handleTicketConfirmation(
+                                          false,
+                                          item.id
+                                        );
+                                      }}
+                                    >
+                                      Cancel
+                                    </button>
+                                    <button
+                                      className="bg-blue-300 rounded-md px-3 py-2 text-white"
+                                      onClick={() => handleToggleForm(item.id)}
+                                    >
+                                      Hide form
+                                    </button>
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-4">
-                                  <button
-                                    className="bg-green-300 rounded-md px-3 py-2 text-white"
-                                    onClick={() => {
-                                      handleScheduleConfirmation(true, item.id);
-                                    }}
-                                  >
-                                    Schedule Event
-                                  </button>
-                                  <button
-                                    className="bg-red-300 rounded-md px-3 py-2 text-white"
-                                    onClick={() => {
-                                      handleScheduleConfirmation(
-                                        false,
-                                        item.id
-                                      );
-                                    }}
-                                  >
-                                    Cancel
-                                  </button>
-                                  <button
-                                    className="bg-blue-300 rounded-md px-3 py-2 text-white"
-                                    onClick={() => handleToggleForm(item.id)}
-                                  >
-                                    Hide form
-                                  </button>
+                              );
+                            case "eventForm":
+                              return (
+                                <div className="flex flex-col gap-6">
+                                  <div>
+                                    <div>
+                                      <span className="font-bold">Subject</span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                        value={currentEventSubject}
+                                        onChange={(e) =>
+                                          setCurrentEventSubject(e.target.value)
+                                        }
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">Body</span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                        value={currentEventBody}
+                                        onChange={(e) =>
+                                          setCurrentEventBody(e.target.value)
+                                        }
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">
+                                        Start Time
+                                      </span>
+                                      <input
+                                        type="datetime-local"
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                        value={currentEventStartTime}
+                                        onChange={(e) =>
+                                          setCurrentEventStartTime(
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">
+                                        End Time
+                                      </span>
+                                      <input
+                                        type="datetime-local"
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                        value={currentEventEndTime}
+                                        onChange={(e) =>
+                                          setCurrentEventEndTime(e.target.value)
+                                        }
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">
+                                        Location
+                                      </span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                        value={currentEventLocation}
+                                        onChange={(e) =>
+                                          setCurrentEventLocation(
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">Name</span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                        value={
+                                          currentEventUserInfo[0]?.name || ""
+                                        }
+                                        onChange={(e) =>
+                                          setCurrentEventUserInfo([
+                                            {
+                                              ...currentEventUserInfo[0],
+                                              name: e.target.value,
+                                            },
+                                          ])
+                                        }
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">Email</span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                        value={
+                                          currentEventUserInfo[0]?.email || ""
+                                        }
+                                        onChange={(e) =>
+                                          setCurrentEventUserInfo([
+                                            {
+                                              ...currentEventUserInfo[0],
+                                              email: e.target.value,
+                                            },
+                                          ])
+                                        }
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-4">
+                                    <button
+                                      className="bg-green-300 rounded-md px-3 py-2 text-white"
+                                      onClick={() => {
+                                        handleScheduleConfirmation(
+                                          true,
+                                          item.id
+                                        );
+                                      }}
+                                    >
+                                      Schedule Event
+                                    </button>
+                                    <button
+                                      className="bg-red-300 rounded-md px-3 py-2 text-white"
+                                      onClick={() => {
+                                        handleScheduleConfirmation(
+                                          false,
+                                          item.id
+                                        );
+                                      }}
+                                    >
+                                      Cancel
+                                    </button>
+                                    <button
+                                      className="bg-blue-300 rounded-md px-3 py-2 text-white"
+                                      onClick={() => handleToggleForm(item.id)}
+                                    >
+                                      Hide form
+                                    </button>
+                                  </div>
                                 </div>
-                              </div>
-                            );
+                              );
 
-                          default:
-                            return null;
-                        }
-                      default:
-                        return parseList(item.content);
-                    }
-                  })()}
+                            default:
+                              return null;
+                          }
+                        default:
+                          return parseList(item.content);
+                      }
+                    })()}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          }
+        )}
       </div>
       <div className="px-4 py-2 ">
         <FaSpinner

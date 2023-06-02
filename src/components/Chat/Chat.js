@@ -5,6 +5,9 @@ import ChatInteraction from "./ChatInteraction.js";
 import ChatAssistant from "./ChatAssistant.js";
 
 const Chat = ({
+  initialUser,
+  initialConversations,
+
   promptAssistantInput,
   openChatHistory,
   openChatAssistant,
@@ -16,7 +19,7 @@ const Chat = ({
   handleNewConversation,
   handleDeleteConversation,
   handleConversationSelected,
-  handlePromptAssistantInput
+  handlePromptAssistantInput,
 }) => {
   return (
     <div className="flex flex-1 relative overflow-hidden">
@@ -29,6 +32,8 @@ const Chat = ({
         handleConversationSelected={handleConversationSelected}
       />
       <ChatInteraction
+        initialUser={initialUser}
+        initialConversations={initialConversations}
         promptAssistantInput={promptAssistantInput}
         openChatHistory={openChatHistory}
         openChatAssistant={openChatAssistant}
