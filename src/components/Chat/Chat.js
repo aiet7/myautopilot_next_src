@@ -6,7 +6,6 @@ import ChatAssistant from "./ChatAssistant.js";
 
 const Chat = ({
   initialUser,
-  initialConversations,
 
   promptAssistantInput,
   openChatHistory,
@@ -33,13 +32,14 @@ const Chat = ({
       />
       <ChatInteraction
         initialUser={initialUser}
-        initialConversations={initialConversations}
         promptAssistantInput={promptAssistantInput}
         openChatHistory={openChatHistory}
         openChatAssistant={openChatAssistant}
         currentConversationIndex={currentConversationIndex}
         conversationHistory={conversationHistory}
         setConversationHistory={setConversationHistory}
+
+        handleNewConversation={handleNewConversation}
       />
       <ChatAssistant
         openChatAssistant={openChatAssistant}

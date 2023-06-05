@@ -12,7 +12,6 @@ import { recognition } from "../../utils/speechToText.js";
 
 const ChatInteraction = ({
   initialUser,
-  initialConversations,
 
   promptAssistantInput,
   openChatHistory,
@@ -20,7 +19,11 @@ const ChatInteraction = ({
   currentConversationIndex,
   conversationHistory,
   setConversationHistory,
+
+  handleNewConversation,
 }) => {
+  const [previousResponseBody, setPreviousResponseBody] = useState(null);
+
   const [userInput, setUserInput] = useState("");
   const [isWaiting, setIsWaiting] = useState(false);
   const [isListening, setIsListening] = useState(false);
@@ -61,21 +64,32 @@ const ChatInteraction = ({
   ]);
 
   const handleSendUserMessage = async (message) => {
+    let currentConversation;
+    if (conversationHistory.length === 0) {
+      currentConversation = await handleNewConversation(0);
+    } else {
+      currentConversation = conversationHistory[currentConversationIndex];
+    }
+
     if (message.trim() !== "") {
       handleAddUserMessage(message);
       setIsWaiting(true);
       setUserInput("");
-
+      setPreviousResponseBody(null);
       try {
         const encodedMessage = encodeURIComponent(message);
 
         const response = await fetch(
           /*`https://etech7-wf-etech7-worflow-2.azuremicroservices.io/send?message=${encodedMessage}`*/
-          `http://localhost:8081/jarvis4?text=${encodedMessage}&conversationId=${conversationHistory[currentConversationIndex].id}&userId=${initialUser.id}`
+          `http://localhost:8081/jarvis4?text=${encodedMessage}&conversationId=${currentConversation.id}&userId=${initialUser.id}`
         );
         if (response.status === 200) {
           const responseBody = await response.json();
-
+          setPreviousResponseBody({
+            ...responseBody,
+            conversationId: currentConversation.id,
+            userContent: message,
+          });
           handleProcessResponse(
             responseBody.intent,
             responseBody.mailEntities,
@@ -133,10 +147,33 @@ const ChatInteraction = ({
           }
         );
         if (emailResponse.status === 200) {
-          setFormVisibility((prevState) => ({ ...prevState, [formId]: false }));
-          setConfirmationMessages((prevState) => ({
+          const formSummaryResponse = await fetch(
+            `http://localhost:9019/addMessage`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                id: previousResponseBody.id,
+                conversationID: previousResponseBody.conversationId,
+                userContent: previousResponseBody.userContent,
+                aiContent: `Email Sent!\nTo: ${currentEmailId}\nSubject: ${currentEmailSubject}\nBody: ${currentEmailBody}`,
+                timeStamp: Date.now(),
+                deleted: false,
+                intents: previousResponseBody.intents,
+                entities: previousResponseBody.entities,
+              }),
+            }
+          );
+          if (formSummaryResponse.status === 200) {
+            handleAddAssistantMessage(
+              `Email Sent!\nTo: ${currentEmailId}\nSubject: ${currentEmailSubject}\nBody: ${currentEmailBody}`
+            );
+          }
+          setFormVisibility((prevState) => ({
             ...prevState,
-            [formId]: `Email Sent!\nTo: ${currentEmailId}\nSubject: ${currentEmailSubject}\nBody: ${currentEmailBody}`,
+            [formId]: false,
           }));
         }
       } catch (e) {
@@ -146,7 +183,6 @@ const ChatInteraction = ({
       setFormVisibility((prevState) => ({ ...prevState, [formId]: false }));
     }
   };
-
   const handleContactConfirmation = async (isConfirmed, formId) => {
     if (isConfirmed) {
       try {
@@ -168,10 +204,33 @@ const ChatInteraction = ({
           }
         );
         if (contactResponse.status === 200) {
-          setFormVisibility((prevState) => ({ ...prevState, [formId]: false }));
-          setConfirmationMessages((prevState) => ({
+          const formSummaryResponse = await fetch(
+            `http://localhost:9019/addMessage`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                id: previousResponseBody.id,
+                conversationID: previousResponseBody.conversationId,
+                userContent: previousResponseBody.userContent,
+                aiContent: `Contact Added!\nGiven Name: ${currentContactGivenName}\nSurname: ${currentContactSurname}\nEmail: ${currentContactEmailId}\nMobile Number: ${currentContactMobileNumber}`,
+                timeStamp: Date.now(),
+                deleted: false,
+                intents: previousResponseBody.intents,
+                entities: previousResponseBody.entities,
+              }),
+            }
+          );
+          if (formSummaryResponse.status === 200) {
+            handleAddAssistantMessage(
+              `Contact Added!\nGiven Name: ${currentContactGivenName}\nSurname: ${currentContactSurname}\nEmail: ${currentContactEmailId}\nMobile Number: ${currentContactMobileNumber}`
+            );
+          }
+          setFormVisibility((prevState) => ({
             ...prevState,
-            [formId]: `Contact Added!\nGiven Name: ${currentContactGivenName}\nSurname: ${currentContactSurname}\nEmail: ${currentContactEmailId}\nMobile Number: ${currentContactMobileNumber}`,
+            [formId]: false,
           }));
         }
       } catch (e) {
@@ -201,10 +260,33 @@ const ChatInteraction = ({
           }
         );
         if (scheduleResponse.status === 200) {
-          setFormVisibility((prevState) => ({ ...prevState, [formId]: false }));
-          setConfirmationMessages((prevState) => ({
+          const formSummaryResponse = await fetch(
+            `http://localhost:9019/addMessage`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                id: previousResponseBody.id,
+                conversationID: previousResponseBody.conversationId,
+                userContent: previousResponseBody.userContent,
+                aiContent: `Event Scheduled!\nSubject: ${currentEventSubject}\nBody: ${currentEventBody}\nStart Time: ${currentEventStartTime}\nEnd Time: ${currentEventEndTime}\nLocation: ${currentEventLocation}\nName: ${currentEventUserInfo[0].name}\nEmail:${currentEventUserInfo[0].email}.`,
+                timeStamp: Date.now(),
+                deleted: false,
+                intents: previousResponseBody.intents,
+                entities: previousResponseBody.entities,
+              }),
+            }
+          );
+          if (formSummaryResponse.status === 200) {
+            handleAddAssistantMessage(
+              `Event Scheduled!\nSubject: ${currentEventSubject}\nBody: ${currentEventBody}\nStart Time: ${currentEventStartTime}\nEnd Time: ${currentEventEndTime}\nLocation: ${currentEventLocation}\nName: ${currentEventUserInfo[0].name}\nEmail:${currentEventUserInfo[0].email}.`
+            );
+          }
+          setFormVisibility((prevState) => ({
             ...prevState,
-            [formId]: `Event Scheduled!\nSubject: ${currentEventSubject}\nBody: ${currentEventBody}\nStart Time: ${currentEventStartTime}\nEnd Time: ${currentEventEndTime}\nLocation: ${currentEventLocation}\nName: ${currentEventUserInfo[0].name}\nEmail:${currentEventUserInfo[0].email}.`,
+            [formId]: false,
           }));
         }
       } catch (e) {
@@ -237,10 +319,33 @@ const ChatInteraction = ({
         if (ticketResponse.status === 200) {
           const ticketResponseJson = await ticketResponse.json();
           const { id } = ticketResponseJson;
-          setFormVisibility((prevState) => ({ ...prevState, [formId]: false }));
-          setConfirmationMessages((prevState) => ({
+          const formSummaryResponse = await fetch(
+            `http://localhost:9019/addMessage`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                id: previousResponseBody.id,
+                conversationID: previousResponseBody.conversationId,
+                userContent: previousResponseBody.userContent,
+                aiContent: `Ticket Created!\nID: ${id}\nTitle: ${currentTicketTitle}\nDescription: ${currentTicketDescription}\nCategory: ${currentTicketCategory}\nSubcategory: ${currentTicketSubCategory}\nName: ${currentTicketName}\nEmail: ${currentTicketEmailId}\nPhone: ${currentTicketPhoneNumber}.`,
+                timeStamp: Date.now(),
+                deleted: false,
+                intents: previousResponseBody.intents,
+                entities: previousResponseBody.entities,
+              }),
+            }
+          );
+          if (formSummaryResponse.status === 200) {
+            handleAddAssistantMessage(
+              `Ticket Created!\nID: ${id}\nTitle: ${currentTicketTitle}\nDescription: ${currentTicketDescription}\nCategory: ${currentTicketCategory}\nSubcategory: ${currentTicketSubCategory}\nName: ${currentTicketName}\nEmail: ${currentTicketEmailId}\nPhone: ${currentTicketPhoneNumber}.`
+            );
+          }
+          setFormVisibility((prevState) => ({
             ...prevState,
-            [formId]: `Ticket Created!\nID: ${id}\nTitle: ${currentTicketTitle}\nDescription: ${currentTicketDescription}\nCategory: ${currentTicketCategory}\nSubcategory: ${currentTicketSubCategory}\nName: ${currentTicketName}\nEmail: ${currentTicketEmailId}\nPhone: ${currentTicketPhoneNumber}.`,
+            [formId]: false,
           }));
         }
       } catch (e) {
@@ -363,9 +468,8 @@ const ChatInteraction = ({
     }
   };
 
-  const handleGetNewsProcess = (message) => {
+  const handleGetNewsProcess = async (message) => {
     const { articles } = message;
-
     if (articles.length > 0) {
       let newsCards = `<div class="flex flex-col gap-2">`;
       articles.forEach((article) => {
@@ -387,7 +491,27 @@ const ChatInteraction = ({
       </div>`;
       });
       newsCards += `</div>`;
-      handleAddAssistantMessage(newsCards);
+
+      const cardResponse = await fetch(`http://localhost:9019/addMessage`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: previousResponseBody.id,
+          conversationID: previousResponseBody.conversationId,
+          userContent: previousResponseBody.userContent,
+          aiContent: newsCards,
+          timeStamp: Date.now(),
+          deleted: false,
+          intents: previousResponseBody.intents,
+          entities: previousResponseBody.entities,
+        }),
+      });
+
+      if (cardResponse.status === 200) {
+        handleAddAssistantMessage(newsCards);
+      }
     }
   };
 
@@ -454,15 +578,18 @@ const ChatInteraction = ({
   const handleAddUserMessage = async (message) => {
     setConversationHistory((prevState) => {
       const newConversationHistory = [...prevState];
+
       if (!newConversationHistory[currentConversationIndex].messages) {
         newConversationHistory[currentConversationIndex].messages = [];
       }
+
       newConversationHistory[currentConversationIndex].messages.push({
         id: Date.now() + "-user",
         content: message,
         role: "user",
         timeStamp: new Date().toISOString(),
       });
+
       return newConversationHistory;
     });
   };
@@ -470,15 +597,18 @@ const ChatInteraction = ({
   const handleAddAssistantMessage = (message) => {
     setConversationHistory((prevState) => {
       const newConversationHistory = [...prevState];
+
       if (!newConversationHistory[currentConversationIndex].messages) {
         newConversationHistory[currentConversationIndex].messages = [];
       }
+
       newConversationHistory[currentConversationIndex].messages.push({
         id: Date.now() + "-ai",
         content: message,
         role: "assistant",
         timeStamp: new Date().toISOString(),
       });
+
       return newConversationHistory;
     });
   };
@@ -488,14 +618,19 @@ const ChatInteraction = ({
     setFormVisibility((prevState) => ({ ...prevState, [formId]: true }));
     setConversationHistory((prevState) => {
       const newConversationHistory = [...prevState];
+
       if (!newConversationHistory[currentConversationIndex]) {
-        newConversationHistory[currentConversationIndex] = [];
+        newConversationHistory[currentConversationIndex] = {
+          messages: [],
+        };
       }
-      newConversationHistory[currentConversationIndex].push({
+
+      newConversationHistory[currentConversationIndex].messages.push({
         id: formId,
         type: "form",
         formType,
       });
+
       return newConversationHistory;
     });
   };

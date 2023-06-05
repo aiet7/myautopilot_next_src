@@ -52,6 +52,7 @@ const DashboardPage = ({
         const addedConversation = await response.json();
         setConversationHistory([...conversationHistory, addedConversation]);
         setCurrentConversationIndex(conversationHistory.length);
+        return addedConversation;
       }
     } catch (e) {
       console.log(e);
@@ -140,6 +141,7 @@ const DashboardPage = ({
     setConversationHistory(updatedConversationHistory);
   }, [initialConversations, initialMessages]);
 
+
   return (
     <ThemeProvider attribute="class">
       {height && (
@@ -176,13 +178,14 @@ const DashboardPage = ({
 
               <Chat
                 initialUser={initialUser}
-                initialConversations={initialConversations}
+                
                 promptAssistantInput={promptAssistantInput}
                 openChatHistory={openChatHistory}
                 openChatAssistant={openChatAssistant}
                 currentConversationIndex={currentConversationIndex}
                 conversationHistory={conversationHistory}
                 setConversationHistory={setConversationHistory}
+
                 handlePromptAssistantInput={handlePromptAssistantInput}
                 handleNewConversation={handleNewConversation}
                 handleDeleteConversation={handleDeleteConversation}
