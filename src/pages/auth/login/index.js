@@ -44,6 +44,14 @@ const Login = () => {
         firstName: info.given_name,
         lastName: info.family_name,
         businessEmail: info.email,
+        businessName: "",
+        businessPhone: "",
+        address: {
+          street: "",
+          city: "",
+          zipcode: "",
+          state: "",
+        },
       };
 
       const response = await fetch(
@@ -81,6 +89,14 @@ const Login = () => {
       firstName: fullName[0],
       lastName: fullName[1],
       businessEmail: username,
+      businessName: "",
+      businessPhone: "",
+      address: {
+        street: "",
+        city: "",
+        zipcode: "",
+        state: "",
+      },
     };
 
     const response = await fetch(
@@ -105,7 +121,6 @@ const Login = () => {
   };
 
   const handleEmailCheck = async () => {
-    
     if (isInputEmpty(email) || !isEmailInputValid(email)) {
       setErrorMessage("A valid email is required.");
       return;

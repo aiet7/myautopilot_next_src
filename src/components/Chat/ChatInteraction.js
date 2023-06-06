@@ -22,7 +22,8 @@ const ChatInteraction = ({
 
   handleNewConversation,
 }) => {
-  const [previousResponseBody, setPreviousResponseBody] = useState(null);
+  const [previousResponseBodyForForms, setPreviousResponseBodyForForms] =
+    useState(null);
 
   const [userInput, setUserInput] = useState("");
   const [isWaiting, setIsWaiting] = useState(false);
@@ -75,7 +76,7 @@ const ChatInteraction = ({
       handleAddUserMessage(message);
       setIsWaiting(true);
       setUserInput("");
-      setPreviousResponseBody(null);
+      setPreviousResponseBodyForForms(null);
       try {
         const encodedMessage = encodeURIComponent(message);
 
@@ -85,7 +86,8 @@ const ChatInteraction = ({
         );
         if (response.status === 200) {
           const responseBody = await response.json();
-          setPreviousResponseBody({
+
+          setPreviousResponseBodyForForms({
             ...responseBody,
             conversationId: currentConversation.id,
             userContent: message,
@@ -93,7 +95,12 @@ const ChatInteraction = ({
           handleProcessResponse(
             responseBody.intent,
             responseBody.mailEntities,
-            responseBody.message /*responseBody.data*/
+            responseBody.message /*responseBody.data*/,
+            {
+              ...responseBody,
+              conversationId: currentConversation.id,
+              userContent: message,
+            }
           );
         }
       } catch (e) {
@@ -155,14 +162,14 @@ const ChatInteraction = ({
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                id: previousResponseBody.id,
-                conversationID: previousResponseBody.conversationId,
-                userContent: previousResponseBody.userContent,
+                id: previousResponseBodyForForms.id,
+                conversationID: previousResponseBodyForForms.conversationId,
+                userContent: previousResponseBodyForForms.userContent,
                 aiContent: `Email Sent!\nTo: ${currentEmailId}\nSubject: ${currentEmailSubject}\nBody: ${currentEmailBody}`,
                 timeStamp: Date.now(),
                 deleted: false,
-                intents: previousResponseBody.intents,
-                entities: previousResponseBody.entities,
+                intents: previousResponseBodyForForms.intents,
+                entities: previousResponseBodyForForms.entities,
               }),
             }
           );
@@ -212,14 +219,14 @@ const ChatInteraction = ({
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                id: previousResponseBody.id,
-                conversationID: previousResponseBody.conversationId,
-                userContent: previousResponseBody.userContent,
+                id: previousResponseBodyForForms.id,
+                conversationID: previousResponseBodyForForms.conversationId,
+                userContent: previousResponseBodyForForms.userContent,
                 aiContent: `Contact Added!\nGiven Name: ${currentContactGivenName}\nSurname: ${currentContactSurname}\nEmail: ${currentContactEmailId}\nMobile Number: ${currentContactMobileNumber}`,
                 timeStamp: Date.now(),
                 deleted: false,
-                intents: previousResponseBody.intents,
-                entities: previousResponseBody.entities,
+                intents: previousResponseBodyForForms.intents,
+                entities: previousResponseBodyForForms.entities,
               }),
             }
           );
@@ -268,14 +275,14 @@ const ChatInteraction = ({
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                id: previousResponseBody.id,
-                conversationID: previousResponseBody.conversationId,
-                userContent: previousResponseBody.userContent,
+                id: previousResponseBodyForForms.id,
+                conversationID: previousResponseBodyForForms.conversationId,
+                userContent: previousResponseBodyForForms.userContent,
                 aiContent: `Event Scheduled!\nSubject: ${currentEventSubject}\nBody: ${currentEventBody}\nStart Time: ${currentEventStartTime}\nEnd Time: ${currentEventEndTime}\nLocation: ${currentEventLocation}\nName: ${currentEventUserInfo[0].name}\nEmail:${currentEventUserInfo[0].email}.`,
                 timeStamp: Date.now(),
                 deleted: false,
-                intents: previousResponseBody.intents,
-                entities: previousResponseBody.entities,
+                intents: previousResponseBodyForForms.intents,
+                entities: previousResponseBodyForForms.entities,
               }),
             }
           );
@@ -327,14 +334,14 @@ const ChatInteraction = ({
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                id: previousResponseBody.id,
-                conversationID: previousResponseBody.conversationId,
-                userContent: previousResponseBody.userContent,
+                id: previousResponseBodyForForms.id,
+                conversationID: previousResponseBodyForForms.conversationId,
+                userContent: previousResponseBodyForForms.userContent,
                 aiContent: `Ticket Created!\nID: ${id}\nTitle: ${currentTicketTitle}\nDescription: ${currentTicketDescription}\nCategory: ${currentTicketCategory}\nSubcategory: ${currentTicketSubCategory}\nName: ${currentTicketName}\nEmail: ${currentTicketEmailId}\nPhone: ${currentTicketPhoneNumber}.`,
                 timeStamp: Date.now(),
                 deleted: false,
-                intents: previousResponseBody.intents,
-                entities: previousResponseBody.entities,
+                intents: previousResponseBodyForForms.intents,
+                entities: previousResponseBodyForForms.entities,
               }),
             }
           );
@@ -356,7 +363,12 @@ const ChatInteraction = ({
     }
   };
 
-  const handleProcessResponse = (intent, mailEntities, message) => {
+  const handleProcessResponse = (
+    intent,
+    mailEntities,
+    message,
+    responseBody
+  ) => {
     switch (intent) {
       case "sendMail":
         handleEmailProcess(mailEntities);
@@ -371,16 +383,16 @@ const ChatInteraction = ({
         handleAddContactProcess(JSON.parse(message));
         break;
       case "getEvents":
-        handleGetEventsProcess();
+        handleGetEventsProcess(responseBody);
         break;
       case "getNews":
-        handleGetNewsProcess(JSON.parse(message));
+        handleGetNewsProcess(JSON.parse(message), responseBody);
         break;
       case "getStocks":
-        handleGetStocksProcess(JSON.parse(message));
+        handleGetStocksProcess(JSON.parse(message), responseBody);
         break;
       case "getWeather":
-        handleGetWeatherProcess(JSON.parse(message));
+        handleGetWeatherProcess(JSON.parse(message), responseBody);
         break;
       default:
         handleDefaultActionProcess(message);
@@ -445,11 +457,11 @@ const ChatInteraction = ({
     setCurrentContactMobileNumber(mobileNumber);
   };
 
-  const handleGetEventsProcess = async () => {
+  const handleGetEventsProcess = async (responseBody) => {
     const getEventsRequest = await fetch("http://localhost:8082/getEvents");
     const getEventsResponse = await getEventsRequest.json();
     if (getEventsResponse.events.length > 0) {
-      let eventCards = "";
+      let eventCards = `<div class="flex flex-col gap-2">`;
       getEventsResponse.events.forEach((event) => {
         const {
           subject,
@@ -460,16 +472,75 @@ const ChatInteraction = ({
         const formattedStartDateTime = new Date(startDateTime).toLocaleString();
         const formattedEndDateTime = new Date(endDateTime).toLocaleString();
 
-        eventCards += `Subject: ${subject}<br>Start Time: ${formattedStartDateTime}<br>End Time: ${formattedEndDateTime}<br><a class="text-purple-800" href="${webLink}" target="_blank">Meeting Link</a><br><br>`;
+        eventCards += `<div class="flex flex-col">
+          <div class="flex items-center">
+            <h2>Subject:</h2>
+            <p>${subject}</p>
+          </div>
+          <div class="flex items-center">
+            <h2>Start Time: </h2>
+            <p>${formattedStartDateTime}</p>
+          </div>
+          <div class="flex items-center">
+            <h2>End Time: </h2>
+            <p>${formattedEndDateTime}</p>
+          </div>
+          <div class="flex items-center">
+            <a class="text-purple-800" href="${webLink}" target="_blank">Meeting Link</a>
+          </div>
+          </div>
+        `;
       });
-      handleAddAssistantMessage(eventCards);
+
+      eventCards += `</div>`;
+
+      const eventResponse = await fetch(`http://localhost:9019/addMessage`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: responseBody.id,
+          conversationID: responseBody.conversationId,
+          userContent: responseBody.userContent,
+          aiContent: eventCards,
+          timeStamp: Date.now(),
+          deleted: false,
+          intents: responseBody.intents,
+          entities: responseBody.entities,
+        }),
+      });
+
+      if (eventResponse.status === 200) {
+        handleAddAssistantMessage(eventCards);
+      }
     } else {
-      handleAddAssistantMessage("No events scheduled.");
+      const eventResponse = await fetch(`http://localhost:9019/addMessage`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: responseBody.id,
+          conversationID: responseBody.conversationId,
+          userContent: responseBody.userContent,
+          aiContent: "No Events Scheduled",
+          timeStamp: Date.now(),
+          deleted: false,
+          intents: responseBody.intents,
+          entities: responseBody.entities,
+        }),
+      });
+
+      if (eventResponse.status === 200) {
+        handleAddAssistantMessage("No Events Scheduled");
+      }
     }
   };
 
-  const handleGetNewsProcess = async (message) => {
+  const handleGetNewsProcess = async (message, responseBody) => {
     const { articles } = message;
+
     if (articles.length > 0) {
       let newsCards = `<div class="flex flex-col gap-2">`;
       articles.forEach((article) => {
@@ -498,14 +569,14 @@ const ChatInteraction = ({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id: previousResponseBody.id,
-          conversationID: previousResponseBody.conversationId,
-          userContent: previousResponseBody.userContent,
+          id: responseBody.id,
+          conversationID: responseBody.conversationId,
+          userContent: responseBody.userContent,
           aiContent: newsCards,
           timeStamp: Date.now(),
           deleted: false,
-          intents: previousResponseBody.intents,
-          entities: previousResponseBody.entities,
+          intents: responseBody.intents,
+          entities: responseBody.entities,
         }),
       });
 
@@ -515,7 +586,7 @@ const ChatInteraction = ({
     }
   };
 
-  const handleGetStocksProcess = (message) => {
+  const handleGetStocksProcess = async (message, responseBody) => {
     const c = message.c || "Current price not available";
     const d = message.d || "Absolute change not available";
     const dp = message.dp || "Percentage change not available";
@@ -541,10 +612,29 @@ const ChatInteraction = ({
        </div>
       </div>
     `;
-    handleAddAssistantMessage(stockCards);
+
+    const cardResponse = await fetch(`http://localhost:9019/addMessage`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: responseBody.id,
+        conversationID: responseBody.conversationId,
+        userContent: responseBody.userContent,
+        aiContent: stockCards,
+        timeStamp: Date.now(),
+        deleted: false,
+        intents: responseBody.intents,
+        entities: responseBody.entities,
+      }),
+    });
+    if (cardResponse.status === 200) {
+      handleAddAssistantMessage(stockCards);
+    }
   };
 
-  const handleGetWeatherProcess = (message) => {
+  const handleGetWeatherProcess = async (message, responseBody) => {
     const { main, weather } = message;
     if (main && weather.length > 0) {
       const temp =
@@ -567,7 +657,27 @@ const ChatInteraction = ({
         <img class="w-38 h-28 flex-shrink-0 object-cover" src="/cloudy.png" alt="cloudy"/>
       </div>
       `;
-      handleAddAssistantMessage(weatherCards);
+
+      const weatherResponse = await fetch(`http://localhost:9019/addMessage`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: responseBody.id,
+          conversationID: responseBody.conversationId,
+          userContent: responseBody.userContent,
+          aiContent: weatherCards,
+          timeStamp: Date.now(),
+          deleted: false,
+          intents: responseBody.intents,
+          entities: responseBody.entities,
+        }),
+      });
+
+      if (weatherResponse.status === 200) {
+        handleAddAssistantMessage(weatherCards);
+      }
     }
   };
 

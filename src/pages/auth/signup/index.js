@@ -58,6 +58,14 @@ const Signup = () => {
         firstName: info.given_name,
         lastName: info.family_name,
         businessEmail: info.email,
+        businessName: "",
+        businessPhone: "",
+        address: {
+          street: "",
+          city: "",
+          zipcode: "",
+          state: "",
+        },
       };
 
       const response = await fetch(
@@ -95,6 +103,14 @@ const Signup = () => {
       firstName: fullName[0],
       lastName: fullName[1],
       businessEmail: username,
+      businessName: "",
+      businessPhone: "",
+      address: {
+        street: "",
+        city: "",
+        zipcode: "",
+        state: "",
+      },
     };
 
     const response = await fetch(
@@ -198,6 +214,10 @@ const Signup = () => {
         <h1 className="text-3xl font-bold text-black text-center">
           Create your account
         </h1>
+        <p className="text-center">
+          Please note that the optional fields can be updated/changed in your
+          profile page. Optional fields are not required during sign up.
+        </p>
         <p className="text-red-500 text-sm">{errorMessage}</p>
 
         {!showSignupForm && (
@@ -358,7 +378,6 @@ const Signup = () => {
                 className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
               />
               <select
-                
                 onChange={(e) =>
                   setAddress((prevState) => ({
                     ...prevState,
@@ -377,9 +396,7 @@ const Signup = () => {
                     : "bg-white text-gray-400"
                 }`}
               >
-                <option value="">
-                  State (Optional)
-                </option>
+                <option value="">State (Optional)</option>
                 {usStates.states.map((state) => (
                   <option key={state.abbreviation} value={state.abbreviation}>
                     {state.abbreviation}
