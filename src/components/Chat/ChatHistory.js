@@ -1,16 +1,74 @@
 "use client";
 
-import { AiFillDelete } from "react-icons/ai";
+import {
+  AiFillDelete,
+  AiFillEdit,
+  AiOutlineCheck,
+  AiOutlineClose,
+} from "react-icons/ai";
 import { IoChatboxOutline } from "react-icons/io5";
+
+import { useEffect, useState } from "react";
 
 const ChatHistory = ({
   openChatHistory,
   currentConversationIndex,
   conversationHistory,
+  setConversationHistory,
   handleNewConversation,
   handleDeleteConversation,
   handleConversationSelected,
 }) => {
+  const [tempTitle, setTempTitle] = useState("");
+  const [editing, setEditing] = useState(false);
+
+  const handleSaveConversationTitle = async (id, userID) => {
+    let updatedConversation = {
+      ...conversationHistory[currentConversationIndex],
+    };
+    updatedConversation.conversationName = tempTitle;
+
+    const response = await fetch(`https://etech7-wf-etech7-db-service.azuremicroservices.io/addConversation`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+        userID: userID,
+        conversationName: updatedConversation.conversationName,
+        timeStamp: Date.now(),
+        deleted: false,
+      }),
+    });
+
+    if (response.status === 200) {
+      let updatedConversationHistory = [...conversationHistory];
+      updatedConversationHistory[currentConversationIndex] =
+        updatedConversation;
+      setConversationHistory(updatedConversationHistory);
+      setEditing(false);
+    } else {
+      console.log("Error occurred.");
+    }
+  };
+
+  const handleEditConversationTitle = () => {
+    setTempTitle(
+      conversationHistory[currentConversationIndex].conversationName
+    );
+    setEditing(true);
+  };
+
+  const handleCancelEditConversationTitle = () => {
+    setTempTitle("");
+    setEditing(false);
+  };
+
+  useEffect(() => {
+    setEditing(false);
+  }, [currentConversationIndex]);
+
   return (
     <div
       className={`px-2 py-10 bg-gray-100 dark:bg-black absolute z-10 top-0 bottom-0 transition-all duration-300 ease-in-out transform ${
@@ -27,7 +85,7 @@ const ChatHistory = ({
       </button>
       <div className="flex flex-col gap-2 my-4 overflow-y-auto max-h-[50vh] no-scrollbar md:max-h-[75vh]">
         {conversationHistory.map((conversation, index) => {
-          const { conversationName } = conversation;
+          const { id, userID, conversationName } = conversation;
           return (
             <div
               key={index}
@@ -37,16 +95,51 @@ const ChatHistory = ({
               } dark:text-white dark:hover:bg-white/20 hover:bg-black/10 text-black w-full flex items-center justify-between h-[50px] px-4 rounded-md cursor-pointer`}
             >
               <div
+                className="w-8"
                 onClick={() => handleConversationSelected(index)}
-                className="flex items-center gap-2 w-full h-full"
               >
                 <IoChatboxOutline size={20} />
-                <span>{conversationName}</span>
               </div>
-              <AiFillDelete
-                size={20}
-                onClick={() => handleDeleteConversation(index)}
-              />
+              <div
+                onClick={() => handleConversationSelected(index)}
+                className="w-40 truncate flex"
+              >
+                {currentConversationIndex === index && editing ? (
+                  <input
+                    value={tempTitle}
+                    className="truncate flex"
+                    onChange={(e) => setTempTitle(e.target.value)}
+                  />
+                ) : (
+                  <span>{conversationName}</span>
+                )}
+              </div>
+              <div className="w-12">
+                {currentConversationIndex === index && editing && (
+                  <div className="flex items-center gap-2">
+                    <AiOutlineCheck
+                      size={20}
+                      onClick={() => handleSaveConversationTitle(id, userID)}
+                    />
+                    <AiOutlineClose
+                      size={20}
+                      onClick={handleCancelEditConversationTitle}
+                    />
+                  </div>
+                )}
+                {currentConversationIndex === index && !editing && (
+                  <div className="flex items-center gap-2">
+                    <AiFillEdit
+                      size={20}
+                      onClick={() => handleEditConversationTitle(index)}
+                    />
+                    <AiFillDelete
+                      size={20}
+                      onClick={() => handleDeleteConversation(index)}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           );
         })}

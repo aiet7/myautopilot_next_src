@@ -40,7 +40,7 @@ const DashboardPage = ({
     };
 
     try {
-      const response = await fetch(`http://localhost:9019/addConversation`, {
+      const response = await fetch(`https://etech7-wf-etech7-db-service.azuremicroservices.io/addConversation`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,7 +65,7 @@ const DashboardPage = ({
       
       try {
         const response = await fetch(
-          `http://localhost:9019/deleteConversation?conversationId=${conversationToDelete.id}`
+          `https://etech7-wf-etech7-db-service.azuremicroservices.io/deleteConversation?conversationId=${conversationToDelete.id}`
         );
         if (response.ok) {
           const updatedConversationHistory = conversationHistory.filter(
@@ -218,8 +218,8 @@ export const getServerSideProps = async (context) => {
   const { params } = context;
   const userId = params.id;
 
-  const userApi = `http://localhost:9019/getUserById?userId=${userId}`;
-  const conversationApi = `http://localhost:9019/getConversations?userId=${userId}`;
+  const userApi = `https://etech7-wf-etech7-db-service.azuremicroservices.io/getUserById?userId=${userId}`;
+  const conversationApi = `https://etech7-wf-etech7-db-service.azuremicroservices.io/getConversations?userId=${userId}`;
 
   const [userResponse, conversationResponse] = await Promise.all([
     fetch(userApi),
@@ -232,7 +232,7 @@ export const getServerSideProps = async (context) => {
   ]);
 
   const messagePromises = initialConversations.map(async (conversation) => {
-    const messageApi = `http://localhost:9019/getMessages?conversationId=${conversation.id}`;
+    const messageApi = `https://etech7-wf-etech7-db-service.azuremicroservices.io/getMessages?conversationId=${conversation.id}`;
     const response = await fetch(messageApi);
     return await response.json();
   });

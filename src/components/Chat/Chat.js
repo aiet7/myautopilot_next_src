@@ -26,6 +26,7 @@ const Chat = ({
         openChatHistory={openChatHistory}
         currentConversationIndex={currentConversationIndex}
         conversationHistory={conversationHistory}
+        setConversationHistory={setConversationHistory}
         handleNewConversation={handleNewConversation}
         handleDeleteConversation={handleDeleteConversation}
         handleConversationSelected={handleConversationSelected}
@@ -38,7 +39,6 @@ const Chat = ({
         currentConversationIndex={currentConversationIndex}
         conversationHistory={conversationHistory}
         setConversationHistory={setConversationHistory}
-
         handleNewConversation={handleNewConversation}
       />
       <ChatAssistant

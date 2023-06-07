@@ -69,7 +69,7 @@ const Signup = () => {
       };
 
       const response = await fetch(
-        `http://localhost:9019/validateUser?token=${Boolean(
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=${Boolean(
           tokenResponse.access_token
         )}`,
         {
@@ -114,7 +114,7 @@ const Signup = () => {
     };
 
     const response = await fetch(
-      `http://localhost:9019/validateUser?token=${Boolean(accessToken)}`,
+      `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=${Boolean(accessToken)}`,
       {
         method: "POST",
         headers: {
@@ -141,7 +141,7 @@ const Signup = () => {
     }
 
     const response = await fetch(
-      `http://localhost:9019/getUserByEmail?email=${email}`
+      `https://etech7-wf-etech7-db-service.azuremicroservices.io/getUserByEmail?email=${email}`
     );
     const user = await response.json();
     setErrorMessage("");
@@ -168,7 +168,7 @@ const Signup = () => {
       password: password,
     };
 
-    const response = await fetch(`http://localhost:9019/validateUser`, {
+    const response = await fetch(`https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

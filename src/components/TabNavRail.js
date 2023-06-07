@@ -50,12 +50,12 @@ const TabNavRail = ({ activeTab, handleTabChange }) => {
         <span className="text-sm">Account</span>
       </div>
       <div
-        onClick={() => handleTabChange("agents")}
-        className="flex flex-col items-center cursor-pointer"
+        onClick={() => {}}
+        className="dark:text-white/20 flex flex-col items-center cursor-pointer text-black/20"
       >
         <DiMagento
           size={30}
-          className={`${activeTab === "agents" && "text-blue-600"}`}
+          className={`${activeTab === "agents" && "text-blue-600"} `}
         />
         <span className="text-sm">Agents</span>
       </div>
