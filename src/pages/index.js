@@ -45,7 +45,7 @@ const WelcomePage = () => {
         </div>
         <div className="relative z-10 flex flex-col gap-4">
           <div className="flex flex-col items-center gap-2">
-            <h1 className="text-4xl">Welcome to MyAutoPilot</h1>
+            <h1 className="text-4xl text-center">Welcome to MyAutoPilot</h1>
             <p className="text-xl text-center">
               Login with your AutoPilot account to continue
             </p>
