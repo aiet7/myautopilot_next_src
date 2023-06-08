@@ -29,8 +29,7 @@ const ChatInteraction = ({
   const [isWaiting, setIsWaiting] = useState(false);
   const [isListening, setIsListening] = useState(false);
 
-  const [formVisibility, setFormVisibility] = useState({});
-  const [confirmationMessages, setConfirmationMessages] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const [selectedEmailIndex, setSelectedEmailIndex] = useState(null);
   const [currentEmailId, setCurrentEmailId] = useState("");
@@ -64,6 +63,30 @@ const ChatInteraction = ({
     { name: "", email: "" },
   ]);
 
+  const handleAddMessageToDB = async (aiContent) => {
+    const response = await fetch(
+      /*`http://localhost:9019/addMessage`,*/
+      `https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: previousResponseBodyForForms.id,
+          conversationID: previousResponseBodyForForms.conversationId,
+          userContent: previousResponseBodyForForms.userContent,
+          aiContent: aiContent,
+          timeStamp: Date.now(),
+          deleted: false,
+          intents: previousResponseBodyForForms.intents,
+          entities: previousResponseBodyForForms.entities,
+        }),
+      }
+    );
+    return response;
+  };
+
   const handleSendUserMessage = async (message) => {
     let currentConversation;
     if (conversationHistory.length === 0) {
@@ -81,6 +104,7 @@ const ChatInteraction = ({
         const encodedMessage = encodeURIComponent(message);
 
         const response = await fetch(
+          /*`http://localhost:8081/jarvis4?text=${encodedMessage}&conversationId=${currentConversation.id}&userId=${initialUser.id}`*/
           /*`https://etech7-wf-etech7-worflow-2.azuremicroservices.io/send?message=${encodedMessage}`*/
           `https://etech7-wf-etech7-clu-service.azuremicroservices.io/jarvis4?text=${encodedMessage}&conversationId=${currentConversation.id}&userId=${initialUser.id}`
         );
@@ -141,12 +165,14 @@ const ChatInteraction = ({
 
   const handleEmailConfirmation = async (isConfirmed, formId) => {
     if (isConfirmed) {
+      setLoading(true);
       try {
         const encodedEmailId = encodeURIComponent(currentEmailId);
         const encodedSubject = encodeURIComponent(currentEmailSubject);
         const encodedBody = encodeURIComponent(currentEmailBody);
 
         const emailResponse = await fetch(
+          /*`http://localhost:8082/graph?mailId=${encodedEmailId}&subject=${encodedSubject}&body=${encodedBody}`,*/
           `https://etech7-wf-etech7-mail-service.azuremicroservices.io/graph?mailId=${encodedEmailId}&subject=${encodedSubject}&body=${encodedBody}`,
           {
             method: "POST",
@@ -154,44 +180,29 @@ const ChatInteraction = ({
           }
         );
         if (emailResponse.status === 200) {
-          const formSummaryResponse = await fetch(
-            `https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                id: previousResponseBodyForForms.id,
-                conversationID: previousResponseBodyForForms.conversationId,
-                userContent: previousResponseBodyForForms.userContent,
-                aiContent: `Email Sent!\nTo: ${currentEmailId}\nSubject: ${currentEmailSubject}\nBody: ${currentEmailBody}`,
-                timeStamp: Date.now(),
-                deleted: false,
-                intents: previousResponseBodyForForms.intents,
-                entities: previousResponseBodyForForms.entities,
-              }),
-            }
-          );
+          const aiContent = `Email Sent!\n\nTo: ${currentEmailId}\nSubject: ${currentEmailSubject}\nBody: ${currentEmailBody}`;
+          const formSummaryResponse = await handleAddMessageToDB(aiContent);
           if (formSummaryResponse.status === 200) {
-            handleAddAssistantMessage(
-              `Email Sent!\nTo: ${currentEmailId}\nSubject: ${currentEmailSubject}\nBody: ${currentEmailBody}`
-            );
+            handleAddAssistantMessage(aiContent);
           }
-          setFormVisibility((prevState) => ({
-            ...prevState,
-            [formId]: false,
-          }));
         }
       } catch (e) {
         console.log(e);
+      } finally {
+        setLoading(false);
+        handleRemoveForm(formId);
       }
     } else {
-      setFormVisibility((prevState) => ({ ...prevState, [formId]: false }));
+      const aiContent = `Email Cancelled.`;
+      await handleAddMessageToDB(aiContent);
+      handleAddAssistantMessage(aiContent);
+      handleRemoveForm(formId);
     }
   };
+
   const handleContactConfirmation = async (isConfirmed, formId) => {
     if (isConfirmed) {
+      setLoading(true);
       try {
         const encodedContactGivenName = encodeURIComponent(
           currentContactGivenName
@@ -204,6 +215,7 @@ const ChatInteraction = ({
           currentContactMobileNumber
         );
         const contactResponse = await fetch(
+          /*`http://localhost:8082/addContact?givenName=${encodedContactGivenName}&surName=${encodedContactSurname}&emailId=${encodedContactEmailId}&mobileNumber=${encodedContactMobileNumber}`,*/
           `https://etech7-wf-etech7-mail-service.azuremicroservices.io/addContact?givenName=${encodedContactGivenName}&surName=${encodedContactSurname}&emailId=${encodedContactEmailId}&mobileNumber=${encodedContactMobileNumber}`,
           {
             method: "POST",
@@ -211,47 +223,32 @@ const ChatInteraction = ({
           }
         );
         if (contactResponse.status === 200) {
-          const formSummaryResponse = await fetch(
-            `https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                id: previousResponseBodyForForms.id,
-                conversationID: previousResponseBodyForForms.conversationId,
-                userContent: previousResponseBodyForForms.userContent,
-                aiContent: `Contact Added!\nGiven Name: ${currentContactGivenName}\nSurname: ${currentContactSurname}\nEmail: ${currentContactEmailId}\nMobile Number: ${currentContactMobileNumber}`,
-                timeStamp: Date.now(),
-                deleted: false,
-                intents: previousResponseBodyForForms.intents,
-                entities: previousResponseBodyForForms.entities,
-              }),
-            }
-          );
+          const aiContent = `Contact Added!\nGiven Name: ${currentContactGivenName}\nSurname: ${currentContactSurname}\nEmail: ${currentContactEmailId}\nMobile Number: ${currentContactMobileNumber}`;
+          const formSummaryResponse = await handleAddMessageToDB(aiContent);
           if (formSummaryResponse.status === 200) {
-            handleAddAssistantMessage(
-              `Contact Added!\nGiven Name: ${currentContactGivenName}\nSurname: ${currentContactSurname}\nEmail: ${currentContactEmailId}\nMobile Number: ${currentContactMobileNumber}`
-            );
+            handleAddAssistantMessage(aiContent);
           }
-          setFormVisibility((prevState) => ({
-            ...prevState,
-            [formId]: false,
-          }));
         }
       } catch (e) {
         console.log(e);
+      } finally {
+        setLoading(false);
+        handleRemoveForm(formId);
       }
     } else {
-      setFormVisibility((prevState) => ({ ...prevState, [formId]: false }));
+      const aiContent = "Contact Adding Cancelled";
+      await handleAddMessageToDB(aiContent);
+      handleAddAssistantMessage(aiContent);
+      handleRemoveForm(formId);
     }
   };
 
   const handleScheduleConfirmation = async (isConfirmed, formId) => {
     if (isConfirmed) {
+      setLoading(true);
       try {
         const scheduleResponse = await fetch(
+          /*`http://localhost:8082/scheduleEvent`,*/
           `https://etech7-wf-etech7-mail-service.azuremicroservices.io/scheduleEvent`,
           {
             method: "POST",
@@ -267,48 +264,33 @@ const ChatInteraction = ({
           }
         );
         if (scheduleResponse.status === 200) {
-          const formSummaryResponse = await fetch(
-            `https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                id: previousResponseBodyForForms.id,
-                conversationID: previousResponseBodyForForms.conversationId,
-                userContent: previousResponseBodyForForms.userContent,
-                aiContent: `Event Scheduled!\nSubject: ${currentEventSubject}\nBody: ${currentEventBody}\nStart Time: ${currentEventStartTime}\nEnd Time: ${currentEventEndTime}\nLocation: ${currentEventLocation}\nName: ${currentEventUserInfo[0].name}\nEmail:${currentEventUserInfo[0].email}.`,
-                timeStamp: Date.now(),
-                deleted: false,
-                intents: previousResponseBodyForForms.intents,
-                entities: previousResponseBodyForForms.entities,
-              }),
-            }
-          );
+          const aiContent = `Event Scheduled!\nSubject: ${currentEventSubject}\nBody: ${currentEventBody}\nStart Time: ${currentEventStartTime}\nEnd Time: ${currentEventEndTime}\nLocation: ${currentEventLocation}\nName: ${currentEventUserInfo[0].name}\nEmail:${currentEventUserInfo[0].email}.`;
+          const formSummaryResponse = await handleAddMessageToDB(aiContent);
           if (formSummaryResponse.status === 200) {
-            handleAddAssistantMessage(
-              `Event Scheduled!\nSubject: ${currentEventSubject}\nBody: ${currentEventBody}\nStart Time: ${currentEventStartTime}\nEnd Time: ${currentEventEndTime}\nLocation: ${currentEventLocation}\nName: ${currentEventUserInfo[0].name}\nEmail:${currentEventUserInfo[0].email}.`
-            );
+            handleAddAssistantMessage(aiContent);
           }
-          setFormVisibility((prevState) => ({
-            ...prevState,
-            [formId]: false,
-          }));
         }
       } catch (e) {
         console.log(e);
+      } finally {
+        setLoading(false);
+        handleRemoveForm(formId);
       }
     } else {
-      setFormVisibility((prevState) => ({ ...prevState, [formId]: false }));
+      const aiContent = "Scheduling Cancelled.";
+      await handleAddMessageToDB(aiContent);
+      handleAddAssistantMessage(aiContent);
+      handleRemoveForm(formId);
     }
   };
 
   const handleTicketConfirmation = async (isConfirmed, formId) => {
     if (isConfirmed) {
+      setLoading(true);
       try {
         const ticketResponse = await fetch(
-          "https://etech7-wf-etech7-support-service.azuremicroservices.io/createTicket",
+          /*`http://localhost:8084/createTicket`,*/
+          `https://etech7-wf-etech7-support-service.azuremicroservices.io/createTicket`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -326,40 +308,23 @@ const ChatInteraction = ({
         if (ticketResponse.status === 200) {
           const ticketResponseJson = await ticketResponse.json();
           const { id } = ticketResponseJson;
-          const formSummaryResponse = await fetch(
-            `https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                id: previousResponseBodyForForms.id,
-                conversationID: previousResponseBodyForForms.conversationId,
-                userContent: previousResponseBodyForForms.userContent,
-                aiContent: `Ticket Created!\nID: ${id}\nTitle: ${currentTicketTitle}\nDescription: ${currentTicketDescription}\nCategory: ${currentTicketCategory}\nSubcategory: ${currentTicketSubCategory}\nName: ${currentTicketName}\nEmail: ${currentTicketEmailId}\nPhone: ${currentTicketPhoneNumber}.`,
-                timeStamp: Date.now(),
-                deleted: false,
-                intents: previousResponseBodyForForms.intents,
-                entities: previousResponseBodyForForms.entities,
-              }),
-            }
-          );
+          const aiContent = `Ticket Created!\nID: ${id}\nTitle: ${currentTicketTitle}\nDescription: ${currentTicketDescription}\nCategory: ${currentTicketCategory}\nSubcategory: ${currentTicketSubCategory}\nName: ${currentTicketName}\nEmail: ${currentTicketEmailId}\nPhone: ${currentTicketPhoneNumber}.`;
+          const formSummaryResponse = await handleAddMessageToDB(aiContent);
           if (formSummaryResponse.status === 200) {
-            handleAddAssistantMessage(
-              `Ticket Created!\nID: ${id}\nTitle: ${currentTicketTitle}\nDescription: ${currentTicketDescription}\nCategory: ${currentTicketCategory}\nSubcategory: ${currentTicketSubCategory}\nName: ${currentTicketName}\nEmail: ${currentTicketEmailId}\nPhone: ${currentTicketPhoneNumber}.`
-            );
+            handleAddAssistantMessage(aiContent);
           }
-          setFormVisibility((prevState) => ({
-            ...prevState,
-            [formId]: false,
-          }));
         }
       } catch (e) {
         console.log(e);
+      } finally {
+        setLoading(false);
+        handleRemoveForm(formId);
       }
     } else {
-      setFormVisibility((prevState) => ({ ...prevState, [formId]: false }));
+      const aiContent = "Ticket Creation Cancelled.";
+      await handleAddMessageToDB(aiContent);
+      handleAddAssistantMessage(aiContent);
+      handleRemoveForm(formId);
     }
   };
 
@@ -458,7 +423,10 @@ const ChatInteraction = ({
   };
 
   const handleGetEventsProcess = async (responseBody) => {
-    const getEventsRequest = await fetch("https://etech7-wf-etech7-mail-service.azuremicroservices.io/getEvents");
+    const getEventsRequest = await fetch(
+      /*`http://localhost:8082/getEvents`*/
+      `https://etech7-wf-etech7-mail-service.azuremicroservices.io/getEvents`
+    );
     const getEventsResponse = await getEventsRequest.json();
     if (getEventsResponse.events.length > 0) {
       let eventCards = `<div class="flex flex-col gap-2">`;
@@ -494,43 +462,51 @@ const ChatInteraction = ({
 
       eventCards += `</div>`;
 
-      const eventResponse = await fetch(`https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: responseBody.id,
-          conversationID: responseBody.conversationId,
-          userContent: responseBody.userContent,
-          aiContent: eventCards,
-          timeStamp: Date.now(),
-          deleted: false,
-          intents: responseBody.intents,
-          entities: responseBody.entities,
-        }),
-      });
+      const eventResponse = await fetch(
+        /*`http://localhost:9019/addMessage`,*/
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: responseBody.id,
+            conversationID: responseBody.conversationId,
+            userContent: responseBody.userContent,
+            aiContent: eventCards,
+            timeStamp: Date.now(),
+            deleted: false,
+            intents: responseBody.intents,
+            entities: responseBody.entities,
+          }),
+        }
+      );
 
       if (eventResponse.status === 200) {
         handleAddAssistantMessage(eventCards);
       }
     } else {
-      const eventResponse = await fetch(`https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: responseBody.id,
-          conversationID: responseBody.conversationId,
-          userContent: responseBody.userContent,
-          aiContent: "No Events Scheduled",
-          timeStamp: Date.now(),
-          deleted: false,
-          intents: responseBody.intents,
-          entities: responseBody.entities,
-        }),
-      });
+      const eventResponse = await fetch(
+        /*`http://localhost:9019/addMessage`,*/
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: responseBody.id,
+            conversationID: responseBody.conversationId,
+            userContent: responseBody.userContent,
+            aiContent: "No Events Scheduled",
+            timeStamp: Date.now(),
+            deleted: false,
+            intents: responseBody.intents,
+            entities: responseBody.entities,
+          }),
+        }
+      );
 
       if (eventResponse.status === 200) {
         handleAddAssistantMessage("No Events Scheduled");
@@ -539,7 +515,6 @@ const ChatInteraction = ({
   };
 
   const handleGetNewsProcess = async (message, responseBody) => {
-  
     const { articles } = message;
     if (articles.length > 0) {
       let newsCards = `<div class="flex flex-col gap-2">`;
@@ -563,22 +538,26 @@ const ChatInteraction = ({
       });
       newsCards += `</div>`;
 
-      const cardResponse = await fetch(`https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: responseBody.id,
-          conversationID: responseBody.conversationId,
-          userContent: responseBody.userContent,
-          aiContent: newsCards,
-          timeStamp: Date.now(),
-          deleted: false,
-          intents: responseBody.intents,
-          entities: responseBody.entities,
-        }),
-      });
+      const cardResponse = await fetch(
+        /*`http://localhost:9019/addMessage`,*/
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: responseBody.id,
+            conversationID: responseBody.conversationId,
+            userContent: responseBody.userContent,
+            aiContent: newsCards,
+            timeStamp: Date.now(),
+            deleted: false,
+            intents: responseBody.intents,
+            entities: responseBody.entities,
+          }),
+        }
+      );
 
       if (cardResponse.status === 200) {
         handleAddAssistantMessage(newsCards);
@@ -613,22 +592,26 @@ const ChatInteraction = ({
       </div>
     `;
 
-    const cardResponse = await fetch(`https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: responseBody.id,
-        conversationID: responseBody.conversationId,
-        userContent: responseBody.userContent,
-        aiContent: stockCards,
-        timeStamp: Date.now(),
-        deleted: false,
-        intents: responseBody.intents,
-        entities: responseBody.entities,
-      }),
-    });
+    const cardResponse = await fetch(
+      /*`http://localhost:9019/addMessage`,*/
+      `https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: responseBody.id,
+          conversationID: responseBody.conversationId,
+          userContent: responseBody.userContent,
+          aiContent: stockCards,
+          timeStamp: Date.now(),
+          deleted: false,
+          intents: responseBody.intents,
+          entities: responseBody.entities,
+        }),
+      }
+    );
     if (cardResponse.status === 200) {
       handleAddAssistantMessage(stockCards);
     }
@@ -658,22 +641,26 @@ const ChatInteraction = ({
       </div>
       `;
 
-      const weatherResponse = await fetch(`https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: responseBody.id,
-          conversationID: responseBody.conversationId,
-          userContent: responseBody.userContent,
-          aiContent: weatherCards,
-          timeStamp: Date.now(),
-          deleted: false,
-          intents: responseBody.intents,
-          entities: responseBody.entities,
-        }),
-      });
+      const weatherResponse = await fetch(
+        /*`http://localhost:9019/addMessage`,*/
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: responseBody.id,
+            conversationID: responseBody.conversationId,
+            userContent: responseBody.userContent,
+            aiContent: weatherCards,
+            timeStamp: Date.now(),
+            deleted: false,
+            intents: responseBody.intents,
+            entities: responseBody.entities,
+          }),
+        }
+      );
 
       if (weatherResponse.status === 200) {
         handleAddAssistantMessage(weatherCards);
@@ -725,7 +712,6 @@ const ChatInteraction = ({
 
   const handleAddForm = (formType) => {
     const formId = Date.now();
-    setFormVisibility((prevState) => ({ ...prevState, [formId]: true }));
     setConversationHistory((prevState) => {
       const newConversationHistory = [...prevState];
 
@@ -745,11 +731,17 @@ const ChatInteraction = ({
     });
   };
 
-  const handleToggleForm = (formId) => {
-    setFormVisibility((prevState) => ({
-      ...prevState,
-      [formId]: !prevState[formId],
-    }));
+  const handleRemoveForm = (formId) => {
+    setConversationHistory((prevState) => {
+      const newConversationHistory = [...prevState];
+
+      newConversationHistory[currentConversationIndex].messages =
+        newConversationHistory[currentConversationIndex].messages.filter(
+          (message) => message.id !== formId
+        );
+
+      return newConversationHistory;
+    });
   };
 
   useEffect(() => {
@@ -795,23 +787,6 @@ const ChatInteraction = ({
                     {(() => {
                       switch (item.type) {
                         case "form":
-                          if (!formVisibility[item.id]) {
-                            return (
-                              <div className="flex items-start gap-3">
-                                <button
-                                  className="bg-blue-300 rounded-md px-3 py-2 text-white flex-shrink-0"
-                                  onClick={() => handleToggleForm(item.id)}
-                                >
-                                  Show form
-                                </button>
-                                {confirmationMessages[item.id] && (
-                                  <pre className="whitespace-pre-wrap">
-                                    {confirmationMessages[item.id]}
-                                  </pre>
-                                )}
-                              </div>
-                            );
-                          }
                           switch (item.formType) {
                             case "emailButtons + emailForm":
                               return (
@@ -869,11 +844,12 @@ const ChatInteraction = ({
                                   <div className="flex items-center gap-4">
                                     <button
                                       className="bg-green-300 rounded-md px-3 py-2 text-white"
+                                      disabled={loading}
                                       onClick={() => {
                                         handleEmailConfirmation(true, item.id);
                                       }}
                                     >
-                                      Send Email
+                                      {loading ? "Sending..." : "Send Email"}
                                     </button>
                                     <button
                                       className="bg-red-300 rounded-md px-3 py-2 text-white"
@@ -958,11 +934,12 @@ const ChatInteraction = ({
                                   <div className="flex items-center gap-4">
                                     <button
                                       className="bg-green-300 rounded-md px-3 py-2 text-white"
+                                      disabled={loading}
                                       onClick={() =>
                                         handleContactConfirmation(true)
                                       }
                                     >
-                                      Add Contact
+                                      {loading ? "Adding..." : "Add Contact"}
                                     </button>
                                   </div>
                                   <div>
@@ -1000,10 +977,12 @@ const ChatInteraction = ({
                                   <div className="flex items-center gap-4">
                                     <button
                                       className="bg-green-300 rounded-md px-3 py-2 text-white"
+                                      disabled={loading}
                                       onClick={() => {
                                         handleEmailConfirmation(true, item.id);
                                       }}
                                     >
+                                      {loading ? "Sending..." : "Send Email"}
                                       Send Email
                                     </button>
                                     <button
@@ -1086,11 +1065,12 @@ const ChatInteraction = ({
                                   <div className="flex items-center gap-4">
                                     <button
                                       className="bg-green-300 rounded-md px-3 py-2 text-white"
+                                      disabled={loading}
                                       onClick={() =>
                                         handleContactConfirmation(true, item.id)
                                       }
                                     >
-                                      Add Contact
+                                      {loading ? "Adding..." : "Add Contact"}
                                     </button>
                                     <button
                                       className="bg-red-300 rounded-md px-3 py-2 text-white"
@@ -1237,11 +1217,14 @@ const ChatInteraction = ({
                                   <div className="flex items-center gap-4">
                                     <button
                                       className="bg-green-300 rounded-md px-3 py-2 text-white"
+                                      disabled={loading}
                                       onClick={() => {
                                         handleTicketConfirmation(true, item.id);
                                       }}
                                     >
-                                      Create Ticket
+                                      {loading
+                                        ? "Creating..."
+                                        : "Create Ticket"}
                                     </button>
                                     <button
                                       className="bg-red-300 rounded-md px-3 py-2 text-white"
@@ -1367,6 +1350,7 @@ const ChatInteraction = ({
                                   <div className="flex items-center gap-4">
                                     <button
                                       className="bg-green-300 rounded-md px-3 py-2 text-white"
+                                      disabled={loading}
                                       onClick={() => {
                                         handleScheduleConfirmation(
                                           true,
@@ -1374,7 +1358,9 @@ const ChatInteraction = ({
                                         );
                                       }}
                                     >
-                                      Schedule Event
+                                      {loading
+                                        ? "Scheduling..."
+                                        : "Schedule Event"}
                                     </button>
                                     <button
                                       className="bg-red-300 rounded-md px-3 py-2 text-white"

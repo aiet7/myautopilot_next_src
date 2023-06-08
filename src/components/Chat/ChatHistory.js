@@ -28,19 +28,23 @@ const ChatHistory = ({
     };
     updatedConversation.conversationName = tempTitle;
 
-    const response = await fetch(`https://etech7-wf-etech7-db-service.azuremicroservices.io/addConversation`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: id,
-        userID: userID,
-        conversationName: updatedConversation.conversationName,
-        timeStamp: Date.now(),
-        deleted: false,
-      }),
-    });
+    const response = await fetch(
+      /*`http://localhost:9019/addConversation`,*/
+      `https://etech7-wf-etech7-db-service.azuremicroservices.io/addConversation`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: id,
+          userID: userID,
+          conversationName: updatedConversation.conversationName,
+          timeStamp: Date.now(),
+          deleted: false,
+        }),
+      }
+    );
 
     if (response.status === 200) {
       let updatedConversationHistory = [...conversationHistory];

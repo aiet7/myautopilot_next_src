@@ -8,6 +8,8 @@ import MicrosoftLogin from "react-microsoft-login";
 import { TiVendorMicrosoft } from "react-icons/ti";
 import { FcGoogle } from "react-icons/fc";
 
+import Loading from "../../../components/Loading.js";
+
 import {
   isInputEmpty,
   isEmailInputValid,
@@ -17,6 +19,8 @@ import Cookie from "js-cookie";
 
 const Login = () => {
   const [height, setHeight] = useState(null);
+
+  const [loading, setLoading] = useState(false);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,21 +33,81 @@ const Login = () => {
 
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      const userInfo = await fetch(
-        "https://www.googleapis.com/oauth2/v3/userinfo",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${tokenResponse.access_token}`,
+      setLoading(true);
+      try {
+        const userInfo = await fetch(
+          "https://www.googleapis.com/oauth2/v3/userinfo",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${tokenResponse.access_token}`,
+            },
+          }
+        );
+        const info = await userInfo.json();
+
+        const user = {
+          firstName: info.given_name,
+          lastName: info.family_name,
+          businessEmail: info.email,
+          businessName: "",
+          businessPhone: "",
+          address: {
+            street: "",
+            city: "",
+            zipcode: "",
+            state: "",
           },
+        };
+
+        const response = await fetch(
+          /*`http://localhost:9019/validateUser?token=${Boolean(
+            tokenResponse.access_token
+          )}`,*/
+          `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=${Boolean(
+            tokenResponse.access_token
+          )}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(user),
+          }
+        );
+        if (response.ok) {
+          const googleUser = await response.json();
+          router.push(`/dashboard/${googleUser.id}`);
+          Cookie.set("session_token", tokenResponse.access_token, {
+            expires: 7,
+          });
+          Cookie.set("user_id", googleUser.id, { expires: 7 });
+        } else {
+          setErrorMessage("Error with Google Login.");
         }
-      );
-      const info = await userInfo.json();
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setLoading(false);
+      }
+    },
+  });
+
+  const handleMicrosoftLogin = async (err, data) => {
+    setLoading(true);
+
+    try {
+      const {
+        accessToken,
+        account: { name, username },
+      } = data;
+
+      const fullName = name.split(" ");
 
       const user = {
-        firstName: info.given_name,
-        lastName: info.family_name,
-        businessEmail: info.email,
+        firstName: fullName[0],
+        lastName: fullName[1],
+        businessEmail: username,
         businessName: "",
         businessPhone: "",
         address: {
@@ -55,8 +119,9 @@ const Login = () => {
       };
 
       const response = await fetch(
+        /*`http://localhost:9019/validateUser?token=${Boolean(accessToken)}`,*/
         `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=${Boolean(
-          tokenResponse.access_token
+          accessToken
         )}`,
         {
           method: "POST",
@@ -66,57 +131,19 @@ const Login = () => {
           body: JSON.stringify(user),
         }
       );
+
       if (response.ok) {
-        const googleUser = await response.json();
-        router.push(`/dashboard/${googleUser.id}`);
-        Cookie.set("session_token", tokenResponse.access_token, { expires: 7 });
-        Cookie.set("user_id", googleUser.id, { expires: 7 });
+        const microsoftUser = await response.json();
+        router.push(`/dashboard/${microsoftUser.id}`);
+        Cookie.set("session_token", accessToken, { expires: 7 });
+        Cookie.set("user_id", microsoftUser.id, { expires: 7 });
       } else {
-        setErrorMessage("Error with Google Login.");
+        setErrorMessage("Error with Microsoft Login.");
       }
-    },
-  });
-
-  const handleMicrosoftLogin = async (err, data) => {
-    const {
-      accessToken,
-      account: { name, username },
-    } = data;
-    console.log(data);
-    const fullName = name.split(" ");
-
-    const user = {
-      firstName: fullName[0],
-      lastName: fullName[1],
-      businessEmail: username,
-      businessName: "",
-      businessPhone: "",
-      address: {
-        street: "",
-        city: "",
-        zipcode: "",
-        state: "",
-      },
-    };
-
-    const response = await fetch(
-      `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=${Boolean(accessToken)}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      }
-    );
-
-    if (response.ok) {
-      const microsoftUser = await response.json();
-      router.push(`/dashboard/${microsoftUser.id}`);
-      Cookie.set("session_token", accessToken, { expires: 7 });
-      Cookie.set("user_id", microsoftUser.id, { expires: 7 });
-    } else {
-      setErrorMessage("Error with Microsoft Login.");
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -126,19 +153,24 @@ const Login = () => {
       return;
     }
 
-    const response = await fetch(
-      `https://etech7-wf-etech7-db-service.azuremicroservices.io/getUserByEmail?email=${email}`
-    );
-    const user = await response.json();
-    if (user.message === "No Users") {
-      setErrorMessage("Account does not exists.  Please sign up.");
-    } else if (user.password === null) {
-      setErrorMessage(
-        "Account was created with a provider sign in.  Please sign in with your provider."
+    try {
+      const response = await fetch(
+        /*`http://localhost:9019/getUserByEmail?email=${email}`*/
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/getUserByEmail?email=${email}`
       );
-    } else {
-      setErrorMessage("");
-      setShowLoginForm(true);
+      const user = await response.json();
+      if (user.message === "No Users") {
+        setErrorMessage("Account does not exists.  Please sign up.");
+      } else if (user.password === null) {
+        setErrorMessage(
+          "Account was created with a provider sign in.  Please sign in with your provider."
+        );
+      } else {
+        setErrorMessage("");
+        setShowLoginForm(true);
+      }
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -147,26 +179,39 @@ const Login = () => {
       setErrorMessage("A password is required.");
       return;
     }
+    setLoading(true);
 
     const user = {
       businessEmail: email,
       password: password,
     };
-    const response = await fetch(`https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    });
-    setErrorMessage("");
-    if (response.ok) {
-      const user = await response.json();
-      router.push(`/dashboard/${user.id}`);
-      Cookie.set("session_token", user.id, { expires: 7 });
-      Cookie.set("user_id", user.id, { expires: 7 });
-    } else {
-      setErrorMessage("Invalid username or password.");
+
+    try {
+      const response = await fetch(
+        /*`http://localhost:9019/validateUser`,*/
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(user),
+        }
+      );
+
+      setErrorMessage("");
+      if (response.ok) {
+        const user = await response.json();
+        router.push(`/dashboard/${user.id}`);
+        Cookie.set("session_token", user.id, { expires: 7 });
+        Cookie.set("user_id", user.id, { expires: 7 });
+      } else {
+        setErrorMessage("Invalid username or password.");
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -195,6 +240,7 @@ const Login = () => {
 
   return (
     <>
+      {loading ? <Loading /> : null}
       {height && (
         <div
           className="bg-gradient-to-b from-white via-white to-gray-400 h-full flex justify-center items-center"
@@ -251,7 +297,7 @@ const Login = () => {
                   <MicrosoftLogin
                     clientId="14a9d59a-1d19-486e-a4db-d81c5410a453"
                     authCallback={handleMicrosoftLogin}
-                    redirectUri="http://localhost:3000"
+                    redirectUri /*"http://localhost:3000"*/="https://myautopilot.azurewebsites.net"
                   >
                     <button
                       type="button"

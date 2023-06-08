@@ -40,13 +40,17 @@ const DashboardPage = ({
     };
 
     try {
-      const response = await fetch(`https://etech7-wf-etech7-db-service.azuremicroservices.io/addConversation`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newConversation),
-      });
+      const response = await fetch(
+        /*`http://localhost:9019/addConversation`,*/
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/addConversation`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newConversation),
+        }
+      );
 
       if (response.ok) {
         const addedConversation = await response.json();
@@ -62,9 +66,10 @@ const DashboardPage = ({
   const handleDeleteConversation = async (index) => {
     if (index < conversationHistory.length) {
       const conversationToDelete = conversationHistory[index];
-      
+
       try {
         const response = await fetch(
+          /*`http://localhost:9019/deleteConversation?conversationId=${conversationToDelete.id}`*/
           `https://etech7-wf-etech7-db-service.azuremicroservices.io/deleteConversation?conversationId=${conversationToDelete.id}`
         );
         if (response.ok) {
@@ -141,7 +146,6 @@ const DashboardPage = ({
     setConversationHistory(updatedConversationHistory);
   }, [initialConversations, initialMessages]);
 
-
   return (
     <ThemeProvider attribute="class">
       {height && (
@@ -178,14 +182,12 @@ const DashboardPage = ({
 
               <Chat
                 initialUser={initialUser}
-                
                 promptAssistantInput={promptAssistantInput}
                 openChatHistory={openChatHistory}
                 openChatAssistant={openChatAssistant}
                 currentConversationIndex={currentConversationIndex}
                 conversationHistory={conversationHistory}
                 setConversationHistory={setConversationHistory}
-
                 handlePromptAssistantInput={handlePromptAssistantInput}
                 handleNewConversation={handleNewConversation}
                 handleDeleteConversation={handleDeleteConversation}
@@ -218,8 +220,13 @@ export const getServerSideProps = async (context) => {
   const { params } = context;
   const userId = params.id;
 
-  const userApi = `https://etech7-wf-etech7-db-service.azuremicroservices.io/getUserById?userId=${userId}`;
-  const conversationApi = `https://etech7-wf-etech7-db-service.azuremicroservices.io/getConversations?userId=${userId}`;
+  const userApi =
+    /*`http://localhost:9019/getUserById?userId=${userId}`;*/
+    `https://etech7-wf-etech7-db-service.azuremicroservices.io/getUserById?userId=${userId}`;
+
+  const conversationApi =
+    /*`http://localhost:9019/getConversations?userId=${userId}`;*/
+    `https://etech7-wf-etech7-db-service.azuremicroservices.io/getConversations?userId=${userId}`;
 
   const [userResponse, conversationResponse] = await Promise.all([
     fetch(userApi),
@@ -232,7 +239,10 @@ export const getServerSideProps = async (context) => {
   ]);
 
   const messagePromises = initialConversations.map(async (conversation) => {
-    const messageApi = `https://etech7-wf-etech7-db-service.azuremicroservices.io/getMessages?conversationId=${conversation.id}`;
+    const messageApi =
+      /*`http://localhost:9019/getMessages?conversationId=${conversation.id}`;*/
+      `https://etech7-wf-etech7-db-service.azuremicroservices.io/getMessages?conversationId=${conversation.id}`;
+
     const response = await fetch(messageApi);
     return await response.json();
   });
