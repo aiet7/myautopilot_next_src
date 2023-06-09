@@ -15,6 +15,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }

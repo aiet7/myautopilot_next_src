@@ -111,11 +111,11 @@ const ChatHistory = ({
                 {currentConversationIndex === index && editing ? (
                   <input
                     value={tempTitle}
-                    className="truncate flex"
+                    className="bg-white text-black truncate flex px-1 "
                     onChange={(e) => setTempTitle(e.target.value)}
                   />
                 ) : (
-                  <span>{conversationName}</span>
+                  <span className="px-1">{conversationName}</span>
                 )}
               </div>
               <div className="w-12">

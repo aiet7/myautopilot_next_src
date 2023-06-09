@@ -269,7 +269,7 @@ const Login = () => {
                   }}
                   type="email"
                   placeholder="Enter your email"
-                  className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
+                  className="w-full p-2 border border-gray-300 bg-white text-black"
                 />
 
                 <button
@@ -297,7 +297,7 @@ const Login = () => {
                   <MicrosoftLogin
                     clientId="14a9d59a-1d19-486e-a4db-d81c5410a453"
                     authCallback={handleMicrosoftLogin}
-                    redirectUri /*"http://localhost:3000"*/="https://myautopilot.azurewebsites.net"
+                    redirectUri="https://myautopilot.azurewebsites.net"
                   >
                     <button
                       type="button"
@@ -322,7 +322,7 @@ const Login = () => {
                   }}
                   type="password"
                   placeholder="Enter your password"
-                  className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
+                  className="w-full p-2 border border-gray-300  bg-white text-black"
                 />
                 <button
                   onClick={handleEmailLogin}

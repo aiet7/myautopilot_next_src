@@ -132,7 +132,7 @@ const Signup = () => {
       };
 
       const response = await fetch(
-        /*`http://localhost:9019/validateUser?token=${Boolean(accessToken)}`,*/
+        /* `http://localhost:9019/validateUser?token=${Boolean(accessToken)}`,*/
         `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=${Boolean(
           accessToken
         )}`,
@@ -277,7 +277,7 @@ const Signup = () => {
                   }}
                   type="email"
                   placeholder="Enter your email"
-                  className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
+                  className="w-full p-2 border border-gray-300  bg-white text-black"
                 />
                 <button
                   onClick={handleEmailCheck}
@@ -305,7 +305,7 @@ const Signup = () => {
                   <MicrosoftLogin
                     clientId="14a9d59a-1d19-486e-a4db-d81c5410a453"
                     authCallback={handleMicrosoftSignup}
-                    redirectUri /*"http://localhost:3000"*/="https://myautopilot.azurewebsites.net/"
+                    redirectUri ="https://myautopilot.azurewebsites.net/"
                   >
                     <button
                       type="button"
@@ -330,7 +330,7 @@ const Signup = () => {
                   }}
                   type="text"
                   placeholder="First name (Optional)"
-                  className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
+                  className="w-full p-2 border border-gray-300 bg-white text-black"
                 />
                 <input
                   onChange={(e) => setLastName(e.target.value)}
@@ -342,7 +342,7 @@ const Signup = () => {
                   }}
                   type="text"
                   placeholder="Last name (Optional)"
-                  className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
+                  className="w-full p-2 border border-gray-300 bg-white text-black"
                 />
                 <input
                   onChange={(e) => setBusinessName(e.target.value)}
@@ -354,7 +354,7 @@ const Signup = () => {
                   }}
                   type="text"
                   placeholder="Business name (Optional)"
-                  className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
+                  className="w-full p-2 border border-gray-300 bg-white text-black"
                 />
                 <input
                   onChange={(e) => setPhoneNumber(e.target.value)}
@@ -366,7 +366,7 @@ const Signup = () => {
                   }}
                   type="text"
                   placeholder="Phone number (Optional)"
-                  className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
+                  className="w-full p-2 border border-gray-300 bg-white text-black"
                 />
 
                 <input
@@ -384,7 +384,7 @@ const Signup = () => {
                   }}
                   type="text"
                   placeholder="Street (Optional)"
-                  className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
+                  className="w-full p-2 border border-gray-300 bg-white text-black"
                 />
 
                 <input
@@ -402,7 +402,7 @@ const Signup = () => {
                   }}
                   type="text"
                   placeholder="City (Optional)"
-                  className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
+                  className="w-full p-2 border border-gray-300 bg-white text-black"
                 />
                 <div className="w-full flex gap-2">
                   <input
@@ -420,7 +420,7 @@ const Signup = () => {
                     }}
                     type="text"
                     placeholder="Zipcode (Optional)"
-                    className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
+                    className="w-full p-2 border border-gray-300 bg-white text-black"
                   />
                   <select
                     onChange={(e) =>
@@ -435,7 +435,7 @@ const Signup = () => {
                         handleEmailSignup();
                       }
                     }}
-                    className={`w-full p-2 border border-gray-300 rounded-sm ${
+                    className={`w-full p-2 border border-gray-300  ${
                       address.state
                         ? "bg-white text-black"
                         : "bg-white text-gray-400"
@@ -463,7 +463,7 @@ const Signup = () => {
                   }}
                   type="password"
                   placeholder="Password"
-                  className="w-full p-2 border border-gray-300 rounded-sm bg-white text-black"
+                  className="w-full p-2 border border-gray-300 bg-white text-black"
                 />
                 <button
                   onClick={handleEmailSignup}

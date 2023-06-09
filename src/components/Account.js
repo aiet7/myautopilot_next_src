@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { IoMdFingerPrint } from "react-icons/io";
-import { RxAvatar } from "react-icons/rx";
+import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
 
 const Account = ({ initialUser }) => {
   const {
@@ -16,6 +16,8 @@ const Account = ({ initialUser }) => {
     password,
   } = initialUser;
 
+  const addressFields = ["street", "city", "zipcode", "state"];
+
   const [editing, setEditing] = useState({});
 
   const [userInputs, setUserInputs] = useState({
@@ -24,10 +26,13 @@ const Account = ({ initialUser }) => {
     businessEmail: businessEmail,
     businessName: businessName,
     businessPhone: businessPhone,
-    street: street,
-    city: city,
-    zipcode: zipcode,
-    state: state,
+    address: {
+      street: street,
+      city: city,
+      zipcode: zipcode,
+      state: state,
+    },
+
     password: password,
   });
 
@@ -43,11 +48,39 @@ const Account = ({ initialUser }) => {
   };
 
   const handleCancelEdit = (field) => {
+    if (addressFields.includes(field)) {
+      setUserInputs({
+        ...userInputs,
+        address: {
+          ...userInputs.address,
+          [field]: initialUser.address[field],
+        },
+      });
+    } else {
+      setUserInputs({
+        ...userInputs,
+        [field]: initialUser[field],
+      });
+    }
+
     setEditing({ ...editing, [field]: false });
   };
 
   const handleEditOnChange = (field, e) => {
-    setUserInputs({ ...userInputs, [field]: e.target.value });
+    if (addressFields.includes(field)) {
+      setUserInputs({
+        ...userInputs,
+        address: {
+          ...userInputs.address,
+          [field]: e.target.value,
+        },
+      });
+    } else {
+      setUserInputs({
+        ...userInputs,
+        [field]: e.target.value,
+      });
+    }
   };
 
   const handlePasswordChange = (field, e) => {
@@ -55,14 +88,45 @@ const Account = ({ initialUser }) => {
   };
 
   const handleSaveChanges = async (field, input) => {
-    setUserInputs({ ...userInputs, [field]: input });
-    setEditing({ ...editing, [field]: false });
+    let updatedUser;
 
-    const updatedUser = { ...initialUser, [field]: input };
+    if (addressFields.includes(field)) {
+      setUserInputs({
+        ...userInputs,
+        address: {
+          ...userInputs.address,
+          [field]: input,
+        },
+      });
+      setEditing({
+        ...editing,
+        [field]: false,
+      });
+      updatedUser = {
+        ...initialUser,
+        address: {
+          ...initialUser.address,
+          [field]: input,
+        },
+      };
+    } else {
+      setUserInputs({
+        ...userInputs,
+        [field]: input,
+      });
+      setEditing({
+        ...editing,
+        [field]: false,
+      });
+      updatedUser = {
+        ...initialUser,
+        [field]: input,
+      };
+    }
 
     try {
       const response = await fetch(
-        /*`http://localhost:9019/editBusinessUserProfile`*/
+        /*`http://localhost:9019/editBusinessUserProfile`,*/
         `https://etech7-wf-etech7-db-service.azuremicroservices.io/editBusinessUserProfile`,
         {
           method: "POST",
@@ -101,27 +165,28 @@ const Account = ({ initialUser }) => {
           <IoMdFingerPrint size={200} />
         </div>
         <div className="flex flex-col w-full border dark:border-white/40 rounded-md p-5 gap-6">
-          <p className="text-lg">Basic Info</p>
-          <div className="flex items-center justify-between ">
-            <p>First Name</p>
+          <p className="text-2xl">Basic Info</p>
+          <div className="flex items-center justify-between h-[20px]">
+            <p className="w-18">First Name</p>
             {editing["firstName"] ? (
               <div className="flex items-center gap-4">
                 <input
-                  className="px-1"
+                  className="px-1 w-40 border bg-white text-black "
                   value={userInputs["firstName"]}
                   onChange={(e) => handleEditOnChange("firstName", e)}
                   placeholder="First name"
                 />
-                <button
+                <AiOutlineCheck
+                  className="cursor-pointer"
                   onClick={() =>
                     handleSaveChanges("firstName", userInputs["firstName"])
                   }
-                >
-                  Save
-                </button>
-                <button onClick={() => handleCancelEdit("firstName")}>
-                  Cancel
-                </button>
+                />
+
+                <AiOutlineClose
+                  className="cursor-pointer"
+                  onClick={() => handleCancelEdit("firstName")}
+                />
               </div>
             ) : (
               <div className="flex items-center gap-4">
@@ -134,26 +199,27 @@ const Account = ({ initialUser }) => {
               </div>
             )}
           </div>
-          <div className="flex items-center justify-between ">
-            <p>Last Name</p>
+          <div className="flex items-center justify-between h-[20px] ">
+            <p className="w-18">Last Name</p>
             {editing["lastName"] ? (
               <div className="flex items-center gap-4">
                 <input
-                  className="px-1"
+                  className="px-1 w-40 border bg-white text-black  "
                   value={userInputs["lastName"]}
                   onChange={(e) => handleEditOnChange("lastName", e)}
                   placeholder="Last name"
                 />
-                <button
+                <AiOutlineCheck
+                  className="cursor-pointer"
                   onClick={() =>
                     handleSaveChanges("lastName", userInputs["lastName"])
                   }
-                >
-                  Save
-                </button>
-                <button onClick={() => handleCancelEdit("lastName")}>
-                  Cancel
-                </button>
+                />
+
+                <AiOutlineClose
+                  className="cursor-pointer"
+                  onClick={() => handleCancelEdit("lastName")}
+                />
               </div>
             ) : (
               <div className="flex items-center gap-4">
@@ -166,29 +232,30 @@ const Account = ({ initialUser }) => {
               </div>
             )}
           </div>
-          <div className="flex items-center justify-between ">
-            <p>Business Name</p>
+          <div className="flex items-center justify-between h-[20px]">
+            <p className="w-18">Business Name</p>
             {editing["businessName"] ? (
               <div className="flex items-center gap-4">
                 <input
-                  className="px-1"
+                  className="px-1 w-40 border bg-white text-black "
                   value={userInputs["businessName"]}
                   onChange={(e) => handleEditOnChange("businessName", e)}
                   placeholder="Business name"
                 />
-                <button
+                <AiOutlineCheck
+                  className="cursor-pointer"
                   onClick={() =>
                     handleSaveChanges(
                       "businessName",
                       userInputs["businessName"]
                     )
                   }
-                >
-                  Save
-                </button>
-                <button onClick={() => handleCancelEdit("businessName")}>
-                  Cancel
-                </button>
+                />
+
+                <AiOutlineClose
+                  className="cursor-pointer"
+                  onClick={() => handleCancelEdit("businessName")}
+                />
               </div>
             ) : (
               <div className="flex items-center gap-4">
@@ -203,34 +270,34 @@ const Account = ({ initialUser }) => {
           </div>
         </div>
         <div className="flex flex-col w-full border dark:border-white/40 rounded-md p-5 gap-6">
-          <p className="text-lg">Contact Info</p>
-          <div className="flex items-center justify-between ">
-            <p>Email</p>
+          <p className="text-2xl">Contact Info</p>
+          <div className="flex items-center justify-between h-[20px]">
+            <p className="w-18">Email</p>
             <p>{businessEmail}</p>
           </div>
-          <div className="flex items-center justify-between ">
-            <p>Phone</p>
+          <div className="flex items-center justify-between h-[20px]">
+            <p className="w-18">Phone</p>
             {editing["businessPhone"] ? (
               <div className="flex items-center gap-4">
                 <input
-                  className="px-1"
+                  className="px-1 w-40 border bg-white text-black "
                   value={userInputs["businessPhone"]}
                   onChange={(e) => handleEditOnChange("businessPhone", e)}
                   placeholder="Business phone"
                 />
-                <button
+                <AiOutlineCheck
+                  className="cursor-pointer"
                   onClick={() =>
                     handleSaveChanges(
                       "businessPhone",
                       userInputs["businessPhone"]
                     )
                   }
-                >
-                  Save
-                </button>
-                <button onClick={() => handleCancelEdit("businessPhone")}>
-                  Cancel
-                </button>
+                />
+                <AiOutlineClose
+                  className="cursor-pointer"
+                  onClick={() => handleCancelEdit("businessPhone")}
+                />
               </div>
             ) : (
               <div className="flex items-center gap-4">
@@ -245,32 +312,32 @@ const Account = ({ initialUser }) => {
           </div>
         </div>
         <div className="flex flex-col w-full border dark:border-white/40 rounded-md p-5 gap-6">
-          <p className="text-lg">Address</p>
+          <p className="text-2xl">Address</p>
 
-          <div className="flex items-center justify-between ">
-            <p>Street</p>
+          <div className="flex items-center justify-between h-[20px]">
+            <p className="w-18">Street</p>
             {editing["street"] ? (
               <div className="flex items-center gap-4">
                 <input
-                  className="px-1"
-                  value={userInputs["street"]}
+                  className="px-1 w-40 border bg-white text-black "
+                  value={userInputs.address["street"]}
                   onChange={(e) => handleEditOnChange("street", e)}
                   placeholder="Street"
                 />
-                <button
+                <AiOutlineCheck
+                  className="cursor-pointer"
                   onClick={() =>
-                    handleSaveChanges("street", userInputs["street"])
+                    handleSaveChanges("street", userInputs.address["street"])
                   }
-                >
-                  Save
-                </button>
-                <button onClick={() => handleCancelEdit("street")}>
-                  Cancel
-                </button>
+                />
+                <AiOutlineClose
+                  className="cursor-pointer"
+                  onClick={() => handleCancelEdit("street")}
+                />
               </div>
             ) : (
               <div className="flex items-center gap-4">
-                <p>{userInputs["street"]}</p>
+                <p>{userInputs.address["street"]}</p>
                 <AiFillEdit
                   size={25}
                   className="cursor-pointer"
@@ -279,26 +346,30 @@ const Account = ({ initialUser }) => {
               </div>
             )}
           </div>
-          <div className="flex items-center justify-between ">
-            <p>City</p>
+          <div className="flex items-center justify-between h-[20px]">
+            <p className="w-18">City</p>
             {editing["city"] ? (
               <div className="flex items-center gap-4">
                 <input
-                  className="px-1"
-                  value={userInputs["city"]}
+                  className="px-1 w-40 border bg-white text-black "
+                  value={userInputs.address["city"]}
                   onChange={(e) => handleEditOnChange("city", e)}
                   placeholder="City"
                 />
-                <button
-                  onClick={() => handleSaveChanges("city", userInputs["city"])}
-                >
-                  Save
-                </button>
-                <button onClick={() => handleCancelEdit("city")}>Cancel</button>
+                <AiOutlineCheck
+                  className="cursor-pointer"
+                  onClick={() =>
+                    handleSaveChanges("city", userInputs.address["city"])
+                  }
+                />
+                <AiOutlineClose
+                  className="cursor-pointer"
+                  onClick={() => handleCancelEdit("city")}
+                />
               </div>
             ) : (
               <div className="flex items-center gap-4">
-                <p>{userInputs["city"]}</p>
+                <p>{userInputs.address["city"]}</p>
                 <AiFillEdit
                   size={25}
                   className="cursor-pointer"
@@ -307,30 +378,30 @@ const Account = ({ initialUser }) => {
               </div>
             )}
           </div>
-          <div className="flex items-center justify-between ">
-            <p>Zipcode</p>
+          <div className="flex items-center justify-between h-[20px]">
+            <p className="w-18">Zipcode</p>
             {editing["zipcode"] ? (
               <div className="flex items-center gap-4">
                 <input
-                  className="px-1"
-                  value={userInputs["zipcode"]}
+                  className="px-1 w-40 border bg-white text-black "
+                  value={userInputs.address["zipcode"]}
                   onChange={(e) => handleEditOnChange("zipcode", e)}
                   placeholder="Zipcode"
                 />
-                <button
+                <AiOutlineCheck
+                  className="cursor-pointer"
                   onClick={() =>
-                    handleSaveChanges("zipcode", userInputs["zipcode"])
+                    handleSaveChanges("zipcode", userInputs.address["zipcode"])
                   }
-                >
-                  Save
-                </button>
-                <button onClick={() => handleCancelEdit("zipcode")}>
-                  Cancel
-                </button>
+                />
+                <AiOutlineClose
+                  className="cursor-pointer"
+                  onClick={() => handleCancelEdit("zipcode")}
+                />
               </div>
             ) : (
               <div className="flex items-center gap-4">
-                <p>{userInputs["zipcode"]}</p>
+                <p>{userInputs.address["zipcode"]}</p>
                 <AiFillEdit
                   size={25}
                   className="cursor-pointer"
@@ -339,30 +410,30 @@ const Account = ({ initialUser }) => {
               </div>
             )}
           </div>
-          <div className="flex items-center justify-between ">
-            <p>State</p>
+          <div className="flex items-center justify-between h-[20px]">
+            <p className="w-18">State</p>
             {editing["state"] ? (
               <div className="flex items-center gap-4">
                 <input
-                  className="px-1"
-                  value={userInputs["state"]}
+                  className="px-1 w-40 border bg-white text-black "
+                  value={userInputs.address["state"]}
                   onChange={(e) => handleEditOnChange("state", e)}
                   placeholder="State"
                 />
-                <button
+                <AiOutlineCheck
+                  className="cursor-pointer"
                   onClick={() =>
-                    handleSaveChanges("state", userInputs["state"])
+                    handleSaveChanges("state", userInputs.address["state"])
                   }
-                >
-                  Save
-                </button>
-                <button onClick={() => handleCancelEdit("state")}>
-                  Cancel
-                </button>
+                />
+                <AiOutlineClose
+                  className="cursor-pointer"
+                  onClick={() => handleCancelEdit("state")}
+                />
               </div>
             ) : (
               <div className="flex items-center gap-4">
-                <p>{userInputs["state"]}</p>
+                <p>{userInputs.address["state"]}</p>
                 <AiFillEdit
                   size={25}
                   className="cursor-pointer"
@@ -374,8 +445,8 @@ const Account = ({ initialUser }) => {
         </div>
         {password !== null && (
           <div className="flex flex-col w-full border dark:border-white/40 rounded-md p-5 gap-6">
-            <div className="flex items-center justify-between ">
-              <p>Password</p>
+            <div className="flex items-center justify-between h-[40px]">
+              <p className="w-18">Password</p>
               {editing["password"] ? (
                 <div className="flex items-center gap-4">
                   {passwordError && (
@@ -383,7 +454,7 @@ const Account = ({ initialUser }) => {
                   )}
                   <div className="flex flex-col gap-1">
                     <input
-                      className="px-1"
+                      className="px-1 w-40 border bg-white text-black "
                       type="password"
                       value={userPasswords.oldPassword}
                       onChange={(e) => {
@@ -393,14 +464,15 @@ const Account = ({ initialUser }) => {
                       placeholder="Old password"
                     />
                     <input
-                      className="px-1"
+                      className="px-1 w-40 border bg-white text-black "
                       type="password"
                       value={userPasswords.newPassword}
                       onChange={(e) => handlePasswordChange("newPassword", e)}
                       placeholder="New password"
                     />
                   </div>
-                  <button
+                  <AiOutlineCheck
+                    className="cursor-pointer"
                     onClick={() => {
                       if (initialUser.password === userPasswords.oldPassword) {
                         handleSaveChanges(
@@ -412,12 +484,11 @@ const Account = ({ initialUser }) => {
                         setPasswordError(true);
                       }
                     }}
-                  >
-                    Save
-                  </button>
-                  <button onClick={() => handleCancelEdit("password")}>
-                    Cancel
-                  </button>
+                  />
+                  <AiOutlineClose
+                    className="cursor-pointer"
+                    onClick={() => handleCancelEdit("password")}
+                  />
                 </div>
               ) : (
                 <div className="flex items-center gap-4">

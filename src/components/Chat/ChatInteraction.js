@@ -1412,7 +1412,7 @@ const ChatInteraction = ({
           }}
           value={userInput}
           placeholder="Command Your AutoPilot..."
-          className="border outline-blue-500 w-full px-4 h-[50px]"
+          className="dark:bg-black bg-white border outline-blue-500 w-full px-4 h-[50px] "
         />
         <BsFillSendFill
           size={25}
