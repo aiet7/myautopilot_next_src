@@ -49,7 +49,7 @@ const WelcomePage = () => {
               <div className="flex flex-col items-center gap-2">
                 <h1 className="text-4xl text-center">Welcome to MyAutoPilot</h1>
                 <p className="text-xl text-center">
-                  Login with your AutoPilot account to continue
+                  Login with your AutoPilot account to continue please.
                 </p>
               </div>
               <div className="flex justify-center items-center gap-8">
