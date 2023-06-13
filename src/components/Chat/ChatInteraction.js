@@ -368,6 +368,7 @@ const ChatInteraction = ({
   const handleEmailProcess = (mailEntities) => {
     const { mailID, subject, body, emailIDs } = mailEntities;
     if (emailIDs && emailIDs.length !== 0) {
+      
       handleAddForm("emailButtons + emailForm");
       setAvailableEmailIds(emailIDs);
       setCurrentEmailSubject(subject);

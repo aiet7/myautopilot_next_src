@@ -100,12 +100,16 @@ const ChatHistory = ({
             >
               <div
                 className="w-8"
-                onClick={() => handleConversationSelected(index)}
+                onClick={
+                  !editing ? () => handleConversationSelected(index) : null
+                }
               >
                 <IoChatboxOutline size={20} />
               </div>
               <div
-                onClick={() => handleConversationSelected(index)}
+                onClick={
+                  !editing ? () => handleConversationSelected(index) : null
+                }
                 className="w-40 truncate flex"
               >
                 {currentConversationIndex === index && editing ? (

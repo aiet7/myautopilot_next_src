@@ -7,6 +7,7 @@ import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
 
 const Account = ({ initialUser }) => {
   const {
+    id,
     businessEmail,
     businessName,
     businessPhone,
@@ -21,6 +22,7 @@ const Account = ({ initialUser }) => {
   const [editing, setEditing] = useState({});
 
   const [userInputs, setUserInputs] = useState({
+    id: id,
     firstName: firstName,
     lastName: lastName,
     businessEmail: businessEmail,
@@ -91,38 +93,25 @@ const Account = ({ initialUser }) => {
     let updatedUser;
 
     if (addressFields.includes(field)) {
-      setUserInputs({
+      const updatedInputs = {
         ...userInputs,
         address: {
           ...userInputs.address,
           [field]: input,
         },
-      });
-      setEditing({
-        ...editing,
-        [field]: false,
-      });
-      updatedUser = {
-        ...initialUser,
-        address: {
-          ...initialUser.address,
-          [field]: input,
-        },
       };
+      setUserInputs(updatedInputs);
+      updatedUser = updatedInputs;
     } else {
-      setUserInputs({
+      const updatedInputs = {
         ...userInputs,
         [field]: input,
-      });
-      setEditing({
-        ...editing,
-        [field]: false,
-      });
-      updatedUser = {
-        ...initialUser,
-        [field]: input,
       };
+      setUserInputs(updatedInputs);
+      updatedUser = updatedInputs;
     }
+
+    setEditing({ ...editing, [field]: false });
 
     try {
       const response = await fetch(
@@ -136,6 +125,7 @@ const Account = ({ initialUser }) => {
           body: JSON.stringify(updatedUser),
         }
       );
+
       if (response.ok) {
         console.log("Saved!");
       } else {

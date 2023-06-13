@@ -31,6 +31,7 @@ const DashboardPage = ({
 
   const handlePromptAssistantInput = (prompt) => {
     setPromptAssistantInput(prompt);
+    setOpenChatAssistant(false);
   };
 
   const handleNewConversation = async (index) => {
@@ -91,6 +92,7 @@ const DashboardPage = ({
 
   const handleConversationSelected = (index) => {
     setCurrentConversationIndex(index);
+    setOpenChatHistory(false)
   };
 
   const handleTabChange = (tab) => {
@@ -161,7 +163,7 @@ const DashboardPage = ({
             <div
               className={
                 activeTab === "intro"
-                  ? "overflow-auto w-full no-scrollbar"
+                  ? "overflow-auto h-full w-full no-scrollbar"
                   : "hidden"
               }
             >
@@ -198,7 +200,7 @@ const DashboardPage = ({
             <div
               className={
                 activeTab === "account"
-                  ? "overflow-auto w-full no-scrollbar"
+                  ? "overflow-auto h-full w-full no-scrollbar"
                   : "hidden"
               }
             >
