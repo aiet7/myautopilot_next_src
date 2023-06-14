@@ -5,6 +5,7 @@ import ChatInteraction from "./ChatInteraction.js";
 import ChatAssistant from "./ChatAssistant.js";
 
 const Chat = ({
+  activeTab,
   initialUser,
 
   promptAssistantInput,
@@ -32,6 +33,7 @@ const Chat = ({
         handleConversationSelected={handleConversationSelected}
       />
       <ChatInteraction
+        activeTab={activeTab}
         initialUser={initialUser}
         promptAssistantInput={promptAssistantInput}
         openChatHistory={openChatHistory}

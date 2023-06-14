@@ -92,7 +92,7 @@ const DashboardPage = ({
 
   const handleConversationSelected = (index) => {
     setCurrentConversationIndex(index);
-    setOpenChatHistory(false)
+    setOpenChatHistory(false);
   };
 
   const handleTabChange = (tab) => {
@@ -148,6 +148,26 @@ const DashboardPage = ({
     setConversationHistory(updatedConversationHistory);
   }, [initialConversations, initialMessages]);
 
+  useEffect(() => {
+    const lastTab = localStorage.getItem("lastTab");
+    const lastConversationIndex = localStorage.getItem("lastConversationIndex");
+    if (lastTab) {
+      setActiveTab(lastTab);
+    }
+
+    if (lastConversationIndex) {
+      setCurrentConversationIndex(parseInt(lastConversationIndex, 10));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("lastTab", activeTab);
+    localStorage.setItem(
+      "lastConversationIndex",
+      currentConversationIndex.toString()
+    );
+  }, [activeTab, currentConversationIndex]);
+
   return (
     <ThemeProvider attribute="class">
       {height && (
@@ -183,6 +203,7 @@ const DashboardPage = ({
               />
 
               <Chat
+                activeTab={activeTab}
                 initialUser={initialUser}
                 promptAssistantInput={promptAssistantInput}
                 openChatHistory={openChatHistory}

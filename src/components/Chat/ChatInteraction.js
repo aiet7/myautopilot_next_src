@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AiOutlineUser, AiOutlineRobot } from "react-icons/ai";
 import { BsFillMicFill, BsFillStopFill, BsFillSendFill } from "react-icons/bs";
+import { HiOutlineArrowSmallDown } from "react-icons/hi2";
 import { FaSpinner } from "react-icons/fa";
 
 import { parseList } from "../../utils/detectContentType.js";
@@ -11,6 +12,7 @@ import { convertKelvinToFahrenheit } from "../../utils/conversions.js";
 import { recognition } from "../../utils/speechToText.js";
 
 const ChatInteraction = ({
+  activeTab,
   initialUser,
 
   promptAssistantInput,
@@ -22,12 +24,16 @@ const ChatInteraction = ({
 
   handleNewConversation,
 }) => {
+  const latestMessageRef = useRef(null);
+  const chatContainerRef = useRef(null);
+
   const [previousResponseBodyForForms, setPreviousResponseBodyForForms] =
     useState(null);
 
   const [userInput, setUserInput] = useState("");
   const [isWaiting, setIsWaiting] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [isAtBottom, setIsAtBottom] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
@@ -104,10 +110,11 @@ const ChatInteraction = ({
         const encodedMessage = encodeURIComponent(message);
 
         const response = await fetch(
-          /*`http://localhost:8081/jarvis4?text=${encodedMessage}&conversationId=${currentConversation.id}&userId=${initialUser.id}`*/
-          /*`https://etech7-wf-etech7-worflow-2.azuremicroservices.io/send?message=${encodedMessage}`*/
           `https://etech7-wf-etech7-clu-service.azuremicroservices.io/jarvis4?text=${encodedMessage}&conversationId=${currentConversation.id}&userId=${initialUser.id}`
+          /*`http://localhost:8081/jarvis4?text=${encodedMessage}&conversationId=${currentConversation.id}&userId=${initialUser.id}`*/
         );
+        /*`https://etech7-wf-etech7-worflow-2.azuremicroservices.io/send?message=${encodedMessage}`*/
+
         if (response.status === 200) {
           const responseBody = await response.json();
 
@@ -368,7 +375,6 @@ const ChatInteraction = ({
   const handleEmailProcess = (mailEntities) => {
     const { mailID, subject, body, emailIDs } = mailEntities;
     if (emailIDs && emailIDs.length !== 0) {
-      
       handleAddForm("emailButtons + emailForm");
       setAvailableEmailIds(emailIDs);
       setCurrentEmailSubject(subject);
@@ -745,6 +751,22 @@ const ChatInteraction = ({
     });
   };
 
+  const handleScrollToBottom = (smooth) => {
+    latestMessageRef.current?.scrollIntoView({
+      behavior: smooth ? "smooth" : "auto",
+      block: "end",
+    });
+  };
+
+  const handleCheckScroll = () => {
+    const container = chatContainerRef.current;
+    const atBottom =
+      Math.abs(
+        container.scrollHeight - container.scrollTop - container.clientHeight
+      ) < 5;
+    setIsAtBottom(atBottom);
+  };
+
   useEffect(() => {
     const filtered = subCategories.filter(
       (subCategory) => subCategory.category === currentTicketCategory
@@ -756,16 +778,42 @@ const ChatInteraction = ({
     setUserInput(promptAssistantInput);
   }, [promptAssistantInput]);
 
+  useEffect(() => {
+    handleScrollToBottom(true);
+  }, [conversationHistory]);
+
+  useEffect(() => {
+    handleScrollToBottom();
+  }, [currentConversationIndex]);
+
+  useEffect(() => {
+    if (activeTab === "chat") {
+      handleScrollToBottom();
+    }
+  }, [activeTab]);
+
   return (
     <div
-      className={`flex flex-col h-full w-full  ${
+      className={`relative flex flex-col h-full w-full  ${
         (openChatHistory && "md:opacity-100 opacity-5") ||
         (openChatAssistant && "md:opacity-100 opacity-5")
       } dark:bg-black transition-all duration-300 ease-in-out bg-white`}
     >
-      <div className=" flex-grow overflow-auto no-scrollbar ">
+      {!isAtBottom && (
+        <button
+          onClick={handleScrollToBottom}
+          className="dark:border-white/10 dark:bg-white/10 dark:text-gray-200 absolute bottom-28 right-4 rounded-full border border-gray-200 bg-gray-50 text-gray-600"
+        >
+          <HiOutlineArrowSmallDown className="m-1" size={18} />
+        </button>
+      )}
+      <div
+        className=" flex-grow overflow-auto no-scrollbar"
+        ref={chatContainerRef}
+        onScroll={handleCheckScroll}
+      >
         {conversationHistory[currentConversationIndex]?.messages?.map(
-          (item, index) => {
+          (item, index, arr) => {
             return (
               <div
                 key={item.id}
@@ -774,8 +822,9 @@ const ChatInteraction = ({
                     ? "dark:border-white/40 bg-black/5 border-b"
                     : "dark:bg-white/10 dark:border-white/40 border-b"
                 }`}
+                ref={index === arr.length - 1 ? latestMessageRef : null}
               >
-                <div className="flex items-start max-w-[800px] mx-auto gap-4">
+                <div className="flex items-start max-w-[600px] mx-auto gap-4">
                   <span>
                     {item.role === "user" ? (
                       <AiOutlineUser size={20} />
@@ -1397,7 +1446,7 @@ const ChatInteraction = ({
           }
         )}
       </div>
-      <div className="px-4 py-2 ">
+      <div className="px-4 py-2">
         <FaSpinner
           className={`${isWaiting ? "opacity-100" : "opacity-0"} animate-spin`}
         />
