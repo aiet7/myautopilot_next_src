@@ -34,7 +34,7 @@ steps:
     ConnectionType: 'AzureRM'
     azureSubscription: '60cfa216-0b14-48ad-a77a-10f3f8f7d58d'
     appType: 'webAppLinux'
-    WebAppName: '<Your-WebApp-Name>'
+    WebAppName: 'myautopilot'
     packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
     RuntimeStack: 'NODE|18-lts'
     StartupCommand: 'npm start'
