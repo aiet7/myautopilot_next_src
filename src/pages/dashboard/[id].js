@@ -175,10 +175,10 @@ const DashboardPage = ({
           className="flex flex-col h-full w-full"
           style={{ height: `${height}px` }}
         >
-          <Navbar />
+          
           <div
-            className="flex flex-col h-full w-full md:flex-row-reverse"
-            style={{ height: `calc(${height}px - 60px)` }}
+            className="flex flex-col h-full w-full lg:flex-row-reverse"
+            
           >
             <div
               className={

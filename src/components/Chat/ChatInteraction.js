@@ -795,8 +795,8 @@ const ChatInteraction = ({
   return (
     <div
       className={`relative flex flex-col h-full w-full  ${
-        (openChatHistory && "md:opacity-100 opacity-5") ||
-        (openChatAssistant && "md:opacity-100 opacity-5")
+        (openChatHistory && "lg:opacity-100 opacity-5") ||
+        (openChatAssistant && "lg:opacity-100 opacity-5")
       } dark:bg-black transition-all duration-300 ease-in-out bg-white`}
     >
       {!isAtBottom && (
@@ -808,7 +808,7 @@ const ChatInteraction = ({
         </button>
       )}
       <div
-        className=" flex-grow overflow-auto no-scrollbar"
+        className="flex-grow overflow-auto no-scrollbar"
         ref={chatContainerRef}
         onScroll={handleCheckScroll}
       >

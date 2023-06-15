@@ -23,7 +23,7 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
         openChatAssistant
           ? "translate-x-0 w-[300px] dark:shadow-white shadow-lg shadow-black/50"
           : "translate-x-full w-[300px]"
-      } md:relative md:translate-x-0 md:min-w-[300px] md:static md:dark:shadow-white md:shadow-lg md:shadow-black/50`}
+      } lg:relative lg:translate-x-0 lg:min-w-[300px] lg:static lg:dark:shadow-white lg:shadow-lg lg:shadow-black/50`}
     >
       <h2 className="text-2xl font-bold text-center">Workspace</h2>
       <div className="py-2">
