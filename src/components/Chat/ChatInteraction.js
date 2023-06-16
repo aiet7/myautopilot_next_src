@@ -34,6 +34,8 @@ const ChatInteraction = ({
   const [isWaiting, setIsWaiting] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(false);
+  const [isOverflowed, setIsOverflowed] = useState(false);
+  const [isServerError, setIsServerError] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
@@ -69,7 +71,7 @@ const ChatInteraction = ({
     { name: "", email: "" },
   ]);
 
-  const handleAddMessageToDB = async (aiContent) => {
+  const handleAddMessageToDB = async (aiContent, body) => {
     const response = await fetch(
       /*`http://localhost:9019/addMessage`,*/
       `https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`,
@@ -79,14 +81,14 @@ const ChatInteraction = ({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id: previousResponseBodyForForms.id,
-          conversationID: previousResponseBodyForForms.conversationId,
-          userContent: previousResponseBodyForForms.userContent,
+          id: body.id,
+          conversationID: body.conversationId,
+          userContent: body.userContent,
           aiContent: aiContent,
           timeStamp: Date.now(),
           deleted: false,
-          intents: previousResponseBodyForForms.intents,
-          entities: previousResponseBodyForForms.entities,
+          intents: body.intents,
+          entities: body.entities,
         }),
       }
     );
@@ -104,6 +106,7 @@ const ChatInteraction = ({
     if (message.trim() !== "") {
       handleAddUserMessage(message);
       setIsWaiting(true);
+      setIsServerError(false);
       setUserInput("");
       setPreviousResponseBodyForForms(null);
       try {
@@ -113,7 +116,6 @@ const ChatInteraction = ({
           `https://etech7-wf-etech7-clu-service.azuremicroservices.io/jarvis4?text=${encodedMessage}&conversationId=${currentConversation.id}&userId=${initialUser.id}`
           /*`http://localhost:8081/jarvis4?text=${encodedMessage}&conversationId=${currentConversation.id}&userId=${initialUser.id}`*/
         );
-        /*`https://etech7-wf-etech7-worflow-2.azuremicroservices.io/send?message=${encodedMessage}`*/
 
         if (response.status === 200) {
           const responseBody = await response.json();
@@ -126,13 +128,15 @@ const ChatInteraction = ({
           handleProcessResponse(
             responseBody.intent,
             responseBody.mailEntities,
-            responseBody.message /*responseBody.data*/,
+            responseBody.message,
             {
               ...responseBody,
               conversationId: currentConversation.id,
               userContent: message,
             }
           );
+        } else if (response.status === 500) {
+          setIsServerError(true);
         }
       } catch (e) {
         console.log(e);
@@ -188,7 +192,10 @@ const ChatInteraction = ({
         );
         if (emailResponse.status === 200) {
           const aiContent = `Email Sent!\n\nTo: ${currentEmailId}\nSubject: ${currentEmailSubject}\nBody: ${currentEmailBody}`;
-          const formSummaryResponse = await handleAddMessageToDB(aiContent);
+          const formSummaryResponse = await handleAddMessageToDB(
+            aiContent,
+            previousResponseBodyForForms
+          );
           if (formSummaryResponse.status === 200) {
             handleAddAssistantMessage(aiContent);
           }
@@ -201,7 +208,7 @@ const ChatInteraction = ({
       }
     } else {
       const aiContent = `Email Cancelled.`;
-      await handleAddMessageToDB(aiContent);
+      await handleAddMessageToDB(aiContent, previousResponseBodyForForms);
       handleAddAssistantMessage(aiContent);
       handleRemoveForm(formId);
     }
@@ -231,7 +238,10 @@ const ChatInteraction = ({
         );
         if (contactResponse.status === 200) {
           const aiContent = `Contact Added!\nGiven Name: ${currentContactGivenName}\nSurname: ${currentContactSurname}\nEmail: ${currentContactEmailId}\nMobile Number: ${currentContactMobileNumber}`;
-          const formSummaryResponse = await handleAddMessageToDB(aiContent);
+          const formSummaryResponse = await handleAddMessageToDB(
+            aiContent,
+            previousResponseBodyForForms
+          );
           if (formSummaryResponse.status === 200) {
             handleAddAssistantMessage(aiContent);
           }
@@ -244,7 +254,7 @@ const ChatInteraction = ({
       }
     } else {
       const aiContent = "Contact Adding Cancelled";
-      await handleAddMessageToDB(aiContent);
+      await handleAddMessageToDB(aiContent, previousResponseBodyForForms);
       handleAddAssistantMessage(aiContent);
       handleRemoveForm(formId);
     }
@@ -272,7 +282,10 @@ const ChatInteraction = ({
         );
         if (scheduleResponse.status === 200) {
           const aiContent = `Event Scheduled!\nSubject: ${currentEventSubject}\nBody: ${currentEventBody}\nStart Time: ${currentEventStartTime}\nEnd Time: ${currentEventEndTime}\nLocation: ${currentEventLocation}\nName: ${currentEventUserInfo[0].name}\nEmail:${currentEventUserInfo[0].email}.`;
-          const formSummaryResponse = await handleAddMessageToDB(aiContent);
+          const formSummaryResponse = await handleAddMessageToDB(
+            aiContent,
+            previousResponseBodyForForms
+          );
           if (formSummaryResponse.status === 200) {
             handleAddAssistantMessage(aiContent);
           }
@@ -285,7 +298,7 @@ const ChatInteraction = ({
       }
     } else {
       const aiContent = "Scheduling Cancelled.";
-      await handleAddMessageToDB(aiContent);
+      await handleAddMessageToDB(aiContent, previousResponseBodyForForms);
       handleAddAssistantMessage(aiContent);
       handleRemoveForm(formId);
     }
@@ -316,7 +329,10 @@ const ChatInteraction = ({
           const ticketResponseJson = await ticketResponse.json();
           const { id } = ticketResponseJson;
           const aiContent = `Ticket Created!\nID: ${id}\nTitle: ${currentTicketTitle}\nDescription: ${currentTicketDescription}\nCategory: ${currentTicketCategory}\nSubcategory: ${currentTicketSubCategory}\nName: ${currentTicketName}\nEmail: ${currentTicketEmailId}\nPhone: ${currentTicketPhoneNumber}.`;
-          const formSummaryResponse = await handleAddMessageToDB(aiContent);
+          const formSummaryResponse = await handleAddMessageToDB(
+            aiContent,
+            previousResponseBodyForForms
+          );
           if (formSummaryResponse.status === 200) {
             handleAddAssistantMessage(aiContent);
           }
@@ -329,7 +345,7 @@ const ChatInteraction = ({
       }
     } else {
       const aiContent = "Ticket Creation Cancelled.";
-      await handleAddMessageToDB(aiContent);
+      await handleAddMessageToDB(aiContent, previousResponseBodyForForms);
       handleAddAssistantMessage(aiContent);
       handleRemoveForm(formId);
     }
@@ -469,50 +485,18 @@ const ChatInteraction = ({
 
       eventCards += `</div>`;
 
-      const eventResponse = await fetch(
-        /*`http://localhost:9019/addMessage`,*/
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: responseBody.id,
-            conversationID: responseBody.conversationId,
-            userContent: responseBody.userContent,
-            aiContent: eventCards,
-            timeStamp: Date.now(),
-            deleted: false,
-            intents: responseBody.intents,
-            entities: responseBody.entities,
-          }),
-        }
+      const eventResponse = await handleAddMessageToDB(
+        eventCards,
+        responseBody
       );
 
       if (eventResponse.status === 200) {
         handleAddAssistantMessage(eventCards);
       }
     } else {
-      const eventResponse = await fetch(
-        /*`http://localhost:9019/addMessage`,*/
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: responseBody.id,
-            conversationID: responseBody.conversationId,
-            userContent: responseBody.userContent,
-            aiContent: "No Events Scheduled",
-            timeStamp: Date.now(),
-            deleted: false,
-            intents: responseBody.intents,
-            entities: responseBody.entities,
-          }),
-        }
+      const eventResponse = await handleAddMessageToDB(
+        "No Events Scheduled",
+        responseBody
       );
 
       if (eventResponse.status === 200) {
@@ -545,29 +529,19 @@ const ChatInteraction = ({
       });
       newsCards += `</div>`;
 
-      const cardResponse = await fetch(
-        /*`http://localhost:9019/addMessage`,*/
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: responseBody.id,
-            conversationID: responseBody.conversationId,
-            userContent: responseBody.userContent,
-            aiContent: newsCards,
-            timeStamp: Date.now(),
-            deleted: false,
-            intents: responseBody.intents,
-            entities: responseBody.entities,
-          }),
-        }
+      const newsResponse = await handleAddMessageToDB(newsCards, responseBody);
+
+      if (newsResponse.status === 200) {
+        handleAddAssistantMessage(newsCards);
+      }
+    } else {
+      const newsResponse = await handleAddMessageToDB(
+        "No News Available",
+        responseBody
       );
 
-      if (cardResponse.status === 200) {
-        handleAddAssistantMessage(newsCards);
+      if (newsResponse.status === 200) {
+        handleAddAssistantMessage("No News Available");
       }
     }
   };
@@ -599,27 +573,9 @@ const ChatInteraction = ({
       </div>
     `;
 
-    const cardResponse = await fetch(
-      /*`http://localhost:9019/addMessage`,*/
-      `https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: responseBody.id,
-          conversationID: responseBody.conversationId,
-          userContent: responseBody.userContent,
-          aiContent: stockCards,
-          timeStamp: Date.now(),
-          deleted: false,
-          intents: responseBody.intents,
-          entities: responseBody.entities,
-        }),
-      }
-    );
-    if (cardResponse.status === 200) {
+    const stockResponse = await handleAddMessageToDB(stockCards, responseBody);
+
+    if (stockResponse.status === 200) {
       handleAddAssistantMessage(stockCards);
     }
   };
@@ -648,29 +604,21 @@ const ChatInteraction = ({
       </div>
       `;
 
-      const weatherResponse = await fetch(
-        /*`http://localhost:9019/addMessage`,*/
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: responseBody.id,
-            conversationID: responseBody.conversationId,
-            userContent: responseBody.userContent,
-            aiContent: weatherCards,
-            timeStamp: Date.now(),
-            deleted: false,
-            intents: responseBody.intents,
-            entities: responseBody.entities,
-          }),
-        }
+      const weatherResponse = await handleAddMessageToDB(
+        weatherCards,
+        responseBody
+      );
+      if (weatherResponse.status === 200) {
+        handleAddAssistantMessage(weatherCards);
+      }
+    } else {
+      const weatherResponse = await handleAddMessageToDB(
+        "No Weather Available",
+        responseBody
       );
 
       if (weatherResponse.status === 200) {
-        handleAddAssistantMessage(weatherCards);
+        handleAddAssistantMessage("No Weather Available");
       }
     }
   };
@@ -765,6 +713,7 @@ const ChatInteraction = ({
         container.scrollHeight - container.scrollTop - container.clientHeight
       ) < 5;
     setIsAtBottom(atBottom);
+    setIsOverflowed(container.scrollHeight > container.clientHeight);
   };
 
   useEffect(() => {
@@ -799,7 +748,7 @@ const ChatInteraction = ({
         (openChatAssistant && "lg:opacity-100 opacity-5")
       } dark:bg-black transition-all duration-300 ease-in-out bg-white`}
     >
-      {!isAtBottom && (
+      {!isAtBottom && isOverflowed && (
         <button
           onClick={handleScrollToBottom}
           className="dark:border-white/10 dark:bg-white/10 dark:text-gray-200 absolute bottom-28 right-4 rounded-full border border-gray-200 bg-gray-50 text-gray-600"
@@ -1447,9 +1396,15 @@ const ChatInteraction = ({
         )}
       </div>
       <div className="px-4 py-2">
-        <FaSpinner
-          className={`${isWaiting ? "opacity-100" : "opacity-0"} animate-spin`}
-        />
+        {isServerError ? (
+          <p className="text-red-600 text-xs">Server Error, try again please</p>
+        ) : (
+          <FaSpinner
+            className={`${
+              isWaiting ? "opacity-100" : "opacity-0"
+            } animate-spin`}
+          />
+        )}
       </div>
       <div className="flex items-center gap-3 px-4 py-2">
         <input

@@ -305,7 +305,7 @@ const Signup = () => {
                   <MicrosoftLogin
                     clientId="14a9d59a-1d19-486e-a4db-d81c5410a453"
                     authCallback={handleMicrosoftSignup}
-                    redirectUri ="https://myautopilot.azurewebsites.net/"
+                    redirectUri ="https://myautopilot.azurewebsites.net"
                   >
                     <button
                       type="button"
