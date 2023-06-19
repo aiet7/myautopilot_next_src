@@ -88,11 +88,11 @@ const TabNavRail = ({ activeTab, handleTabChange }) => {
         onClick={() => setShowAccountModal(!showAccountModal)}
         className="flex flex-col items-center cursor-pointer lg:absolute lg:bottom-0 lg:py-3"
       >
-        <MdOutlineAccountCircle
+        <FiSettings
           size={30}
-          className={`${activeTab === "account" && "text-blue-600"}`}
+          className={`${activeTab === "settings" && "text-blue-600"}`}
         />
-        <span className="text-sm">Account</span>
+        <span className="text-sm">Settings</span>
         {showAccountModal && (
           <div className="dark:bg-black dark:border-white/40 dark:border bg-white border border-black/10 absolute z-[99] bottom-[74px] right-0 w-[150px] lg:bottom-0 lg:left-[59px] lg:w-[250px]">
             <div className="flex flex-col">
@@ -104,11 +104,11 @@ const TabNavRail = ({ activeTab, handleTabChange }) => {
                 <span>Log out</span>
               </div>
               <div
-                onClick={() => handleTabChange("account")}
+                onClick={() => handleTabChange("settings")}
                 className="dark:hover:bg-white/20 hover:bg-black/10 w-full text-lg flex items-center gap-3 px-6 py-3"
               >
-                <FiSettings />
-                <span>Settings</span>
+                <MdOutlineAccountCircle />
+                <span>Account</span>
               </div>
             </div>
           </div>

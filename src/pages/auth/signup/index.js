@@ -252,7 +252,7 @@ const Signup = () => {
         >
           <form className="w-[300px] flex flex-col items-center gap-4">
             <Image
-              src="https://media.istockphoto.com/id/1217110109/vector/circuit-board-in-the-shape-of-human-brain.jpg?s=612x612&w=0&k=20&c=wBxXfTtG41CR8XvDHw70ItsRGU4iSWhZ15osRuOnuO8="
+              src="/myautopilot_logo.png"
               alt="Circuit board in the shape of a human brain"
               width={125}
               height={125}
@@ -359,18 +359,6 @@ const Signup = () => {
                   placeholder="Business name (Optional)"
                   className="w-full p-2 border border-gray-300 bg-white text-black"
                 />
-                <input
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleEmailSignup();
-                    }
-                  }}
-                  type="text"
-                  placeholder="Phone number (Optional)"
-                  className="w-full p-2 border border-gray-300 bg-white text-black"
-                />
 
                 <input
                   onChange={(e) =>
@@ -409,6 +397,7 @@ const Signup = () => {
                 />
                 <div className="w-full flex gap-2">
                   <input
+                    maxLength={5}
                     onChange={(e) =>
                       setAddress((prevState) => ({
                         ...prevState,
@@ -455,7 +444,18 @@ const Signup = () => {
                     ))}
                   </select>
                 </div>
-
+                <input
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleEmailSignup();
+                    }
+                  }}
+                  type="text"
+                  placeholder="Phone number"
+                  className="w-full p-2 border border-gray-300 bg-white text-black"
+                />
                 <input
                   onChange={(e) => setPassword(e.target.value)}
                   onKeyDown={(e) => {

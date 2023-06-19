@@ -254,7 +254,7 @@ const Login = () => {
         >
           <form className="w-[300px]  flex flex-col items-center gap-4">
             <Image
-              src="https://media.istockphoto.com/id/1217110109/vector/circuit-board-in-the-shape-of-human-brain.jpg?s=612x612&w=0&k=20&c=wBxXfTtG41CR8XvDHw70ItsRGU4iSWhZ15osRuOnuO8="
+              src="/myautopilot_logo.png"
               alt="Circuit board in the shape of a human brain"
               width={125}
               height={125}

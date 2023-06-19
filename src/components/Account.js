@@ -373,6 +373,7 @@ const Account = ({ initialUser }) => {
             {editing["zipcode"] ? (
               <div className="flex items-center gap-4">
                 <input
+                  maxLength={5}
                   className="px-1 w-40 border bg-white text-black "
                   value={userInputs.address["zipcode"]}
                   onChange={(e) => handleEditOnChange("zipcode", e)}
@@ -405,6 +406,7 @@ const Account = ({ initialUser }) => {
             {editing["state"] ? (
               <div className="flex items-center gap-4">
                 <input
+                  maxLength={2}
                   className="px-1 w-40 border bg-white text-black "
                   value={userInputs.address["state"]}
                   onChange={(e) => handleEditOnChange("state", e)}

@@ -21,6 +21,7 @@ const ChatHistory = ({
 }) => {
   const [tempTitle, setTempTitle] = useState("");
   const [editing, setEditing] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const handleSaveConversationTitle = async (id, userID) => {
     let updatedConversation = {
@@ -101,14 +102,18 @@ const ChatHistory = ({
               <div
                 className="w-8"
                 onClick={
-                  !editing ? () => handleConversationSelected(index) : null
+                  !editing && !deleting
+                    ? () => handleConversationSelected(index)
+                    : null
                 }
               >
                 <IoChatboxOutline size={20} />
               </div>
               <div
                 onClick={
-                  !editing ? () => handleConversationSelected(index) : null
+                  !editing && !deleting
+                    ? () => handleConversationSelected(index)
+                    : null
                 }
                 className="w-40 truncate flex"
               >
@@ -135,18 +140,35 @@ const ChatHistory = ({
                     />
                   </div>
                 )}
-                {currentConversationIndex === index && !editing && (
+                {currentConversationIndex === index && deleting && (
                   <div className="flex items-center gap-2">
-                    <AiFillEdit
+                    <AiOutlineCheck
                       size={20}
-                      onClick={() => handleEditConversationTitle(index)}
+                      onClick={() => {
+                        handleDeleteConversation(index);
+                        setDeleting(false);
+                      }}
                     />
-                    <AiFillDelete
+                    <AiOutlineClose
                       size={20}
-                      onClick={() => handleDeleteConversation(index)}
+                      onClick={() => setDeleting(false)}
                     />
                   </div>
                 )}
+                {currentConversationIndex === index &&
+                  !editing &&
+                  !deleting && (
+                    <div className="flex items-center gap-2">
+                      <AiFillEdit
+                        size={20}
+                        onClick={() => handleEditConversationTitle(index)}
+                      />
+                      <AiFillDelete
+                        size={20}
+                        onClick={() => setDeleting(true)}
+                      />
+                    </div>
+                  )}
               </div>
             </div>
           );

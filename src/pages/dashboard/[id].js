@@ -214,7 +214,7 @@ const DashboardPage = ({
 
             <div
               className={
-                activeTab === "account"
+                activeTab === "settings"
                   ? "overflow-auto h-full w-full no-scrollbar"
                   : "hidden"
               }

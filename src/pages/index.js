@@ -37,9 +37,9 @@ const WelcomePage = () => {
           <div className="relative w-full max-w-2xl p-8 bg-white bg-opacity-5 ">
             <div className="absolute inset-0 z-0 flex justify-center items-center">
               <Image
-                src="https://media.istockphoto.com/id/1217110109/vector/circuit-board-in-the-shape-of-human-brain.jpg?s=612x612&w=0&k=20&c=wBxXfTtG41CR8XvDHw70ItsRGU4iSWhZ15osRuOnuO8="
-                width={700}
-                height={700}
+                src="/myautopilot_logo.png"
+                width={500}
+                height={500}
                 quality={100}
                 alt="Circuit board in the shape of a human brain"
                 className="opacity-5"
