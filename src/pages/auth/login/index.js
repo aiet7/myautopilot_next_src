@@ -32,6 +32,8 @@ const Login = () => {
   const router = useRouter();
 
   const handleGoogleLogin = useGoogleLogin({
+    scope:
+      "https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar",
     onSuccess: async (tokenResponse) => {
       setLoading(true);
       try {
@@ -78,7 +80,7 @@ const Login = () => {
         if (response.ok) {
           const googleUser = await response.json();
           router.push(`/dashboard/${googleUser.id}`);
-          Cookie.set("session_token", tokenResponse.access_token, {
+          Cookie.set("google_session_token", tokenResponse.access_token, {
             expires: 7,
           });
           Cookie.set("user_id", googleUser.id, { expires: 7 });
@@ -135,7 +137,7 @@ const Login = () => {
       if (response.ok) {
         const microsoftUser = await response.json();
         router.push(`/dashboard/${microsoftUser.id}`);
-        Cookie.set("session_token", accessToken, { expires: 7 });
+        Cookie.set("microsoft_session_token", accessToken, { expires: 7 });
         Cookie.set("user_id", microsoftUser.id, { expires: 7 });
       } else {
         setErrorMessage("Error with Microsoft Login.");
@@ -223,7 +225,11 @@ const Login = () => {
     if (typeof window !== "undefined") {
       setHeight(window.innerHeight);
 
-      const session_token = Cookie.get("session_token");
+      let session_token =
+        Cookie.get("google_session_token") ||
+        Cookie.get("microsoft_session_token") ||
+        Cookie.get("session_token");
+
       const user_id = Cookie.get("user_id");
 
       if (session_token && user_id) {
@@ -295,6 +301,7 @@ const Login = () => {
                   </button>
 
                   <MicrosoftLogin
+                    graphScopes={["mail.read", "mail.readwrite", "mail.send"]}
                     clientId="14a9d59a-1d19-486e-a4db-d81c5410a453"
                     authCallback={handleMicrosoftLogin}
                     redirectUri="https://myautopilot.azurewebsites.net"

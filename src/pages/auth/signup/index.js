@@ -46,6 +46,8 @@ const Signup = () => {
   const router = useRouter();
 
   const handleGoogleSignup = useGoogleLogin({
+    scope:
+      "https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar",
     onSuccess: async (tokenResponse) => {
       setLoading(true);
       try {
@@ -92,7 +94,7 @@ const Signup = () => {
         if (response.ok) {
           const googleUser = await response.json();
           router.push(`/dashboard/${googleUser.id}`);
-          Cookie.set("session_token", tokenResponse.access_token, {
+          Cookie.set("google_session_token", tokenResponse.access_token, {
             expires: 7,
           });
           Cookie.set("user_id", googleUser.id, { expires: 7 });
@@ -132,7 +134,7 @@ const Signup = () => {
       };
 
       const response = await fetch(
-        /* `http://localhost:9019/validateUser?token=${Boolean(accessToken)}`,*/
+        /*`http://localhost:9019/validateUser?token=${Boolean(accessToken)}`,*/
         `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=${Boolean(
           accessToken
         )}`,
@@ -148,7 +150,7 @@ const Signup = () => {
       if (response.ok) {
         const microsoftUser = await response.json();
         router.push(`/dashboard/${microsoftUser.id}`);
-        Cookie.set("session_token", accessToken, { expires: 7 });
+        Cookie.set("microsoft_session_token", accessToken, { expires: 7 });
         Cookie.set("user_id", microsoftUser.id, { expires: 7 });
       } else {
         setErrorMessage("Error with Microsoft Login.");
@@ -303,9 +305,10 @@ const Signup = () => {
                   </button>
 
                   <MicrosoftLogin
+                    graphScopes={["mail.read", "mail.readwrite", "mail.send"]}
                     clientId="14a9d59a-1d19-486e-a4db-d81c5410a453"
                     authCallback={handleMicrosoftSignup}
-                    redirectUri ="https://myautopilot.azurewebsites.net"
+                    redirectUri="https://myautopilot.azurewebsites.net"
                   >
                     <button
                       type="button"

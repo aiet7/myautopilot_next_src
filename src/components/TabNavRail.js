@@ -27,8 +27,12 @@ const TabNavRail = ({ activeTab, handleTabChange }) => {
   const handleLogout = () => {
     localStorage.removeItem("lastTab");
     localStorage.removeItem("lastConversationIndex");
+
+    Cookie.remove("google_session_token");
+    Cookie.remove("microsoft_session_token");
     Cookie.remove("session_token");
     Cookie.remove("user_id");
+    
     googleLogout();
     router.push("/auth/login");
   };

@@ -2,7 +2,6 @@
 
 import { ThemeProvider } from "next-themes";
 
-import Navbar from "../../components/Navbar.js";
 import TabNavRail from "../../components/TabNavRail.js";
 import ChatSettingsRail from "../../components/ChatSettingsRail.js";
 import Intro from "../../components/Intro.js";
@@ -10,7 +9,6 @@ import Chat from "../../components/Chat/Chat.js";
 import Account from "../../components/Account.js";
 
 import { useState, useEffect } from "react";
-import { generateTitle } from "../../utils/titleGenerator.js";
 
 const DashboardPage = ({
   initialUser,

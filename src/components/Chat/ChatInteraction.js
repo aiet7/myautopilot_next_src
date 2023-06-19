@@ -10,6 +10,10 @@ import { parseList } from "../../utils/detectContentType.js";
 import { categories, subCategories } from "../../utils/ticketCreation.js";
 import { convertKelvinToFahrenheit } from "../../utils/conversions.js";
 import { recognition } from "../../utils/speechToText.js";
+import { handleSendGmail } from "../../utils/api/google.js";
+import { handleSendGraph } from "../../utils/api/microsoft.js";
+
+import Cookies from "js-cookie";
 
 const ChatInteraction = ({
   activeTab,
@@ -24,6 +28,11 @@ const ChatInteraction = ({
 
   handleNewConversation,
 }) => {
+  const token =
+    Cookies.get("google_session_token") ||
+    Cookies.get("microsoft_session_token") ||
+    Cookies.get("session_token");
+
   const latestMessageRef = useRef(null);
   const chatContainerRef = useRef(null);
 
@@ -37,7 +46,12 @@ const ChatInteraction = ({
   const [isOverflowed, setIsOverflowed] = useState(false);
   const [isServerError, setIsServerError] = useState(false);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState({
+    contactForm: false,
+    emailForm: false,
+    eventForm: false,
+    ticketForm: false,
+  });
 
   const [selectedEmailIndex, setSelectedEmailIndex] = useState(null);
   const [currentEmailId, setCurrentEmailId] = useState("");
@@ -176,34 +190,46 @@ const ChatInteraction = ({
 
   const handleEmailConfirmation = async (isConfirmed, formId) => {
     if (isConfirmed) {
-      setLoading(true);
+      setLoading((prevState) => ({ ...prevState, emailForm: true }));
       try {
-        const encodedEmailId = encodeURIComponent(currentEmailId);
-        const encodedSubject = encodeURIComponent(currentEmailSubject);
-        const encodedBody = encodeURIComponent(currentEmailBody);
-
-        const emailResponse = await fetch(
-          /*`http://localhost:8082/graph?mailId=${encodedEmailId}&subject=${encodedSubject}&body=${encodedBody}`,*/
-          `https://etech7-wf-etech7-mail-service.azuremicroservices.io/graph?mailId=${encodedEmailId}&subject=${encodedSubject}&body=${encodedBody}`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-          }
+        const aiContent = `Email Sent!\n\nTo: ${currentEmailId}\nSubject: ${currentEmailSubject}\nBody: ${currentEmailBody}`;
+        const formSummaryResponse = await handleAddMessageToDB(
+          aiContent,
+          previousResponseBodyForForms
         );
-        if (emailResponse.status === 200) {
-          const aiContent = `Email Sent!\n\nTo: ${currentEmailId}\nSubject: ${currentEmailSubject}\nBody: ${currentEmailBody}`;
-          const formSummaryResponse = await handleAddMessageToDB(
-            aiContent,
-            previousResponseBodyForForms
-          );
-          if (formSummaryResponse.status === 200) {
-            handleAddAssistantMessage(aiContent);
+        if (formSummaryResponse.status === 200) {
+          handleAddAssistantMessage(aiContent);
+          let providerResponse;
+          if (Cookies.get("google_session_token")) {
+            providerResponse = await handleSendGmail(
+              token,
+              currentEmailId,
+              currentEmailSubject,
+              currentEmailBody
+            );
+          } else if (Cookies.get("microsoft_session_token")) {
+            providerResponse = await handleSendGraph(
+              token,
+              currentEmailId,
+              currentEmailSubject,
+              currentEmailBody
+            );
+          } else {
+            console.log("Activate provider in settings.");
+          }
+          if (
+            providerResponse.status === 200 ||
+            providerResponse.status === 202
+          ) {
+            console.log("Mail from provider sent!");
+          } else {
+            console.log("error");
           }
         }
       } catch (e) {
         console.log(e);
       } finally {
-        setLoading(false);
+        setLoading((prevState) => ({ ...prevState, emailForm: false }));
         handleRemoveForm(formId);
       }
     } else {
@@ -216,7 +242,7 @@ const ChatInteraction = ({
 
   const handleContactConfirmation = async (isConfirmed, formId) => {
     if (isConfirmed) {
-      setLoading(true);
+      setLoading((prevState) => ({ ...prevState, contactForm: true }));
       try {
         const encodedContactGivenName = encodeURIComponent(
           currentContactGivenName
@@ -249,7 +275,7 @@ const ChatInteraction = ({
       } catch (e) {
         console.log(e);
       } finally {
-        setLoading(false);
+        setLoading((prevState) => ({ ...prevState, contactForm: false }));
         handleRemoveForm(formId);
       }
     } else {
@@ -262,7 +288,7 @@ const ChatInteraction = ({
 
   const handleScheduleConfirmation = async (isConfirmed, formId) => {
     if (isConfirmed) {
-      setLoading(true);
+      setLoading((prevState) => ({ ...prevState, eventForm: true }));
       try {
         const scheduleResponse = await fetch(
           /*`http://localhost:8082/scheduleEvent`,*/
@@ -293,7 +319,7 @@ const ChatInteraction = ({
       } catch (e) {
         console.log(e);
       } finally {
-        setLoading(false);
+        setLoading((prevState) => ({ ...prevState, eventForm: false }));
         handleRemoveForm(formId);
       }
     } else {
@@ -306,7 +332,7 @@ const ChatInteraction = ({
 
   const handleTicketConfirmation = async (isConfirmed, formId) => {
     if (isConfirmed) {
-      setLoading(true);
+      setLoading((prevState) => ({ ...prevState, ticketForm: true }));
       try {
         const ticketResponse = await fetch(
           /*`http://localhost:8084/createTicket`,*/
@@ -340,7 +366,7 @@ const ChatInteraction = ({
       } catch (e) {
         console.log(e);
       } finally {
-        setLoading(false);
+        setLoading((prevState) => ({ ...prevState, ticketForm: false }));
         handleRemoveForm(formId);
       }
     } else {
@@ -791,7 +817,7 @@ const ChatInteraction = ({
                               return (
                                 <div className="flex flex-col gap-6">
                                   <p>Please select an email address.</p>
-                                  <div className="flex gap-2">
+                                  <div className="flex flex-col items-start gap-2">
                                     {availableEmailIds.map((email, index) => (
                                       <button
                                         key={index}
@@ -843,12 +869,14 @@ const ChatInteraction = ({
                                   <div className="flex items-center gap-4">
                                     <button
                                       className="bg-green-300 rounded-md px-3 py-2 text-white"
-                                      disabled={loading}
+                                      disabled={loading.emailForm}
                                       onClick={() => {
                                         handleEmailConfirmation(true, item.id);
                                       }}
                                     >
-                                      {loading ? "Sending..." : "Send Email"}
+                                      {loading.emailForm
+                                        ? "Sending..."
+                                        : "Send Email"}
                                     </button>
                                     <button
                                       className="bg-red-300 rounded-md px-3 py-2 text-white"
@@ -857,12 +885,6 @@ const ChatInteraction = ({
                                       }}
                                     >
                                       Cancel
-                                    </button>
-                                    <button
-                                      className="bg-blue-300 rounded-md px-3 py-2 text-white"
-                                      onClick={() => handleToggleForm(item.id)}
-                                    >
-                                      Hide form
                                     </button>
                                   </div>
                                 </div>
@@ -933,12 +955,14 @@ const ChatInteraction = ({
                                   <div className="flex items-center gap-4">
                                     <button
                                       className="bg-green-300 rounded-md px-3 py-2 text-white"
-                                      disabled={loading}
+                                      disabled={loading.contactForm}
                                       onClick={() =>
                                         handleContactConfirmation(true)
                                       }
                                     >
-                                      {loading ? "Adding..." : "Add Contact"}
+                                      {loading.contactForm
+                                        ? "Adding..."
+                                        : "Add Contact"}
                                     </button>
                                   </div>
                                   <div>
@@ -976,12 +1000,14 @@ const ChatInteraction = ({
                                   <div className="flex items-center gap-4">
                                     <button
                                       className="bg-green-300 rounded-md px-3 py-2 text-white"
-                                      disabled={loading}
+                                      disabled={loading.emailForm}
                                       onClick={() => {
                                         handleEmailConfirmation(true, item.id);
                                       }}
                                     >
-                                      {loading ? "Sending..." : "Send Email"}
+                                      {loading.emailForm
+                                        ? "Sending..."
+                                        : "Send Email"}
                                     </button>
                                     <button
                                       className="bg-red-300 rounded-md px-3 py-2 text-white"
@@ -990,12 +1016,6 @@ const ChatInteraction = ({
                                       }}
                                     >
                                       Cancel
-                                    </button>
-                                    <button
-                                      className="bg-blue-300 rounded-md px-3 py-2 text-white"
-                                      onClick={() => handleToggleForm(item.id)}
-                                    >
-                                      Hide form
                                     </button>
                                   </div>
                                 </div>
@@ -1063,12 +1083,14 @@ const ChatInteraction = ({
                                   <div className="flex items-center gap-4">
                                     <button
                                       className="bg-green-300 rounded-md px-3 py-2 text-white"
-                                      disabled={loading}
+                                      disabled={loading.contactForm}
                                       onClick={() =>
                                         handleContactConfirmation(true, item.id)
                                       }
                                     >
-                                      {loading ? "Adding..." : "Add Contact"}
+                                      {loading.contactForm
+                                        ? "Adding..."
+                                        : "Add Contact"}
                                     </button>
                                     <button
                                       className="bg-red-300 rounded-md px-3 py-2 text-white"
@@ -1080,12 +1102,6 @@ const ChatInteraction = ({
                                       }
                                     >
                                       Cancel
-                                    </button>
-                                    <button
-                                      className="bg-blue-300 rounded-md px-3 py-2 text-white"
-                                      onClick={() => handleToggleForm(item.id)}
-                                    >
-                                      Hide form
                                     </button>
                                   </div>
                                 </div>
@@ -1215,12 +1231,12 @@ const ChatInteraction = ({
                                   <div className="flex items-center gap-4">
                                     <button
                                       className="bg-green-300 rounded-md px-3 py-2 text-white"
-                                      disabled={loading}
+                                      disabled={loading.ticketForm}
                                       onClick={() => {
                                         handleTicketConfirmation(true, item.id);
                                       }}
                                     >
-                                      {loading
+                                      {loading.ticketForm
                                         ? "Creating..."
                                         : "Create Ticket"}
                                     </button>
@@ -1234,12 +1250,6 @@ const ChatInteraction = ({
                                       }}
                                     >
                                       Cancel
-                                    </button>
-                                    <button
-                                      className="bg-blue-300 rounded-md px-3 py-2 text-white"
-                                      onClick={() => handleToggleForm(item.id)}
-                                    >
-                                      Hide form
                                     </button>
                                   </div>
                                 </div>
@@ -1348,7 +1358,7 @@ const ChatInteraction = ({
                                   <div className="flex items-center gap-4">
                                     <button
                                       className="bg-green-300 rounded-md px-3 py-2 text-white"
-                                      disabled={loading}
+                                      disabled={loading.eventForm}
                                       onClick={() => {
                                         handleScheduleConfirmation(
                                           true,
@@ -1356,7 +1366,7 @@ const ChatInteraction = ({
                                         );
                                       }}
                                     >
-                                      {loading
+                                      {loading.eventForm
                                         ? "Scheduling..."
                                         : "Schedule Event"}
                                     </button>
@@ -1370,12 +1380,6 @@ const ChatInteraction = ({
                                       }}
                                     >
                                       Cancel
-                                    </button>
-                                    <button
-                                      className="bg-blue-300 rounded-md px-3 py-2 text-white"
-                                      onClick={() => handleToggleForm(item.id)}
-                                    >
-                                      Hide form
                                     </button>
                                   </div>
                                 </div>
