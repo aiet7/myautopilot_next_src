@@ -23,6 +23,7 @@ const DashboardPage = ({
 
   const [openChatHistory, setOpenChatHistory] = useState(false);
   const [openChatAssistant, setOpenChatAssistant] = useState(false);
+  const [openSettings, setOpenSettings] = useState(false);
 
   const [currentConversationIndex, setCurrentConversationIndex] = useState(0);
   const [conversationHistory, setConversationHistory] = useState([]);
@@ -105,6 +106,10 @@ const DashboardPage = ({
     setOpenChatAssistant(!openChatAssistant);
   };
 
+  const handleOpenSettings = () => {
+    setOpenSettings(!openSettings);
+  };
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       setHeight(window.innerHeight);
@@ -170,6 +175,7 @@ const DashboardPage = ({
     <ThemeProvider attribute="class">
       {height && (
         <div
+          onClick={() => openSettings && handleOpenSettings(false)}
           className="flex flex-col h-full w-full"
           style={{ height: `${height}px` }}
         >
@@ -209,6 +215,8 @@ const DashboardPage = ({
                 handleNewConversation={handleNewConversation}
                 handleDeleteConversation={handleDeleteConversation}
                 handleConversationSelected={handleConversationSelected}
+                handleOpenChatHistory={handleOpenChatHistory}
+                handleOpenChatAssistant={handleOpenChatAssistant}
               />
             </div>
 
@@ -223,8 +231,10 @@ const DashboardPage = ({
             </div>
 
             <TabNavRail
+              openSettings={openSettings}
               activeTab={activeTab}
               handleTabChange={handleTabChange}
+              handleOpenSettings={handleOpenSettings}
             />
           </div>
         </div>

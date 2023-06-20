@@ -6,12 +6,11 @@ import { BsFillMicFill, BsFillStopFill, BsFillSendFill } from "react-icons/bs";
 import { HiOutlineArrowSmallDown } from "react-icons/hi2";
 import { FaSpinner } from "react-icons/fa";
 
-import { parseList } from "../../utils/detectContentType.js";
 import { categories, subCategories } from "../../utils/ticketCreation.js";
 import { convertKelvinToFahrenheit } from "../../utils/conversions.js";
 import { recognition } from "../../utils/speechToText.js";
 import { handleSendGmail } from "../../utils/api/google.js";
-import { handleSendGraph } from "../../utils/api/microsoft.js";
+import { handleSendGraphMail } from "../../utils/api/microsoft.js";
 
 import Cookies from "js-cookie";
 
@@ -27,6 +26,9 @@ const ChatInteraction = ({
   setConversationHistory,
 
   handleNewConversation,
+
+  handleOpenChatHistory,
+  handleOpenChatAssistant,
 }) => {
   const token =
     Cookies.get("google_session_token") ||
@@ -35,6 +37,7 @@ const ChatInteraction = ({
 
   const latestMessageRef = useRef(null);
   const chatContainerRef = useRef(null);
+  const controllerRef = useRef(null);
 
   const [previousResponseBodyForForms, setPreviousResponseBodyForForms] =
     useState(null);
@@ -45,12 +48,14 @@ const ChatInteraction = ({
   const [isAtBottom, setIsAtBottom] = useState(false);
   const [isOverflowed, setIsOverflowed] = useState(false);
   const [isServerError, setIsServerError] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   const [loading, setLoading] = useState({
     contactForm: false,
     emailForm: false,
     eventForm: false,
     ticketForm: false,
+    taskForm: false,
   });
 
   const [selectedEmailIndex, setSelectedEmailIndex] = useState(null);
@@ -85,6 +90,8 @@ const ChatInteraction = ({
     { name: "", email: "" },
   ]);
 
+  const [currentTaskName, setCurrentTaskName] = useState("");
+
   const handleAddMessageToDB = async (aiContent, body) => {
     const response = await fetch(
       /*`http://localhost:9019/addMessage`,*/
@@ -109,7 +116,22 @@ const ChatInteraction = ({
     return response;
   };
 
+  const handleAbortRequest = () => {
+    if (controllerRef.current) {
+      controllerRef.current.abort();
+      handleAddAssistantMessage(
+        "Stopped generating.  Request may still be fullfilled."
+      );
+    }
+  };
+
   const handleSendUserMessage = async (message) => {
+    if (controllerRef.current) {
+      controllerRef.current.abort();
+    }
+
+    controllerRef.current = new AbortController();
+
     let currentConversation;
     if (conversationHistory.length === 0) {
       currentConversation = await handleNewConversation(0);
@@ -127,8 +149,10 @@ const ChatInteraction = ({
         const encodedMessage = encodeURIComponent(message);
 
         const response = await fetch(
-          `https://etech7-wf-etech7-clu-service.azuremicroservices.io/jarvis4?text=${encodedMessage}&conversationId=${currentConversation.id}&userId=${initialUser.id}`
-          /*`http://localhost:8081/jarvis4?text=${encodedMessage}&conversationId=${currentConversation.id}&userId=${initialUser.id}`*/
+          `https://etech7-wf-etech7-clu-service.azuremicroservices.io/jarvis4?text=${encodedMessage}&conversationId=${currentConversation.id}&userId=${initialUser.id}`,
+          /*`http://localhost:8081/jarvis4?text=${encodedMessage}&conversationId=${currentConversation.id}&userId=${initialUser.id}`,*/ {
+            signal: controllerRef.current.signal,
+          }
         );
 
         if (response.status === 200) {
@@ -208,7 +232,7 @@ const ChatInteraction = ({
               currentEmailBody
             );
           } else if (Cookies.get("microsoft_session_token")) {
-            providerResponse = await handleSendGraph(
+            providerResponse = await handleSendGraphMail(
               token,
               currentEmailId,
               currentEmailSubject,
@@ -231,12 +255,14 @@ const ChatInteraction = ({
       } finally {
         setLoading((prevState) => ({ ...prevState, emailForm: false }));
         handleRemoveForm(formId);
+        setIsFormOpen(false);
       }
     } else {
       const aiContent = `Email Cancelled.`;
       await handleAddMessageToDB(aiContent, previousResponseBodyForForms);
       handleAddAssistantMessage(aiContent);
       handleRemoveForm(formId);
+      setIsFormOpen(false);
     }
   };
 
@@ -277,12 +303,14 @@ const ChatInteraction = ({
       } finally {
         setLoading((prevState) => ({ ...prevState, contactForm: false }));
         handleRemoveForm(formId);
+        setIsFormOpen(false);
       }
     } else {
       const aiContent = "Contact Adding Cancelled";
       await handleAddMessageToDB(aiContent, previousResponseBodyForForms);
       handleAddAssistantMessage(aiContent);
       handleRemoveForm(formId);
+      setIsFormOpen(false);
     }
   };
 
@@ -321,12 +349,14 @@ const ChatInteraction = ({
       } finally {
         setLoading((prevState) => ({ ...prevState, eventForm: false }));
         handleRemoveForm(formId);
+        setIsFormOpen(false);
       }
     } else {
       const aiContent = "Scheduling Cancelled.";
       await handleAddMessageToDB(aiContent, previousResponseBodyForForms);
       handleAddAssistantMessage(aiContent);
       handleRemoveForm(formId);
+      setIsFormOpen(false);
     }
   };
 
@@ -368,12 +398,48 @@ const ChatInteraction = ({
       } finally {
         setLoading((prevState) => ({ ...prevState, ticketForm: false }));
         handleRemoveForm(formId);
+        setIsFormOpen(false);
       }
     } else {
       const aiContent = "Ticket Creation Cancelled.";
       await handleAddMessageToDB(aiContent, previousResponseBodyForForms);
       handleAddAssistantMessage(aiContent);
       handleRemoveForm(formId);
+      setIsFormOpen(false);
+    }
+  };
+
+  const handleTaskConfirmation = async (isConfirmed, formId) => {
+    if (isConfirmed) {
+      setLoading((prevState) => ({ ...prevState, taskForm: true }));
+      try {
+        const encodedTask = encodeURIComponent(currentTaskName);
+        const taskResponse = await fetch(
+          `https://etech7-wf-etech7-mail-service.azuremicroservices.io/addTask?task=${encodedTask}`
+        );
+        if (taskResponse.status === 200) {
+          const aiContent = `Task Created!\n\nTask Name: ${currentTaskName}`;
+          const formSummaryResponse = await handleAddMessageToDB(
+            aiContent,
+            previousResponseBodyForForms
+          );
+          if (formSummaryResponse.status === 200) {
+            handleAddAssistantMessage(aiContent);
+          }
+        }
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setLoading((prevState) => ({ ...prevState, taskForm: false }));
+        handleRemoveForm(formId);
+        setIsFormOpen(false);
+      }
+    } else {
+      const aiContent = "Task Creation Cancelled";
+      await handleAddMessageToDB(aiContent, previousResponseBodyForForms);
+      handleAddAssistantMessage(aiContent);
+      handleRemoveForm(formId);
+      setIsFormOpen(false);
     }
   };
 
@@ -395,6 +461,12 @@ const ChatInteraction = ({
         break;
       case "addContact":
         handleAddContactProcess(JSON.parse(message));
+        break;
+      case "createTask":
+        handleCreateTaskProcess(JSON.parse(message));
+        break;
+      case "getTasks":
+        handleGetTasksProcess(responseBody);
         break;
       case "getEvents":
         handleGetEventsProcess(responseBody);
@@ -471,15 +543,17 @@ const ChatInteraction = ({
     setCurrentContactMobileNumber(mobileNumber);
   };
 
+  const handleCreateTaskProcess = (message) => {
+    handleAddForm("taskForm");
+    setCurrentTaskName(message);
+  };
+
   const handleGetEventsProcess = async (responseBody) => {
-    const getEventsRequest = await fetch(
-      /*`http://localhost:8082/getEvents`*/
-      `https://etech7-wf-etech7-mail-service.azuremicroservices.io/getEvents`
-    );
-    const getEventsResponse = await getEventsRequest.json();
-    if (getEventsResponse.events.length > 0) {
+    const { events } = responseBody;
+
+    if (events.length > 0) {
       let eventCards = `<div class="flex flex-col gap-2">`;
-      getEventsResponse.events.forEach((event) => {
+      events.forEach((event) => {
         const {
           subject,
           start: { dateTime: startDateTime },
@@ -527,6 +601,40 @@ const ChatInteraction = ({
 
       if (eventResponse.status === 200) {
         handleAddAssistantMessage("No Events Scheduled");
+      }
+    }
+  };
+
+  const handleGetTasksProcess = async (responseBody) => {
+    const {
+      tasks: { currentPage },
+    } = responseBody;
+
+    if (currentPage.length > 0) {
+      let taskCards = `<div class="flex flex-col gap-2">`;
+      currentPage.forEach((task, index) => {
+        const { displayName } = task;
+        taskCards += `<div class="flex items-center gap-2">
+            <h2>Task ${index + 1}:</h2>
+            <p>${displayName}</p>
+            </div>
+        `;
+      });
+      taskCards += `</div>`;
+
+      const taskResponse = await handleAddMessageToDB(taskCards, responseBody);
+
+      if (taskResponse.status === 200) {
+        handleAddAssistantMessage(taskCards);
+      } else {
+        const taskResponse = await handleAddMessageToDB(
+          "No Tasks",
+          responseBody
+        );
+
+        if (taskResponse.status === 200) {
+          handleAddAssistantMessage("No Tasks");
+        }
       }
     }
   };
@@ -693,6 +801,7 @@ const ChatInteraction = ({
 
   const handleAddForm = (formType) => {
     const formId = Date.now();
+    setIsFormOpen(true);
     setConversationHistory((prevState) => {
       const newConversationHistory = [...prevState];
 
@@ -769,6 +878,10 @@ const ChatInteraction = ({
 
   return (
     <div
+      onClick={() => {
+        openChatHistory && handleOpenChatHistory(false);
+        openChatAssistant && handleOpenChatAssistant(false);
+      }}
       className={`relative flex flex-col h-full w-full  ${
         (openChatHistory && "lg:opacity-100 opacity-5") ||
         (openChatAssistant && "lg:opacity-100 opacity-5")
@@ -1384,12 +1497,60 @@ const ChatInteraction = ({
                                   </div>
                                 </div>
                               );
+                            case "taskForm":
+                              return (
+                                <div className="flex flex-col gap-6">
+                                  <div>
+                                    <div>
+                                      <span className="font-bold">
+                                        Task Name
+                                      </span>
+                                      <input
+                                        className="h-[50px] border outline-blue-500 w-full px-4"
+                                        value={currentTaskName}
+                                        onChange={(e) =>
+                                          setCurrentTaskName(e.target.value)
+                                        }
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-4">
+                                    <button
+                                      className="bg-green-300 rounded-md px-3 py-2 text-white"
+                                      disabled={loading.taskForm}
+                                      onClick={() => {
+                                        handleTaskConfirmation(true, item.id);
+                                      }}
+                                    >
+                                      {loading.taskForm
+                                        ? "Creating Task..."
+                                        : "Create Task"}
+                                    </button>
+                                    <button
+                                      className="bg-red-300 rounded-md px-3 py-2 text-white"
+                                      onClick={() => {
+                                        handleTicketConfirmation(
+                                          false,
+                                          item.id
+                                        );
+                                      }}
+                                    >
+                                      Cancel
+                                    </button>
+                                  </div>
+                                </div>
+                              );
 
                             default:
                               return null;
                           }
                         default:
-                          return parseList(item.content);
+                          return (
+                            <div
+                              className="whitespace-pre-wrap"
+                              dangerouslySetInnerHTML={{ __html: item.content }}
+                            />
+                          );
                       }
                     })()}
                   </div>
@@ -1421,11 +1582,17 @@ const ChatInteraction = ({
           }}
           value={userInput}
           placeholder="Command Your AutoPilot..."
-          className="dark:bg-black bg-white border outline-blue-500 w-full px-4 h-[50px] "
+          className="dark:bg-black bg-white border outline-blue-500 w-full px-4 h-[50px]"
+          disabled={isFormOpen}
         />
         <BsFillSendFill
           size={25}
           onClick={() => handleSendUserMessage(userInput)}
+          className="cursor-pointer"
+        />
+        <BsFillStopFill
+          onClick={handleAbortRequest}
+          size={25}
           className="cursor-pointer"
         />
         <BsFillMicFill
@@ -1433,7 +1600,6 @@ const ChatInteraction = ({
           className={`${isListening ? "text-blue-500" : null} cursor-pointer`}
           size={25}
         />
-        <BsFillStopFill size={25} className="cursor-pointer" />
       </div>
     </div>
   );

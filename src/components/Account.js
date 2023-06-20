@@ -20,6 +20,7 @@ const Account = ({ initialUser }) => {
   const addressFields = ["street", "city", "zipcode", "state"];
 
   const [editing, setEditing] = useState({});
+  const [deleting, setDeleting] = useState(false);
 
   const [userInputs, setUserInputs] = useState({
     id: id,
@@ -137,7 +138,7 @@ const Account = ({ initialUser }) => {
   };
 
   return (
-    <div className="overflow-y-auto px-4 py-2 w-full flex items-center justify-center">
+    <div className="relative overflow-y-auto px-4 py-2 w-full flex items-center justify-center">
       <div className="flex flex-col h-full items-center gap-2 max-w-[800px]">
         <div className="flex flex-col items-center pt-2 text-center">
           <h1 className="text-xl">Personal Info</h1>
@@ -494,6 +495,36 @@ const Account = ({ initialUser }) => {
             </div>
           </div>
         )}
+        <div className="flex flex-col w-full border border-red-500 rounded-md p-5 gap-6">
+          <div className="flex items-center justify-between h-[60px]">
+            <p className="w-18">Delete This Account</p>
+            {deleting ? (
+              <div className="flex flex-col gap-2">
+                <p className="text-sm">
+                  Confirm `<strong>{userInputs.businessEmail}</strong>` to
+                  delete
+                </p>
+                <input className="px-1 border bg-white text-black"></input>
+                <div className="flex gap-2 items-center">
+                  <button className="dark:border-white/20 hover:bg-red-500 hover:text-white border rounded-md px-1">Delete</button>
+                  <button
+                    onClick={() => setDeleting(false)}
+                    className="dark:border-white/20  border rounded-md px-1"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => setDeleting(true)}
+                className="dark:border-white/20 hover:bg-red-500 hover:text-white border px-4 py-2 rounded-md text-red-500"
+              >
+                Delete This Account
+              </button>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

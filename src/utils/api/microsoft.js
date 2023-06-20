@@ -1,4 +1,4 @@
-export const handleSendGraph = async (
+export const handleSendGraphMail = async (
   token,
   currentEmailId,
   currentEmailSubject,

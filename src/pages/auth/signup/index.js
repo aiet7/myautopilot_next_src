@@ -191,6 +191,11 @@ const Signup = () => {
       return;
     }
 
+    if (isInputEmpty(phoneNumber)) {
+      setErrorMessage("A phone number is required.");
+      return;
+    }
+
     const user = {
       firstName: firstName,
       lastName: lastName,
@@ -445,6 +450,7 @@ const Signup = () => {
                   </select>
                 </div>
                 <input
+                  maxLength={14}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {

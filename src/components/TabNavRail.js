@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { googleLogout } from "@react-oauth/google";
 
@@ -18,9 +17,12 @@ import { useTheme } from "next-themes";
 
 import Cookie from "js-cookie";
 
-const TabNavRail = ({ activeTab, handleTabChange }) => {
-  const [showAccountModal, setShowAccountModal] = useState(false);
-
+const TabNavRail = ({
+  openSettings,
+  activeTab,
+  handleTabChange,
+  handleOpenSettings,
+}) => {
   const { theme, setTheme } = useTheme();
   const router = useRouter();
 
@@ -32,7 +34,7 @@ const TabNavRail = ({ activeTab, handleTabChange }) => {
     Cookie.remove("microsoft_session_token");
     Cookie.remove("session_token");
     Cookie.remove("user_id");
-    
+
     googleLogout();
     router.push("/auth/login");
   };
@@ -40,6 +42,7 @@ const TabNavRail = ({ activeTab, handleTabChange }) => {
   const handleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
+
   return (
     <div className="dark:bg-[#424242] bg-black/5 flex items-center justify-evenly p-3 gap-4 lg:relative lg:flex-col lg:justify-start lg:bg-white">
       <div
@@ -85,7 +88,7 @@ const TabNavRail = ({ activeTab, handleTabChange }) => {
         <span className="text-sm">{theme === "light" ? "Dark" : "Light"}</span>
       </div>
       <div
-        onClick={() => setShowAccountModal(!showAccountModal)}
+        onClick={handleOpenSettings}
         className="flex flex-col items-center cursor-pointer lg:absolute lg:bottom-0 lg:py-3"
       >
         <FiSettings
@@ -93,7 +96,7 @@ const TabNavRail = ({ activeTab, handleTabChange }) => {
           className={`${activeTab === "settings" && "text-blue-600"}`}
         />
         <span className="text-sm">Settings</span>
-        {showAccountModal && (
+        {openSettings && (
           <div className="dark:bg-black dark:border-white/40 dark:border bg-white border border-black/10 absolute z-[99] bottom-[74px] right-0 w-[150px] lg:bottom-0 lg:left-[59px] lg:w-[250px]">
             <div className="flex flex-col">
               <div

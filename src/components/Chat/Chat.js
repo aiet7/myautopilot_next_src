@@ -20,6 +20,9 @@ const Chat = ({
   handleDeleteConversation,
   handleConversationSelected,
   handlePromptAssistantInput,
+
+  handleOpenChatHistory,
+  handleOpenChatAssistant,
 }) => {
   return (
     <div className="flex flex-1 relative overflow-hidden">
@@ -42,6 +45,8 @@ const Chat = ({
         conversationHistory={conversationHistory}
         setConversationHistory={setConversationHistory}
         handleNewConversation={handleNewConversation}
+        handleOpenChatHistory={handleOpenChatHistory}
+        handleOpenChatAssistant={handleOpenChatAssistant}
       />
       <ChatAssistant
         openChatAssistant={openChatAssistant}
