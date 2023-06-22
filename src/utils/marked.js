@@ -64,7 +64,23 @@ export const MarkedWithCopy = ({ markdown }) => {
     return `<a class="dark:text-purple-400 text-purple-800" href="${href}" title="${title}" target="_blank" rel="noopener">${text}</a>`;
   };
 
-  marked.setOptions({ renderer });
+  renderer.table = (header, body) => {
+    return `<table class="table-auto w-full divide-y divide-gray-200">\n<thead>\n${header}\n</thead>\n<tbody class="divide-y divide-gray-200">\n${body}\n</tbody>\n</table>`;
+  };
+
+  renderer.tablerow = (content) => {
+    return `<tr class="">${content}</tr>`;
+  };
+
+  renderer.tablecell = (content, flags) => {
+    const type = flags.header ? "th" : "td";
+    const classes = flags.header
+      ? "dark:bg-white/20 text-white pl-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border bg-black/50"
+      : "dark:text-white text-black pl-2 whitespace-pre-wrap  text-xs text-gray-500 border text-left";
+    return `<${type} class="${classes}">\n${content}\n</${type}>`;
+  };
+
+  marked.setOptions({ renderer, gfm: true });
 
   return (
     <div

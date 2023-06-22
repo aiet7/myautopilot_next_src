@@ -161,7 +161,7 @@ const ChatInteraction = ({
 
         if (response.status === 200) {
           const responseBody = await response.json();
-
+          console.log(responseBody);
           setPreviousResponseBodyForForms({
             ...responseBody,
             conversationId: currentConversation.id,

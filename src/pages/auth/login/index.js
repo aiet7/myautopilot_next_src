@@ -104,7 +104,7 @@ const Login = () => {
         accessToken,
         account: { name, username },
       } = data;
-
+      console.log(data);
       const fullName = name.split(" ");
 
       const user = {
