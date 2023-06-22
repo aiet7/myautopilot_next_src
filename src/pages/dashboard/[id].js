@@ -242,9 +242,25 @@ const DashboardPage = ({
     </ThemeProvider>
   );
 };
-
 export const getServerSideProps = async (context) => {
-  const { params } = context;
+  const {
+    params,
+    req: { cookies },
+  } = context;
+
+  if (
+    !cookies.session_token &&
+    !cookies.google_session_token &&
+    !cookies.microsoft_session_token
+  ) {
+    return {
+      redirect: {
+        destination: "/auth/login",
+        permanent: false,
+      },
+    };
+  }
+
   const userId = params.id;
 
   const userApi = `https://etech7-wf-etech7-db-service.azuremicroservices.io/getUserById?userId=${userId}`;

@@ -6,7 +6,7 @@ const ChatSettingsRail = ({
   handleOpenChatAssistant,
 }) => {
   return (
-    <div className="dark:bg-black bg-white flex items-center justify-between px-4 py-2 lg:hidden">
+    <div className="dark:bg-black bg-white flex items-center justify-between px-4 py-2 xl:hidden">
       <AiOutlineMenu
         size={20}
         onClick={handleOpenChatHistory}

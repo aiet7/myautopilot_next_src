@@ -11,8 +11,11 @@ import { convertKelvinToFahrenheit } from "../../utils/conversions.js";
 import { recognition } from "../../utils/speechToText.js";
 import { handleSendGmail } from "../../utils/api/google.js";
 import { handleSendGraphMail } from "../../utils/api/microsoft.js";
+import { markedRenderer } from "../../utils/marked.js";
 
 import Cookies from "js-cookie";
+
+import { MarkedWithCopy } from "../../utils/marked.js";
 
 const ChatInteraction = ({
   activeTab,
@@ -150,7 +153,8 @@ const ChatInteraction = ({
 
         const response = await fetch(
           `https://etech7-wf-etech7-clu-service.azuremicroservices.io/jarvis4?text=${encodedMessage}&conversationId=${currentConversation.id}&userId=${initialUser.id}`,
-          /*`http://localhost:8081/jarvis4?text=${encodedMessage}&conversationId=${currentConversation.id}&userId=${initialUser.id}`,*/ {
+          /*`http://localhost:8081/jarvis4?text=${encodedMessage}&conversationId=${currentConversation.id}&userId=${initialUser.id}`,*/
+          {
             signal: controllerRef.current.signal,
           }
         );
@@ -577,7 +581,7 @@ const ChatInteraction = ({
             <p>${formattedEndDateTime}</p>
           </div>
           <div class="flex items-center">
-            <a class="text-purple-800" href="${webLink}" target="_blank">Meeting Link</a>
+            <a class="dark:text-purple-400 text-purple-800" href="${webLink}" target="_blank">Meeting Link</a>
           </div>
           </div>
         `;
@@ -614,8 +618,8 @@ const ChatInteraction = ({
       let taskCards = `<div class="flex flex-col gap-2">`;
       currentPage.forEach((task, index) => {
         const { displayName } = task;
-        taskCards += `<div class="flex items-center gap-2">
-            <h2>Task ${index + 1}:</h2>
+        taskCards += `<div class="flex flex-col">
+            <h2 class="font-bold">Task ${index + 1}</h2>
             <p>${displayName}</p>
             </div>
         `;
@@ -690,8 +694,7 @@ const ChatInteraction = ({
     const pc = message.pc || "Closing price certificaties not available";
     const t = message.t || "Timestamp not available";
     let stockCards = "";
-    stockCards += `
-      <div class="dark:rounded-lg dark:shadow-lg dark:shadow-gray-500 flex flex-col items-center rounded-lg shadow-lg shadow-gray-500">
+    stockCards += `<div class="dark:rounded-lg dark:shadow-lg dark:shadow-gray-500 flex flex-col items-center rounded-lg shadow-lg shadow-gray-500">
        <div class="flex flex-col py-4">
         <h2 class="text-4xl py-2">Stock Information</h2>
         <p><strong>Current Price</strong>: $${c.toFixed(2)}</p>
@@ -724,8 +727,7 @@ const ChatInteraction = ({
         convertKelvinToFahrenheit(main.temp_max) || "High not available";
       const temp_min =
         convertKelvinToFahrenheit(main.temp_min) || "Low not available";
-      let weatherCards = `
-      <div class="dark:rounded-lg dark:shadow-lg dark:shadow-gray-500 flex justify-between items-center px-6 py-2 rounded-lg shadow-lg shadow-gray-500">
+      let weatherCards = `<div class="dark:rounded-lg dark:shadow-lg dark:shadow-gray-500 flex justify-between items-center px-6 py-2 rounded-lg shadow-lg shadow-gray-500">
         <div class="flex flex-col">
           <div class="self-start text-9xl">${temp}</div>
           <div class="self-start">${category}</div>
@@ -921,7 +923,7 @@ const ChatInteraction = ({
                     )}
                   </span>
 
-                  <div className="flex-grow">
+                  <div className="flex-grow min-w-[0]">
                     {(() => {
                       switch (item.type) {
                         case "form":
@@ -1545,12 +1547,7 @@ const ChatInteraction = ({
                               return null;
                           }
                         default:
-                          return (
-                            <div
-                              className="whitespace-pre-wrap"
-                              dangerouslySetInnerHTML={{ __html: item.content }}
-                            />
-                          );
+                          return <MarkedWithCopy markdown={item.content} />;
                       }
                     })()}
                   </div>

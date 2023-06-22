@@ -496,7 +496,7 @@ const Account = ({ initialUser }) => {
           </div>
         )}
         <div className="flex flex-col w-full border border-red-500 rounded-md p-5 gap-6">
-          <div className="flex items-center justify-between h-[60px]">
+          <div className="flex items-center justify-between h-[100px]">
             <p className="w-18">Delete This Account</p>
             {deleting ? (
               <div className="flex flex-col gap-2">
