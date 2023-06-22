@@ -26,6 +26,32 @@ body {
   scrollbar-width: none;
 }
 
+.scrollbar-thin::-webkit-scrollbar {
+  width: 5px;
+  height: 10px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #888; 
+  border-radius: 9999px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 9999px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1; 
+}
+
+
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
