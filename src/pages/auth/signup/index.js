@@ -252,7 +252,7 @@ const Signup = () => {
       {loading ? <Loading /> : null}
       {height && (
         <div
-          className="relative z-[99] bg-gradient-to-b from-white via-white to-gray-400 h-full flex justify-center items-center"
+          className="relative z-[99]  bg-gradient-to-b from-white via-white to-gray-400 h-full flex justify-center items-center"
           style={{ height: `${height}px` }}
         >
           <form className="w-[300px] flex flex-col items-center gap-4">
@@ -265,7 +265,7 @@ const Signup = () => {
             <h1 className="text-3xl font-bold text-black text-center">
               Create your account
             </h1>
-            <p className="text-center text-black">
+            <p className="text-center text-black text-sm">
               Please note that the optional fields can be updated/changed in
               your profile page. Optional fields are not required during sign
               up.
@@ -289,7 +289,7 @@ const Signup = () => {
                 <button
                   onClick={handleEmailCheck}
                   type="button"
-                  className="w-full  py-2 bg-green-700 text-white font-bold rounded-sm"
+                  className="w-full py-2 bg-green-700 text-white font-bold rounded-sm"
                 >
                   Continue
                 </button>
@@ -328,30 +328,32 @@ const Signup = () => {
             )}
             {showSignupForm && (
               <>
-                <input
-                  onChange={(e) => setFirstName(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleEmailSignup();
-                    }
-                  }}
-                  type="text"
-                  placeholder="First name (Optional)"
-                  className="w-full p-2 border border-gray-300 bg-white text-black"
-                />
-                <input
-                  onChange={(e) => setLastName(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleEmailSignup();
-                    }
-                  }}
-                  type="text"
-                  placeholder="Last name (Optional)"
-                  className="w-full p-2 border border-gray-300 bg-white text-black"
-                />
+                <div className="flex gap-2">
+                  <input
+                    onChange={(e) => setFirstName(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleEmailSignup();
+                      }
+                    }}
+                    type="text"
+                    placeholder="First name"
+                    className="w-full p-2 border border-gray-300 bg-white text-black"
+                  />
+                  <input
+                    onChange={(e) => setLastName(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleEmailSignup();
+                      }
+                    }}
+                    type="text"
+                    placeholder="Last name"
+                    className="w-full p-2 border border-gray-300 bg-white text-black"
+                  />
+                </div>
                 <input
                   onChange={(e) => setBusinessName(e.target.value)}
                   onKeyDown={(e) => {
@@ -361,45 +363,46 @@ const Signup = () => {
                     }
                   }}
                   type="text"
-                  placeholder="Business name (Optional)"
+                  placeholder="Business name"
                   className="w-full p-2 border border-gray-300 bg-white text-black"
                 />
-
-                <input
-                  onChange={(e) =>
-                    setAddress((prevState) => ({
-                      ...prevState,
-                      street: e.target.value,
-                    }))
-                  }
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleEmailSignup();
+                <div className="flex gap-2">
+                  <input
+                    onChange={(e) =>
+                      setAddress((prevState) => ({
+                        ...prevState,
+                        street: e.target.value,
+                      }))
                     }
-                  }}
-                  type="text"
-                  placeholder="Street (Optional)"
-                  className="w-full p-2 border border-gray-300 bg-white text-black"
-                />
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleEmailSignup();
+                      }
+                    }}
+                    type="text"
+                    placeholder="Street"
+                    className="w-full p-2 border border-gray-300 bg-white text-black"
+                  />
 
-                <input
-                  onChange={(e) =>
-                    setAddress((prevState) => ({
-                      ...prevState,
-                      city: e.target.value,
-                    }))
-                  }
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleEmailSignup();
+                  <input
+                    onChange={(e) =>
+                      setAddress((prevState) => ({
+                        ...prevState,
+                        city: e.target.value,
+                      }))
                     }
-                  }}
-                  type="text"
-                  placeholder="City (Optional)"
-                  className="w-full p-2 border border-gray-300 bg-white text-black"
-                />
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleEmailSignup();
+                      }
+                    }}
+                    type="text"
+                    placeholder="City "
+                    className="w-full p-2 border border-gray-300 bg-white text-black"
+                  />
+                </div>
                 <div className="w-full flex gap-2">
                   <input
                     maxLength={5}
@@ -416,7 +419,7 @@ const Signup = () => {
                       }
                     }}
                     type="text"
-                    placeholder="Zipcode (Optional)"
+                    placeholder="Zipcode"
                     className="w-full p-2 border border-gray-300 bg-white text-black"
                   />
                   <select
@@ -432,13 +435,13 @@ const Signup = () => {
                         handleEmailSignup();
                       }
                     }}
-                    className={`w-full p-2 border border-gray-300  ${
+                    className={`w-full p-2 border rounded-none border-gray-300  ${
                       address.state
                         ? "bg-white text-black"
                         : "bg-white text-gray-400"
                     }`}
                   >
-                    <option value="">State (Optional)</option>
+                    <option value="">State</option>
                     {usStates.states.map((state) => (
                       <option
                         key={state.abbreviation}
@@ -459,7 +462,7 @@ const Signup = () => {
                     }
                   }}
                   type="text"
-                  placeholder="Phone number"
+                  placeholder="*Phone number"
                   className="w-full p-2 border border-gray-300 bg-white text-black"
                 />
                 <input
@@ -471,7 +474,7 @@ const Signup = () => {
                     }
                   }}
                   type="password"
-                  placeholder="Password"
+                  placeholder="*Password"
                   className="w-full p-2 border border-gray-300 bg-white text-black"
                 />
                 <button

@@ -2,7 +2,7 @@ export const ITSkills = [
   {
     name: "Ticket",
     description:
-      "Quickly create an IT support ticket to address any technical issues you're facing. This command can be used to provide all necessary details about the issue at hand, including the category of the problem (like Hardware issue), the subcategory (such as Monitor), the system it affects, and the urgency of the issue. For instance, you could say 'Create a ticket for my hardware issue.  My monitor is not turning on.'",
+      "Quickly create an IT support ticket for your issue.",
     prompt:
       "Create a ticket for my hardware issue.  My monitor is not turning on.",
   },

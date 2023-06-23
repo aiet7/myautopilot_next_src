@@ -2,6 +2,9 @@ import { useEffect, useRef } from "react";
 import { marked } from "marked";
 import { encode } from "html-entities";
 
+import Prism from "prismjs";
+import "./languages.js";
+
 export const MarkedWithCopy = ({ markdown }) => {
   const ref = useRef(null);
 
@@ -49,7 +52,18 @@ export const MarkedWithCopy = ({ markdown }) => {
 
   renderer.code = (code, language) => {
     const codeToCopy = encode(code.trim());
-    return `<pre class="rounded-md my-2"><div class="dark:bg-white/30 bg-black/60 rounded-tl-md rounded-tr-md flex justify-between items-center px-4 py-2 text-white"><p>Code</p><p class="copy-code cursor-pointer" data-code="${codeToCopy}">Copy Code</p></div><div class="bg-black/80 rounded-br-md rounded-bl-md overflow-y-auto p-4 scrollbar-thin"><code class="text-sm text-white">${code}</code></div></pre>`;
+
+    if (!Prism.languages[language]) {
+      language = "plaintext";
+    }
+
+    const highlightedCode = Prism.highlight(
+      code,
+      Prism.languages[language],
+      language
+    );
+
+    return `<pre class="rounded-md my-2"><div class="dark:bg-white/30 bg-black/60 rounded-tl-md rounded-tr-md flex justify-between items-center px-4 py-2 text-white"><p>${language}</p><p class="copy-code cursor-pointer" data-code="${codeToCopy}">Copy Code</p></div><div class="bg-black/80 rounded-br-md rounded-bl-md overflow-y-auto p-4 scrollbar-thin"><code class="language-${language} text-sm">${highlightedCode}</code></div></pre>`;
   };
 
   renderer.list = (body, ordered, start) => {

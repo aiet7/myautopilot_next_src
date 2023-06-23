@@ -3,7 +3,11 @@
 import { useRouter } from "next/navigation";
 import { googleLogout } from "@react-oauth/google";
 
-import { AiOutlineRobot, AiOutlinePoweroff } from "react-icons/ai";
+import {
+  AiOutlineRobot,
+  AiOutlinePoweroff,
+  AiOutlineTeam,
+} from "react-icons/ai";
 import { BsChatDots } from "react-icons/bs";
 import { FiSettings } from "react-icons/fi";
 import {
@@ -77,16 +81,16 @@ const TabNavRail = ({
         <span className="text-sm">Agents</span>
       </div>
       <div
-        onClick={handleTheme}
-        className="flex flex-col items-center cursor-pointer"
+        onClick={() => {}}
+        className="dark:text-white/20 flex flex-col items-center cursor-pointer text-black/20"
       >
-        {theme === "light" ? (
-          <MdOutlineDarkMode size={30} className="cursor-pointer" />
-        ) : (
-          <MdOutlineLightMode size={30} className="cursor-pointer" />
-        )}
-        <span className="text-sm">{theme === "light" ? "Dark" : "Light"}</span>
+        <AiOutlineTeam
+          size={30}
+          className={`${activeTab === "teams" && "text-blue-600"} `}
+        />
+        <span className="text-sm">Teams</span>
       </div>
+
       <div
         onClick={handleOpenSettings}
         className="flex flex-col items-center cursor-pointer lg:absolute lg:bottom-0 lg:py-3"
@@ -108,10 +112,21 @@ const TabNavRail = ({
               </div>
               <div
                 onClick={() => handleTabChange("settings")}
-                className="dark:hover:bg-white/20 hover:bg-black/10 w-full text-lg flex items-center gap-3 px-6 py-3"
+                className="dark:border-white/40 dark:hover:bg-white/20 hover:bg-black/10 border-b border-black/10 w-full text-lg flex items-center gap-3 px-6 py-3"
               >
                 <MdOutlineAccountCircle />
                 <span>Account</span>
+              </div>
+              <div
+                onClick={handleTheme}
+                className="dark:hover:bg-white/20 hover:bg-black/10 w-full text-lg flex items-center gap-3 px-6 py-3"
+              >
+                {theme === "light" ? (
+                  <MdOutlineDarkMode />
+                ) : (
+                  <MdOutlineLightMode />
+                )}
+                <span>{theme === "light" ? "Dark" : "Light"}</span>
               </div>
             </div>
           </div>

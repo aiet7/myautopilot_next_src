@@ -11,11 +11,10 @@ import { convertKelvinToFahrenheit } from "../../utils/conversions.js";
 import { recognition } from "../../utils/speechToText.js";
 import { handleSendGmail } from "../../utils/api/google.js";
 import { handleSendGraphMail } from "../../utils/api/microsoft.js";
-import { markedRenderer } from "../../utils/marked.js";
 
 import Cookies from "js-cookie";
 
-import { MarkedWithCopy } from "../../utils/marked.js";
+import { MarkedWithCopy } from "../../utils/marked/marked.js";
 
 const ChatInteraction = ({
   activeTab,
@@ -41,6 +40,7 @@ const ChatInteraction = ({
   const latestMessageRef = useRef(null);
   const chatContainerRef = useRef(null);
   const controllerRef = useRef(null);
+  const inputRef = useRef(null);
 
   const [previousResponseBodyForForms, setPreviousResponseBodyForForms] =
     useState(null);
@@ -143,11 +143,14 @@ const ChatInteraction = ({
     }
 
     if (message.trim() !== "") {
+      inputRef.current.focus();
+
       handleAddUserMessage(message);
       setIsWaiting(true);
       setIsServerError(false);
       setUserInput("");
       setPreviousResponseBodyForForms(null);
+
       try {
         const encodedMessage = encodeURIComponent(message);
 
@@ -161,7 +164,6 @@ const ChatInteraction = ({
 
         if (response.status === 200) {
           const responseBody = await response.json();
-          console.log(responseBody);
           setPreviousResponseBodyForForms({
             ...responseBody,
             conversationId: currentConversation.id,
@@ -249,6 +251,7 @@ const ChatInteraction = ({
             providerResponse.status === 200 ||
             providerResponse.status === 202
           ) {
+            console.log(providerResponse);
             console.log("Mail from provider sent!");
           } else {
             console.log("error");
@@ -1531,10 +1534,7 @@ const ChatInteraction = ({
                                     <button
                                       className="bg-red-300 rounded-md px-3 py-2 text-white"
                                       onClick={() => {
-                                        handleTicketConfirmation(
-                                          false,
-                                          item.id
-                                        );
+                                        handleTaskConfirmation(false, item.id);
                                       }}
                                     >
                                       Cancel
@@ -1568,8 +1568,10 @@ const ChatInteraction = ({
           />
         )}
       </div>
-      <div className="flex items-center gap-3 px-4 py-2">
+
+      <div className="relative flex items-center px-4 py-2">
         <input
+          ref={inputRef}
           onChange={(e) => setUserInput(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -1579,24 +1581,34 @@ const ChatInteraction = ({
           }}
           value={userInput}
           placeholder="Command Your AutoPilot..."
-          className="dark:bg-black bg-white border outline-blue-500 w-full px-4 h-[50px]"
+          className="dark:bg-black bg-white border outline-blue-500 w-full px-4 h-[50px] pr-14"
           disabled={isFormOpen}
         />
-        <BsFillSendFill
-          size={25}
-          onClick={() => handleSendUserMessage(userInput)}
-          className="cursor-pointer"
-        />
-        <BsFillStopFill
-          onClick={handleAbortRequest}
-          size={25}
-          className="cursor-pointer"
-        />
-        <BsFillMicFill
-          onClick={handleTriggerSpeech}
-          className={`${isListening ? "text-blue-500" : null} cursor-pointer`}
-          size={25}
-        />
+        <div className="absolute right-24 pr-2 flex items-center bottom-0 top-0">
+          <BsFillSendFill
+            size={25}
+            onClick={() => handleSendUserMessage(userInput)}
+            className={`${
+              userInput !== ""
+                ? "dark:text-white dark:hover:text-blue-500 hover:text-blue-500 text-black cursor-pointer"
+                : "dark:text-gray-500 text-gray-300 select-none"
+            } `}
+          />
+        </div>
+        <div className="flex items-center gap-1 pl-2">
+          <BsFillStopFill
+            onClick={handleAbortRequest}
+            size={35}
+            className="hover:text-blue-500 cursor-pointer"
+          />
+          <BsFillMicFill
+            onClick={handleTriggerSpeech}
+            className={`hover:text-blue-500 ${
+              isListening ? "text-blue-500" : null
+            } cursor-pointer`}
+            size={25}
+          />
+        </div>
       </div>
     </div>
   );
