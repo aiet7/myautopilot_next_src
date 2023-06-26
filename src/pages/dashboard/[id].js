@@ -248,18 +248,18 @@ export const getServerSideProps = async (context) => {
     req: { cookies },
   } = context;
 
-  // if (
-  //   !cookies.session_token &&
-  //   !cookies.google_session_token &&
-  //   !cookies.microsoft_session_token
-  // ) {
-  //   return {
-  //     redirect: {
-  //       destination: "/auth/login",
-  //       permanent: false,
-  //     },
-  //   };
-  // }
+  if (
+    !cookies.session_token &&
+    !cookies.google_session_token &&
+    !cookies.microsoft_session_token
+  ) {
+    return {
+      redirect: {
+        destination: "/auth/login",
+        permanent: false,
+      },
+    };
+  }
 
   const userId = params.id;
 
