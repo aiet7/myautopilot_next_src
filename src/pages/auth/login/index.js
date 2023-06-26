@@ -63,12 +63,12 @@ const Login = () => {
         };
 
         const response = await fetch(
-          /*`http://localhost:9019/validateUser?token=${Boolean(
-            tokenResponse.access_token
-          )}`,*/
-          `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=${Boolean(
+          `http://localhost:9019/validateUser?token=${Boolean(
             tokenResponse.access_token
           )}`,
+          /*`https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=${Boolean(
+            tokenResponse.access_token
+          )}`,*/
           {
             method: "POST",
             headers: {

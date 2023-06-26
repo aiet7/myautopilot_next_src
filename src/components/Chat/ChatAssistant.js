@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { AiOutlinePlus } from "react-icons/ai";
+import { AiOutlinePlus, AiOutlineCheck } from "react-icons/ai";
 
 import {
   generalSkills,
@@ -18,9 +18,17 @@ import {
 const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
   const options = ["General", "IT", "Law", "Math", "Favorites"];
   const [selectedAssistant, setSelectedAssistant] = useState("General");
+  const [customPrompt, setCustomPrompt] = useState("");
 
   const [favoriteSkills, setFavoriteSkills] = useState([]);
   const [favoritePrompts, setFavoritePrompts] = useState([]);
+
+  const handleAddCustomPrompt = () => {
+    if (customPrompt) {
+      setFavoritePrompts((prevState) => [...prevState, customPrompt]);
+      setCustomPrompt("");
+    }
+  };
 
   const handleAddToFavorites = (item, type) => {
     if (type === "skill") {
@@ -28,6 +36,19 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
     } else if (type === "prompt") {
       setFavoritePrompts((prevState) => [...prevState, item]);
     }
+  };
+
+  const handleIsInFavorites = (item, type) => {
+    if (type === "skill") {
+      return favoriteSkills.some(
+        (favorite) => JSON.stringify(favorite) === JSON.stringify(item)
+      );
+    } else if (type === "prompt") {
+      return favoritePrompts.some(
+        (favorite) => JSON.stringify(favorite) === JSON.stringify(item)
+      );
+    }
+    return false;
   };
 
   return (
@@ -41,7 +62,7 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
       <h2 className="text-2xl font-bold text-center">Workspace</h2>
       <div className="py-2">
         <select
-          className="w-full p-2 rounded-md"
+          className="w-full p-2 rounded-md bg-white text-black"
           value={selectedAssistant}
           onChange={(e) => setSelectedAssistant(e.target.value)}
         >
@@ -63,20 +84,25 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
               const { name, description, prompt } = generalSkill;
               return (
                 <div key={index} className="flex flex-col gap-1">
-                  <button
-                    onClick={() => handlePromptAssistantInput(prompt)}
-                    className="w-full flex items-center justify-between text-white font-bold bg-red-500 py-1 px-2 rounded-md"
-                  >
-                    {name}
-
-                    <AiOutlinePlus
-                      onClick={() =>
-                        handleAddToFavorites(generalSkill, "skill")
-                      }
-                      size={30}
-                      className="cursor-pointer"
-                    />
-                  </button>
+                  <div className="w-full flex items-center justify-between text-white font-bold bg-red-500 py-1 px-2 rounded-md">
+                    <span
+                      className="w-full cursor-pointer"
+                      onClick={() => handlePromptAssistantInput(prompt)}
+                    >
+                      {name}
+                    </span>
+                    {handleIsInFavorites(generalSkill, "skill") ? (
+                      <AiOutlineCheck size={30} className="cursor-pointer" />
+                    ) : (
+                      <AiOutlinePlus
+                        onClick={() =>
+                          handleAddToFavorites(generalSkill, "skill")
+                        }
+                        size={30}
+                        className="cursor-pointer"
+                      />
+                    )}
+                  </div>
 
                   <pre className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 rounded-md text-sm w-full">
                     {description}
@@ -89,17 +115,23 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
               const { name, description, prompt } = ITSkill;
               return (
                 <div key={index} className="flex flex-col items-start gap-1">
-                  <button
-                    onClick={() => handlePromptAssistantInput(prompt)}
-                    className="w-full flex items-center justify-between text-white font-bold bg-red-500 py-1 px-2 rounded-md"
-                  >
-                    {name}
-                    <AiOutlinePlus
-                      onClick={() => handleAddToFavorites(ITSkill, "skill")}
-                      size={30}
-                      className="cursor-pointer"
-                    />
-                  </button>
+                  <div className="w-full flex items-center justify-between text-white font-bold bg-red-500 py-1 px-2 rounded-md">
+                    <span
+                      className="w-full cursor-pointer"
+                      onClick={() => handlePromptAssistantInput(prompt)}
+                    >
+                      {name}
+                    </span>
+                    {handleIsInFavorites(ITSkill, "skill") ? (
+                      <AiOutlineCheck size={30} className="cursor-pointer" />
+                    ) : (
+                      <AiOutlinePlus
+                        onClick={() => handleAddToFavorites(ITSkill, "skill")}
+                        size={30}
+                        className="cursor-pointer"
+                      />
+                    )}
+                  </div>
                   <pre className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 rounded-md text-sm w-full">
                     {description}
                   </pre>
@@ -135,21 +167,39 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
               );
             })}
           {selectedAssistant === "Favorites" &&
-            favoriteSkills.map((favoriteSkill, index) => {
-              const { name, description, prompt } = favoriteSkill;
-              return (
-                <div key={index} className="flex flex-col items-start gap-1">
-                  <button className="text-white font-bold bg-red-500 py-1 w-full rounded-md">
-                    {name}
-                  </button>
-                  <pre className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 rounded-md text-sm w-full">
-                    {description}
-                  </pre>
-                </div>
-              );
-            })}
+            (favoriteSkills.length > 0 ? (
+              favoriteSkills.map((favoriteSkill, index) => {
+                const { name, description, prompt } = favoriteSkill;
+                return (
+                  <div key={index} className="flex flex-col items-start gap-1">
+                    <button className="text-white font-bold bg-red-500 py-1 w-full rounded-md">
+                      {name}
+                    </button>
+                    <pre className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 rounded-md text-sm w-full">
+                      {description}
+                    </pre>
+                  </div>
+                );
+              })
+            ) : (
+              <p className="text-gray-500">No skills added yet.</p>
+            ))}
         </div>
         <h3 className="text-center text-lg">Prompts</h3>
+        <div className="flex flex-col w-full">
+          <input
+            placeholder="Enter your own prompt..."
+            className="bg-white p-1 rounded-tr-md rounded-tl-md rounded-bl-none rounded-br-none text-black"
+            value={customPrompt}
+            onChange={(e) => setCustomPrompt(e.target.value)}
+          />
+          <button
+            onClick={handleAddCustomPrompt}
+            className="dark:bg-white/40 bg-black/30 text-white p-1 rounded-br-md rounded-bl-md"
+          >
+            Add Prompt
+          </button>
+        </div>
         <div className="flex flex-col gap-3 py-2  overflow-y-auto flex-grow h-[22vh] no-scrollbar md:h-[35vh]">
           {selectedAssistant === "General" &&
             generalPrompts.map((generalPrompt, index) => {
@@ -170,13 +220,20 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
                           >
                             {example}
                           </pre>
-                          <AiOutlinePlus
-                            onClick={() =>
-                              handleAddToFavorites(generalPrompt, "prompt")
-                            }
-                            size={30}
-                            className="cursor-pointer"
-                          />
+                          {handleIsInFavorites(example, "prompt") ? (
+                            <AiOutlineCheck
+                              size={30}
+                              className="cursor-pointer"
+                            />
+                          ) : (
+                            <AiOutlinePlus
+                              onClick={() =>
+                                handleAddToFavorites(example, "prompt")
+                              }
+                              size={30}
+                              className="cursor-pointer"
+                            />
+                          )}
                         </div>
                       );
                     })}
@@ -203,13 +260,20 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
                           >
                             {example}
                           </pre>
-                          <AiOutlinePlus
-                            onClick={() =>
-                              handleAddToFavorites(ITPrompt, "prompt")
-                            }
-                            size={30}
-                            className="cursor-pointer"
-                          />
+                          {handleIsInFavorites(example, "prompt") ? (
+                            <AiOutlineCheck
+                              size={30}
+                              className="cursor-pointer"
+                            />
+                          ) : (
+                            <AiOutlinePlus
+                              onClick={() =>
+                                handleAddToFavorites(example, "prompt")
+                              }
+                              size={30}
+                              className="cursor-pointer"
+                            />
+                          )}
                         </div>
                       );
                     })}
@@ -236,13 +300,20 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
                           >
                             {example}
                           </pre>
-                          <AiOutlinePlus
-                            onClick={() =>
-                              handleAddToFavorites(lawPrompt, "prompt")
-                            }
-                            size={30}
-                            className="cursor-pointer"
-                          />
+                          {handleIsInFavorites(example, "prompt") ? (
+                            <AiOutlineCheck
+                              size={30}
+                              className="cursor-pointer"
+                            />
+                          ) : (
+                            <AiOutlinePlus
+                              onClick={() =>
+                                handleAddToFavorites(example, "prompt")
+                              }
+                              size={30}
+                              className="cursor-pointer"
+                            />
+                          )}
                         </div>
                       );
                     })}
@@ -269,13 +340,20 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
                           >
                             {example}
                           </pre>
-                          <AiOutlinePlus
-                            onClick={() =>
-                              handleAddToFavorites(mathPrompt, "prompt")
-                            }
-                            size={30}
-                            className="cursor-pointer"
-                          />
+                          {handleIsInFavorites(example, "prompt") ? (
+                            <AiOutlineCheck
+                              size={30}
+                              className="cursor-pointer"
+                            />
+                          ) : (
+                            <AiOutlinePlus
+                              onClick={() =>
+                                handleAddToFavorites(example, "prompt")
+                              }
+                              size={30}
+                              className="cursor-pointer"
+                            />
+                          )}
                         </div>
                       );
                     })}
@@ -284,27 +362,22 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
               );
             })}
           {selectedAssistant === "Favorites" &&
-            favoritePrompts.map((favoritePrompt, index) => {
-              const { title, examples } = favoritePrompt;
-              return (
-                <div key={index}>
-                  <h4 className="font-bold">{title}</h4>
-                  <div className="flex flex-col gap-2">
-                    {examples.map((example, index) => {
-                      return (
-                        <pre
-                          onClick={() => handlePromptAssistantInput(example)}
-                          key={index}
-                          className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 rounded-md text-sm w-full cursor-pointer"
-                        >
-                          {example}
-                        </pre>
-                      );
-                    })}
+            (favoritePrompts.length > 0 ? (
+              favoritePrompts.map((favoritePrompt, index) => {
+                return (
+                  <div key={index}>
+                    <pre
+                      onClick={() => handlePromptAssistantInput(favoritePrompt)}
+                      className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 rounded-md text-sm w-full cursor-pointer"
+                    >
+                      {favoritePrompt}
+                    </pre>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              <p className="text-gray-500">No Prompts added yet.</p>
+            ))}
         </div>
       </div>
     </div>
