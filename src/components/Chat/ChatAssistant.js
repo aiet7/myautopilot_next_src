@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { AiOutlinePlus, AiOutlineCheck } from "react-icons/ai";
+import { AiOutlinePlus, AiOutlineCheck, AiOutlineMinus } from "react-icons/ai";
 
 import {
   generalSkills,
@@ -18,23 +18,43 @@ import {
 const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
   const options = ["General", "IT", "Law", "Math", "Favorites"];
   const [selectedAssistant, setSelectedAssistant] = useState("General");
-  const [customPrompt, setCustomPrompt] = useState("");
+  const [customPrompt, setCustomPrompt] = useState({
+    name: "",
+    description: "",
+    prompt: "",
+  });
 
   const [favoriteSkills, setFavoriteSkills] = useState([]);
   const [favoritePrompts, setFavoritePrompts] = useState([]);
 
   const handleAddCustomPrompt = () => {
-    if (customPrompt) {
+    if (customPrompt.prompt) {
       setFavoritePrompts((prevState) => [...prevState, customPrompt]);
-      setCustomPrompt("");
+      setCustomPrompt({ name: "", description: "", prompt: "" });
     }
   };
 
   const handleAddToFavorites = (item, type) => {
     if (type === "skill") {
-      setFavoriteSkills((prevState) => [...prevState, item]);
+      if (handleIsInFavorites(item, type)) {
+        setFavoriteSkills((prevState) =>
+          prevState.filter(
+            (favorite) => JSON.stringify(favorite) !== JSON.stringify(item)
+          )
+        );
+      } else {
+        setFavoriteSkills((prevState) => [...prevState, item]);
+      }
     } else if (type === "prompt") {
-      setFavoritePrompts((prevState) => [...prevState, item]);
+      if (handleIsInFavorites(item, type)) {
+        setFavoritePrompts((prevState) =>
+          prevState.filter(
+            (favorite) => JSON.stringify(favorite) !== JSON.stringify(item)
+          )
+        );
+      } else {
+        setFavoritePrompts((prevState) => [...prevState, item]);
+      }
     }
   };
 
@@ -59,10 +79,10 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
           : "translate-x-full w-[300px]"
       } xl:relative xl:translate-x-0 xl:min-w-[300px] xl:static xl:dark:shadow-white xl:shadow-lg xl:shadow-black/50`}
     >
-      <h2 className="text-2xl font-bold text-center">Workspace</h2>
+      <h2 className="text-2xl font-bold text-center">Agents</h2>
       <div className="py-2">
         <select
-          className="w-full p-2 rounded-md bg-white text-black"
+          className="w-full p-2 bg-white text-black rounded-none"
           value={selectedAssistant}
           onChange={(e) => setSelectedAssistant(e.target.value)}
         >
@@ -78,13 +98,13 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
 
       <h3 className="text-center text-lg">Skills</h3>
       <div className="flex flex-col gap-2 flex-grow">
-        <div className="flex flex-col gap-3 py-2 overflow-y-auto flex-grow h-[22vh] no-scrollbar md:h-[35vh]">
+        <div className="flex flex-col gap-3 p-1 overflow-y-auto  flex-grow h-[18vh] scrollbar-thin md:h-[30vh]">
           {selectedAssistant === "General" &&
             generalSkills.map((generalSkill, index) => {
               const { name, description, prompt } = generalSkill;
               return (
                 <div key={index} className="flex flex-col gap-1">
-                  <div className="w-full flex items-center justify-between text-white font-bold bg-red-500 py-1 px-2 rounded-md">
+                  <div className="w-full flex items-center justify-between text-white font-bold bg-red-500 py-1 px-2">
                     <span
                       className="w-full cursor-pointer"
                       onClick={() => handlePromptAssistantInput(prompt)}
@@ -104,7 +124,7 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
                     )}
                   </div>
 
-                  <pre className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 rounded-md text-sm w-full">
+                  <pre className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 text-xs w-full">
                     {description}
                   </pre>
                 </div>
@@ -115,7 +135,7 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
               const { name, description, prompt } = ITSkill;
               return (
                 <div key={index} className="flex flex-col items-start gap-1">
-                  <div className="w-full flex items-center justify-between text-white font-bold bg-red-500 py-1 px-2 rounded-md">
+                  <div className="w-full flex items-center justify-between text-white font-bold bg-red-500 py-1 px-2 ">
                     <span
                       className="w-full cursor-pointer"
                       onClick={() => handlePromptAssistantInput(prompt)}
@@ -132,7 +152,7 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
                       />
                     )}
                   </div>
-                  <pre className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 rounded-md text-sm w-full">
+                  <pre className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 text-xs w-full">
                     {description}
                   </pre>
                 </div>
@@ -143,10 +163,10 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
               const { name, description, prompt } = lawSkill;
               return (
                 <div key={index} className="flex flex-col items-start gap-1">
-                  <button className="text-white font-bold bg-red-500 py-1 w-full rounded-md">
+                  <button className="text-white font-bold bg-red-500 py-1 w-full">
                     {name}
                   </button>
-                  <pre className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 rounded-md text-sm w-full">
+                  <pre className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 text-xs w-full">
                     {description}
                   </pre>
                 </div>
@@ -157,10 +177,10 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
               const { name, description, prompt } = mathSkill;
               return (
                 <div key={index} className="flex flex-col items-start gap-1">
-                  <button className="text-white font-bold bg-red-500 py-1 w-full rounded-md">
+                  <button className="text-white font-bold bg-red-500 py-1 w-full">
                     {name}
                   </button>
-                  <pre className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 rounded-md text-sm w-full">
+                  <pre className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 text-xs w-full">
                     {description}
                   </pre>
                 </div>
@@ -172,10 +192,26 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
                 const { name, description, prompt } = favoriteSkill;
                 return (
                   <div key={index} className="flex flex-col items-start gap-1">
-                    <button className="text-white font-bold bg-red-500 py-1 w-full rounded-md">
-                      {name}
-                    </button>
-                    <pre className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 rounded-md text-sm w-full">
+                    <div className="w-full flex items-center justify-between text-white font-bold bg-red-500 py-1 px-2">
+                      <span
+                        className="w-full cursor-pointer"
+                        onClick={() => handlePromptAssistantInput(prompt)}
+                      >
+                        {name}
+                      </span>
+                      {handleIsInFavorites(favoriteSkill, "skill") ? (
+                        <AiOutlineMinus
+                          onClick={() =>
+                            handleAddToFavorites(favoriteSkill, "skill")
+                          }
+                          size={30}
+                          className="cursor-pointer"
+                        />
+                      ) : (
+                        <AiOutlinePlus size={30} className="cursor-pointer" />
+                      )}
+                    </div>
+                    <pre className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 text-xs w-full">
                       {description}
                     </pre>
                   </div>
@@ -188,60 +224,69 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
         <h3 className="text-center text-lg">Prompts</h3>
         <div className="flex flex-col w-full">
           <input
+            placeholder="Enter custom title..."
+            className="bg-white p-1 text-black rounded-none border-b text-sm"
+            value={customPrompt.name}
+            onChange={(e) =>
+              setCustomPrompt({ ...customPrompt, name: e.target.value })
+            }
+          />
+          <input
+            placeholder="Enter custom description..."
+            className="bg-white p-1 text-black rounded-none border-b text-sm"
+            value={customPrompt.description}
+            onChange={(e) =>
+              setCustomPrompt({ ...customPrompt, description: e.target.value })
+            }
+          />
+          <input
             placeholder="Enter your own prompt..."
-            className="bg-white p-1 rounded-tr-md rounded-tl-md rounded-bl-none rounded-br-none text-black"
-            value={customPrompt}
-            onChange={(e) => setCustomPrompt(e.target.value)}
+            className="bg-white p-1 text-black rounded-none text-sm"
+            value={customPrompt.prompt}
+            onChange={(e) =>
+              setCustomPrompt({ ...customPrompt, prompt: e.target.value })
+            }
           />
           <button
             onClick={handleAddCustomPrompt}
-            className="dark:bg-white/40 bg-black/30 text-white p-1 rounded-br-md rounded-bl-md"
+            className="dark:bg-white/40 bg-black/30 text-white p-1"
           >
             Add Prompt
           </button>
         </div>
-        <div className="flex flex-col gap-3 py-2  overflow-y-auto flex-grow h-[22vh] no-scrollbar md:h-[35vh]">
+        <div className="flex flex-col gap-3 p-1  overflow-y-auto flex-grow h-[18vh] scrollbar-thin md:h-[30vh]">
           {selectedAssistant === "General" &&
             generalPrompts.map((generalPrompt, index) => {
-              const { title, examples } = generalPrompt;
+              const { name, description, prompt } = generalPrompt;
               return (
-                <div key={index}>
-                  <h4 className="font-bold">{title}</h4>
-                  <div className="flex flex-col gap-2">
-                    {examples.map((example, index) => {
-                      return (
-                        <div
-                          key={index}
-                          className="dark:bg-white/20 flex items-center p-2 justify-between bg-black/5 rounded-md"
-                        >
-                          <pre
-                            onClick={() => handlePromptAssistantInput(example)}
-                            className="whitespace-pre-wrap  text-sm w-full cursor-pointer"
-                          >
-                            {example}
-                          </pre>
-                          {handleIsInFavorites(example, "prompt") ? (
-                            <AiOutlineCheck
-                              size={30}
-                              className="cursor-pointer"
-                            />
-                          ) : (
-                            <AiOutlinePlus
-                              onClick={() =>
-                                handleAddToFavorites(example, "prompt")
-                              }
-                              size={30}
-                              className="cursor-pointer"
-                            />
-                          )}
-                        </div>
-                      );
-                    })}
+                <div key={index} className="flex flex-col gap-1">
+                  <div className="w-full flex items-center justify-between text-white font-bold bg-blue-800 py-1 px-2">
+                    <span
+                      className="w-full cursor-pointer"
+                      onClick={() => handlePromptAssistantInput(prompt)}
+                    >
+                      {name}
+                    </span>
+                    {handleIsInFavorites(generalPrompt, "prompt") ? (
+                      <AiOutlineCheck size={30} className="cursor-pointer" />
+                    ) : (
+                      <AiOutlinePlus
+                        onClick={() =>
+                          handleAddToFavorites(generalPrompt, "prompt")
+                        }
+                        size={30}
+                        className="cursor-pointer"
+                      />
+                    )}
                   </div>
+
+                  <pre className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 text-xs w-full">
+                    {description}
+                  </pre>
                 </div>
               );
             })}
-          {selectedAssistant === "IT" &&
+          {/*{selectedAssistant === "IT" &&
             ITPrompts.map((ITPrompt, index) => {
               const { title, examples } = ITPrompt;
               return (
@@ -361,22 +406,44 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
                 </div>
               );
             })}
+            */}
           {selectedAssistant === "Favorites" &&
             (favoritePrompts.length > 0 ? (
               favoritePrompts.map((favoritePrompt, index) => {
+                const { name, description, prompt } = favoritePrompt;
                 return (
-                  <div key={index}>
-                    <pre
-                      onClick={() => handlePromptAssistantInput(favoritePrompt)}
-                      className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 rounded-md text-sm w-full cursor-pointer"
-                    >
-                      {favoritePrompt}
+                  <div
+                    key={index}
+                    onClick={() => handlePromptAssistantInput(prompt)}
+                    className="flex flex-col items-start gap-1"
+                  >
+                    <div className="w-full flex items-center justify-between text-white font-bold bg-blue-800 py-1 px-2">
+                      <span
+                        className="w-full cursor-pointer"
+                        onClick={() => handlePromptAssistantInput(prompt)}
+                      >
+                        {name}
+                      </span>
+                      {handleIsInFavorites(favoritePrompt, "prompt") ? (
+                        <AiOutlineMinus
+                          onClick={() =>
+                            handleAddToFavorites(favoritePrompt, "prompt")
+                          }
+                          size={30}
+                          className="cursor-pointer"
+                        />
+                      ) : (
+                        <AiOutlinePlus size={30} className="cursor-pointer" />
+                      )}
+                    </div>
+                    <pre className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 text-xs w-full">
+                      {description}
                     </pre>
                   </div>
                 );
               })
             ) : (
-              <p className="text-gray-500">No Prompts added yet.</p>
+              <p className="text-gray-500">No skills added yet.</p>
             ))}
         </div>
       </div>

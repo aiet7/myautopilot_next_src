@@ -84,7 +84,7 @@ const ChatHistory = ({
     >
       <button
         onClick={() => handleNewConversation(conversationHistory.length)}
-        className="w-full rounded-md p-4 bg-blue-500 text-white"
+        className="w-full p-4 bg-blue-800 text-white"
       >
         + New Chat
       </button>
@@ -97,7 +97,7 @@ const ChatHistory = ({
               className={`${
                 currentConversationIndex === index &&
                 "dark:bg-white/20 bg-black/10"
-              } dark:text-white dark:hover:bg-white/20 hover:bg-black/10 text-black w-full flex items-center justify-between h-[50px] px-4 rounded-md cursor-pointer`}
+              } dark:text-white dark:hover:bg-white/20 hover:bg-black/10 text-black w-full flex items-center justify-between h-[50px] px-4 cursor-pointer`}
             >
               <div
                 className="w-8"

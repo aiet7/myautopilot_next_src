@@ -8,6 +8,8 @@ import "./languages.js";
 export const MarkedWithCopy = ({ markdown }) => {
   const ref = useRef(null);
 
+  
+
   useEffect(() => {
     if (ref.current) {
       ref.current.querySelectorAll(".copy-code").forEach((element) => {

@@ -2,7 +2,12 @@
 
 import { useState, useEffect, useRef } from "react";
 import { AiOutlineUser, AiOutlineRobot } from "react-icons/ai";
-import { BsFillMicFill, BsFillStopFill, BsFillSendFill } from "react-icons/bs";
+import {
+  BsFillMicFill,
+  BsFillStopFill,
+  BsFillSendFill,
+  BsImageFill,
+} from "react-icons/bs";
 import { HiOutlineArrowSmallDown } from "react-icons/hi2";
 import { FaSpinner } from "react-icons/fa";
 
@@ -129,6 +134,60 @@ const ChatInteraction = ({
     }
   };
 
+  const handleImageGenerator = async (message) => {
+    if (controllerRef.current) {
+      controllerRef.current.abort();
+    }
+
+    controllerRef.current = new AbortController();
+
+    let currentConversation;
+    if (conversationHistory.length === 0) {
+      currentConversation = await handleNewConversation(0);
+    } else {
+      currentConversation = conversationHistory[currentConversationIndex];
+    }
+
+    if (message.trim() !== "") {
+      inputRef.current.focus();
+
+      handleAddUserMessage(message);
+      setIsWaiting(true);
+      setIsServerError(false);
+      setUserInput("");
+
+      try {
+        const encodedMessage = encodeURIComponent(message);
+        const response = await fetch(
+          `https://etech7-wf-etech7-worflow-2.azuremicroservices.io/image?message=${encodedMessage}&conversationId=${currentConversation.id}&userId=${initialUser.id}`,
+          {
+            signal: controllerRef.current.signal,
+          }
+        );
+
+        if (response.status === 200) {
+          const responseBody = await response.json();
+          handleProcessResponse(
+            responseBody.intent,
+            null,
+            JSON.parse(responseBody.message),
+            {
+              ...responseBody,
+              conversationId: currentConversation.id,
+              userContent: message,
+            }
+          );
+        } else if (response.status === 500) {
+          setIsServerError(true);
+        }
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setIsWaiting(false);
+      }
+    }
+  };
+
   const handleSendUserMessage = async (message) => {
     if (controllerRef.current) {
       controllerRef.current.abort();
@@ -252,7 +311,6 @@ const ChatInteraction = ({
             providerResponse.status === 200 ||
             providerResponse.status === 202
           ) {
-            console.log(providerResponse);
             console.log("Mail from provider sent!");
           } else {
             console.log("error");
@@ -489,7 +547,7 @@ const ChatInteraction = ({
         handleGetWeatherProcess(JSON.parse(message), responseBody);
         break;
       default:
-        handleDefaultActionProcess(message);
+        handleDefaultActionProcess(message, responseBody);
         break;
     }
   };
@@ -592,23 +650,30 @@ const ChatInteraction = ({
       });
 
       eventCards += `</div>`;
+      try {
+        const eventResponse = await handleAddMessageToDB(
+          eventCards,
+          responseBody
+        );
 
-      const eventResponse = await handleAddMessageToDB(
-        eventCards,
-        responseBody
-      );
-
-      if (eventResponse.status === 200) {
-        handleAddAssistantMessage(eventCards);
+        if (eventResponse.status === 200) {
+          handleAddAssistantMessage(eventCards);
+        }
+      } catch (e) {
+        console.log(e);
       }
     } else {
-      const eventResponse = await handleAddMessageToDB(
-        "No Events Scheduled",
-        responseBody
-      );
+      try {
+        const eventResponse = await handleAddMessageToDB(
+          "No Events Scheduled",
+          responseBody
+        );
 
-      if (eventResponse.status === 200) {
-        handleAddAssistantMessage("No Events Scheduled");
+        if (eventResponse.status === 200) {
+          handleAddAssistantMessage("No Events Scheduled");
+        }
+      } catch (e) {
+        console.log(e);
       }
     }
   };
@@ -630,11 +695,20 @@ const ChatInteraction = ({
       });
       taskCards += `</div>`;
 
-      const taskResponse = await handleAddMessageToDB(taskCards, responseBody);
+      try {
+        const taskResponse = await handleAddMessageToDB(
+          taskCards,
+          responseBody
+        );
 
-      if (taskResponse.status === 200) {
-        handleAddAssistantMessage(taskCards);
-      } else {
+        if (taskResponse.status === 200) {
+          handleAddAssistantMessage(taskCards);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      try {
         const taskResponse = await handleAddMessageToDB(
           "No Tasks",
           responseBody
@@ -643,6 +717,8 @@ const ChatInteraction = ({
         if (taskResponse.status === 200) {
           handleAddAssistantMessage("No Tasks");
         }
+      } catch (e) {
+        console.log(e);
       }
     }
   };
@@ -671,19 +747,30 @@ const ChatInteraction = ({
       });
       newsCards += `</div>`;
 
-      const newsResponse = await handleAddMessageToDB(newsCards, responseBody);
+      try {
+        const newsResponse = await handleAddMessageToDB(
+          newsCards,
+          responseBody
+        );
 
-      if (newsResponse.status === 200) {
-        handleAddAssistantMessage(newsCards);
+        if (newsResponse.status === 200) {
+          handleAddAssistantMessage(newsCards);
+        }
+      } catch (e) {
+        console.log(e);
       }
     } else {
-      const newsResponse = await handleAddMessageToDB(
-        "No News Available",
-        responseBody
-      );
+      try {
+        const newsResponse = await handleAddMessageToDB(
+          "No News Available",
+          responseBody
+        );
 
-      if (newsResponse.status === 200) {
-        handleAddAssistantMessage("No News Available");
+        if (newsResponse.status === 200) {
+          handleAddAssistantMessage("No News Available");
+        }
+      } catch (e) {
+        console.log(e);
       }
     }
   };
@@ -713,11 +800,17 @@ const ChatInteraction = ({
        </div>
       </div>
     `;
+    try {
+      const stockResponse = await handleAddMessageToDB(
+        stockCards,
+        responseBody
+      );
 
-    const stockResponse = await handleAddMessageToDB(stockCards, responseBody);
-
-    if (stockResponse.status === 200) {
-      handleAddAssistantMessage(stockCards);
+      if (stockResponse.status === 200) {
+        handleAddAssistantMessage(stockCards);
+      }
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -744,27 +837,66 @@ const ChatInteraction = ({
       </div>
       `;
 
-      const weatherResponse = await handleAddMessageToDB(
-        weatherCards,
-        responseBody
-      );
-      if (weatherResponse.status === 200) {
-        handleAddAssistantMessage(weatherCards);
+      try {
+        const weatherResponse = await handleAddMessageToDB(
+          weatherCards,
+          responseBody
+        );
+        if (weatherResponse.status === 200) {
+          handleAddAssistantMessage(weatherCards);
+        }
+      } catch (e) {
+        console.log(e);
       }
     } else {
-      const weatherResponse = await handleAddMessageToDB(
-        "No Weather Available",
-        responseBody
-      );
+      try {
+        const weatherResponse = await handleAddMessageToDB(
+          "No Weather Available",
+          responseBody
+        );
 
-      if (weatherResponse.status === 200) {
-        handleAddAssistantMessage("No Weather Available");
+        if (weatherResponse.status === 200) {
+          handleAddAssistantMessage("No Weather Available");
+        }
+      } catch (e) {
+        console.log(e);
       }
     }
   };
 
-  const handleDefaultActionProcess = (message) => {
-    handleAddAssistantMessage(message);
+  const handleDefaultActionProcess = async (message, responseBody) => {
+    if (message.data && message.data[0].url) {
+      const imageUrl = message.data[0].url;
+      const markDownImage = `![Generated Image](${imageUrl})`;
+      const openLink = `[Open Image](${imageUrl})`;
+
+      try {
+        const imageResponse = await handleAddMessageToDB(
+          `${openLink}`,
+          responseBody
+        );
+        if (imageResponse.status === 200) {
+          handleAddAssistantMessage(`${markDownImage}`);
+        } else {
+          try {
+            const imageResponse = await handleAddMessageToDB(
+              "No Image Generated",
+              responseBody
+            );
+
+            if (imageResponse.status === 200) {
+              handleAddAssistantMessage("No Image Generated");
+            }
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      handleAddAssistantMessage(message);
+    }
   };
 
   const handleAddUserMessage = async (message) => {
@@ -1018,10 +1150,19 @@ const ChatInteraction = ({
           }}
           value={userInput}
           placeholder="Command Your AutoPilot..."
-          className="dark:bg-black bg-white border outline-blue-500 w-full px-4 h-[50px] pr-14"
+          className="dark:bg-black bg-white border outline-blue-500 w-full px-4 h-[50px] pr-24"
           disabled={isFormOpen}
         />
-        <div className="absolute right-24 pr-2 flex items-center bottom-0 top-0">
+        <div className="flex items-center gap-3 absolute right-24 pr-2 flex items-center bottom-0 top-0">
+          <BsImageFill
+            onClick={() => handleImageGenerator(userInput)}
+            size={23}
+            className={`${
+              userInput !== ""
+                ? "dark:text-white dark:hover:text-blue-500 hover:text-blue-500 text-black cursor-pointer"
+                : "dark:text-gray-500 text-gray-300 select-none"
+            } `}
+          />
           <BsFillSendFill
             size={25}
             onClick={() => handleSendUserMessage(userInput)}

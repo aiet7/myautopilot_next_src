@@ -63,9 +63,9 @@ const Login = () => {
         };
 
         const response = await fetch(
-          /*`http://localhost:9019/validateUser?token=${Boolean(
-            tokenResponse.access_token
-          )}`,*/
+          // `http://localhost:9019/validateUser?token=${Boolean(
+          //   tokenResponse.access_token
+          // )}`,
           `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=${Boolean(
             tokenResponse.access_token
           )}`,
@@ -103,7 +103,7 @@ const Login = () => {
         accessToken,
         account: { name, username },
       } = data;
-      console.log(data);
+
       const fullName = name.split(" ");
 
       const user = {
