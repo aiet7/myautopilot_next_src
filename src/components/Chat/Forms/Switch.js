@@ -1,4 +1,4 @@
-import { MarkedWithCopy } from "../../../utils/marked/marked.js";
+import { MarkedChatInteraction } from "../../../utils/marked/marked.js";
 
 import EmailButtons from "./Email/EmailButtons.js";
 import EmailForm from "./Email/EmailForm.js";
@@ -45,6 +45,17 @@ const Switch = ({
   setCurrentTicketEmailId,
   currentTicketPhoneNumber,
   setCurrentTicketPhoneNumber,
+
+  currentTicketNewFirstName,
+  setCurrentTicketNewFirstName,
+  currentTicketNewLastName,
+  setCurrentTicketNewLastName,
+  currentTicketNewEmailId,
+  setCurrentTicketNewEmailId,
+  currentTicketNewPhoneNumber,
+  setCurrentTicketNewPhoneNumber,
+  currentTicketLicenseId,
+  setCurrentTicketLicenseId,
 
   currentEventSubject,
   setCurrentEventSubject,
@@ -147,6 +158,7 @@ const Switch = ({
         case "ticketForm":
           return (
             <div className="flex flex-col gap-6">
+              <p>Create a support ticket.</p>
               <TicketForm
                 itemId={itemId}
                 loading={loading}
@@ -167,12 +179,23 @@ const Switch = ({
                 currentTicketPhoneNumber={currentTicketPhoneNumber}
                 setCurrentTicketPhoneNumber={setCurrentTicketPhoneNumber}
                 handleTicketConfirmation={handleTicketConfirmation}
+                currentTicketNewFirstName={currentTicketNewFirstName}
+                setCurrentTicketNewFirstName={setCurrentTicketNewFirstName}
+                currentTicketNewLastName={currentTicketNewLastName}
+                setCurrentTicketNewLastName={setCurrentTicketNewLastName}
+                currentTicketNewEmailId={currentTicketNewEmailId}
+                setCurrentTicketNewEmailId={setCurrentTicketNewEmailId}
+                currentTicketNewPhoneNumber={currentTicketNewPhoneNumber}
+                setCurrentTicketNewPhoneNumber={setCurrentTicketNewPhoneNumber}
+                currentTicketLicenseId={currentTicketLicenseId}
+                setCurrentTicketLicenseId={setCurrentTicketLicenseId}
               />
             </div>
           );
         case "eventForm":
           return (
             <div className="flex flex-col gap-6">
+              <p>Schedule an event.</p>
               <EventForm
                 itemId={itemId}
                 loading={loading}
@@ -195,6 +218,7 @@ const Switch = ({
         case "taskForm":
           return (
             <div className="flex flex-col gap-6">
+              <p>Create a task.</p>
               <TaskForm
                 itemId={itemId}
                 loading={loading}
@@ -209,7 +233,7 @@ const Switch = ({
           return null;
       }
     default:
-      return <MarkedWithCopy markdown={item.content} />;
+      return <MarkedChatInteraction markdown={item.content} />;
   }
 };
 export default Switch;

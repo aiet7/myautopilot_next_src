@@ -17,7 +17,7 @@ const EventForm = ({
 }) => {
   return (
     <div>
-      <div>
+      <div className="flex flex-col gap-2">
         <div>
           <span className="font-bold">Subject</span>
           <input

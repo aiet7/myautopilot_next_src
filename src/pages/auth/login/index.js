@@ -97,7 +97,7 @@ const Login = () => {
 
   const handleMicrosoftLogin = async (err, data) => {
     setLoading(true);
-
+    console.log(data);
     try {
       const {
         accessToken,
@@ -121,7 +121,7 @@ const Login = () => {
       };
 
       const response = await fetch(
-        /*`http://localhost:9019/validateUser?token=${Boolean(accessToken)}`,*/
+        // `http://localhost:9019/validateUser?token=${Boolean(accessToken)}`,
         `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=${Boolean(
           accessToken
         )}`,
@@ -302,7 +302,7 @@ const Login = () => {
 
                   <MicrosoftLogin
                     graphScopes={["mail.read", "mail.readwrite", "mail.send"]}
-                    clientId="14a9d59a-1d19-486e-a4db-d81c5410a453"
+                    clientId="d78746f9-41d1-4997-97eb-7c600d27f11e"
                     authCallback={handleMicrosoftLogin}
                     redirectUri="https://myautopilot.azurewebsites.net"
                   >

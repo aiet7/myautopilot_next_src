@@ -5,10 +5,8 @@ import { encode } from "html-entities";
 import Prism from "prismjs";
 import "./languages.js";
 
-export const MarkedWithCopy = ({ markdown }) => {
+export const MarkedChatInteraction = ({ markdown }) => {
   const ref = useRef(null);
-
-  
 
   useEffect(() => {
     if (ref.current) {
@@ -94,6 +92,51 @@ export const MarkedWithCopy = ({ markdown }) => {
       ? "dark:bg-white/20 text-white pl-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border bg-black/50"
       : "dark:text-white text-black pl-2 whitespace-pre-wrap  text-xs text-gray-500 border text-left";
     return `<${type} class="${classes}">\n${content}\n</${type}>`;
+  };
+
+  marked.setOptions({ renderer, gfm: true });
+
+  return (
+    <div
+      ref={ref}
+      className="flex flex-col gap-2 whitespace-pre-wrap"
+      dangerouslySetInnerHTML={{
+        __html: marked(markdown, { headerIds: false, mangle: false }),
+      }}
+    />
+  );
+};
+
+export const MarkedChatAssistant = ({
+  markdown,
+  handlePromptAssistantInput,
+}) => {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.querySelectorAll(".list-item").forEach((element) => {
+        element.addEventListener("click", (event) => {
+          event.preventDefault();
+
+          handlePromptAssistantInput(element.textContent);
+        });
+      });
+    }
+  }, [handlePromptAssistantInput, markdown]);
+
+  const renderer = new marked.Renderer();
+
+  renderer.list = (body, ordered, start) => {
+    if (ordered) {
+      return `<ol start="${start}" class="flex flex-col gap-2 list-decimal pl-4">${body}</ol>`;
+    } else {
+      return `<ul class="flex flex-col gap-2 list-disc pl-4">${body}</ul>`;
+    }
+  };
+
+  renderer.listitem = (text) => {
+    return `<li class="dark:bg-white/20 bg-black/5 px-2 py-1 rounded-md mx-2 list-item cursor-pointer">${text}</li>`;
   };
 
   marked.setOptions({ renderer, gfm: true });

@@ -14,6 +14,7 @@ import { FaSpinner } from "react-icons/fa";
 import { categories, subCategories } from "../../utils/ticketCreation.js";
 import { convertKelvinToFahrenheit } from "../../utils/conversions.js";
 import { recognition } from "../../utils/speechToText.js";
+import { trimQuotes } from "../../utils/stringManipulation.js";
 import { handleSendGmail } from "../../utils/api/google.js";
 import { handleSendGraphMail } from "../../utils/api/microsoft.js";
 
@@ -87,6 +88,15 @@ const ChatInteraction = ({
   const [currentTicketName, setCurrentTicketName] = useState("");
   const [currentTicketEmailId, setCurrentTicketEmailId] = useState("");
   const [currentTicketPhoneNumber, setCurrentTicketPhoneNumber] = useState("");
+
+  const [currentTicketNewFirstName, setCurrentTicketNewFirstName] =
+    useState("");
+  const [currentTicketNewLastName, setCurrentTicketNewLastName] = useState("");
+  const [] = useState("");
+  const [currentTicketNewEmailId, setCurrentTicketNewEmailId] = useState("");
+  const [currentTicketNewPhoneNumber, setCurrentTicketNewPhoneNumber] =
+    useState("");
+  const [currentTicketLicenseId, setCurrentTicketLicenseId] = useState("");
 
   const [filteredSubCategories, setFilteredSubCategories] = useState([]);
 
@@ -212,7 +222,7 @@ const ChatInteraction = ({
       setPreviousResponseBodyForForms(null);
 
       try {
-        const encodedMessage = encodeURIComponent(message);
+        const encodedMessage = encodeURIComponent(trimQuotes(message));
 
         const response = await fetch(
           `https://etech7-wf-etech7-clu-service.azuremicroservices.io/jarvis4?text=${encodedMessage}&conversationId=${currentConversation.id}&userId=${initialUser.id}`,
@@ -431,7 +441,7 @@ const ChatInteraction = ({
       setLoading((prevState) => ({ ...prevState, ticketForm: true }));
       try {
         const ticketResponse = await fetch(
-          /*`http://localhost:8084/createTicket`,*/
+          // `http://localhost:8084/createTicket`,
           `https://etech7-wf-etech7-support-service.azuremicroservices.io/createTicket`,
           {
             method: "POST",
@@ -450,6 +460,32 @@ const ChatInteraction = ({
         if (ticketResponse.status === 200) {
           const ticketResponseJson = await ticketResponse.json();
           const { id } = ticketResponseJson;
+
+          if (
+            currentTicketCategory === "TRAINING_OR_ONBOARDING" &&
+            currentTicketSubCategory === "NEW_EMPLOYEE_ONBOARDING"
+          ) {
+            const ticketOnboardingResponse = await fetch(
+              `https://etech7-wf-etech7-support-service.azuremicroservices.io/onboardUser`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  ticketId: id,
+                  firstName: currentTicketNewFirstName,
+                  lastName: currentTicketNewLastName,
+                  emailId: currentTicketNewEmailId,
+                  phoneNumber: currentTicketNewPhoneNumber,
+                  licenseId: currentTicketLicenseId,
+                }),
+              }
+            );
+
+            if (ticketOnboardingResponse.status === 200) {
+              console.log("New Employee Onboarded");
+            }
+          }
+
           const aiContent = `Ticket Created!\nID: ${id}\nTitle: ${currentTicketTitle}\nDescription: ${currentTicketDescription}\nCategory: ${currentTicketCategory}\nSubcategory: ${currentTicketSubCategory}\nName: ${currentTicketName}\nEmail: ${currentTicketEmailId}\nPhone: ${currentTicketPhoneNumber}.`;
           const formSummaryResponse = await handleAddMessageToDB(
             aiContent,
@@ -1099,6 +1135,20 @@ const ChatInteraction = ({
                       setCurrentTicketEmailId={setCurrentTicketEmailId}
                       currentTicketPhoneNumber={currentTicketPhoneNumber}
                       setCurrentTicketPhoneNumber={setCurrentTicketPhoneNumber}
+                      currentTicketNewFirstName={currentTicketNewFirstName}
+                      setCurrentTicketNewFirstName={
+                        setCurrentTicketNewFirstName
+                      }
+                      currentTicketNewLastName={currentTicketNewLastName}
+                      setCurrentTicketNewLastName={setCurrentTicketNewLastName}
+                      currentTicketNewEmailId={currentTicketNewEmailId}
+                      setCurrentTicketNewEmailId={setCurrentTicketNewEmailId}
+                      currentTicketNewPhoneNumber={currentTicketNewPhoneNumber}
+                      setCurrentTicketNewPhoneNumber={
+                        setCurrentTicketNewPhoneNumber
+                      }
+                      currentTicketLicenseId={currentTicketLicenseId}
+                      setCurrentTicketLicenseId={setCurrentTicketLicenseId}
                       currentEventSubject={currentEventSubject}
                       setCurrentEventSubject={setCurrentEventSubject}
                       currentEventBody={currentEventBody}

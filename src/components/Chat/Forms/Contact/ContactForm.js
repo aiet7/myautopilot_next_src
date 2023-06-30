@@ -16,41 +16,43 @@ const ContactForm = ({
 }) => {
   return (
     <div>
-      <div>
-        <span className="font-bold">First Name</span>
-        <input
-          className="h-[50px] border outline-blue-500 w-full px-4"
-          value={currentContactGivenName}
-          onChange={(e) => setCurrentContactGivenName(e.target.value)}
-        />
-      </div>
-      <div>
-        <span className="font-bold">Last Name</span>
-        <input
-          className="h-[50px] border outline-blue-500 w-full px-4"
-          value={currentContactSurname}
-          onChange={(e) => setCurrentContactSurname(e.target.value)}
-        />
-      </div>
-      <div>
-        <span className="font-bold">Email</span>
-        <input
-          className="h-[50px] border outline-blue-500 w-full px-4"
-          value={showCancelButton ? currentContactEmailId : currentEmailId}
-          onChange={(e) =>
-            showCancelButton
-              ? setCurrentContactEmailId(e.target.value)
-              : setCurrentEmailId(e.target.value)
-          }
-        />
-      </div>
-      <div>
-        <span className="font-bold">Phone Number</span>
-        <input
-          className="h-[50px] border outline-blue-500 w-full px-4"
-          value={currentContactMobileNumber}
-          onChange={(e) => setCurrentContactMobileNumber(e.target.value)}
-        />
+      <div className="flex flex-col gap-2">
+        <div>
+          <span className="font-bold">First Name</span>
+          <input
+            className="h-[50px] border outline-blue-500 w-full px-4"
+            value={currentContactGivenName}
+            onChange={(e) => setCurrentContactGivenName(e.target.value)}
+          />
+        </div>
+        <div>
+          <span className="font-bold">Last Name</span>
+          <input
+            className="h-[50px] border outline-blue-500 w-full px-4"
+            value={currentContactSurname}
+            onChange={(e) => setCurrentContactSurname(e.target.value)}
+          />
+        </div>
+        <div>
+          <span className="font-bold">Email</span>
+          <input
+            className="h-[50px] border outline-blue-500 w-full px-4"
+            value={showCancelButton ? currentContactEmailId : currentEmailId}
+            onChange={(e) =>
+              showCancelButton
+                ? setCurrentContactEmailId(e.target.value)
+                : setCurrentEmailId(e.target.value)
+            }
+          />
+        </div>
+        <div>
+          <span className="font-bold">Phone Number</span>
+          <input
+            className="h-[50px] border outline-blue-500 w-full px-4"
+            value={currentContactMobileNumber}
+            onChange={(e) => setCurrentContactMobileNumber(e.target.value)}
+          />
+        </div>
       </div>
       <div className="flex items-center gap-4 py-2">
         <button

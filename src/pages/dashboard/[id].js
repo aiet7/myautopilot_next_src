@@ -29,10 +29,12 @@ const DashboardPage = ({
   const [conversationHistory, setConversationHistory] = useState([]);
 
   const handlePromptAssistantInput = (prompt) => {
-    setPromptAssistantInput(prompt);
-    setOpenChatAssistant(false);
+    setPromptAssistantInput("");
+    setTimeout(() => {
+      setPromptAssistantInput(prompt);
+      setOpenChatAssistant(false);
+    }, 0);
   };
-
   const handleNewConversation = async (index) => {
     const newConversation = {
       userID: initialUser.id,

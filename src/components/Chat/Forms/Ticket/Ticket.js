@@ -1,3 +1,5 @@
+import TicketOnboarding from "./TicketOnboarding";
+
 const TicketForm = ({
   currentTicketTitle,
   setCurrentTicketTitle,
@@ -15,13 +17,23 @@ const TicketForm = ({
   setCurrentTicketEmailId,
   currentTicketPhoneNumber,
   setCurrentTicketPhoneNumber,
+  currentTicketNewFirstName,
+  setCurrentTicketNewFirstName,
+  currentTicketNewLastName,
+  setCurrentTicketNewLastName,
+  currentTicketNewEmailId,
+  setCurrentTicketNewEmailId,
+  currentTicketNewPhoneNumber,
+  setCurrentTicketNewPhoneNumber,
+  currentTicketLicenseId,
+  setCurrentTicketLicenseId,
   loading,
   handleTicketConfirmation,
   itemId,
 }) => {
   return (
     <div>
-      <div>
+      <div className="flex flex-col gap-2">
         <div>
           <span className="font-bold">Ticket Name</span>
           <input
@@ -69,6 +81,21 @@ const TicketForm = ({
             ))}
           </select>
         </div>
+        {currentTicketCategory === "TRAINING_OR_ONBOARDING" &&
+          currentTicketSubCategory === "NEW_EMPLOYEE_ONBOARDING" && (
+            <TicketOnboarding
+              currentTicketNewFirstName={currentTicketNewFirstName}
+              setCurrentTicketNewFirstName={setCurrentTicketNewFirstName}
+              currentTicketNewLastName={currentTicketNewLastName}
+              setCurrentTicketNewLastName={setCurrentTicketNewLastName}
+              currentTicketNewEmailId={currentTicketNewEmailId}
+              setCurrentTicketNewEmailId={setCurrentTicketNewEmailId}
+              currentTicketNewPhoneNumber={currentTicketNewPhoneNumber}
+              setCurrentTicketNewPhoneNumber={setCurrentTicketNewPhoneNumber}
+              currentTicketLicenseId={currentTicketLicenseId}
+              setCurrentTicketLicenseId={setCurrentTicketLicenseId}
+            />
+          )}
         <div>
           <span className="font-bold">Name</span>
           <input
