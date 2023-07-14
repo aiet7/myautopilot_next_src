@@ -6,21 +6,21 @@ import {
   AiOutlineCheck,
   AiOutlineClose,
 } from "react-icons/ai";
+
 import { IoChatboxOutline } from "react-icons/io5";
 
 import { useEffect, useState } from "react";
 
-const ChatHistory = ({
+const AgentChatHistory = ({
+  initialAgents,
   selectedAgent,
-  openChatHistory,
-  openChatHistoryHover,
-  currentConversationIndices,
   conversationHistories,
+  currentConversationIndices,
+  openAgentHistory,
   setConversationHistories,
+  handleConversationSelected,
   handleNewConversation,
   handleDeleteConversation,
-  handleConversationSelected,
-  handleOpenChatHistoryHide,
 }) => {
   const [tempTitle, setTempTitle] = useState("");
   const [tempPrompt, setTempPrompt] = useState("");
@@ -102,17 +102,15 @@ const ChatHistory = ({
 
   return (
     <div
-      onMouseLeave={handleOpenChatHistoryHide}
-      className={`${
-        openChatHistoryHover
-          ? "dark:bg-[#111111] dark:lg:shadow-lg dark:lg:shadow-white/50 bubble-chat bg-[#f6f8fc] absolute bottom-[74px] z-[99] w-full rounded-md flex flex-col lg:left-[63px] lg:top-0 lg:bottom-[28px] lg:w-[310px] lg:shadow-lg lg:shadow-black/50 lg:mt-6"
-          : `px-4 py-6 bg-[#f6f8fc] absolute z-10 top-0 bottom-0 transition-all duration-300 ease-in-out transform flex flex-col ${
-              openChatHistory
-                ? "translate-x-0 w-[300px] dark:shadow-white shadow-lg shadow-black/50"
-                : "-translate-x-full w-[300px]"
-            } dark:bg-[#111111] dark:xl:border-white/20 xl:relative xl:translate-x-0 xl:min-w-[300px] xl:static xl:border-r`
-      }`}
+      className={`px-4 py-6 bg-[#f6f8fc] absolute z-10 top-0 bottom-0 transition-all duration-300 ease-in-out transform flex flex-col ${
+        openAgentHistory
+          ? "translate-x-0 w-[300px] dark:shadow-white shadow-lg shadow-black/50"
+          : "-translate-x-full w-[300px]"
+      } dark:bg-[#111111] dark:xl:border-white/20 xl:relative xl:translate-x-0 xl:min-w-[300px] xl:static xl:border-r`}
     >
+      <h2 className="text-center font-bold text-xl pb-2">
+        {initialAgents.find((agent) => agent.id === selectedAgent).agentName}
+      </h2>
       <button
         onClick={() =>
           handleNewConversation(
@@ -121,17 +119,12 @@ const ChatHistory = ({
               : 0
           )
         }
-        className={`${
-          openChatHistoryHover && "rounded-tr-md  p-8"
-        } w-full p-4 bg-blue-800 text-white`}
+        className="w-full p-4 bg-blue-800 text-white"
       >
         + New Chat
       </button>
-      <div
-        className={`${
-          openChatHistoryHover && "px-2"
-        } h-[200px] overflow-y-auto h-full scrollbar-thin lg:h-full`}
-      >
+
+      <div className="h-[200px] overflow-auto h-full scollbar-thin lg:h-full">
         {conversationHistories[selectedAgent]?.map((conversation, index) => {
           const { id, userID, conversationName, customPrompt, agentID } =
             conversation;
@@ -139,12 +132,8 @@ const ChatHistory = ({
             <div key={index} className="flex flex-col items-start my-2">
               <div
                 className={`${
-                  openChatHistoryHover
-                    ? null
-                    : `${
-                        currentConversationIndices[selectedAgent] === index &&
-                        "dark:bg-white/40 bg-black/20"
-                      }`
+                  currentConversationIndices[selectedAgent] === index &&
+                  "dark:bg-white/40 bg-black/20"
                 } dark:text-white dark:hover:bg-white/40 hover:bg-black/20 text-black w-full flex items-center justify-between px-2 h-[50px] cursor-pointer`}
               >
                 <div className="flex items-center">
@@ -179,62 +168,60 @@ const ChatHistory = ({
                   </div>
                 </div>
 
-                {!openChatHistoryHover && (
-                  <div className="w-12">
-                    {currentConversationIndices[selectedAgent] === index &&
-                      editing && (
-                        <div className="flex items-center gap-2">
-                          <AiOutlineCheck
-                            size={20}
-                            onClick={() =>
-                              handleSaveConversationTitle(
-                                id,
-                                userID,
-                                selectedAgent
-                              )
-                            }
-                          />
-                          <AiOutlineClose
-                            size={20}
-                            onClick={handleCancelEditConversationTitle}
-                          />
-                        </div>
-                      )}
-                    {currentConversationIndices[selectedAgent] === index &&
-                      deleting && (
-                        <div className="flex items-center gap-2">
-                          <AiOutlineCheck
-                            size={20}
-                            onClick={() => {
-                              handleDeleteConversation(index);
-                              setDeleting(false);
-                            }}
-                          />
-                          <AiOutlineClose
-                            size={20}
-                            onClick={() => setDeleting(false)}
-                          />
-                        </div>
-                      )}
-                    {currentConversationIndices[selectedAgent] === index &&
-                      !editing &&
-                      !deleting && (
-                        <div className="flex items-center gap-2">
-                          <AiFillEdit
-                            size={20}
-                            onClick={() => {
-                              handleEditConversationTitle(selectedAgent);
-                              handleEditConversationPrompt(selectedAgent);
-                            }}
-                          />
-                          <AiFillDelete
-                            size={20}
-                            onClick={() => setDeleting(true)}
-                          />
-                        </div>
-                      )}
-                  </div>
-                )}
+                <div className="w-12">
+                  {currentConversationIndices[selectedAgent] === index &&
+                    editing && (
+                      <div className="flex items-center gap-2">
+                        <AiOutlineCheck
+                          size={20}
+                          onClick={() =>
+                            handleSaveConversationTitle(
+                              id,
+                              userID,
+                              selectedAgent
+                            )
+                          }
+                        />
+                        <AiOutlineClose
+                          size={20}
+                          onClick={handleCancelEditConversationTitle}
+                        />
+                      </div>
+                    )}
+                  {currentConversationIndices[selectedAgent] === index &&
+                    deleting && (
+                      <div className="flex items-center gap-2">
+                        <AiOutlineCheck
+                          size={20}
+                          onClick={() => {
+                            handleDeleteConversation(index);
+                            setDeleting(false);
+                          }}
+                        />
+                        <AiOutlineClose
+                          size={20}
+                          onClick={() => setDeleting(false)}
+                        />
+                      </div>
+                    )}
+                  {currentConversationIndices[selectedAgent] === index &&
+                    !editing &&
+                    !deleting && (
+                      <div className="flex items-center gap-2">
+                        <AiFillEdit
+                          size={20}
+                          onClick={() => {
+                            handleEditConversationTitle(selectedAgent);
+                            handleEditConversationPrompt(selectedAgent);
+                          }}
+                        />
+                        <AiFillDelete
+                          size={20}
+                          onClick={() => setDeleting(true)}
+                        />
+                      </div>
+                    )}
+                </div>
               </div>
               {currentConversationIndices[selectedAgent] === index &&
                 editing && (
@@ -255,4 +242,4 @@ const ChatHistory = ({
   );
 };
 
-export default ChatHistory;
+export default AgentChatHistory;

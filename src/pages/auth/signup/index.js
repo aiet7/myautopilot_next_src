@@ -46,26 +46,25 @@ const Signup = () => {
   const router = useRouter();
 
   const handleGoogleSignup = useGoogleLogin({
+    flow: "auth-code",
     scope:
-      "https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar",
-    onSuccess: async (tokenResponse) => {
+      "https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.events.readonly https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/contacts https://www.googleapis.com/auth/contacts.readonly",
+    onSuccess: async (codeResponse) => {
       setLoading(true);
       try {
-        const userInfo = await fetch(
-          "https://www.googleapis.com/oauth2/v3/userinfo",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${tokenResponse.access_token}`,
-            },
-          }
+        const tokenResponse = await fetch(
+          `https://etech7-wf-etech7-db-service.azuremicroservices.io/getGoogleToken?code=${codeResponse.code}`
         );
-        const info = await userInfo.json();
+
+        const token = await tokenResponse.json();
 
         const user = {
-          firstName: info.given_name,
-          lastName: info.family_name,
-          businessEmail: info.email,
+          accessToken: token.access_token,
+          refreshToken: token.refresh_token,
+          expiryTime: token.expiryTime,
+          firstName: token.firstName,
+          lastName: token.lastName,
+          businessEmail: token.email,
           businessName: "",
           businessPhone: "",
           address: {
@@ -75,14 +74,8 @@ const Signup = () => {
             state: "",
           },
         };
-
-        const response = await fetch(
-          /*`http://localhost:9019/validateUser?token=${Boolean(
-            tokenResponse.access_token
-          )}`,*/
-          `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=${Boolean(
-            tokenResponse.access_token
-          )}`,
+        const validateGoogleResponse = await fetch(
+          `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=google`,
           {
             method: "POST",
             headers: {
@@ -91,15 +84,16 @@ const Signup = () => {
             body: JSON.stringify(user),
           }
         );
-        if (response.ok) {
-          const googleUser = await response.json();
+        if (validateGoogleResponse.status === 200) {
+          const googleUser = await validateGoogleResponse.json();
           router.push(`/dashboard/${googleUser.id}`);
-          Cookie.set("google_session_token", tokenResponse.access_token, {
+          Cookie.set("Secure-next.session-token-g", token.id_token, {
             expires: 7,
+            secure: true,
+            sameSite: "lax",
           });
-          Cookie.set("user_id", googleUser.id, { expires: 7 });
         } else {
-          setErrorMessage("Error with Google Login.");
+          console.log("error");
         }
       } catch (e) {
         console.log(e);
@@ -135,9 +129,7 @@ const Signup = () => {
 
       const response = await fetch(
         /*`http://localhost:9019/validateUser?token=${Boolean(accessToken)}`,*/
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=${Boolean(
-          accessToken
-        )}`,
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=microsoft`,
         {
           method: "POST",
           headers: {

@@ -1,11 +1,18 @@
 "use client";
 
+import { googleLogout } from "@react-oauth/google";
+
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { AiFillEdit } from "react-icons/ai";
 import { IoMdFingerPrint } from "react-icons/io";
 import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
 
+import Cookie from "js-cookie";
+
 const Account = ({ initialUser }) => {
+  const router = useRouter();
+
   const {
     id,
     businessEmail,
@@ -21,6 +28,7 @@ const Account = ({ initialUser }) => {
 
   const [editing, setEditing] = useState({});
   const [deleting, setDeleting] = useState(false);
+  const [confirmationEmail, setConfirmationEmail] = useState("");
 
   const [userInputs, setUserInputs] = useState({
     id: id,
@@ -131,6 +139,34 @@ const Account = ({ initialUser }) => {
         console.log("Saved!");
       } else {
         console.log("Error saving.");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    if (confirmationEmail !== businessEmail) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/deleteUser?id=${id}`
+      );
+      if (response.ok) {
+        localStorage.removeItem("lastTab");
+        localStorage.removeItem("lastConversationIndex");
+
+        Cookie.remove("google_session_token");
+        Cookie.remove("microsoft_session_token");
+        Cookie.remove("session_token");
+        Cookie.remove("user_id");
+
+        googleLogout();
+        router.push("/auth/login");
+      } else {
+        console.log("Error Deleting");
       }
     } catch (e) {
       console.log(e);
@@ -504,9 +540,18 @@ const Account = ({ initialUser }) => {
                   Confirm `<strong>{userInputs.businessEmail}</strong>` to
                   delete
                 </p>
-                <input className="px-1 border bg-white text-black"></input>
+                <input
+                  className="px-1 border bg-white text-black"
+                  value={confirmationEmail}
+                  onChange={(e) => setConfirmationEmail(e.target.value)}
+                ></input>
                 <div className="flex gap-2 items-center">
-                  <button className="dark:border-white/20 hover:bg-red-500 hover:text-white border rounded-md px-1">Delete</button>
+                  <button
+                    onClick={handleDeleteUser}
+                    className="dark:border-white/20 hover:bg-red-500 hover:text-white border rounded-md px-1"
+                  >
+                    Delete
+                  </button>
                   <button
                     onClick={() => setDeleting(false)}
                     className="dark:border-white/20  border rounded-md px-1"

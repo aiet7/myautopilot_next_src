@@ -32,26 +32,25 @@ const Login = () => {
   const router = useRouter();
 
   const handleGoogleLogin = useGoogleLogin({
+    flow: "auth-code",
     scope:
       "https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.events.readonly https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/contacts https://www.googleapis.com/auth/contacts.readonly",
-    onSuccess: async (tokenResponse) => {
+    onSuccess: async (codeResponse) => {
       setLoading(true);
       try {
-        const userInfo = await fetch(
-          "https://www.googleapis.com/oauth2/v3/userinfo",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${tokenResponse.access_token}`,
-            },
-          }
+        const tokenResponse = await fetch(
+          `https://etech7-wf-etech7-db-service.azuremicroservices.io/getGoogleToken?code=${codeResponse.code}`
         );
-        const info = await userInfo.json();
+
+        const token = await tokenResponse.json();
 
         const user = {
-          firstName: info.given_name,
-          lastName: info.family_name,
-          businessEmail: info.email,
+          accessToken: token.access_token,
+          refreshToken: token.refresh_token,
+          expiryTime: token.expiryTime,
+          firstName: token.firstName,
+          lastName: token.lastName,
+          businessEmail: token.email,
           businessName: "",
           businessPhone: "",
           address: {
@@ -61,14 +60,8 @@ const Login = () => {
             state: "",
           },
         };
-
-        const response = await fetch(
-          // `http://localhost:9019/validateUser?token=${Boolean(
-          //   tokenResponse.access_token
-          // )}`,
-          `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=${Boolean(
-            tokenResponse.access_token
-          )}`,
+        const validateGoogleResponse = await fetch(
+          `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=google`,
           {
             method: "POST",
             headers: {
@@ -77,15 +70,16 @@ const Login = () => {
             body: JSON.stringify(user),
           }
         );
-        if (response.ok) {
-          const googleUser = await response.json();
+        if (validateGoogleResponse.status === 200) {
+          const googleUser = await validateGoogleResponse.json();
           router.push(`/dashboard/${googleUser.id}`);
-          Cookie.set("google_session_token", tokenResponse.access_token, {
+          Cookie.set("Secure-next.session-token-g", token.id_token, {
             expires: 7,
+            secure: true,
+            sameSite: "lax",
           });
-          Cookie.set("user_id", googleUser.id, { expires: 7 });
         } else {
-          setErrorMessage("Error with Google Login.");
+          console.log("error");
         }
       } catch (e) {
         console.log(e);
@@ -97,7 +91,6 @@ const Login = () => {
 
   const handleMicrosoftLogin = async (err, data) => {
     setLoading(true);
-    console.log(data);
     try {
       const {
         accessToken,
@@ -120,11 +113,9 @@ const Login = () => {
         },
       };
 
-      const response = await fetch(
-        // `http://localhost:9019/validateUser?token=${Boolean(accessToken)}`,
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=${Boolean(
-          accessToken
-        )}`,
+      const validateMicrosoftResponse = await fetch(
+        // `http://localhost:9019/validateUser?token=microsoft`,
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=microsoft`,
         {
           method: "POST",
           headers: {
@@ -134,11 +125,15 @@ const Login = () => {
         }
       );
 
-      if (response.ok) {
-        const microsoftUser = await response.json();
+      if (validateMicrosoftResponse.status === 200) {
+        const microsoftUser = await validateMicrosoftResponse.json();
         router.push(`/dashboard/${microsoftUser.id}`);
-        Cookie.set("microsoft_session_token", accessToken, { expires: 7 });
-        Cookie.set("user_id", microsoftUser.id, { expires: 7 });
+        Cookie.set("microsoft_session_token", accessToken, {
+          expires: 7,
+        });
+        Cookie.set("user_id", microsoftUser.id, {
+          expires: 7,
+        });
       } else {
         setErrorMessage("Error with Microsoft Login.");
       }
@@ -206,7 +201,6 @@ const Login = () => {
         const user = await response.json();
         router.push(`/dashboard/${user.id}`);
         Cookie.set("session_token", user.id, { expires: 7 });
-        Cookie.set("user_id", user.id, { expires: 7 });
       } else {
         setErrorMessage("Invalid username or password.");
       }
@@ -226,7 +220,7 @@ const Login = () => {
       setHeight(window.innerHeight);
 
       let session_token =
-        Cookie.get("google_session_token") ||
+        Cookie.get("Secure-next.session-token-g") ||
         Cookie.get("microsoft_session_token") ||
         Cookie.get("session_token");
 
@@ -302,7 +296,7 @@ const Login = () => {
 
                   <MicrosoftLogin
                     graphScopes={["mail.read", "mail.readwrite", "mail.send"]}
-                    clientId="d78746f9-41d1-4997-97eb-7c600d27f11e"
+                    clientId="14a9d59a-1d19-486e-a4db-d81c5410a453"
                     authCallback={handleMicrosoftLogin}
                     redirectUri="https://myautopilot.azurewebsites.net"
                   >

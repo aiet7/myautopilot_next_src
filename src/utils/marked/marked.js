@@ -5,7 +5,7 @@ import { encode } from "html-entities";
 import Prism from "prismjs";
 import "./languages.js";
 
-export const MarkedChatInteraction = ({ markdown }) => {
+export const MarkedChatInteraction = ({ markdown, context }) => {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -47,6 +47,8 @@ export const MarkedChatInteraction = ({ markdown }) => {
       });
     }
   }, [markdown]);
+
+  
 
   const renderer = new marked.Renderer();
 

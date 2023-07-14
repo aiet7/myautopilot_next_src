@@ -3,11 +3,7 @@
 import { useRouter } from "next/navigation";
 import { googleLogout } from "@react-oauth/google";
 
-import {
-  AiOutlineRobot,
-  AiOutlinePoweroff,
-  AiOutlineTeam,
-} from "react-icons/ai";
+import { AiOutlinePoweroff, AiOutlineTeam } from "react-icons/ai";
 import { BsChatDots } from "react-icons/bs";
 import { FiSettings } from "react-icons/fi";
 import {
@@ -20,12 +16,36 @@ import { DiMagento } from "react-icons/di";
 import { useTheme } from "next-themes";
 
 import Cookie from "js-cookie";
+import AgentSelection from "./Agents/AgentSelection";
+import ChatHistory from "./Chat/ChatHistory";
 
 const TabNavRail = ({
-  openSettings,
+  initialAgents,
   activeTab,
+  hoverPreview,
+  selectedAgent,
+  openChatHistoryHover,
+  openChatHistory,
+  openAgentSelectionHover,
+  openAgentHistory,
+  openSettings,
+
+  currentConversationIndices,
+
+  conversationHistories,
+
+  setConversationHistories,
+
+  handleNewConversation,
+  handleDeleteConversation,
+  handleConversationSelected,
+  handleAgentSelected,
   handleTabChange,
   handleOpenSettings,
+  handleOpenChatHistoryVisible,
+  handleOpenChatHistoryHide,
+  handleOpenAgentSelectionVisible,
+  handleOpenAgentSelectionHide,
 }) => {
   const { theme, setTheme } = useTheme();
   const router = useRouter();
@@ -34,7 +54,7 @@ const TabNavRail = ({
     localStorage.removeItem("lastTab");
     localStorage.removeItem("lastConversationIndex");
 
-    Cookie.remove("google_session_token");
+    Cookie.remove("Secure-next.session-token-g");
     Cookie.remove("microsoft_session_token");
     Cookie.remove("session_token");
     Cookie.remove("user_id");
@@ -48,38 +68,62 @@ const TabNavRail = ({
   };
 
   return (
-    <div className="dark:bg-[#424242] bg-black/5 flex items-center justify-evenly p-3 gap-4 lg:relative lg:flex-col lg:justify-start lg:bg-white">
+    <div className="dark:lg:border-white/10 dark:bg-[#373737] bg-[#eaf1fb] flex items-center justify-evenly py-3 px-2 gap-4 lg:relative lg:flex-col lg:justify-start lg:border-r">
       <div
-        onClick={() => handleTabChange("intro")}
-        className="flex flex-col items-center cursor-pointer "
-      >
-        <AiOutlineRobot
-          size={30}
-          className={`${activeTab === "intro" && "text-blue-600"}`}
-        />
-        <span className="text-sm">Intro</span>
-      </div>
-      <div
-        onClick={() => handleTabChange("chat")}
-        className="flex flex-col items-center cursor-pointer"
+        onMouseEnter={
+          activeTab === "general"
+            ? handleOpenChatHistoryHide
+            : handleOpenChatHistoryVisible
+        }
+        onClick={() => handleTabChange("general")}
+        className="relative flex flex-col items-center cursor-pointer"
       >
         <BsChatDots
           size={30}
-          className={`${activeTab === "chat" && "text-blue-600"}`}
+          className={`${activeTab === "general" && "text-blue-600"}`}
         />
-        <span className="text-sm">Chat</span>
+        <span className="text-sm">General</span>
       </div>
+      {openChatHistoryHover && (
+        <ChatHistory
+          selectedAgent={activeTab === "general" ? selectedAgent : hoverPreview}
+          openChatHistory={openChatHistory}
+          openChatHistoryHover={openChatHistoryHover}
+          currentConversationIndices={currentConversationIndices}
+          conversationHistories={conversationHistories}
+          setConversationHistories={setConversationHistories}
+          handleNewConversation={handleNewConversation}
+          handleDeleteConversation={handleDeleteConversation}
+          handleConversationSelected={handleConversationSelected}
+          handleOpenChatHistoryHide={handleOpenChatHistoryHide}
+        />
+      )}
 
       <div
-        onClick={() => {}}
-        className="dark:text-white/20 flex flex-col items-center cursor-pointer text-black/20"
+        onMouseEnter={
+          activeTab === "agents"
+            ? handleOpenAgentSelectionHide
+            : handleOpenAgentSelectionVisible
+        }
+        className="relative flex flex-col items-center cursor-pointer"
+        onClick={() => handleTabChange("agents")}
       >
         <DiMagento
           size={30}
-          className={`${activeTab === "agents" && "text-blue-600"} `}
+          className={`${activeTab === "agents" && "text-blue-600"}`}
         />
         <span className="text-sm">Agents</span>
       </div>
+      {openAgentSelectionHover && (
+        <AgentSelection
+          initialAgents={initialAgents}
+          openAgentHistory={openAgentHistory}
+          openAgentSelectionHover={openAgentSelectionHover}
+          handleAgentSelected={handleAgentSelected}
+          handleOpenAgentSelectionHide={handleOpenAgentSelectionHide}
+        />
+      )}
+
       <div
         onClick={() => {}}
         className="dark:text-white/20 flex flex-col items-center cursor-pointer text-black/20"

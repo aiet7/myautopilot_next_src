@@ -38,30 +38,13 @@ export const generalSkills = [
 
 export const generalPrompts = [
   {
-    name: "Translation",
-    description: "Translate to any language.",
-    prompt: "How do you say 'hello' in French?",
+    promptName: "Language Translation",
+    prompt:
+      "Please provide a french translation for 'hello' along with its corresponding definition.",
   },
 
   {
-    name: "Code",
-    description: "Provide your code in any language.",
+    promptName: "JavaScript GET request",
     prompt: "Provide me code for a GET request in JavaScript",
-  },
-
-  {
-    name: "Calculations",
-    description: "Perform mathematical calculations.",
-    prompt: "Calculate the area of a triangle given the base and height.",
-  },
-  {
-    name: "Health",
-    description: "Information about health and wellness.",
-    prompt: "What are some natural remedies for headaches?",
-  },
-  {
-    name: "Travel",
-    description: "Discover travel destinations and tips.",
-    prompt: "What are some must-visit places in Europe?",
   },
 ];

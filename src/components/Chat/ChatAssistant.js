@@ -1,16 +1,25 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
-import { AiOutlinePlus, AiOutlineCheck, AiOutlineMinus } from "react-icons/ai";
+import { AiOutlinePlus, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
+import { MdOutlineArrowDropDown, MdOutlineArrowDropUp } from "react-icons/md";
+
 import { FaSpinner } from "react-icons/fa";
 import { SiOpenai } from "react-icons/si";
 
 import { MarkedChatAssistant } from "../../utils/marked/marked.js";
 
-import { generalSkills } from "../../utils/prompts/generalPromptLibrary.js";
+import {
+  generalSkills,
+  generalPrompts as exampleGeneralPrompts,
+} from "../../utils/prompts/generalPromptLibrary.js";
 
-const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
+const ChatAssistant = ({
+  initialUser,
+  openChatAssistant,
+  handlePromptAssistantInput,
+}) => {
   const inputRef = useRef(null);
 
   const prependText =
@@ -20,6 +29,14 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
   const [userInput, setUserInput] = useState("");
   const [prompts, setPrompts] = useState("");
   const [isWaiting, setIsWaiting] = useState(false);
+
+  const [customPrompt, setCustomPrompt] = useState({
+    promptName: "",
+    prompt: "",
+  });
+  const [generalPrompts, setGeneralPrompts] = useState(exampleGeneralPrompts);
+  const [showPromptIndex, setShowPromptIndex] = useState(null);
+  const allPrompts = [...generalPrompts, ...(initialUser.favorite || [])];
 
   const handleSendPromptGenerator = async () => {
     const completeMessage = prependText + userInput;
@@ -47,13 +64,69 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
     }
   };
 
+  const handleAddPrompt = async () => {
+    if (
+      customPrompt.promptName.trim() !== "" &&
+      customPrompt.prompt.trim() !== ""
+    ) {
+      setGeneralPrompts([...generalPrompts, customPrompt]);
+      try {
+        const response = await fetch(
+          `https://etech7-wf-etech7-db-service.azuremicroservices.io/addFavorite?userId=${initialUser.id}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(customPrompt),
+          }
+        );
+
+        if (response.status === 200) {
+          const responseBody = await response.json();
+          console.log(responseBody);
+        } else {
+          console.log("Failed to add");
+        }
+      } catch (e) {
+        console.log(e);
+      }
+
+      setCustomPrompt({ promptName: "", prompt: "" });
+    }
+  };
+
+  const handleDeletePrompt = async (index) => {
+    const promptToDelete = allPrompts[index];
+
+    try {
+      const response = await fetch(
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/deleteFavorite?id=${initialUser.id}&promptName=${promptToDelete.promptName}`
+      );
+
+      if (response.status === 200) {
+        const updatedPrompts = allPrompts.filter((prompt, i) => i !== index);
+        setGeneralPrompts(updatedPrompts);
+        console.log("delete");
+      } else {
+        console.log("delete failed");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    setGeneralPrompts(exampleGeneralPrompts);
+  }, []);
+
   return (
     <div
-      className={`px-4 py-6 bg-gray-100 dark:bg-black absolute z-10 top-0 bottom-0 right-0 transition-all duration-300 ease-in-out transform flex flex-col gap-4 ${
+      className={`px-4 py-6 bg-[#f6f8fc] absolute z-10 top-0 bottom-0 right-0 transition-all duration-300 ease-in-out transform flex flex-col gap-4 ${
         openChatAssistant
           ? "translate-x-0 w-[300px] dark:shadow-white shadow-lg shadow-black/50"
           : "translate-x-full w-[300px]"
-      } xl:relative xl:translate-x-0 xl:min-w-[300px] xl:static xl:dark:shadow-white xl:shadow-lg xl:shadow-black/50`}
+      } dark:bg-[#111111] dark:xl:border-white/20 xl:relative xl:translate-x-0 xl:min-w-[300px] xl:static xl:border-l`}
     >
       <h2 className="text-2xl font-bold text-center">AI Assistant</h2>
       <div className="dark:bg-white/20 bg-white flex items-center w-full  rounded-md">
@@ -84,14 +157,13 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
                 const { name, description, prompt } = generalSkill;
                 return (
                   <div key={index} className="flex flex-col gap-1">
-                    <div className="w-full flex items-center justify-between text-white font-bold bg-red-500 py-1 px-2">
+                    <div className="w-full flex items-center justify-between text-white font-bold bg-blue-800 py-1 px-2">
                       <span
                         className="w-full cursor-pointer"
                         onClick={() => handlePromptAssistantInput(prompt)}
                       >
                         {name}
                       </span>
-                      <AiOutlinePlus size={30} className="cursor-pointer" />
                     </div>
 
                     <pre className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 text-xs w-full">
@@ -140,6 +212,89 @@ const ChatAssistant = ({ openChatAssistant, handlePromptAssistantInput }) => {
                 markdown={prompts}
                 handlePromptAssistantInput={handlePromptAssistantInput}
               />
+            </div>
+          </div>
+        </div>
+      )}
+      {activeButton === "Favorites" && (
+        <div className="flex-grow flex flex-col gap-4 overflow-hidden">
+          <div className="flex flex-col gap-1 w-full">
+            <input
+              value={customPrompt.promptName}
+              onChange={(e) =>
+                setCustomPrompt({ ...customPrompt, promptName: e.target.value })
+              }
+              className="px-2 py-1"
+              placeholder="Prompt Name"
+            />
+            <input
+              value={customPrompt.prompt}
+              onChange={(e) =>
+                setCustomPrompt({ ...customPrompt, prompt: e.target.value })
+              }
+              className="px-2 py-1"
+              placeholder="Prompt"
+            />
+            <button
+              onClick={handleAddPrompt}
+              className="flex items-center justify-center gap-1 bg-blue-800 py-2 text-white font-bold"
+            >
+              <AiOutlinePlus size={25} />
+              Add Custom Prompt
+            </button>
+          </div>
+          <div className="flex-grow overflow-y-auto scrollbar-thin">
+            <div className="flex flex-grow flex-col gap-2">
+              {allPrompts.map((prompts, index) => {
+                const { promptName, prompt } = prompts;
+                return (
+                  <div
+                    key={index}
+                    className="dark:bg-white/30 dark:text-white dark:border-white/20 flex flex-col justify-between gap-3 border rounded-md text-black bg-white p-2"
+                  >
+                    <div className="flex items-center justify-between">
+                      <p
+                        className={`${
+                          showPromptIndex === index
+                            ? "whitespace-pre-wrap"
+                            : "truncate"
+                        } text-lg font-bold`}
+                      >
+                        {promptName}
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <AiOutlineEdit size={20} className="cursor-pointer" />
+                        <AiOutlineDelete
+                          size={20}
+                          className="cursor-pointer"
+                          onClick={() => handleDeletePrompt(index)}
+                        />
+                      </div>
+                    </div>
+                    {showPromptIndex === index && (
+                      <div
+                        onClick={() => handlePromptAssistantInput(prompt)}
+                        className="dark:bg-white/10 bg-black/5 p-2 rounded-md cursor-pointer"
+                      >
+                        <pre className="whitespace-pre-wrap">{prompt}</pre>
+                      </div>
+                    )}
+                    {showPromptIndex === index ? (
+                      <MdOutlineArrowDropUp
+                        size={30}
+                        className="self-center cursor-pointer"
+                        onClick={() => setShowPromptIndex(null)}
+                      />
+                    ) : (
+                      <MdOutlineArrowDropDown
+                        size={30}
+                        className="self-center cursor-pointer"
+                        onClick={() => setShowPromptIndex(index)}
+                      />
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

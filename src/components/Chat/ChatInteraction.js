@@ -9,6 +9,7 @@ import {
   BsImageFill,
 } from "react-icons/bs";
 import { HiOutlineArrowSmallDown } from "react-icons/hi2";
+import { BsHandThumbsDown } from "react-icons/bs";
 import { FaSpinner } from "react-icons/fa";
 
 import { categories, subCategories } from "../../utils/ticketCreation.js";
@@ -25,13 +26,19 @@ import Switch from "./Forms/Switch.js";
 const ChatInteraction = ({
   activeTab,
   initialUser,
+  selectedAgent,
 
   promptAssistantInput,
   openChatHistory,
   openChatAssistant,
+
+  currentConversationIndices,
   currentConversationIndex,
+
+  conversationHistories,
   conversationHistory,
-  setConversationHistory,
+
+  setConversationHistories,
 
   handleNewConversation,
 
@@ -39,9 +46,7 @@ const ChatInteraction = ({
   handleOpenChatAssistant,
 }) => {
   const token =
-    Cookies.get("google_session_token") ||
-    Cookies.get("microsoft_session_token") ||
-    Cookies.get("session_token");
+    Cookies.get("microsoft_session_token") || Cookies.get("session_token");
 
   const latestMessageRef = useRef(null);
   const chatContainerRef = useRef(null);
@@ -52,12 +57,14 @@ const ChatInteraction = ({
     useState(null);
 
   const [userInput, setUserInput] = useState("");
+
   const [isWaiting, setIsWaiting] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(false);
   const [isOverflowed, setIsOverflowed] = useState(false);
   const [isServerError, setIsServerError] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isFeedbackSubmitted, setIsFeedbackSubmitted] = useState(false);
 
   const [loading, setLoading] = useState({
     contactForm: false,
@@ -135,6 +142,25 @@ const ChatInteraction = ({
     return response;
   };
 
+  const handleSubmitFeedback = async (messageId) => {
+    try {
+      const cleanedMessageId = messageId.substring(0, messageId.length - 3);
+      const response = await fetch(
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/updateFeedback?messageId=${cleanedMessageId}&feedback=false`
+      );
+      if (response.status === 200) {
+        setIsFeedbackSubmitted(true);
+        setTimeout(() => {
+          setIsFeedbackSubmitted(false);
+        }, 2000);
+      } else {
+        console.log("feedback failed");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const handleAbortRequest = () => {
     if (controllerRef.current) {
       controllerRef.current.abort();
@@ -152,10 +178,17 @@ const ChatInteraction = ({
     controllerRef.current = new AbortController();
 
     let currentConversation;
-    if (conversationHistory.length === 0) {
+    if (!(selectedAgent in conversationHistories)) {
+      conversationHistories[selectedAgent] = [];
+    }
+
+    if (conversationHistories[selectedAgent].length === 0) {
       currentConversation = await handleNewConversation(0);
     } else {
-      currentConversation = conversationHistory[currentConversationIndex];
+      currentConversation =
+        conversationHistories[selectedAgent][
+          currentConversationIndices[selectedAgent]
+        ];
     }
 
     if (message.trim() !== "") {
@@ -206,10 +239,17 @@ const ChatInteraction = ({
     controllerRef.current = new AbortController();
 
     let currentConversation;
-    if (conversationHistory.length === 0) {
+    if (!(selectedAgent in conversationHistories)) {
+      conversationHistories[selectedAgent] = [];
+    }
+
+    if (conversationHistories[selectedAgent].length === 0) {
       currentConversation = await handleNewConversation(0);
     } else {
-      currentConversation = conversationHistory[currentConversationIndex];
+      currentConversation =
+        conversationHistories[selectedAgent][
+          currentConversationIndices[selectedAgent]
+        ];
     }
 
     if (message.trim() !== "") {
@@ -300,13 +340,25 @@ const ChatInteraction = ({
         if (formSummaryResponse.status === 200) {
           handleAddAssistantMessage(aiContent);
           let providerResponse;
-          if (Cookies.get("google_session_token")) {
+          if (Cookies.get("Secure-next.session-token-g")) {
             providerResponse = await handleSendGmail(
-              token,
+              initialUser.accessToken,
               currentEmailId,
               currentEmailSubject,
               currentEmailBody
             );
+            if (providerResponse.status === 401) {
+              const newTokenResponse = await fetch(
+                `https://etech7-wf-etech7-db-service.azuremicroservices.io/getGoogleRefreshToken?userId=${initialUser.id}`
+              );
+              const newToken = await newTokenResponse.json();
+              providerResponse = await handleSendGmail(
+                newToken.access_token,
+                currentEmailId,
+                currentEmailSubject,
+                currentEmailBody
+              );
+            }
           } else if (Cookies.get("microsoft_session_token")) {
             providerResponse = await handleSendGraphMail(
               token,
@@ -936,75 +988,97 @@ const ChatInteraction = ({
   };
 
   const handleAddUserMessage = async (message) => {
-    setConversationHistory((prevState) => {
-      const newConversationHistory = [...prevState];
+    setConversationHistories((prevState) => {
+      const newConversations = { ...prevState };
+      const currentAgentConversations = newConversations[selectedAgent];
 
-      if (!newConversationHistory[currentConversationIndex].messages) {
-        newConversationHistory[currentConversationIndex].messages = [];
+      if (
+        !currentAgentConversations[currentConversationIndices[selectedAgent]]
+          .messages
+      ) {
+        currentAgentConversations[
+          currentConversationIndices[selectedAgent]
+        ].messages = [];
       }
 
-      newConversationHistory[currentConversationIndex].messages.push({
+      currentAgentConversations[
+        currentConversationIndices[selectedAgent]
+      ].messages.push({
         id: Date.now() + "-user",
         content: message,
         role: "user",
         timeStamp: new Date().toISOString(),
       });
-
-      return newConversationHistory;
+      return newConversations;
     });
   };
 
   const handleAddAssistantMessage = (message) => {
-    setConversationHistory((prevState) => {
-      const newConversationHistory = [...prevState];
+    setConversationHistories((prevState) => {
+      const newConversations = { ...prevState };
+      const currentAgentConversations = newConversations[selectedAgent];
 
-      if (!newConversationHistory[currentConversationIndex].messages) {
-        newConversationHistory[currentConversationIndex].messages = [];
+      if (
+        !currentAgentConversations[currentConversationIndices[selectedAgent]]
+          .messages
+      ) {
+        currentAgentConversations[
+          currentConversationIndices[selectedAgent]
+        ].messages = [];
       }
 
-      newConversationHistory[currentConversationIndex].messages.push({
+      currentAgentConversations[
+        currentConversationIndices[selectedAgent]
+      ].messages.push({
         id: Date.now() + "-ai",
         content: message,
         role: "assistant",
         timeStamp: new Date().toISOString(),
       });
 
-      return newConversationHistory;
+      return newConversations;
     });
   };
 
   const handleAddForm = (formType) => {
     const formId = Date.now();
     setIsFormOpen(true);
-    setConversationHistory((prevState) => {
-      const newConversationHistory = [...prevState];
+    setConversationHistories((prevState) => {
+      const newConversations = { ...prevState };
+      const currentAgentConversations = newConversations[selectedAgent];
 
-      if (!newConversationHistory[currentConversationIndex]) {
-        newConversationHistory[currentConversationIndex] = {
+      if (
+        !currentAgentConversations[currentConversationIndices[selectedAgent]]
+      ) {
+        currentAgentConversations[currentConversationIndices[selectedAgent]] = {
           messages: [],
         };
       }
 
-      newConversationHistory[currentConversationIndex].messages.push({
+      currentAgentConversations[
+        currentConversationIndices[selectedAgent]
+      ].messages.push({
         id: formId,
         type: "form",
         formType,
       });
 
-      return newConversationHistory;
+      return newConversations;
     });
   };
 
   const handleRemoveForm = (formId) => {
-    setConversationHistory((prevState) => {
-      const newConversationHistory = [...prevState];
+    setConversationHistories((prevState) => {
+      const newConversations = { ...prevState };
+      const currentAgentConversations = newConversations[selectedAgent];
 
-      newConversationHistory[currentConversationIndex].messages =
-        newConversationHistory[currentConversationIndex].messages.filter(
-          (message) => message.id !== formId
-        );
+      currentAgentConversations[
+        currentConversationIndices[selectedAgent]
+      ].messages = currentAgentConversations[
+        currentConversationIndices[selectedAgent]
+      ].messages.filter((message) => message.id !== formId);
 
-      return newConversationHistory;
+      return newConversations;
     });
   };
 
@@ -1038,11 +1112,11 @@ const ChatInteraction = ({
 
   useEffect(() => {
     handleScrollToBottom(true);
-  }, [conversationHistory]);
+  }, [conversationHistories]);
 
   useEffect(() => {
     handleScrollToBottom();
-  }, [currentConversationIndex]);
+  }, [currentConversationIndices[selectedAgent]]);
 
   useEffect(() => {
     if (activeTab === "chat") {
@@ -1074,111 +1148,122 @@ const ChatInteraction = ({
         ref={chatContainerRef}
         onScroll={handleCheckScroll}
       >
-        {conversationHistory[currentConversationIndex]?.messages?.map(
-          (item, index, arr) => {
-            return (
-              <div
-                key={item.id}
-                className={`px-4 py-4 text-md w-full  ${
-                  item.role === "user"
-                    ? "dark:border-white/40 bg-black/5 border-b"
-                    : "dark:bg-white/10 dark:border-white/40 border-b"
-                }`}
-                ref={index === arr.length - 1 ? latestMessageRef : null}
-              >
-                <div className="flex items-start max-w-[600px] mx-auto gap-4">
-                  <span>
-                    {item.role === "user" ? (
-                      <AiOutlineUser size={20} />
-                    ) : (
-                      <AiOutlineRobot size={20} />
-                    )}
-                  </span>
+        {conversationHistories[selectedAgent]?.[
+          currentConversationIndices[selectedAgent]
+        ]?.messages?.map((item, index, arr) => {
+          return (
+            <div
+              key={item.id}
+              className={`px-4 py-4 text-md w-full  ${
+                item.role === "user"
+                  ? "dark:border-white/40 bg-black/5 border-b"
+                  : "dark:bg-white/10 dark:border-white/40 border-b"
+              }`}
+              ref={index === arr.length - 1 ? latestMessageRef : null}
+            >
+              <div className="flex items-start max-w-[600px] mx-auto gap-4">
+                <span>
+                  {item.role === "user" ? (
+                    <AiOutlineUser size={20} />
+                  ) : (
+                    <AiOutlineRobot size={20} />
+                  )}
+                </span>
 
-                  <div className="flex-grow min-w-[0]">
-                    <Switch
-                      item={item}
-                      itemId={item.id}
-                      loading={loading}
-                      categories={categories}
-                      availableEmailIds={availableEmailIds}
-                      selectedEmailIndex={selectedEmailIndex}
-                      handleEmailSelection={handleEmailSelection}
-                      currentEmailId={currentEmailId}
-                      setCurrentEmailId={setCurrentEmailId}
-                      currentEmailSubject={currentEmailSubject}
-                      setCurrentEmailSubject={setCurrentEmailSubject}
-                      currentEmailBody={currentEmailBody}
-                      setCurrentEmailBody={setCurrentEmailBody}
-                      currentContactEmailId={currentContactEmailId}
-                      setCurrentContactEmailId={setCurrentContactEmailId}
-                      currentContactGivenName={currentContactGivenName}
-                      setCurrentContactGivenName={setCurrentContactGivenName}
-                      currentContactSurname={currentContactSurname}
-                      setCurrentContactSurname={setCurrentContactSurname}
-                      currentContactMobileNumber={currentContactMobileNumber}
-                      setCurrentContactMobileNumber={
-                        setCurrentContactMobileNumber
-                      }
-                      currentTicketTitle={currentTicketTitle}
-                      setCurrentTicketTitle={setCurrentTicketTitle}
-                      currentTicketDescription={currentTicketDescription}
-                      setCurrentTicketDescription={setCurrentTicketDescription}
-                      currentTicketCategory={currentTicketCategory}
-                      setCurrentTicketCategory={setCurrentTicketCategory}
-                      currentTicketSubCategory={currentTicketSubCategory}
-                      setCurrentTicketSubCategory={setCurrentTicketSubCategory}
-                      filteredSubCategories={filteredSubCategories}
-                      currentTicketName={currentTicketName}
-                      setCurrentTicketName={setCurrentTicketName}
-                      currentTicketEmailId={currentTicketEmailId}
-                      setCurrentTicketEmailId={setCurrentTicketEmailId}
-                      currentTicketPhoneNumber={currentTicketPhoneNumber}
-                      setCurrentTicketPhoneNumber={setCurrentTicketPhoneNumber}
-                      currentTicketNewFirstName={currentTicketNewFirstName}
-                      setCurrentTicketNewFirstName={
-                        setCurrentTicketNewFirstName
-                      }
-                      currentTicketNewLastName={currentTicketNewLastName}
-                      setCurrentTicketNewLastName={setCurrentTicketNewLastName}
-                      currentTicketNewEmailId={currentTicketNewEmailId}
-                      setCurrentTicketNewEmailId={setCurrentTicketNewEmailId}
-                      currentTicketNewPhoneNumber={currentTicketNewPhoneNumber}
-                      setCurrentTicketNewPhoneNumber={
-                        setCurrentTicketNewPhoneNumber
-                      }
-                      currentTicketLicenseId={currentTicketLicenseId}
-                      setCurrentTicketLicenseId={setCurrentTicketLicenseId}
-                      currentEventSubject={currentEventSubject}
-                      setCurrentEventSubject={setCurrentEventSubject}
-                      currentEventBody={currentEventBody}
-                      setCurrentEventBody={setCurrentEventBody}
-                      currentEventStartTime={currentEventStartTime}
-                      setCurrentEventStartTime={setCurrentEventStartTime}
-                      currentEventEndTime={currentEventEndTime}
-                      setCurrentEventEndTime={setCurrentEventEndTime}
-                      currentEventLocation={currentEventLocation}
-                      setCurrentEventLocation={setCurrentEventLocation}
-                      currentEventUserInfo={currentEventUserInfo}
-                      setCurrentEventUserInfo={setCurrentEventUserInfo}
-                      currentTaskName={currentTaskName}
-                      setCurrentTaskName={setCurrentTaskName}
-                      handleEmailConfirmation={handleEmailConfirmation}
-                      handleContactConfirmation={handleContactConfirmation}
-                      handleTicketConfirmation={handleTicketConfirmation}
-                      handleScheduleConfirmation={handleScheduleConfirmation}
-                      handleTaskConfirmation={handleTaskConfirmation}
-                    />
-                  </div>
+                <div className="flex-grow min-w-[0]">
+                  <Switch
+                    item={item}
+                    itemId={item.id}
+                    loading={loading}
+                    categories={categories}
+                    availableEmailIds={availableEmailIds}
+                    selectedEmailIndex={selectedEmailIndex}
+                    handleEmailSelection={handleEmailSelection}
+                    currentEmailId={currentEmailId}
+                    setCurrentEmailId={setCurrentEmailId}
+                    currentEmailSubject={currentEmailSubject}
+                    setCurrentEmailSubject={setCurrentEmailSubject}
+                    currentEmailBody={currentEmailBody}
+                    setCurrentEmailBody={setCurrentEmailBody}
+                    currentContactEmailId={currentContactEmailId}
+                    setCurrentContactEmailId={setCurrentContactEmailId}
+                    currentContactGivenName={currentContactGivenName}
+                    setCurrentContactGivenName={setCurrentContactGivenName}
+                    currentContactSurname={currentContactSurname}
+                    setCurrentContactSurname={setCurrentContactSurname}
+                    currentContactMobileNumber={currentContactMobileNumber}
+                    setCurrentContactMobileNumber={
+                      setCurrentContactMobileNumber
+                    }
+                    currentTicketTitle={currentTicketTitle}
+                    setCurrentTicketTitle={setCurrentTicketTitle}
+                    currentTicketDescription={currentTicketDescription}
+                    setCurrentTicketDescription={setCurrentTicketDescription}
+                    currentTicketCategory={currentTicketCategory}
+                    setCurrentTicketCategory={setCurrentTicketCategory}
+                    currentTicketSubCategory={currentTicketSubCategory}
+                    setCurrentTicketSubCategory={setCurrentTicketSubCategory}
+                    filteredSubCategories={filteredSubCategories}
+                    currentTicketName={currentTicketName}
+                    setCurrentTicketName={setCurrentTicketName}
+                    currentTicketEmailId={currentTicketEmailId}
+                    setCurrentTicketEmailId={setCurrentTicketEmailId}
+                    currentTicketPhoneNumber={currentTicketPhoneNumber}
+                    setCurrentTicketPhoneNumber={setCurrentTicketPhoneNumber}
+                    currentTicketNewFirstName={currentTicketNewFirstName}
+                    setCurrentTicketNewFirstName={setCurrentTicketNewFirstName}
+                    currentTicketNewLastName={currentTicketNewLastName}
+                    setCurrentTicketNewLastName={setCurrentTicketNewLastName}
+                    currentTicketNewEmailId={currentTicketNewEmailId}
+                    setCurrentTicketNewEmailId={setCurrentTicketNewEmailId}
+                    currentTicketNewPhoneNumber={currentTicketNewPhoneNumber}
+                    setCurrentTicketNewPhoneNumber={
+                      setCurrentTicketNewPhoneNumber
+                    }
+                    currentTicketLicenseId={currentTicketLicenseId}
+                    setCurrentTicketLicenseId={setCurrentTicketLicenseId}
+                    currentEventSubject={currentEventSubject}
+                    setCurrentEventSubject={setCurrentEventSubject}
+                    currentEventBody={currentEventBody}
+                    setCurrentEventBody={setCurrentEventBody}
+                    currentEventStartTime={currentEventStartTime}
+                    setCurrentEventStartTime={setCurrentEventStartTime}
+                    currentEventEndTime={currentEventEndTime}
+                    setCurrentEventEndTime={setCurrentEventEndTime}
+                    currentEventLocation={currentEventLocation}
+                    setCurrentEventLocation={setCurrentEventLocation}
+                    currentEventUserInfo={currentEventUserInfo}
+                    setCurrentEventUserInfo={setCurrentEventUserInfo}
+                    currentTaskName={currentTaskName}
+                    setCurrentTaskName={setCurrentTaskName}
+                    handleEmailConfirmation={handleEmailConfirmation}
+                    handleContactConfirmation={handleContactConfirmation}
+                    handleTicketConfirmation={handleTicketConfirmation}
+                    handleScheduleConfirmation={handleScheduleConfirmation}
+                    handleTaskConfirmation={handleTaskConfirmation}
+                  />
                 </div>
+                <span>
+                  {item.role === "assistant" && (
+                    <BsHandThumbsDown
+                      onClick={() => handleSubmitFeedback(item.id)}
+                      size={20}
+                      className="cursor-pointer select-none"
+                    />
+                  )}
+                </span>
               </div>
-            );
-          }
-        )}
+            </div>
+          );
+        })}
       </div>
       <div className="px-4 py-2">
         {isServerError ? (
           <p className="text-red-600 text-xs">Server Error, try again please</p>
+        ) : isFeedbackSubmitted ? (
+          <p className="text-yellow-500 text-xs">
+            Your feedback has been submitted
+          </p>
         ) : (
           <FaSpinner
             className={`${
