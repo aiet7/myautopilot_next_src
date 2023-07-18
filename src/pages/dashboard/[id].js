@@ -98,8 +98,9 @@ const DashboardPage = ({
       const conversationToDelete = conversationHistories[selectedAgent][index];
 
       try {
-        const response = await fetch();
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/deleteConversation?conversationId=${conversationToDelete.id}`;
+        const response = await fetch(
+          `https://etech7-wf-etech7-db-service.azuremicroservices.io/deleteConversation?conversationId=${conversationToDelete.id}`
+        );
         if (response.ok) {
           const updatedHistories = conversationHistories[selectedAgent].filter(
             (_, currentIndex) => currentIndex !== index
