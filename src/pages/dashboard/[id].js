@@ -9,6 +9,7 @@ import Agent from "../..//components/Agents/Agent.js";
 import Account from "../../components/Account.js";
 
 import { useState, useEffect } from "react";
+import Teams from "../../components/Teams/Teams.js";
 
 const DashboardPage = ({
   initialUser,
@@ -31,6 +32,9 @@ const DashboardPage = ({
   const [openAgentHistory, setOpenAgentHistory] = useState(false);
   const [openAgentAssistant, setOpenAgentAssistant] = useState(false);
   const [openAgentSelectionHover, setOpenAgentSelectionHover] = useState(false);
+
+  const [openTeamsHistory, setOpenTeamsHistory] = useState(false);
+  const [openTeamsAssistant, setOpenTeamsAssistant] = useState(false);
 
   const [openSettings, setOpenSettings] = useState(false);
 
@@ -58,7 +62,6 @@ const DashboardPage = ({
 
     try {
       const response = await fetch(
-        // `http://localhost:9019/addConversation`,
         `https://etech7-wf-etech7-db-service.azuremicroservices.io/addConversation`,
         {
           method: "POST",
@@ -95,10 +98,8 @@ const DashboardPage = ({
       const conversationToDelete = conversationHistories[selectedAgent][index];
 
       try {
-        const response = await fetch(
-          // `http://localhost:9019/deleteConversation?conversationId=${conversationToDelete.id}`
-          `https://etech7-wf-etech7-db-service.azuremicroservices.io/deleteConversation?conversationId=${conversationToDelete.id}`
-        );
+        const response = await fetch();
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/deleteConversation?conversationId=${conversationToDelete.id}`;
         if (response.ok) {
           const updatedHistories = conversationHistories[selectedAgent].filter(
             (_, currentIndex) => currentIndex !== index
@@ -181,6 +182,14 @@ const DashboardPage = ({
 
   const handleOpenAgentAssistant = () => {
     setOpenAgentAssistant(!openAgentAssistant);
+  };
+
+  const handleOpenTeamsHistory = () => {
+    setOpenTeamsHistory(!openTeamsHistory);
+  };
+
+  const handleOpenTeamsAssistant = () => {
+    setOpenTeamsAssistant(!openTeamsAssistant);
   };
 
   const handleOpenSettings = () => {
@@ -306,7 +315,7 @@ const DashboardPage = ({
         <div
           onClick={() => openSettings && handleOpenSettings(false)}
           className="flex flex-col h-full w-full"
-          style={{ height: `${height}px` }}
+          style={{ height: `calc(${height}px - 1px)` }}
         >
           <div className="flex flex-col h-full w-full lg:flex-row-reverse">
             <div
@@ -317,6 +326,8 @@ const DashboardPage = ({
               }
             >
               <SettingsRail
+                activeTab={activeTab}
+                selectedAgent={selectedAgent}
                 handleOpenChatHistory={
                   activeTab === "general" ? handleOpenChatHistory : undefined
                 }
@@ -352,6 +363,8 @@ const DashboardPage = ({
               }
             >
               <SettingsRail
+                activeTab={activeTab}
+                selectedAgent={selectedAgent}
                 handleOpenAgentHistory={
                   activeTab === "agents" ? handleOpenAgentHistory : undefined
                 }
@@ -360,6 +373,7 @@ const DashboardPage = ({
                 }
               />
               <Agent
+                activeTab={activeTab}
                 initialUser={initialUser}
                 initialAgents={initialAgents}
                 selectedAgent={selectedAgent}
@@ -378,6 +392,30 @@ const DashboardPage = ({
                 handleOpenAgentAssistant={handleOpenAgentAssistant}
                 handleOpenAgentSelectionHide={handleOpenAgentSelectionHide}
                 handleAgentSelected={handleAgentSelected}
+              />
+            </div>
+            <div
+              className={
+                activeTab === "teams"
+                  ? `flex flex-col h-full w-full overflow-hidden`
+                  : "hidden"
+              }
+            >
+              <SettingsRail
+                activeTab={activeTab}
+                selectedAgent={selectedAgent}
+                handleOpenTeamsHistory={
+                  activeTab === "teams" ? handleOpenTeamsHistory : undefined
+                }
+                handleOpenTeamsAssistant={
+                  activeTab === "teams" ? handleOpenTeamsAssistant : undefined
+                }
+              />
+              <Teams
+                openTeamsHistory={openTeamsHistory}
+                openTeamsAssistant={openTeamsAssistant}
+                handleOpenTeamsHistory={handleOpenTeamsHistory}
+                handleOpenTeamsAssistant={handleOpenTeamsAssistant}
               />
             </div>
 
@@ -427,30 +465,27 @@ export const getServerSideProps = async (context) => {
     req: { cookies },
   } = context;
 
-  const googleSessionToken = cookies["Secure-next.session-token-g"];
-  const microsoftSessionToken = cookies["microsoft_session_token"];
-  const regularSessionToken = cookies["session_token"];
+  // const googleSessionToken = cookies["Secure-next.session-token-g"];
+  // const microsoftSessionToken = cookies["microsoft_session_token"];
+  // const regularSessionToken = cookies["session_token"];
 
-  if (!googleSessionToken && !microsoftSessionToken && !regularSessionToken) {
-    return {
-      redirect: {
-        destination: "/auth/login",
-        permanent: false,
-      },
-    };
-  }
+  // if (!googleSessionToken && !microsoftSessionToken && !regularSessionToken) {
+  //   return {
+  //     redirect: {
+  //       destination: "/auth/login",
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
   const userId = params.id;
 
   const userApi = `https://etech7-wf-etech7-db-service.azuremicroservices.io/getUserById?userId=${userId}`;
-  // `http://localhost:9019/getUserById?userId=${userId}`;
 
   const conversationApi = `https://etech7-wf-etech7-db-service.azuremicroservices.io/getConversations?userId=${userId}`;
-  // `http://localhost:9019/getConversations?userId=${userId}`;
 
   const agentApi =
     "https://etech7-wf-etech7-db-service.azuremicroservices.io/getAgents";
-  // `http://localhost:9019/getAgents`;
 
   const [userResponse, conversationResponse, agentResponse] = await Promise.all(
     [fetch(userApi), fetch(conversationApi), fetch(agentApi)]
@@ -464,7 +499,6 @@ export const getServerSideProps = async (context) => {
 
   const messagePromises = initialConversations.map(async (conversation) => {
     const messageApi = `https://etech7-wf-etech7-db-service.azuremicroservices.io/getMessages?conversationId=${conversation.id}`; //
-    // `http://localhost:9019/getMessages?conversationId=${conversation.id}`;
 
     const response = await fetch(messageApi);
     return await response.json();

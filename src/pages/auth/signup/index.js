@@ -128,7 +128,6 @@ const Signup = () => {
       };
 
       const response = await fetch(
-        /*`http://localhost:9019/validateUser?token=${Boolean(accessToken)}`,*/
         `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=microsoft`,
         {
           method: "POST",
@@ -162,7 +161,6 @@ const Signup = () => {
 
     try {
       const response = await fetch(
-        /*`http://localhost:9019/getUserByEmail?email=${email}`*/
         `https://etech7-wf-etech7-db-service.azuremicroservices.io/getUserByEmail?email=${email}`
       );
       const user = await response.json();
@@ -200,7 +198,6 @@ const Signup = () => {
 
     try {
       const response = await fetch(
-        /*`http://localhost:9019/validateUser`,*/
         `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser`,
         {
           method: "POST",
@@ -245,7 +242,7 @@ const Signup = () => {
       {height && (
         <div
           className="relative z-[99]  bg-gradient-to-b from-white via-white to-gray-400 h-full flex justify-center items-center"
-          style={{ height: `${height}px` }}
+          style={{ height: `calc(${height}px - 1px)` }}
         >
           <form className="w-[300px] flex flex-col items-center gap-4">
             <Image
@@ -305,7 +302,7 @@ const Signup = () => {
                     graphScopes={["mail.read", "mail.readwrite", "mail.send"]}
                     clientId="14a9d59a-1d19-486e-a4db-d81c5410a453"
                     authCallback={handleMicrosoftSignup}
-                    redirectUri="https://myautopilot.azurewebsites.net"
+                    redirectUri="https://myautopilot.ai"
                   >
                     <button
                       type="button"

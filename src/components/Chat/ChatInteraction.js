@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+
 import { AiOutlineUser, AiOutlineRobot } from "react-icons/ai";
 import {
   BsFillMicFill,
@@ -9,7 +10,7 @@ import {
   BsImageFill,
 } from "react-icons/bs";
 import { HiOutlineArrowSmallDown } from "react-icons/hi2";
-import { BsHandThumbsDown } from "react-icons/bs";
+import { FiThumbsUp, FiThumbsDown } from "react-icons/fi";
 import { FaSpinner } from "react-icons/fa";
 
 import { categories, subCategories } from "../../utils/ticketCreation.js";
@@ -21,27 +22,19 @@ import { handleSendGraphMail } from "../../utils/api/microsoft.js";
 
 import Cookies from "js-cookie";
 
-import Switch from "./Forms/Switch.js";
+import Switch from "../Forms/Switch.js";
 
 const ChatInteraction = ({
   activeTab,
   initialUser,
   selectedAgent,
-
   promptAssistantInput,
   openChatHistory,
   openChatAssistant,
-
   currentConversationIndices,
-  currentConversationIndex,
-
   conversationHistories,
-  conversationHistory,
-
   setConversationHistories,
-
   handleNewConversation,
-
   handleOpenChatHistory,
   handleOpenChatAssistant,
 }) => {
@@ -74,6 +67,8 @@ const ChatInteraction = ({
     taskForm: false,
   });
 
+  const [feedback, setFeedback] = useState({});
+
   const [selectedEmailIndex, setSelectedEmailIndex] = useState(null);
   const [currentEmailId, setCurrentEmailId] = useState("");
   const [currentEmailSubject, setCurrentEmailSubject] = useState("");
@@ -88,10 +83,8 @@ const ChatInteraction = ({
 
   const [currentTicketTitle, setCurrentTicketTitle] = useState("");
   const [currentTicketDescription, setCurrentTicketDescription] = useState("");
-  const [currentTicketCategory, setCurrentTicketCategory] =
-    useState(categories);
-  const [currentTicketSubCategory, setCurrentTicketSubCategory] =
-    useState(subCategories);
+  const [currentTicketCategory, setCurrentTicketCategory] = useState("");
+  const [currentTicketSubCategory, setCurrentTicketSubCategory] = useState("");
   const [currentTicketName, setCurrentTicketName] = useState("");
   const [currentTicketEmailId, setCurrentTicketEmailId] = useState("");
   const [currentTicketPhoneNumber, setCurrentTicketPhoneNumber] = useState("");
@@ -120,7 +113,6 @@ const ChatInteraction = ({
 
   const handleAddMessageToDB = async (aiContent, body) => {
     const response = await fetch(
-      // `http://localhost:9019/addMessage`,
       `https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`,
       {
         method: "POST",
@@ -142,14 +134,15 @@ const ChatInteraction = ({
     return response;
   };
 
-  const handleSubmitFeedback = async (messageId) => {
+  const handleSubmitFeedback = async (messageId, feedback) => {
     try {
       const cleanedMessageId = messageId.substring(0, messageId.length - 3);
       const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/updateFeedback?messageId=${cleanedMessageId}&feedback=false`
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/updateFeedback?messageId=${cleanedMessageId}&feedback=${feedback}`
       );
       if (response.status === 200) {
         setIsFeedbackSubmitted(true);
+        setFeedback((prevState) => ({ ...prevState, [messageId]: feedback }));
         setTimeout(() => {
           setIsFeedbackSubmitted(false);
         }, 2000);
@@ -266,7 +259,6 @@ const ChatInteraction = ({
 
         const response = await fetch(
           `https://etech7-wf-etech7-clu-service.azuremicroservices.io/jarvis4?text=${encodedMessage}&conversationId=${currentConversation.id}&userId=${initialUser.id}`,
-          // `http://localhost:8081/jarvis4?text=${encodedMessage}&conversationId=${currentConversation.id}&userId=${initialUser.id}`,
           {
             signal: controllerRef.current.signal,
           }
@@ -409,7 +401,6 @@ const ChatInteraction = ({
           currentContactMobileNumber
         );
         const contactResponse = await fetch(
-          /*`http://localhost:8082/addContact?givenName=${encodedContactGivenName}&surName=${encodedContactSurname}&emailId=${encodedContactEmailId}&mobileNumber=${encodedContactMobileNumber}`,*/
           `https://etech7-wf-etech7-mail-service.azuremicroservices.io/addContact?givenName=${encodedContactGivenName}&surName=${encodedContactSurname}&emailId=${encodedContactEmailId}&mobileNumber=${encodedContactMobileNumber}`,
           {
             method: "POST",
@@ -447,7 +438,6 @@ const ChatInteraction = ({
       setLoading((prevState) => ({ ...prevState, eventForm: true }));
       try {
         const scheduleResponse = await fetch(
-          /*`http://localhost:8082/scheduleEvent`,*/
           `https://etech7-wf-etech7-mail-service.azuremicroservices.io/scheduleEvent`,
           {
             method: "POST",
@@ -493,7 +483,6 @@ const ChatInteraction = ({
       setLoading((prevState) => ({ ...prevState, ticketForm: true }));
       try {
         const ticketResponse = await fetch(
-          // `http://localhost:8084/createTicket`,
           `https://etech7-wf-etech7-support-service.azuremicroservices.io/createTicket`,
           {
             method: "POST",
@@ -1245,11 +1234,22 @@ const ChatInteraction = ({
                 </div>
                 <span>
                   {item.role === "assistant" && (
-                    <BsHandThumbsDown
-                      onClick={() => handleSubmitFeedback(item.id)}
-                      size={20}
-                      className="cursor-pointer select-none"
-                    />
+                    <div className="flex gap-1">
+                      <FiThumbsUp
+                        onClick={() => handleSubmitFeedback(item.id, false)}
+                        size={15}
+                        className={`${
+                          feedback[item.id] === false ? "text-green-200" : ""
+                        } cursor-pointer select-none`}
+                      />
+                      <FiThumbsDown
+                        onClick={() => handleSubmitFeedback(item.id, true)}
+                        size={15}
+                        className={`${
+                          feedback[item.id] === true ? "text-red-200" : ""
+                        } cursor-pointer select-none`}
+                      />
+                    </div>
                   )}
                 </span>
               </div>

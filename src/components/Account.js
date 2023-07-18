@@ -124,7 +124,6 @@ const Account = ({ initialUser }) => {
 
     try {
       const response = await fetch(
-        /*`http://localhost:9019/editBusinessUserProfile`,*/
         `https://etech7-wf-etech7-db-service.azuremicroservices.io/editBusinessUserProfile`,
         {
           method: "POST",

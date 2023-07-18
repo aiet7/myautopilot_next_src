@@ -39,7 +39,7 @@ function MyApp({ Component, pageProps }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <GoogleOAuthProvider clientId="245064440141-lv1lq73kmfrhpdtjto3jre7cgb0nl4cn.apps.googleusercontent.com">
-        {loading ? <Loading /> : <Component {...pageProps} />}
+        {loading ? <Loading /> : <Component  {...pageProps} />}
       </GoogleOAuthProvider>
     </>
   );

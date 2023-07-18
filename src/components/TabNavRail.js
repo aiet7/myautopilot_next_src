@@ -125,8 +125,10 @@ const TabNavRail = ({
       )}
 
       <div
-        onClick={() => {}}
-        className="dark:text-white/20 flex flex-col items-center cursor-pointer text-black/20"
+        onClick={() => {
+          handleTabChange("teams");
+        }}
+        className="relative flex flex-col items-center cursor-pointer"
       >
         <AiOutlineTeam
           size={30}

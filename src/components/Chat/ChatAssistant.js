@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 
 import { AiOutlinePlus, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import { MdOutlineArrowDropDown, MdOutlineArrowDropUp } from "react-icons/md";
@@ -10,10 +10,7 @@ import { SiOpenai } from "react-icons/si";
 
 import { MarkedChatAssistant } from "../../utils/marked/marked.js";
 
-import {
-  generalSkills,
-  generalPrompts as exampleGeneralPrompts,
-} from "../../utils/prompts/generalPromptLibrary.js";
+import { generalSkills } from "../../utils/prompts/generalPromptLibrary.js";
 
 const ChatAssistant = ({
   initialUser,
@@ -34,9 +31,10 @@ const ChatAssistant = ({
     promptName: "",
     prompt: "",
   });
-  const [generalPrompts, setGeneralPrompts] = useState(exampleGeneralPrompts);
+  const [favoritePrompts, setFavoritePrompts] = useState(
+    initialUser.favorite || []
+  );
   const [showPromptIndex, setShowPromptIndex] = useState(null);
-  const allPrompts = [...generalPrompts, ...(initialUser.favorite || [])];
 
   const handleSendPromptGenerator = async () => {
     const completeMessage = prependText + userInput;
@@ -69,7 +67,6 @@ const ChatAssistant = ({
       customPrompt.promptName.trim() !== "" &&
       customPrompt.prompt.trim() !== ""
     ) {
-      setGeneralPrompts([...generalPrompts, customPrompt]);
       try {
         const response = await fetch(
           `https://etech7-wf-etech7-db-service.azuremicroservices.io/addFavorite?userId=${initialUser.id}`,
@@ -83,8 +80,8 @@ const ChatAssistant = ({
         );
 
         if (response.status === 200) {
-          const responseBody = await response.json();
-          console.log(responseBody);
+          const updatedFavoritePrompts = [...favoritePrompts, customPrompt];
+          setFavoritePrompts(updatedFavoritePrompts);
         } else {
           console.log("Failed to add");
         }
@@ -97,17 +94,16 @@ const ChatAssistant = ({
   };
 
   const handleDeletePrompt = async (index) => {
-    const promptToDelete = allPrompts[index];
-
+    const promptToDelete = favoritePrompts[index];
     try {
       const response = await fetch(
         `https://etech7-wf-etech7-db-service.azuremicroservices.io/deleteFavorite?id=${initialUser.id}&promptName=${promptToDelete.promptName}`
       );
-
       if (response.status === 200) {
-        const updatedPrompts = allPrompts.filter((prompt, i) => i !== index);
-        setGeneralPrompts(updatedPrompts);
-        console.log("delete");
+        const updatedFavoritePrompts = favoritePrompts.filter(
+          (prompt) => prompt.promptName !== promptToDelete.promptName
+        );
+        setFavoritePrompts(updatedFavoritePrompts);
       } else {
         console.log("delete failed");
       }
@@ -115,10 +111,6 @@ const ChatAssistant = ({
       console.log(e);
     }
   };
-
-  useEffect(() => {
-    setGeneralPrompts(exampleGeneralPrompts);
-  }, []);
 
   return (
     <div
@@ -227,12 +219,12 @@ const ChatAssistant = ({
               className="px-2 py-1"
               placeholder="Prompt Name"
             />
-            <input
+            <textarea
               value={customPrompt.prompt}
               onChange={(e) =>
                 setCustomPrompt({ ...customPrompt, prompt: e.target.value })
               }
-              className="px-2 py-1"
+              className="px-2 py-1 scrollbar-thin min-h-[100px] max-h-[200px]"
               placeholder="Prompt"
             />
             <button
@@ -245,14 +237,33 @@ const ChatAssistant = ({
           </div>
           <div className="flex-grow overflow-y-auto scrollbar-thin">
             <div className="flex flex-grow flex-col gap-2">
-              {allPrompts.map((prompts, index) => {
+              {favoritePrompts.length === 0 && (
+                <div className="dark:text-white/40 flex flex-col gap-2 text-black/40 italic">
+                  <h2 className="text-xl">Welcome to the favorites feature!</h2>
+                  <p className="text-sm">
+                    This feature allows you to create a custom `prompt name` and
+                    an associated `prompt` to interact with the chatbot. The
+                    prompts you create are saved under your favorites and you
+                    can easily use them to ask the chatbot anything you want, as
+                    many times as you want!
+                  </p>
+                  <p className="text-sm">
+                    To get started, simply input your desired prompt name and
+                    prompt text in the provided fields and click the `Add`
+                    button. Your favorite prompts will be listed here and can be
+                    used or deleted at any time. Enjoy customizing your chatbot
+                    experience!
+                  </p>
+                </div>
+              )}
+              {favoritePrompts.map((prompts, index) => {
                 const { promptName, prompt } = prompts;
                 return (
                   <div
                     key={index}
                     className="dark:bg-white/30 dark:text-white dark:border-white/20 flex flex-col justify-between gap-3 border rounded-md text-black bg-white p-2"
                   >
-                    <div className="flex items-center justify-between">
+                    <div className="flex justify-between">
                       <p
                         className={`${
                           showPromptIndex === index
@@ -262,8 +273,7 @@ const ChatAssistant = ({
                       >
                         {promptName}
                       </p>
-                      <div className="flex items-center gap-2">
-                        <AiOutlineEdit size={20} className="cursor-pointer" />
+                      <div className="flex gap-2">
                         <AiOutlineDelete
                           size={20}
                           className="cursor-pointer"

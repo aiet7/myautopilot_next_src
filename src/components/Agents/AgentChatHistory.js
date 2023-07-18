@@ -38,7 +38,6 @@ const AgentChatHistory = ({
     updatedConversation.customPrompt = tempPrompt;
 
     const response = await fetch(
-      // `http://localhost:9019/addConversation`,
       `https://etech7-wf-etech7-db-service.azuremicroservices.io/addConversation`,
       {
         method: "POST",

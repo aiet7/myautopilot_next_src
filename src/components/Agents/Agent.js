@@ -7,6 +7,7 @@ import AgentInteraction from "./AgentInteraction";
 import AgentChatHistory from "./AgentChatHistory";
 
 const Agent = ({
+  activeTab,
   initialUser,
   initialAgents,
   selectedAgent,
@@ -51,6 +52,7 @@ const Agent = ({
       )}
       {selectedAgent ? (
         <AgentInteraction
+          activeTab={activeTab}
           initialUser={initialUser}
           selectedAgent={selectedAgent}
           promptAssistantInput={promptAssistantInput}

@@ -32,7 +32,7 @@ const WelcomePage = () => {
       {height && (
         <div
           className="h-full flex items-center justify-center bg-gradient-to-b from-white to-gray-100"
-          style={{ height: `${height}px` }}
+          style={{ height: `calc(${height}px - 1px)` }}
         >
           <div className="relative w-full max-w-2xl p-8 bg-white bg-opacity-5 ">
             <div className="absolute inset-0 z-0 flex justify-center items-center">

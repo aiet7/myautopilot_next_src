@@ -1,8 +1,7 @@
 "use client";
 
-import { FaMicrochip } from "react-icons/fa";
-import { GiSettingsKnobs, GiClawHammer } from "react-icons/gi";
-import { useState } from "react";
+import { GiClawHammer } from "react-icons/gi";
+
 import { SiMarketo } from "react-icons/si";
 import { TbWorldWww } from "react-icons/tb";
 
@@ -13,18 +12,6 @@ const AgentSelection = ({
   handleOpenAgentSelectionHide,
   handleAgentSelected,
 }) => {
-  // const [selectedAgentId, setSelectedAgentId] = useState(null);
-  // const [editedPrompt, setEditedPrompt] = useState("");
-
-  // const handleOpenAgentSettings = (id, defaultPrompt) => {
-  //   if (selectedAgentId === id) {
-  //     setSelectedAgentId(null);
-  //   } else {
-  //     setSelectedAgentId(id);
-  //     setEditedPrompt(defaultPrompt);
-  //   }
-  // };
-
   return (
     <div
       onMouseLeave={handleOpenAgentSelectionHide}
@@ -51,7 +38,7 @@ const AgentSelection = ({
         } h-[200px] overflow-y-auto scrollbar-thin lg:h-full`}
       >
         {initialAgents.slice(0, -1).map((agent, index) => {
-          const { id, agentName, defaultPrompt } = agent;
+          const { id, agentName } = agent;
           return (
             <div key={id} className=" flex flex-col items-start my-2">
               <div
@@ -68,27 +55,8 @@ const AgentSelection = ({
                     {agentName === "Law Agent" && <GiClawHammer />}
                     <p>{agentName}</p>
                   </div>
-                  {/* <GiSettingsKnobs
-                    className="select-none"
-                    onClick={() => handleOpenAgentSettings(id, defaultPrompt)}
-                  /> */}
                 </div>
               </div>
-              {/* {selectedAgentId === id && (
-                <div className="w-full">
-                  <textarea
-                    className="dark:bg-white/10 w-full bg-black/5 p-2 rounded-bl-md rounded-br-md scrollbar-thin min-h-[100px] max-h-[200px]"
-                    value={editedPrompt}
-                    onChange={(e) => setEditedPrompt(e.target.value)}
-                  />
-                  <button
-                    onClick={() => setSelectedAgentId(null)}
-                    className="w-full bg-blue-800 py-2 text-white"
-                  >
-                    Save
-                  </button>
-                </div>
-              )} */}
             </div>
           );
         })}
