@@ -39,7 +39,7 @@ const EmailForm = ({
       </div>
       <div className="flex items-center gap-4">
         <button
-          className="bg-green-300 rounded-md px-3 py-2 text-white"
+          className="border border-white/30 bg-blue-800 px-3 py-1 text-white"
           disabled={loading.emailForm}
           onClick={() => {
             handleEmailConfirmation(true, itemId);
@@ -48,7 +48,7 @@ const EmailForm = ({
           {loading.emailForm ? "Sending..." : "Send Email"}
         </button>
         <button
-          className="bg-red-300 rounded-md px-3 py-2 text-white"
+          className="dark:text-white dark:border-white/30 border border-blue-800 px-3 py-1 text-blue-800"
           onClick={() => {
             handleEmailConfirmation(false, itemId);
           }}

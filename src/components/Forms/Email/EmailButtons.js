@@ -10,8 +10,8 @@ const EmailButtons = ({
           key={index}
           onClick={() => handleEmailSelection(email, index)}
           className={`${
-            selectedEmailIndex === index ? "bg-blue-900" : "bg-gray-500"
-          }  text-white px-4 py-2 rounded-md`}
+            selectedEmailIndex === index ? "bg-blue-800" : "bg-gray-500"
+          }  text-white px-4 py-2`}
         >
           {email}
         </button>

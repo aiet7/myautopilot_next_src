@@ -66,7 +66,10 @@ const Agent = ({
           handleOpenAgentAssistant={handleOpenAgentAssistant}
         />
       ) : (
-        <AgentGuide />
+        <AgentGuide
+          openAgentHistory={openAgentHistory}
+          handleOpenAgentHistory={handleOpenAgentHistory}
+        />
       )}
       {selectedAgent ? (
         <AgentAssistant

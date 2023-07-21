@@ -17,7 +17,6 @@ const Teams = ({
   const [connected, setConnected] = useState(false);
   const [messages, setMessages] = useState([]);
 
-  console.log(messages);
 
   const handleConnectToWebSocket = () => {
     const socket = new SockJS(`http://localhost:8083/ws`);

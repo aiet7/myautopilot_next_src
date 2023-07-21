@@ -1,6 +1,6 @@
 "use client";
 
-const AgentGuide = () => {
+const AgentGuide = ({ openAgentHistory, handleOpenAgentHistory }) => {
   return (
     <div className="w-full h-full overflow-y-auto scrollbar-thin">
       <div className="dark:text-white/80 text-black/70 p-4 max-w-[850px] mx-auto">

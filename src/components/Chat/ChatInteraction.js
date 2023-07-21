@@ -45,6 +45,7 @@ const ChatInteraction = ({
   const chatContainerRef = useRef(null);
   const controllerRef = useRef(null);
   const inputRef = useRef(null);
+  const messageIdRef = useRef(null);
 
   const [previousResponseBodyForForms, setPreviousResponseBodyForForms] =
     useState(null);
@@ -111,6 +112,34 @@ const ChatInteraction = ({
 
   const [currentTaskName, setCurrentTaskName] = useState("");
 
+  const handleIfConversationExists = async () => {
+    if (!(selectedAgent in conversationHistories)) {
+      conversationHistories[selectedAgent] = [];
+    }
+
+    let currentConversation =
+      conversationHistories[selectedAgent][
+        currentConversationIndices[selectedAgent]
+      ];
+
+    if (!currentConversation) {
+      return new Promise(async (resolve) => {
+        const conversationCount = conversationHistories[selectedAgent].length;
+        const newConversation = await handleNewConversation(conversationCount);
+        setConversationHistories((prevState) => {
+          const newConversations = { ...prevState };
+          const currentAgentConversations = newConversations[selectedAgent];
+          currentAgentConversations[currentConversationIndices[selectedAgent]] =
+            newConversation;
+          resolve(newConversation);
+          return newConversations;
+        });
+      });
+    }
+
+    return currentConversation;
+  };
+
   const handleAddMessageToDB = async (aiContent, body) => {
     const response = await fetch(
       `https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`,
@@ -137,6 +166,7 @@ const ChatInteraction = ({
   const handleSubmitFeedback = async (messageId, feedback) => {
     try {
       const cleanedMessageId = messageId.substring(0, messageId.length - 3);
+
       const response = await fetch(
         `https://etech7-wf-etech7-db-service.azuremicroservices.io/updateFeedback?messageId=${cleanedMessageId}&feedback=${feedback}`
       );
@@ -170,23 +200,10 @@ const ChatInteraction = ({
 
     controllerRef.current = new AbortController();
 
-    let currentConversation;
-    if (!(selectedAgent in conversationHistories)) {
-      conversationHistories[selectedAgent] = [];
-    }
-
-    if (conversationHistories[selectedAgent].length === 0) {
-      currentConversation = await handleNewConversation(0);
-    } else {
-      currentConversation =
-        conversationHistories[selectedAgent][
-          currentConversationIndices[selectedAgent]
-        ];
-    }
+    let currentConversation = await handleIfConversationExists();
 
     if (message.trim() !== "") {
       inputRef.current.focus();
-
       handleAddUserMessage(message);
       setIsWaiting(true);
       setIsServerError(false);
@@ -203,6 +220,7 @@ const ChatInteraction = ({
 
         if (response.status === 200) {
           const responseBody = await response.json();
+          messageIdRef.current = responseBody.id;
           handleProcessResponse(
             responseBody.intent,
             null,
@@ -231,19 +249,7 @@ const ChatInteraction = ({
 
     controllerRef.current = new AbortController();
 
-    let currentConversation;
-    if (!(selectedAgent in conversationHistories)) {
-      conversationHistories[selectedAgent] = [];
-    }
-
-    if (conversationHistories[selectedAgent].length === 0) {
-      currentConversation = await handleNewConversation(0);
-    } else {
-      currentConversation =
-        conversationHistories[selectedAgent][
-          currentConversationIndices[selectedAgent]
-        ];
-    }
+    let currentConversation = await handleIfConversationExists();
 
     if (message.trim() !== "") {
       inputRef.current.focus();
@@ -266,6 +272,7 @@ const ChatInteraction = ({
 
         if (response.status === 200) {
           const responseBody = await response.json();
+          messageIdRef.current = responseBody.id;
           setPreviousResponseBodyForForms({
             ...responseBody,
             conversationId: currentConversation.id,
@@ -1019,7 +1026,7 @@ const ChatInteraction = ({
       currentAgentConversations[
         currentConversationIndices[selectedAgent]
       ].messages.push({
-        id: Date.now() + "-ai",
+        id: messageIdRef.current + "-ai",
         content: message,
         role: "assistant",
         timeStamp: new Date().toISOString(),
@@ -1071,6 +1078,11 @@ const ChatInteraction = ({
     });
   };
 
+  // const handleTextAreaChange = (e) => {
+  //   setUserInput(e.target.value);
+  //   setTextAreaHeight(`${e.target.scrollHeight}px`);
+  // };
+
   const handleScrollToBottom = (smooth) => {
     latestMessageRef.current?.scrollIntoView({
       behavior: smooth ? "smooth" : "auto",
@@ -1087,6 +1099,13 @@ const ChatInteraction = ({
     setIsAtBottom(atBottom);
     setIsOverflowed(container.scrollHeight > container.clientHeight);
   };
+
+  // useEffect(() => {
+  //   if (inputRef.current) {
+  //     inputRef.current.style.height = "auto";
+  //     inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
+  //   }
+  // }, [userInput]);
 
   useEffect(() => {
     const filtered = subCategories.filter(
@@ -1140,6 +1159,8 @@ const ChatInteraction = ({
         {conversationHistories[selectedAgent]?.[
           currentConversationIndices[selectedAgent]
         ]?.messages?.map((item, index, arr) => {
+          console.log(item.id);
+          console.log(arr);
           return (
             <div
               key={item.id}
@@ -1288,6 +1309,26 @@ const ChatInteraction = ({
           className="dark:bg-black bg-white border outline-blue-500 w-full px-4 h-[50px] pr-24"
           disabled={isFormOpen}
         />
+
+        {/* <textarea
+          ref={inputRef}
+          onChange={handleTextAreaChange}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleSendUserMessage(userInput);
+            }
+          }}
+          value={userInput}
+          placeholder="Command Your AutoPilot..."
+          className="dark:bg-black bg-white border outline-blue-500 w-full px-4 pr-24 resize-none scrollbar-thin"
+          disabled={isFormOpen}
+          style={{
+            height: textAreaHeight,
+            maxHeight: "200px",
+          }}
+        /> */}
+
         <div className="flex items-center gap-3 absolute right-24 pr-2 flex items-center bottom-0 top-0">
           <BsImageFill
             onClick={() => handleImageGenerator(userInput)}

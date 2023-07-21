@@ -40,6 +40,7 @@ const AgentInteraction = ({
   const chatContainerRef = useRef(null);
   const controllerRef = useRef(null);
   const inputRef = useRef(null);
+  const messageIdRef = useRef(null);
 
   const [previousResponseBodyForForms, setPreviousResponseBodyForForms] =
     useState(null);
@@ -106,6 +107,34 @@ const AgentInteraction = ({
 
   const [currentTaskName, setCurrentTaskName] = useState("");
 
+  const handleIfConversationExists = async () => {
+    if (!(selectedAgent in conversationHistories)) {
+      conversationHistories[selectedAgent] = [];
+    }
+
+    let currentConversation =
+      conversationHistories[selectedAgent][
+        currentConversationIndices[selectedAgent]
+      ];
+
+    if (!currentConversation) {
+      return new Promise(async (resolve) => {
+        const conversationCount = conversationHistories[selectedAgent].length;
+        const newConversation = await handleNewConversation(conversationCount);
+        setConversationHistories((prevState) => {
+          const newConversations = { ...prevState };
+          const currentAgentConversations = newConversations[selectedAgent];
+          currentAgentConversations[currentConversationIndices[selectedAgent]] =
+            newConversation;
+          resolve(newConversation);
+          return newConversations;
+        });
+      });
+    }
+
+    return currentConversation;
+  };
+
   const handleAddMessageToDB = async (aiContent, body) => {
     const response = await fetch(
       `https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`,
@@ -165,19 +194,7 @@ const AgentInteraction = ({
 
     controllerRef.current = new AbortController();
 
-    let currentConversation;
-    if (!(selectedAgent in conversationHistories)) {
-      conversationHistories[selectedAgent] = [];
-    }
-
-    if (conversationHistories[selectedAgent].length === 0) {
-      currentConversation = await handleNewConversation(0);
-    } else {
-      currentConversation =
-        conversationHistories[selectedAgent][
-          currentConversationIndices[selectedAgent]
-        ];
-    }
+    let currentConversation = await handleIfConversationExists();
 
     if (message.trim() !== "") {
       inputRef.current.focus();
@@ -199,12 +216,15 @@ const AgentInteraction = ({
 
         if (response.status === 200) {
           const responseBody = await response.json();
+          messageIdRef.current = responseBody.id;
+
           setPreviousResponseBodyForForms({
             ...responseBody,
             conversationId: currentConversation.id,
             userContent: message,
           });
           handleProcessResponse(
+            responseBody.entities,
             responseBody.intent,
             responseBody.mailEntities,
             responseBody.message,
@@ -520,6 +540,7 @@ const AgentInteraction = ({
   };
 
   const handleProcessResponse = (
+    entities,
     intent,
     mailEntities,
     message,
@@ -533,7 +554,7 @@ const AgentInteraction = ({
         handleScheduleProcess(JSON.parse(message));
         break;
       case "createTicket":
-        handleCreateTicketProcess(JSON.parse(message));
+        handleCreateTicketProcess(entities, JSON.parse(message));
         break;
       case "addContact":
         handleAddContactProcess(JSON.parse(message));
@@ -590,7 +611,7 @@ const AgentInteraction = ({
     setCurrentEventUserInfo(userInfo);
   };
 
-  const handleCreateTicketProcess = (message) => {
+  const handleCreateTicketProcess = (entities, message) => {
     const {
       title,
       description,
@@ -608,6 +629,23 @@ const AgentInteraction = ({
     setCurrentTicketName(name);
     setCurrentTicketEmailId(emailID);
     setCurrentTicketPhoneNumber(phoneNumber);
+
+    entities.forEach((entity) => {
+      switch (entity.category) {
+        case "personName":
+          const names = entity.text.split(" ");
+          setCurrentTicketNewFirstName(names[0]);
+          setCurrentTicketNewLastName(names[names.length - 1]);
+        case "phoneNumber":
+          setCurrentTicketNewPhoneNumber(entity.text);
+          break;
+        case "mailID":
+          setCurrentTicketNewEmailId(entity.text);
+          break;
+        default:
+          null;
+      }
+    });
   };
 
   const handleAddContactProcess = (message) => {
