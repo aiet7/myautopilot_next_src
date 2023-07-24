@@ -43,17 +43,18 @@ const AgentInteraction = ({
   const messageIdRef = useRef(null);
 
   const [previousResponseBodyForForms, setPreviousResponseBodyForForms] =
-    useState(null);
+    useState({});
 
   const [userInput, setUserInput] = useState("");
+  const [textAreaHeight, setTextAreaHeight] = useState("24px");
 
   const [isWaiting, setIsWaiting] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(false);
   const [isOverflowed, setIsOverflowed] = useState(false);
   const [isServerError, setIsServerError] = useState(false);
-  const [isFormOpen, setIsFormOpen] = useState(false);
   const [isFeedbackSubmitted, setIsFeedbackSubmitted] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState({});
 
   const [loading, setLoading] = useState({
     contactForm: false,
@@ -106,6 +107,14 @@ const AgentInteraction = ({
   ]);
 
   const [currentTaskName, setCurrentTaskName] = useState("");
+
+  const handleGetConversationId = () => {
+    const conversationId =
+      conversationHistories[selectedAgent]?.[
+        currentConversationIndices[selectedAgent]
+      ]?.id;
+    return previousResponseBodyForForms[conversationId];
+  };
 
   const handleIfConversationExists = async () => {
     if (!(selectedAgent in conversationHistories)) {
@@ -218,11 +227,14 @@ const AgentInteraction = ({
           const responseBody = await response.json();
           messageIdRef.current = responseBody.id;
 
-          setPreviousResponseBodyForForms({
-            ...responseBody,
-            conversationId: currentConversation.id,
-            userContent: message,
-          });
+          setPreviousResponseBodyForForms((prevState) => ({
+            ...prevState,
+            [currentConversation.id]: {
+              ...responseBody,
+              conversationId: currentConversation.id,
+              userContent: message,
+            },
+          }));
           handleProcessResponse(
             responseBody.entities,
             responseBody.intent,
@@ -274,13 +286,15 @@ const AgentInteraction = ({
   };
 
   const handleEmailConfirmation = async (isConfirmed, formId) => {
+    const previousResponseBodyForConversation = handleGetConversationId();
+
     if (isConfirmed) {
       setLoading((prevState) => ({ ...prevState, emailForm: true }));
       try {
         const aiContent = `Email Sent!\n\nTo: ${currentEmailId}\nSubject: ${currentEmailSubject}\nBody: ${currentEmailBody}`;
         const formSummaryResponse = await handleAddMessageToDB(
           aiContent,
-          previousResponseBodyForForms
+          previousResponseBodyForConversation
         );
         if (formSummaryResponse.status === 200) {
           handleAddAssistantMessage(aiContent);
@@ -327,19 +341,30 @@ const AgentInteraction = ({
         console.log(e);
       } finally {
         setLoading((prevState) => ({ ...prevState, emailForm: false }));
+        setIsFormOpen((prevState) => ({
+          ...prevState,
+          [previousResponseBodyForConversation.conversationId]: false,
+        }));
         handleRemoveForm(formId);
-        setIsFormOpen(false);
       }
     } else {
       const aiContent = `Email Cancelled.`;
-      await handleAddMessageToDB(aiContent, previousResponseBodyForForms);
+      await handleAddMessageToDB(
+        aiContent,
+        previousResponseBodyForConversation
+      );
+      setIsFormOpen((prevState) => ({
+        ...prevState,
+        [previousResponseBodyForConversation.conversationId]: false,
+      }));
       handleAddAssistantMessage(aiContent);
       handleRemoveForm(formId);
-      setIsFormOpen(false);
     }
   };
 
   const handleContactConfirmation = async (isConfirmed, formId) => {
+    const previousResponseBodyForConversation = handleGetConversationId();
+
     if (isConfirmed) {
       setLoading((prevState) => ({ ...prevState, contactForm: true }));
       try {
@@ -364,7 +389,7 @@ const AgentInteraction = ({
           const aiContent = `Contact Added!\nGiven Name: ${currentContactGivenName}\nSurname: ${currentContactSurname}\nEmail: ${currentContactEmailId}\nMobile Number: ${currentContactMobileNumber}`;
           const formSummaryResponse = await handleAddMessageToDB(
             aiContent,
-            previousResponseBodyForForms
+            previousResponseBodyForConversation
           );
           if (formSummaryResponse.status === 200) {
             handleAddAssistantMessage(aiContent);
@@ -373,20 +398,31 @@ const AgentInteraction = ({
       } catch (e) {
         console.log(e);
       } finally {
+        setIsFormOpen((prevState) => ({
+          ...prevState,
+          [previousResponseBodyForConversation.conversationId]: false,
+        }));
         setLoading((prevState) => ({ ...prevState, contactForm: false }));
         handleRemoveForm(formId);
-        setIsFormOpen(false);
       }
     } else {
       const aiContent = "Contact Adding Cancelled";
-      await handleAddMessageToDB(aiContent, previousResponseBodyForForms);
+      await handleAddMessageToDB(
+        aiContent,
+        previousResponseBodyForConversation
+      );
+      setIsFormOpen((prevState) => ({
+        ...prevState,
+        [previousResponseBodyForConversation.conversationId]: false,
+      }));
       handleAddAssistantMessage(aiContent);
       handleRemoveForm(formId);
-      setIsFormOpen(false);
     }
   };
 
   const handleScheduleConfirmation = async (isConfirmed, formId) => {
+    const previousResponseBodyForConversation = handleGetConversationId();
+
     if (isConfirmed) {
       setLoading((prevState) => ({ ...prevState, eventForm: true }));
       try {
@@ -409,7 +445,7 @@ const AgentInteraction = ({
           const aiContent = `Event Scheduled!\nSubject: ${currentEventSubject}\nBody: ${currentEventBody}\nStart Time: ${currentEventStartTime}\nEnd Time: ${currentEventEndTime}\nLocation: ${currentEventLocation}\nName: ${currentEventUserInfo[0].name}\nEmail:${currentEventUserInfo[0].email}.`;
           const formSummaryResponse = await handleAddMessageToDB(
             aiContent,
-            previousResponseBodyForForms
+            previousResponseBodyForConversation
           );
           if (formSummaryResponse.status === 200) {
             handleAddAssistantMessage(aiContent);
@@ -418,20 +454,31 @@ const AgentInteraction = ({
       } catch (e) {
         console.log(e);
       } finally {
+        setIsFormOpen((prevState) => ({
+          ...prevState,
+          [previousResponseBodyForConversation.conversationId]: false,
+        }));
         setLoading((prevState) => ({ ...prevState, eventForm: false }));
         handleRemoveForm(formId);
-        setIsFormOpen(false);
       }
     } else {
       const aiContent = "Scheduling Cancelled.";
-      await handleAddMessageToDB(aiContent, previousResponseBodyForForms);
+      await handleAddMessageToDB(
+        aiContent,
+        previousResponseBodyForConversation
+      );
+      setIsFormOpen((prevState) => ({
+        ...prevState,
+        [previousResponseBodyForConversation.conversationId]: false,
+      }));
       handleAddAssistantMessage(aiContent);
       handleRemoveForm(formId);
-      setIsFormOpen(false);
     }
   };
 
   const handleTicketConfirmation = async (isConfirmed, formId) => {
+    const previousResponseBodyForConversation = handleGetConversationId();
+
     if (isConfirmed) {
       setLoading((prevState) => ({ ...prevState, ticketForm: true }));
       try {
@@ -483,7 +530,7 @@ const AgentInteraction = ({
           const aiContent = `Ticket Created!\nID: ${id}\nTitle: ${currentTicketTitle}\nDescription: ${currentTicketDescription}\nCategory: ${currentTicketCategory}\nSubcategory: ${currentTicketSubCategory}\nName: ${currentTicketName}\nEmail: ${currentTicketEmailId}\nPhone: ${currentTicketPhoneNumber}.`;
           const formSummaryResponse = await handleAddMessageToDB(
             aiContent,
-            previousResponseBodyForForms
+            previousResponseBodyForConversation
           );
           if (formSummaryResponse.status === 200) {
             handleAddAssistantMessage(aiContent);
@@ -492,20 +539,31 @@ const AgentInteraction = ({
       } catch (e) {
         console.log(e);
       } finally {
+        setIsFormOpen((prevState) => ({
+          ...prevState,
+          [previousResponseBodyForConversation.conversationId]: false,
+        }));
         setLoading((prevState) => ({ ...prevState, ticketForm: false }));
         handleRemoveForm(formId);
-        setIsFormOpen(false);
       }
     } else {
       const aiContent = "Ticket Creation Cancelled.";
-      await handleAddMessageToDB(aiContent, previousResponseBodyForForms);
+      await handleAddMessageToDB(
+        aiContent,
+        previousResponseBodyForConversation
+      );
+      setIsFormOpen((prevState) => ({
+        ...prevState,
+        [previousResponseBodyForConversation.conversationId]: false,
+      }));
       handleAddAssistantMessage(aiContent);
       handleRemoveForm(formId);
-      setIsFormOpen(false);
     }
   };
 
   const handleTaskConfirmation = async (isConfirmed, formId) => {
+    const previousResponseBodyForConversation = handleGetConversationId();
+
     if (isConfirmed) {
       setLoading((prevState) => ({ ...prevState, taskForm: true }));
       try {
@@ -517,7 +575,7 @@ const AgentInteraction = ({
           const aiContent = `Task Created!\n\nTask Name: ${currentTaskName}`;
           const formSummaryResponse = await handleAddMessageToDB(
             aiContent,
-            previousResponseBodyForForms
+            previousResponseBodyForConversation
           );
           if (formSummaryResponse.status === 200) {
             handleAddAssistantMessage(aiContent);
@@ -526,16 +584,25 @@ const AgentInteraction = ({
       } catch (e) {
         console.log(e);
       } finally {
+        setIsFormOpen((prevState) => ({
+          ...prevState,
+          [previousResponseBodyForConversation.conversationId]: false,
+        }));
         setLoading((prevState) => ({ ...prevState, taskForm: false }));
         handleRemoveForm(formId);
-        setIsFormOpen(false);
       }
     } else {
       const aiContent = "Task Creation Cancelled";
-      await handleAddMessageToDB(aiContent, previousResponseBodyForForms);
+      await handleAddMessageToDB(
+        aiContent,
+        previousResponseBodyForConversation
+      );
+      setIsFormOpen((prevState) => ({
+        ...prevState,
+        [previousResponseBodyForConversation.conversationId]: false,
+      }));
       handleAddAssistantMessage(aiContent);
       handleRemoveForm(formId);
-      setIsFormOpen(false);
     }
   };
 
@@ -584,34 +651,49 @@ const AgentInteraction = ({
   };
 
   const handleEmailProcess = (mailEntities) => {
+    let conversationId;
+
     const { mailID, subject, body, emailIDs } = mailEntities;
     if (emailIDs && emailIDs.length !== 0) {
-      handleAddForm("emailButtons + emailForm");
+      conversationId = handleAddForm("emailButtons + emailForm");
       setAvailableEmailIds(emailIDs);
       setCurrentEmailSubject(subject);
       setCurrentEmailBody(body);
     } else {
-      handleAddForm("contactForm + emailForm");
+      conversationId = handleAddForm("contactForm + emailForm");
       setCurrentContactEmailId(mailID);
       setCurrentEmailId(mailID);
       setCurrentEmailSubject(subject);
       setCurrentEmailBody(body);
     }
+    setIsFormOpen((prevState) => ({
+      ...prevState,
+      [conversationId]: true,
+    }));
   };
 
   const handleScheduleProcess = (message) => {
+    let conversationId;
+
     const { subject, body, start, end, locationDisplayName, userInfo } =
       message;
-    handleAddForm("eventForm");
+    conversationId = handleAddForm("eventForm");
     setCurrentEventSubject(subject);
     setCurrentEventBody(body);
     setCurrentEventStartTime(start);
     setCurrentEventEndTime(end);
     setCurrentEventLocation(locationDisplayName);
     setCurrentEventUserInfo(userInfo);
+
+    setIsFormOpen((prevState) => ({
+      ...prevState,
+      [conversationId]: true,
+    }));
   };
 
   const handleCreateTicketProcess = (entities, message) => {
+    let conversationId;
+
     const {
       title,
       description,
@@ -621,7 +703,7 @@ const AgentInteraction = ({
       emailID,
       phoneNumber,
     } = message;
-    handleAddForm("ticketForm");
+    conversationId = handleAddForm("ticketForm");
     setCurrentTicketTitle(title);
     setCurrentTicketDescription(description);
     setCurrentTicketCategory(category);
@@ -646,20 +728,36 @@ const AgentInteraction = ({
           null;
       }
     });
+    setIsFormOpen((prevState) => ({
+      ...prevState,
+      [conversationId]: true,
+    }));
   };
 
   const handleAddContactProcess = (message) => {
+    let conversationId;
+
     const { givenName, surName, emailId, mobileNumber } = message;
-    handleAddForm("contactForm");
+    conversationId = handleAddForm("contactForm");
     setCurrentContactGivenName(givenName);
     setCurrentContactSurname(surName);
     setCurrentContactEmailId(emailId);
     setCurrentContactMobileNumber(mobileNumber);
+    setIsFormOpen((prevState) => ({
+      ...prevState,
+      [conversationId]: true,
+    }));
   };
 
   const handleCreateTaskProcess = (message) => {
-    handleAddForm("taskForm");
+    let conversationId;
+
+    conversationId = handleAddForm("taskForm");
     setCurrentTaskName(message);
+    setIsFormOpen((prevState) => ({
+      ...prevState,
+      [conversationId]: true,
+    }));
   };
 
   const handleGetEventsProcess = async (responseBody) => {
@@ -971,7 +1069,10 @@ const AgentInteraction = ({
 
   const handleAddForm = (formType) => {
     const formId = Date.now();
-    setIsFormOpen(true);
+    const conversationId =
+      conversationHistories[selectedAgent]?.[
+        currentConversationIndices[selectedAgent]
+      ]?.id;
     setConversationHistories((prevState) => {
       const newConversations = { ...prevState };
       const currentAgentConversations = newConversations[selectedAgent];
@@ -994,9 +1095,20 @@ const AgentInteraction = ({
 
       return newConversations;
     });
+    return conversationId;
   };
 
   const handleRemoveForm = (formId) => {
+    const conversationId =
+      conversationHistories[selectedAgent]?.[
+        currentConversationIndices[selectedAgent]
+      ]?.id;
+
+    setPreviousResponseBodyForForms((prevResponses) => {
+      const newResponses = { ...prevResponses };
+      delete newResponses[conversationId];
+      return newResponses;
+    });
     setConversationHistories((prevState) => {
       const newConversations = { ...prevState };
       const currentAgentConversations = newConversations[selectedAgent];
@@ -1009,6 +1121,11 @@ const AgentInteraction = ({
 
       return newConversations;
     });
+  };
+
+  const handleTextAreaChange = (e) => {
+    setUserInput(e.target.value);
+    setTextAreaHeight(`${e.target.scrollHeight}px`);
   };
 
   const handleScrollToBottom = (smooth) => {
@@ -1027,6 +1144,13 @@ const AgentInteraction = ({
     setIsAtBottom(atBottom);
     setIsOverflowed(container.scrollHeight > container.clientHeight);
   };
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.style.height = "24px";
+      inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
+    }
+  }, [userInput]);
 
   useEffect(() => {
     const filtered = subCategories.filter(
@@ -1213,9 +1337,9 @@ const AgentInteraction = ({
       </div>
 
       <div className="relative flex items-center px-4 py-2">
-        <input
+        <textarea
           ref={inputRef}
-          onChange={(e) => setUserInput(e.target.value)}
+          onChange={handleTextAreaChange}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault();
@@ -1224,8 +1348,12 @@ const AgentInteraction = ({
           }}
           value={userInput}
           placeholder="Command Your AutoPilot..."
-          className="dark:bg-black bg-white border outline-blue-500 w-full px-4 h-[50px] pr-24"
-          disabled={isFormOpen}
+          className="dark:bg-black bg-white border outline-blue-500 w-full p-4 pr-24 resize-none no-scrollbar"
+          style={{
+            height: textAreaHeight,
+            maxHeight: "200px",
+          }}
+          disabled={isFormOpen[handleGetConversationId()?.conversationId]}
         />
         <div className="flex items-center gap-3 absolute right-24 pr-2 flex items-center bottom-0 top-0">
           <BsFillSendFill

@@ -66,7 +66,7 @@ const Teams = ({
           openTeamsHistory && handleOpenTeamsHistory(false);
           openTeamsAssistant && handleOpenTeamsAssistant(false);
         }}
-        className={`relative flex flex-col h-full w-full  ${
+        className={`relative flex flex-col h-full w-full ${
           (openTeamsHistory && "lg:opacity-100 opacity-5") ||
           (openTeamsAssistant && "lg:opacity-100 opacity-5")
         } dark:bg-black transition-all duration-300 ease-in-out bg-white`}

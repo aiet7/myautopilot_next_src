@@ -2,7 +2,12 @@
 
 const AgentGuide = ({ openAgentHistory, handleOpenAgentHistory }) => {
   return (
-    <div className="w-full h-full overflow-y-auto scrollbar-thin">
+    <div
+      onClick={() => {
+        openAgentHistory && handleOpenAgentHistory(false);
+      }}
+      className="w-full h-full overflow-y-auto scrollbar-thin"
+    >
       <div className="dark:text-white/80 text-black/70 p-4 max-w-[850px] mx-auto">
         <h2 className="dark:text-white text-black text-center text-4xl font-bold mb-4">
           Welcome to the Agents Tab!
@@ -23,7 +28,9 @@ const AgentGuide = ({ openAgentHistory, handleOpenAgentHistory }) => {
           out of your interactions.
         </p>
         <div className="mt-6">
-          <h3 className="dark:text-white text-black text-3xl font-semibold mb-2">Meet Our Agents:</h3>
+          <h3 className="dark:text-white text-black text-3xl font-semibold mb-2">
+            Meet Our Agents:
+          </h3>
           <div className="dark:text-white/80 text-black/70  text-left">
             <h4 className="text-xl font-bold">Marketing Agent:</h4>
             <p>
