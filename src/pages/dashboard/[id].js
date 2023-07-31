@@ -10,18 +10,37 @@ import Account from "../../components/Account.js";
 
 import { useState, useEffect } from "react";
 import Teams from "../../components/Teams/Teams.js";
+import { Client } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
+
+import {
+  handleServerPropsData,
+  handleGetRooms,
+  handleGetRoomMessages,
+} from "../../utils/api/serverProps.js";
 
 const DashboardPage = ({
   initialUser,
   initialConversations,
   initialAgents,
   initialMessages,
+  initialRooms,
+  initialRoomMessages,
 }) => {
   const [height, setHeight] = useState(null);
-
+  const [connected, setConnected] = useState(false);
+  const [client, setClient] = useState(null);
+  const [subscribed, setSubscribed] = useState(false);
+  const [wsIsPending, setWsIsPending] = useState({
+    "/topic/mainResponses": { role: "CEO", status: "pending" },
+    "/topic/reasonResponses": { role: "Advisor", status: "pending" },
+    "/topic/criticResponses": { role: "Critic", status: "pending" },
+    "/topic/decisionResponses": { role: "Analytic", status: "pending" },
+  });
   const [activeTab, setActiveTab] = useState(null);
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [hoverPreview, setHoverPreview] = useState(null);
+  const [showSummarized, setShowSummarized] = useState(false);
 
   const [promptAssistantInput, setPromptAssistantInput] = useState("");
 
@@ -43,6 +62,180 @@ const DashboardPage = ({
   const [currentConversationIndices, setCurrentConversationIndices] = useState(
     {}
   );
+  const [teamsHistories, setTeamsHistories] = useState([]);
+  const [currentTeamsIndex, setCurrentTeamsIndex] = useState(0);
+
+  const handleShowSummarized = async () => {
+    setShowSummarized(!showSummarized);
+
+    const rooms = await handleGetRooms(initialUser.id);
+
+    const roomMessages = await Promise.all(
+      rooms.map((room) => handleGetRoomMessages(room.id))
+    );
+
+    const updatedTeamHistories = rooms.map((room, index) => {
+      const messagesForThisRoom = roomMessages.flatMap((messageGroup) => {
+        return (
+          messageGroup
+            .filter((message) => message.roomID === room.id)
+            .flatMap((message) => [
+              {
+                id: message.id + "-user",
+                role: "user",
+                originalContent: message.roomAgents.userPrompt,
+                summarizedContent: null,
+                timeStamp: message.timeStamp,
+              },
+              {
+                id: message.id + "-CEO",
+                role: "CEO",
+                originalContent: message.roomAgents.mainPrompt,
+                summarizedContent: message.summarizedRoomAgents.mainPrompt,
+                timeStamp: message.timeStamp,
+              },
+              {
+                id: message.id + "-Advisor",
+                role: "Advisor",
+                originalContent: message.roomAgents.reasonPrompt,
+                summarizedContent: message.summarizedRoomAgents.reasonPrompt,
+                timeStamp: message.timeStamp,
+              },
+              {
+                id: message.id + "-Critic",
+                role: "Critic",
+                originalContent: message.roomAgents.criticPrompt,
+                summarizedContent: message.summarizedRoomAgents.criticPrompt,
+                timeStamp: message.timeStamp,
+              },
+              {
+                id: message.id + "-Analytic",
+                role: "Analytic",
+                originalContent: message.roomAgents.decisionPrompt,
+                summarizedContent: message.summarizedRoomAgents.decisionPrompt,
+                timeStamp: message.timeStamp,
+              },
+            ])
+            .sort((a, b) => new Date(a.timeStamp) - new Date(b.timeStamp)) || []
+        );
+      });
+
+      return {
+        ...room,
+        messages: messagesForThisRoom.flat(),
+      };
+    });
+
+    setTeamsHistories(updatedTeamHistories);
+  };
+
+  const handleInitialWebSocketResponse = (role, roomId, content) => {
+    setTeamsHistories((prevState) => {
+      const teamIndex = prevState.findIndex((team) => team.id === roomId);
+      if (teamIndex === -1) return prevState;
+      const newHistories = [...prevState];
+      const messages = [...(newHistories[teamIndex].messages || [])];
+
+      messages.push({
+        id: Date.now() + `-${role}`,
+        role,
+        originalContent: content,
+        summarizedContent: null,
+      });
+      newHistories[teamIndex] = {
+        ...newHistories[teamIndex],
+        messages,
+      };
+      return newHistories;
+    });
+  };
+
+  const handleConnectToWebSocket = (roomId, goal) => {
+    const socket = new SockJS(
+      "https://etech7-wf-etech7-room-service.azuremicroservices.io/ws"
+    );
+    const stompClient = new Client({
+      webSocketFactory: () => socket,
+      onConnect: () => {
+        setWsIsPending({
+          "/topic/mainResponses": { role: "CEO", status: "pending" },
+          "/topic/reasonResponses": { role: "Advisor", status: "pending" },
+          "/topic/criticResponses": { role: "Critic", status: "pending" },
+          "/topic/decisionResponses": { role: "Analytic", status: "pending" },
+        });
+        setConnected(true);
+
+        if (!subscribed) {
+          stompClient.subscribe(`/topic/mainResponses/${roomId}`, (message) => {
+            handleInitialWebSocketResponse("CEO", roomId, message.body);
+            setWsIsPending((prevState) => ({
+              ...prevState,
+              "/topic/mainResponses": {
+                ...prevState["/topic/mainResponses"],
+                status: "complete",
+              },
+            }));
+          });
+
+          stompClient.subscribe(
+            `/topic/reasonResponses/${roomId}`,
+            (message) => {
+              handleInitialWebSocketResponse("Advisor", roomId, message.body);
+              setWsIsPending((prevState) => ({
+                ...prevState,
+                "/topic/reasonResponses": {
+                  ...prevState["/topic/reasonResponses"],
+                  status: "complete",
+                },
+              }));
+            }
+          );
+
+          stompClient.subscribe(
+            `/topic/criticResponses/${roomId}`,
+            (message) => {
+              handleInitialWebSocketResponse("Critic", roomId, message.body);
+              setWsIsPending((prevState) => ({
+                ...prevState,
+                "/topic/criticResponses": {
+                  ...prevState["/topic/criticResponses"],
+                  status: "complete",
+                },
+              }));
+            }
+          );
+
+          stompClient.subscribe(
+            `/topic/decisionResponses/${roomId}`,
+            (message) => {
+              handleInitialWebSocketResponse("Analytic", roomId, message.body);
+              setWsIsPending((prevState) => ({
+                ...prevState,
+                "/topic/decisionResponses": {
+                  ...prevState["/topic/decisionResponses"],
+                  status: "complete",
+                },
+              }));
+            }
+          );
+          setSubscribed(true);
+        }
+        stompClient.publish({
+          destination: "/app/userInput1",
+          body: JSON.stringify({
+            message: goal,
+            roomId,
+          }),
+        });
+      },
+      onDisconnect: () => {
+        setConnected(false);
+        setSubscribed(false);
+      },
+    });
+    stompClient.activate();
+    setClient(stompClient);
+  };
 
   const handlePromptAssistantInput = (prompt) => {
     setPromptAssistantInput("");
@@ -142,6 +335,65 @@ const DashboardPage = ({
     handleOpenChatHistoryHide();
   };
 
+  const handleCreateNewRoom = () => {
+    if (client) {
+      client.deactivate();
+    }
+
+    const newRoom = {
+      roomName: `Room ${teamsHistories.length + 1}`,
+      goal: "",
+      industry: "",
+    };
+    setTeamsHistories((prevState) => [...prevState, newRoom]);
+    setCurrentTeamsIndex(teamsHistories.length);
+  };
+
+  const handleSaveRoom = async () => {
+    const currentRoom = teamsHistories[currentTeamsIndex];
+    const roomToSave = {
+      userID: initialUser.id,
+      roomName: currentRoom.roomName,
+      roomIndustry: currentRoom.industry,
+      roomUserInput: currentRoom.goal,
+    };
+
+    try {
+      const response = await fetch(
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/addRoom`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(roomToSave),
+        }
+      );
+
+      if (response.ok) {
+        const savedRoom = await response.json();
+        setTeamsHistories((prevState) =>
+          prevState.map((room, index) =>
+            index === currentTeamsIndex ? savedRoom : room
+          )
+        );
+        handleConnectToWebSocket(savedRoom.id, savedRoom.roomUserInput);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleDeleteTeamRoom = (index) => {};
+
+  const handleTeamRoomSelected = (index) => {
+    if (client) {
+      client.deactivate();
+    }
+
+    setCurrentTeamsIndex(index);
+  };
+
   const handleAgentSelected = (id) => {
     setSelectedAgent(id);
     if (!conversationHistories[id]) {
@@ -198,6 +450,7 @@ const DashboardPage = ({
   };
 
   const handleOpenChatHistoryVisible = () => {
+    handleOpenAgentSelectionHide();
     setOpenChatHistoryHover(true);
     const generalAgent = initialAgents.find(
       (agent) => agent.agentName === "General Agent"
@@ -217,6 +470,7 @@ const DashboardPage = ({
   };
 
   const handleOpenAgentSelectionVisible = () => {
+    handleOpenChatHistoryHide();
     setOpenAgentSelectionHover(true);
   };
 
@@ -268,6 +522,65 @@ const DashboardPage = ({
     );
     setConversationHistories(updatedConversationHistories);
   }, [initialConversations, initialMessages]);
+
+  useEffect(() => {
+    const updatedTeamHistories = initialRooms.map((room) => {
+      const messagesForThisRoom = initialRoomMessages.flatMap(
+        (messageGroup) => {
+          return (
+            messageGroup
+              .filter((message) => message.roomID === room.id)
+              .flatMap((message) => [
+                {
+                  id: message.id + "-user",
+                  role: "user",
+                  originalContent: message.roomAgents.userPrompt,
+                  summarizedContent: null,
+                  timeStamp: message.timeStamp,
+                },
+                {
+                  id: message.id + "-CEO",
+                  role: "CEO",
+                  originalContent: message.roomAgents.mainPrompt,
+                  summarizedContent: message.summarizedRoomAgents.mainPrompt,
+                  timeStamp: message.timeStamp,
+                },
+                {
+                  id: message.id + "-Advisor",
+                  role: "Advisor",
+                  originalContent: message.roomAgents.reasonPrompt,
+                  summarizedContent: message.summarizedRoomAgents.reasonPrompt,
+                  timeStamp: message.timeStamp,
+                },
+                {
+                  id: message.id + "-Critic",
+                  role: "Critic",
+                  originalContent: message.roomAgents.criticPrompt,
+                  summarizedContent: message.summarizedRoomAgents.criticPrompt,
+                  timeStamp: message.timeStamp,
+                },
+                {
+                  id: message.id + "-Analytic",
+                  role: "Analytic",
+                  originalContent: message.roomAgents.decisionPrompt,
+                  summarizedContent:
+                    message.summarizedRoomAgents.decisionPrompt,
+                  timeStamp: message.timeStamp,
+                },
+              ])
+              .sort((a, b) => new Date(a.timeStamp) - new Date(b.timeStamp)) ||
+            []
+          );
+        }
+      );
+
+      return {
+        ...room,
+        messages: messagesForThisRoom.flat(),
+      };
+    });
+    setTeamsHistories(updatedTeamHistories);
+  }, [initialRooms, initialRoomMessages]);
 
   useEffect(() => {
     const lastTab = localStorage.getItem("lastTab");
@@ -413,8 +726,20 @@ const DashboardPage = ({
                 }
               />
               <Teams
+                showSummarized={showSummarized}
+                connected={connected}
+                wsIsPending={wsIsPending}
+                activeTab={activeTab}
+                teamsHistories={teamsHistories}
+                currentTeamsIndex={currentTeamsIndex}
                 openTeamsHistory={openTeamsHistory}
                 openTeamsAssistant={openTeamsAssistant}
+                setTeamsHistories={setTeamsHistories}
+                handleConnectToWebSocket={handleConnectToWebSocket}
+                handleShowSummarized={handleShowSummarized}
+                handleCreateNewRoom={handleCreateNewRoom}
+                handleSaveRoom={handleSaveRoom}
+                handleTeamRoomSelected={handleTeamRoomSelected}
                 handleOpenTeamsHistory={handleOpenTeamsHistory}
                 handleOpenTeamsAssistant={handleOpenTeamsAssistant}
               />
@@ -481,39 +806,10 @@ export const getServerSideProps = async (context) => {
 
   const userId = params.id;
 
-  const userApi = `https://etech7-wf-etech7-db-service.azuremicroservices.io/getUserById?userId=${userId}`;
-
-  const conversationApi = `https://etech7-wf-etech7-db-service.azuremicroservices.io/getConversations?userId=${userId}`;
-
-  const agentApi =
-    "https://etech7-wf-etech7-db-service.azuremicroservices.io/getAgents";
-
-  const [userResponse, conversationResponse, agentResponse] = await Promise.all(
-    [fetch(userApi), fetch(conversationApi), fetch(agentApi)]
-  );
-
-  const [initialUser, initialConversations, initialAgents] = await Promise.all([
-    userResponse.json(),
-    conversationResponse.json(),
-    agentResponse.json(),
-  ]);
-
-  const messagePromises = initialConversations.map(async (conversation) => {
-    const messageApi = `https://etech7-wf-etech7-db-service.azuremicroservices.io/getMessages?conversationId=${conversation.id}`; //
-
-    const response = await fetch(messageApi);
-    return await response.json();
-  });
-
-  const initialMessages = await Promise.all(messagePromises);
+  const response = await handleServerPropsData(userId);
 
   return {
-    props: {
-      initialUser,
-      initialConversations,
-      initialAgents,
-      initialMessages,
-    },
+    props: { ...response },
   };
 };
 

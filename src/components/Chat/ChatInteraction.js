@@ -1223,7 +1223,7 @@ const ChatInteraction = ({
       inputRef.current.style.height = "24px";
       inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
     }
-  }, [userInput]);
+  }, [userInput, activeTab, selectedAgent]);
 
   useEffect(() => {
     const filtered = subCategories.filter(

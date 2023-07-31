@@ -39,6 +39,7 @@ const Login = () => {
       setLoading(true);
       try {
         const tokenResponse = await fetch(
+          // `http://localhost:9019/getGoogleToken?code=${codeResponse.code}`
           `https://etech7-wf-etech7-db-service.azuremicroservices.io/getGoogleToken?code=${codeResponse.code}`
         );
 
@@ -292,7 +293,15 @@ const Login = () => {
                   </button>
 
                   <MicrosoftLogin
-                    graphScopes={["mail.read", "mail.readwrite", "mail.send"]}
+                    graphScopes={[
+                      "mail.read",
+                      "mail.readwrite",
+                      "mail.send",
+                      "calendars.read",
+                      "calendars.readwrite",
+                      "contacts.read",
+                      "contacts.readwrite",
+                    ]}
                     clientId="14a9d59a-1d19-486e-a4db-d81c5410a453"
                     authCallback={handleMicrosoftLogin}
                     redirectUri="https://myautopilot.ai"

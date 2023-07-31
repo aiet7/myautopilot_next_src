@@ -1150,7 +1150,7 @@ const AgentInteraction = ({
       inputRef.current.style.height = "24px";
       inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
     }
-  }, [userInput]);
+  }, [userInput, activeTab, selectedAgent]);
 
   useEffect(() => {
     const filtered = subCategories.filter(
@@ -1183,7 +1183,9 @@ const AgentInteraction = ({
         openAgentHistory && handleOpenAgentHistory(false);
         openAgentAssistant && handleOpenAgentAssistant(false);
       }}
-      className={`relative flex flex-col h-full w-full  ${
+      className={`${
+        selectedAgent ? "block" : "hidden"
+      } relative flex flex-col h-full w-full  ${
         (openAgentHistory && "lg:opacity-100 opacity-5") ||
         (openAgentAssistant && "lg:opacity-100 opacity-5")
       } dark:bg-black transition-all duration-300 ease-in-out bg-white`}

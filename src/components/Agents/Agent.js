@@ -29,56 +29,55 @@ const Agent = ({
 }) => {
   return (
     <div className="flex flex-1 relative overflow-hidden">
-      {selectedAgent ? (
-        <AgentChatHistory
-          initialAgents={initialAgents}
-          selectedAgent={selectedAgent}
-          conversationHistories={conversationHistories}
-          currentConversationIndices={currentConversationIndices}
-          setConversationHistories={setConversationHistories}
-          openAgentHistory={openAgentHistory}
-          handleConversationSelected={handleConversationSelected}
-          handleNewConversation={handleNewConversation}
-          handleDeleteConversation={handleDeleteConversation}
-        />
-      ) : (
-        <AgentSelection
-          initialAgents={initialAgents}
-          openAgentHistory={openAgentHistory}
-          openAgentSelectionHover={openAgentSelectionHover}
-          handleOpenAgentSelectionHide={handleOpenAgentSelectionHide}
-          handleAgentSelected={handleAgentSelected}
-        />
-      )}
-      {selectedAgent ? (
-        <AgentInteraction
-          activeTab={activeTab}
-          initialUser={initialUser}
-          selectedAgent={selectedAgent}
-          promptAssistantInput={promptAssistantInput}
-          conversationHistories={conversationHistories}
-          currentConversationIndices={currentConversationIndices}
-          setConversationHistories={setConversationHistories}
-          openAgentHistory={openAgentHistory}
-          openAgentAssistant={openAgentAssistant}
-          handleNewConversation={handleNewConversation}
-          handleOpenAgentHistory={handleOpenAgentHistory}
-          handleOpenAgentAssistant={handleOpenAgentAssistant}
-        />
-      ) : (
-        <AgentGuide
-          openAgentHistory={openAgentHistory}
-          handleOpenAgentHistory={handleOpenAgentHistory}
-        />
-      )}
-      {selectedAgent ? (
-        <AgentAssistant
-          initialAgents={initialAgents}
-          selectedAgent={selectedAgent}
-          openAgentAssistant={openAgentAssistant}
-          handlePromptAssistantInput={handlePromptAssistantInput}
-        />
-      ) : null}
+      <AgentChatHistory
+        initialAgents={initialAgents}
+        selectedAgent={selectedAgent}
+        conversationHistories={conversationHistories}
+        currentConversationIndices={currentConversationIndices}
+        setConversationHistories={setConversationHistories}
+        openAgentHistory={openAgentHistory}
+        handleConversationSelected={handleConversationSelected}
+        handleNewConversation={handleNewConversation}
+        handleDeleteConversation={handleDeleteConversation}
+      />
+
+      <AgentSelection
+        activeTab={activeTab}
+        selectedAgent={selectedAgent}
+        initialAgents={initialAgents}
+        openAgentHistory={openAgentHistory}
+        openAgentSelectionHover={openAgentSelectionHover}
+        handleOpenAgentSelectionHide={handleOpenAgentSelectionHide}
+        handleAgentSelected={handleAgentSelected}
+      />
+
+      <AgentInteraction
+        activeTab={activeTab}
+        initialUser={initialUser}
+        selectedAgent={selectedAgent}
+        promptAssistantInput={promptAssistantInput}
+        conversationHistories={conversationHistories}
+        currentConversationIndices={currentConversationIndices}
+        setConversationHistories={setConversationHistories}
+        openAgentHistory={openAgentHistory}
+        openAgentAssistant={openAgentAssistant}
+        handleNewConversation={handleNewConversation}
+        handleOpenAgentHistory={handleOpenAgentHistory}
+        handleOpenAgentAssistant={handleOpenAgentAssistant}
+      />
+
+      <AgentGuide
+        selectedAgent={selectedAgent}
+        openAgentHistory={openAgentHistory}
+        handleOpenAgentHistory={handleOpenAgentHistory}
+      />
+
+      <AgentAssistant
+        initialAgents={initialAgents}
+        selectedAgent={selectedAgent}
+        openAgentAssistant={openAgentAssistant}
+        handlePromptAssistantInput={handlePromptAssistantInput}
+      />
     </div>
   );
 };

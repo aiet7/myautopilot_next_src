@@ -98,7 +98,6 @@ const TabNavRail = ({
           handleOpenChatHistoryHide={handleOpenChatHistoryHide}
         />
       )}
-
       <div
         onMouseEnter={
           activeTab === "agents"
@@ -116,6 +115,8 @@ const TabNavRail = ({
       </div>
       {openAgentSelectionHover && (
         <AgentSelection
+          activeTab={activeTab}
+          selectedAgent={selectedAgent}
           initialAgents={initialAgents}
           openAgentHistory={openAgentHistory}
           openAgentSelectionHover={openAgentSelectionHover}

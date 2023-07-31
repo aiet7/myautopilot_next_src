@@ -1,12 +1,18 @@
 "use client";
 
-const AgentGuide = ({ openAgentHistory, handleOpenAgentHistory }) => {
+const AgentGuide = ({
+  selectedAgent,
+  openAgentHistory,
+  handleOpenAgentHistory,
+}) => {
   return (
     <div
       onClick={() => {
         openAgentHistory && handleOpenAgentHistory(false);
       }}
-      className="w-full h-full overflow-y-auto scrollbar-thin"
+      className={`${
+        selectedAgent ? "hidden" : "block"
+      } w-full h-full overflow-y-auto scrollbar-thin`}
     >
       <div className="dark:text-white/80 text-black/70 p-4 max-w-[850px] mx-auto">
         <h2 className="dark:text-white text-black text-center text-4xl font-bold mb-4">

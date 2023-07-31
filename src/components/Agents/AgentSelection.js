@@ -6,6 +6,8 @@ import { SiMarketo } from "react-icons/si";
 import { TbWorldWww } from "react-icons/tb";
 
 const AgentSelection = ({
+  activeTab,
+  selectedAgent,
   initialAgents,
   openAgentHistory,
   openAgentSelectionHover,
@@ -15,8 +17,10 @@ const AgentSelection = ({
   return (
     <div
       onMouseLeave={handleOpenAgentSelectionHide}
-      className={`${
-        openAgentSelectionHover
+      className={` ${
+        selectedAgent && activeTab === "agents"
+          ? "hidden"
+          : openAgentSelectionHover
           ? "dark:bg-[#111111] dark:lg:shadow-lg dark:lg:shadow-white/50 bubble-agents bg-[#f6f8fc] absolute bottom-[74px] z-[99] w-full rounded-md flex flex-col lg:left-[63px] lg:top-0 lg:bottom-[28px] lg:w-[310px] lg:shadow-lg lg:shadow-black/50 lg:mt-6"
           : `px-4 py-6 bg-[#f6f8fc] absolute z-10 top-0 bottom-0 transition-all duration-300 ease-in-out transform flex flex-col ${
               openAgentHistory

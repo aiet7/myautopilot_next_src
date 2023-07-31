@@ -8,27 +8,20 @@ const Chat = ({
   activeTab,
   initialUser,
   selectedAgent,
-
   promptAssistantInput,
-
   openChatHistoryHover,
   openChatHistory,
   openChatAssistant,
-
   currentConversationIndices,
   currentConversationIndex,
-
   conversationHistories,
   conversationHistory,
-
   setConversationHistories,
   setConversationHistory,
-
   handleNewConversation,
   handleDeleteConversation,
   handleConversationSelected,
   handlePromptAssistantInput,
-
   handleOpenChatHistory,
   handleOpenChatAssistant,
 }) => {

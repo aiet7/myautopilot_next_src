@@ -101,14 +101,16 @@ const AgentChatHistory = ({
 
   return (
     <div
-      className={`px-4 py-6 bg-[#f6f8fc] absolute z-10 top-0 bottom-0 transition-all duration-300 ease-in-out transform flex flex-col ${
+      className={`${
+        selectedAgent ? "block" : "hidden"
+      } px-4 py-6 bg-[#f6f8fc] absolute z-10 top-0 bottom-0 transition-all duration-300 ease-in-out transform flex flex-col ${
         openAgentHistory
           ? "translate-x-0 w-[300px] dark:shadow-white shadow-lg shadow-black/50"
           : "-translate-x-full w-[300px]"
       } dark:bg-[#111111] dark:xl:border-white/20 xl:relative xl:translate-x-0 xl:min-w-[300px] xl:static xl:border-r`}
     >
       <h2 className="text-center font-bold text-xl pb-2">
-        {initialAgents.find((agent) => agent.id === selectedAgent).agentName}
+        {initialAgents.find((agent) => agent.id === selectedAgent)?.agentName}
       </h2>
       <button
         onClick={() =>
