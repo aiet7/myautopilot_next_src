@@ -25,6 +25,7 @@ const TeamInteraction = ({
   handleOpenTeamsHistory,
   handleOpenTeamsAssistant,
 }) => {
+
   const inputRef = useRef(null);
   const chatContainerRef = useRef(null);
 
@@ -129,7 +130,7 @@ const TeamInteraction = ({
           (item, index, arr) => {
             const displayedContent =
               item.role !== "user" && showSummarized
-                ? item.summarizedContent || ""
+                ? item.summarizedContent || "Summarizing..."
                 : item.originalContent || "";
             return (
               <div
@@ -178,17 +179,28 @@ const TeamInteraction = ({
               );
             })}
         </div>
-        <button
-          className="bg-blue-800 text-white px-4 rounded-sm  w-[150px]"
-          onClick={handleShowSummarized}
-        >
-          {showSummarized ? "Original" : "Summarize"}
-        </button>
+        {Object.values(wsIsPending).every(
+          (statusObj) => statusObj.status === "complete"
+        ) &&
+          teamsHistories[currentTeamsIndex]?.messages?.length > 0 && (
+            <button
+              className="bg-blue-800 text-white px-4 rounded-sm  w-[150px]"
+              onClick={handleShowSummarized}
+            >
+              {showSummarized ? "Original" : "Summarize"}
+            </button>
+          )}
       </div>
       <div className="relative flex items-center px-4 py-2">
         <textarea
           ref={inputRef}
           onChange={handleTextAreaChange}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleSendUserMessage(userInput);
+            }
+          }}
           value={userInput}
           placeholder="Discuss..."
           className="dark:bg-black bg-white border outline-blue-500 w-full p-4 pr-24 resize-none no-scrollbar"

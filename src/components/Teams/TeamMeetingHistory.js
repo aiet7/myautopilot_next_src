@@ -12,12 +12,6 @@ const TeamMeetingHistory = ({
   handleCreateNewRoom,
   handleSaveRoom,
 }) => {
-  const [submittedRooms, setSubmittedRooms] = useState([]);
-
-  const handleRoomSubmitted = (index) => {
-    setSubmittedRooms((prevState) => [...prevState, index]);
-  };
-
   const handleRoomConfig = (field, value) => {
     setTeamsHistories((prevState) => {
       const newHistories = [...prevState];
@@ -25,6 +19,7 @@ const TeamMeetingHistory = ({
       return newHistories;
     });
   };
+  
   return (
     <div
       className={`px-4 py-6 bg-[#f6f8fc] absolute z-10 top-0 bottom-0 transition-all duration-300 ease-in-out transform flex flex-col ${
@@ -41,6 +36,7 @@ const TeamMeetingHistory = ({
       </button>
       <div className="h-[200px] overflow-y-auto h-full scrollbar-thin lg:h-full">
         {teamsHistories?.map((team, index) => {
+         
           const { roomName, roomIndustry, roomUserInput } = team;
           return (
             <div
@@ -64,9 +60,8 @@ const TeamMeetingHistory = ({
               </div>
               {currentTeamsIndex === index && (
                 <div className="dark:bg-white/10 bg-black/10 w-full rounded-br-md rounded-bl-md">
-                  {!submittedRooms.includes(index) &&
-                  !roomIndustry &&
-                  !roomUserInput ? (
+                  
+                  {!roomIndustry && !roomUserInput ? (
                     <div>
                       <input
                         placeholder="What is your industry..."
@@ -88,10 +83,7 @@ const TeamMeetingHistory = ({
                       />
 
                       <button
-                        onClick={() => {
-                          handleSaveRoom();
-                          handleRoomSubmitted(index);
-                        }}
+                        onClick={handleSaveRoom}
                         className="dark:bg-black text-center w-full border border-blue-800 bg-white font-bold p-2"
                       >
                         Submit

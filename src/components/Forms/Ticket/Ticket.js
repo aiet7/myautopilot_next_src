@@ -38,7 +38,7 @@ const TicketForm = ({
           <span className="font-bold">Ticket Name</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentTicketTitle}
+            value={currentTicketTitle || ""}
             onChange={(e) => setCurrentTicketTitle(e.target.value)}
           />
         </div>
@@ -46,7 +46,7 @@ const TicketForm = ({
           <span className="font-bold">Description</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentTicketDescription}
+            value={currentTicketDescription || ""}
             onChange={(e) => setCurrentTicketDescription(e.target.value)}
           />
         </div>
@@ -54,7 +54,7 @@ const TicketForm = ({
           <span className="font-bold">Category</span>
 
           <select
-            value={currentTicketCategory}
+            value={currentTicketCategory || ""}
             onChange={(e) => setCurrentTicketCategory(e.target.value)}
             className="h-[50px] border outline-blue-500 w-full px-4"
           >
@@ -69,7 +69,7 @@ const TicketForm = ({
         <div>
           <span className="font-bold">Subcategory</span>
           <select
-            value={currentTicketSubCategory}
+            value={currentTicketSubCategory || ""}
             onChange={(e) => setCurrentTicketSubCategory(e.target.value)}
             className="h-[50px] border outline-blue-500 w-full px-4"
           >
@@ -100,7 +100,7 @@ const TicketForm = ({
           <span className="font-bold">Name</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentTicketName}
+            value={currentTicketName || ""}
             onChange={(e) => setCurrentTicketName(e.target.value)}
           />
         </div>
@@ -108,7 +108,7 @@ const TicketForm = ({
           <span className="font-bold">Email</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentTicketEmailId}
+            value={currentTicketEmailId || ""}
             onChange={(e) => setCurrentTicketEmailId(e.target.value)}
           />
         </div>
@@ -116,7 +116,7 @@ const TicketForm = ({
           <span className="font-bold">Phone Number</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentTicketPhoneNumber}
+            value={currentTicketPhoneNumber || ""}
             onChange={(e) => setCurrentTicketPhoneNumber(e.target.value)}
           />
         </div>

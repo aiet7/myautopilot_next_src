@@ -16,7 +16,7 @@ const TicketOnboarding = ({
         <div>
           <span className="font-bold">New Employee First name</span>
           <input
-            value={currentTicketNewFirstName}
+            value={currentTicketNewFirstName || ""}
             onChange={(e) => setCurrentTicketNewFirstName(e.target.value)}
             className="h-[50px] border outline-blue-500 w-full px-4"
           />
@@ -25,7 +25,7 @@ const TicketOnboarding = ({
       <div>
         <span className="font-bold">New Employee Last name</span>
         <input
-          value={currentTicketNewLastName}
+          value={currentTicketNewLastName || ""}
           onChange={(e) => setCurrentTicketNewLastName(e.target.value)}
           className="h-[50px] border outline-blue-500 w-full px-4"
         />
@@ -33,7 +33,7 @@ const TicketOnboarding = ({
       <div>
         <span className="font-bold">New Employee Email</span>
         <input
-          value={currentTicketNewEmailId}
+          value={currentTicketNewEmailId || ""}
           onChange={(e) => setCurrentTicketNewEmailId(e.target.value)}
           className="h-[50px] border outline-blue-500 w-full px-4"
         />
@@ -41,7 +41,7 @@ const TicketOnboarding = ({
       <div>
         <span className="font-bold">New Employee Phone Number</span>
         <input
-          value={currentTicketNewPhoneNumber}
+          value={currentTicketNewPhoneNumber || ""}
           onChange={(e) => setCurrentTicketNewPhoneNumber(e.target.value)}
           className="h-[50px] border outline-blue-500 w-full px-4"
         />
@@ -49,7 +49,7 @@ const TicketOnboarding = ({
       <div>
         <span className="font-bold">LicenseId</span>
         <input
-          value={currentTicketLicenseId}
+          value={currentTicketLicenseId || ""}
           onChange={(e) => setCurrentTicketLicenseId(e.target.value)}
           className="h-[50px] border outline-blue-500 w-full px-4"
         />

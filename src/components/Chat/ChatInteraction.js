@@ -17,7 +17,10 @@ import { categories, subCategories } from "../../utils/ticketCreation.js";
 import { convertKelvinToFahrenheit } from "../../utils/conversions.js";
 import { recognition } from "../../utils/speechToText.js";
 import { trimQuotes } from "../../utils/stringManipulation.js";
-import { handleSendGmail } from "../../utils/api/google.js";
+import {
+  handleSendGmail,
+  handlegetTokenRemainingValidity,
+} from "../../utils/api/google.js";
 import { handleSendGraphMail } from "../../utils/api/microsoft.js";
 
 import Cookies from "js-cookie";
@@ -78,8 +81,8 @@ const ChatInteraction = ({
   const [availableEmailIds, setAvailableEmailIds] = useState([]);
 
   const [currentContactGivenName, setCurrentContactGivenName] = useState("");
-  const [currentContactSurname, setCurrentContactSurname] = useState("");
-  const [currentContactEmailId, setCurrentContactEmailId] = useState("");
+  const [currentContactFamilyName, setCurrentContactFamilyName] = useState("");
+  const [currentContactEmailIds, setCurrentContactEmailIds] = useState([]);
   const [currentContactMobileNumber, setCurrentContactMobileNumber] =
     useState("");
 
@@ -174,8 +177,10 @@ const ChatInteraction = ({
 
   const handleSubmitFeedback = async (messageId, feedback) => {
     try {
-      const cleanedMessageId = messageId.substring(0, messageId.length - 3);
-
+      const cleanedMessageId = messageId.replace(
+        /-ai-(emailForm|contactForm|ticketForm|eventForm|taskForm)$/,
+        ""
+      );
       const response = await fetch(
         `https://etech7-wf-etech7-db-service.azuremicroservices.io/updateFeedback?messageId=${cleanedMessageId}&feedback=${feedback}`
       );
@@ -271,7 +276,9 @@ const ChatInteraction = ({
       try {
         const encodedMessage = encodeURIComponent(trimQuotes(message));
         const response = await fetch(
-          `https://etech7-wf-etech7-clu-service.azuremicroservices.io/jarvis4?text=${encodedMessage}&conversationId=${currentConversation.id}&userId=${initialUser.id}`,
+          `https://etech7-wf-etech7-clu-service.azuremicroservices.io/jarvis4?text=${encodedMessage}&conversationId=${
+            currentConversation.id
+          }&userId=${initialUser.id}${token ? `&mToken=${token}` : ""}`,
           {
             signal: controllerRef.current.signal,
           }
@@ -339,37 +346,35 @@ const ChatInteraction = ({
 
   const handleEmailConfirmation = async (isConfirmed, formId) => {
     const previousResponseBodyForConversation = handleGetConversationId();
-
     if (isConfirmed) {
       setLoading((prevState) => ({ ...prevState, emailForm: true }));
       try {
+        const remainingValidity = handlegetTokenRemainingValidity(
+          initialUser.expiryTime
+        );
         const aiContent = `Email Sent!\n\nTo: ${currentEmailId}\nSubject: ${currentEmailSubject}\nBody: ${currentEmailBody}`;
         const formSummaryResponse = await handleAddMessageToDB(
           aiContent,
           previousResponseBodyForConversation
         );
         if (formSummaryResponse.status === 200) {
-          handleAddAssistantMessage(aiContent);
+          handleAddAssistantMessage(aiContent, "emailForm");
           let providerResponse;
+          let tokenToSend = initialUser.accessToken;
           if (Cookies.get("Secure-next.session-token-g")) {
-            providerResponse = await handleSendGmail(
-              initialUser.accessToken,
-              currentEmailId,
-              currentEmailSubject,
-              currentEmailBody
-            );
-            if (providerResponse.status === 401) {
+            if (remainingValidity <= 60) {
               const newTokenResponse = await fetch(
                 `https://etech7-wf-etech7-db-service.azuremicroservices.io/getGoogleRefreshToken?userId=${initialUser.id}`
               );
               const newToken = await newTokenResponse.json();
-              providerResponse = await handleSendGmail(
-                newToken.access_token,
-                currentEmailId,
-                currentEmailSubject,
-                currentEmailBody
-              );
+              tokenToSend = newToken.access_token;
             }
+            providerResponse = await handleSendGmail(
+              tokenToSend,
+              currentEmailId,
+              currentEmailSubject,
+              currentEmailBody
+            );
           } else if (Cookies.get("microsoft_session_token")) {
             providerResponse = await handleSendGraphMail(
               token,
@@ -411,7 +416,7 @@ const ChatInteraction = ({
         [previousResponseBodyForConversation.conversationId]: false,
       }));
 
-      handleAddAssistantMessage(aiContent);
+      handleAddAssistantMessage(aiContent, "emailForm");
       handleRemoveForm(formId);
     }
   };
@@ -422,31 +427,70 @@ const ChatInteraction = ({
     if (isConfirmed) {
       setLoading((prevState) => ({ ...prevState, contactForm: true }));
       try {
-        const encodedContactGivenName = encodeURIComponent(
-          currentContactGivenName
+        const remainingValidity = handlegetTokenRemainingValidity(
+          initialUser.expiryTime
         );
-        const encodedContactSurname = encodeURIComponent(currentContactSurname);
-
-        const encodedContactEmailId = encodeURIComponent(currentContactEmailId);
-
-        const encodedContactMobileNumber = encodeURIComponent(
-          currentContactMobileNumber
+        const aiContent = `Contact Added!\n\nName: ${currentContactGivenName} ${currentContactFamilyName}\nEmail: ${
+          currentContactEmailIds[0] || currentEmailId
+        }\nMobile Number: ${currentContactMobileNumber}`;
+        const formSummaryResponse = await handleAddMessageToDB(
+          aiContent,
+          previousResponseBodyForConversation
         );
-        const contactResponse = await fetch(
-          `https://etech7-wf-etech7-mail-service.azuremicroservices.io/addContact?givenName=${encodedContactGivenName}&surName=${encodedContactSurname}&emailId=${encodedContactEmailId}&mobileNumber=${encodedContactMobileNumber}`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+
+        if (formSummaryResponse.status === 200) {
+          handleAddAssistantMessage(aiContent, "contactForm");
+          let providerResponse;
+          let tokenToSend = initialUser.accessToken;
+          if (Cookies.get("Secure-next.session-token-g")) {
+            if (remainingValidity <= 60) {
+              const newTokenResponse = await fetch(
+                `https://etech7-wf-etech7-db-service.azuremicroservices.io/getGoogleRefreshToken?userId=${initialUser.id}`
+              );
+              const newToken = await newTokenResponse.json();
+              tokenToSend = newToken.access_token;
+            }
+            providerResponse = await fetch(
+              `https://etech7-wf-etech7-user-service.azuremicroservices.io/addGContacts?token=${tokenToSend}`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  givenName: currentContactGivenName,
+                  familyName: currentContactFamilyName,
+                  emailAddresses: currentContactEmailIds[0]
+                    ? currentContactEmailIds
+                    : [currentEmailId],
+                  mobileNumber: currentContactMobileNumber,
+                }),
+              }
+            );
+          } else if (Cookies.get("microsoft_session_token")) {
+            providerResponse = await fetch(
+              `https://etech7-wf-etech7-user-service.azuremicroservices.io/addMContacts?token=${token}`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  givenName: currentContactGivenName,
+                  familyName: currentContactFamilyName,
+                  emailAddresses: currentContactEmailIds,
+                  mobileNumber: currentContactMobileNumber,
+                }),
+              }
+            );
+          } else {
+            console.log("Activate provider in settings.");
           }
-        );
-        if (contactResponse.status === 200) {
-          const aiContent = `Contact Added!\nGiven Name: ${currentContactGivenName}\nSurname: ${currentContactSurname}\nEmail: ${currentContactEmailId}\nMobile Number: ${currentContactMobileNumber}`;
-          const formSummaryResponse = await handleAddMessageToDB(
-            aiContent,
-            previousResponseBodyForConversation
-          );
-          if (formSummaryResponse.status === 200) {
-            handleAddAssistantMessage(aiContent);
+
+          if (providerResponse.status === 200) {
+            console.log("Contact from provider added!");
+          } else {
+            console.log("Error");
           }
         }
       } catch (e) {
@@ -471,7 +515,7 @@ const ChatInteraction = ({
         [previousResponseBodyForConversation.conversationId]: false,
       }));
 
-      handleAddAssistantMessage(aiContent);
+      handleAddAssistantMessage(aiContent, "contactForm");
       handleRemoveForm(formId);
     }
   };
@@ -504,7 +548,7 @@ const ChatInteraction = ({
             previousResponseBodyForConversation
           );
           if (formSummaryResponse.status === 200) {
-            handleAddAssistantMessage(aiContent);
+            handleAddAssistantMessage(aiContent, "eventForm");
           }
         }
       } catch (e) {
@@ -528,7 +572,7 @@ const ChatInteraction = ({
         ...prevState,
         [previousResponseBodyForConversation.conversationId]: false,
       }));
-      handleAddAssistantMessage(aiContent);
+      handleAddAssistantMessage(aiContent, "eventForm");
       handleRemoveForm(formId);
     }
   };
@@ -590,7 +634,7 @@ const ChatInteraction = ({
             previousResponseBodyForConversation
           );
           if (formSummaryResponse.status === 200) {
-            handleAddAssistantMessage(aiContent);
+            handleAddAssistantMessage(aiContent, "ticketForm");
           }
         }
       } catch (e) {
@@ -614,7 +658,7 @@ const ChatInteraction = ({
         [previousResponseBodyForConversation.conversationId]: false,
       }));
 
-      handleAddAssistantMessage(aiContent);
+      handleAddAssistantMessage(aiContent, "ticketForm");
       handleRemoveForm(formId);
     }
   };
@@ -636,7 +680,7 @@ const ChatInteraction = ({
             previousResponseBodyForConversation
           );
           if (formSummaryResponse.status === 200) {
-            handleAddAssistantMessage(aiContent);
+            handleAddAssistantMessage(aiContent, "taskForm");
           }
         }
       } catch (e) {
@@ -661,7 +705,7 @@ const ChatInteraction = ({
         [previousResponseBodyForConversation.conversationId]: false,
       }));
 
-      handleAddAssistantMessage(aiContent);
+      handleAddAssistantMessage(aiContent, "taskForm");
       handleRemoveForm(formId);
     }
   };
@@ -712,6 +756,8 @@ const ChatInteraction = ({
   const handleEmailProcess = (mailEntities) => {
     let conversationId;
     const { mailID, subject, body, emailIDs } = mailEntities;
+    const [contactGivenName, contactSurname] =
+      mailEntities.personName.split(" ");
     if (emailIDs && emailIDs.length !== 0) {
       conversationId = handleAddForm("emailButtons + emailForm");
       setAvailableEmailIds(emailIDs);
@@ -719,7 +765,9 @@ const ChatInteraction = ({
       setCurrentEmailBody(body);
     } else {
       conversationId = handleAddForm("contactForm + emailForm");
-      setCurrentContactEmailId(mailID);
+      setCurrentContactEmailIds([mailID]);
+      setCurrentContactGivenName(contactGivenName);
+      setCurrentContactFamilyName(contactSurname || "");
       setCurrentEmailId(mailID);
       setCurrentEmailSubject(subject);
       setCurrentEmailBody(body);
@@ -776,11 +824,11 @@ const ChatInteraction = ({
 
   const handleAddContactProcess = (message) => {
     let conversationId;
-    const { givenName, surName, emailId, mobileNumber } = message;
+    const { givenName, familyName, emailAddresses, mobileNumber } = message;
     conversationId = handleAddForm("contactForm");
     setCurrentContactGivenName(givenName);
-    setCurrentContactSurname(surName);
-    setCurrentContactEmailId(emailId);
+    setCurrentContactFamilyName(familyName);
+    setCurrentContactEmailIds(emailAddresses);
     setCurrentContactMobileNumber(mobileNumber);
 
     setIsFormOpen((prevState) => ({
@@ -843,7 +891,7 @@ const ChatInteraction = ({
         );
 
         if (eventResponse.status === 200) {
-          handleAddAssistantMessage(eventCards);
+          handleAddAssistantMessage(eventCards, null);
         }
       } catch (e) {
         console.log(e);
@@ -856,7 +904,7 @@ const ChatInteraction = ({
         );
 
         if (eventResponse.status === 200) {
-          handleAddAssistantMessage("No Events Scheduled");
+          handleAddAssistantMessage("No Events Scheduled", null);
         }
       } catch (e) {
         console.log(e);
@@ -888,7 +936,7 @@ const ChatInteraction = ({
         );
 
         if (taskResponse.status === 200) {
-          handleAddAssistantMessage(taskCards);
+          handleAddAssistantMessage(taskCards, null);
         }
       } catch (e) {
         console.log(e);
@@ -901,7 +949,7 @@ const ChatInteraction = ({
         );
 
         if (taskResponse.status === 200) {
-          handleAddAssistantMessage("No Tasks");
+          handleAddAssistantMessage("No Tasks", null);
         }
       } catch (e) {
         console.log(e);
@@ -940,7 +988,7 @@ const ChatInteraction = ({
         );
 
         if (newsResponse.status === 200) {
-          handleAddAssistantMessage(newsCards);
+          handleAddAssistantMessage(newsCards, null);
         }
       } catch (e) {
         console.log(e);
@@ -953,7 +1001,7 @@ const ChatInteraction = ({
         );
 
         if (newsResponse.status === 200) {
-          handleAddAssistantMessage("No News Available");
+          handleAddAssistantMessage("No News Available", null);
         }
       } catch (e) {
         console.log(e);
@@ -993,7 +1041,7 @@ const ChatInteraction = ({
       );
 
       if (stockResponse.status === 200) {
-        handleAddAssistantMessage(stockCards);
+        handleAddAssistantMessage(stockCards, null);
       }
     } catch (e) {
       console.log(e);
@@ -1029,7 +1077,7 @@ const ChatInteraction = ({
           responseBody
         );
         if (weatherResponse.status === 200) {
-          handleAddAssistantMessage(weatherCards);
+          handleAddAssistantMessage(weatherCards, null);
         }
       } catch (e) {
         console.log(e);
@@ -1042,7 +1090,7 @@ const ChatInteraction = ({
         );
 
         if (weatherResponse.status === 200) {
-          handleAddAssistantMessage("No Weather Available");
+          handleAddAssistantMessage("No Weather Available", null);
         }
       } catch (e) {
         console.log(e);
@@ -1071,7 +1119,7 @@ const ChatInteraction = ({
             );
 
             if (imageResponse.status === 200) {
-              handleAddAssistantMessage("No Image Generated");
+              handleAddAssistantMessage("No Image Generated", null);
             }
           } catch (e) {
             console.log(e);
@@ -1081,7 +1129,7 @@ const ChatInteraction = ({
         console.log(e);
       }
     } else {
-      handleAddAssistantMessage(message);
+      handleAddAssistantMessage(message, null);
     }
   };
 
@@ -1111,7 +1159,7 @@ const ChatInteraction = ({
     });
   };
 
-  const handleAddAssistantMessage = (message) => {
+  const handleAddAssistantMessage = (message, formType) => {
     setConversationHistories((prevState) => {
       const newConversations = { ...prevState };
       const currentAgentConversations = newConversations[selectedAgent];
@@ -1125,10 +1173,14 @@ const ChatInteraction = ({
         ].messages = [];
       }
 
+      const messageId = formType
+        ? `${messageIdRef.current}-ai-${formType}`
+        : `${messageIdRef.current}-ai`;
+
       currentAgentConversations[
         currentConversationIndices[selectedAgent]
       ].messages.push({
-        id: messageIdRef.current + "-ai",
+        id: messageId,
         content: message,
         role: "assistant",
         timeStamp: new Date().toISOString(),
@@ -1171,17 +1223,6 @@ const ChatInteraction = ({
   };
 
   const handleRemoveForm = (formId) => {
-    const conversationId =
-      conversationHistories[selectedAgent]?.[
-        currentConversationIndices[selectedAgent]
-      ]?.id;
-
-    setPreviousResponseBodyForForms((prevResponses) => {
-      const newResponses = { ...prevResponses };
-      delete newResponses[conversationId];
-      return newResponses;
-    });
-
     setConversationHistories((prevState) => {
       const newConversations = { ...prevState };
       const currentAgentConversations = newConversations[selectedAgent];
@@ -1311,12 +1352,12 @@ const ChatInteraction = ({
                     setCurrentEmailSubject={setCurrentEmailSubject}
                     currentEmailBody={currentEmailBody}
                     setCurrentEmailBody={setCurrentEmailBody}
-                    currentContactEmailId={currentContactEmailId}
-                    setCurrentContactEmailId={setCurrentContactEmailId}
+                    currentContactEmailIds={currentContactEmailIds}
+                    setCurrentContactEmailIds={setCurrentContactEmailIds}
                     currentContactGivenName={currentContactGivenName}
                     setCurrentContactGivenName={setCurrentContactGivenName}
-                    currentContactSurname={currentContactSurname}
-                    setCurrentContactSurname={setCurrentContactSurname}
+                    currentContactFamilyName={currentContactFamilyName}
+                    setCurrentContactFamilyName={setCurrentContactFamilyName}
                     currentContactMobileNumber={currentContactMobileNumber}
                     setCurrentContactMobileNumber={
                       setCurrentContactMobileNumber

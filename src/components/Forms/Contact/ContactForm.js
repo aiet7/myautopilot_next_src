@@ -1,12 +1,12 @@
 const ContactForm = ({
   currentContactGivenName,
   setCurrentContactGivenName,
-  currentContactSurname,
-  setCurrentContactSurname,
+  currentContactFamilyName,
+  setCurrentContactFamilyName,
   currentEmailId,
   setCurrentEmailId,
-  currentContactEmailId,
-  setCurrentContactEmailId,
+  currentContactEmailIds,
+  setCurrentContactEmailIds,
   currentContactMobileNumber,
   setCurrentContactMobileNumber,
   loading,
@@ -21,7 +21,7 @@ const ContactForm = ({
           <span className="font-bold">First Name</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentContactGivenName}
+            value={currentContactGivenName || ""}
             onChange={(e) => setCurrentContactGivenName(e.target.value)}
           />
         </div>
@@ -29,18 +29,22 @@ const ContactForm = ({
           <span className="font-bold">Last Name</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentContactSurname}
-            onChange={(e) => setCurrentContactSurname(e.target.value)}
+            value={currentContactFamilyName || ""}
+            onChange={(e) => setCurrentContactFamilyName(e.target.value)}
           />
         </div>
         <div>
           <span className="font-bold">Email</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={showCancelButton ? currentContactEmailId : currentEmailId}
+            value={
+              showCancelButton
+                ? currentContactEmailIds?.[0] || ""
+                : currentEmailId || ""
+            }
             onChange={(e) =>
               showCancelButton
-                ? setCurrentContactEmailId(e.target.value)
+                ? setCurrentContactEmailIds([e.target.value])
                 : setCurrentEmailId(e.target.value)
             }
           />
@@ -49,7 +53,7 @@ const ContactForm = ({
           <span className="font-bold">Phone Number</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentContactMobileNumber}
+            value={currentContactMobileNumber || ""}
             onChange={(e) => setCurrentContactMobileNumber(e.target.value)}
           />
         </div>

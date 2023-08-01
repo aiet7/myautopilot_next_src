@@ -16,7 +16,7 @@ const EmailForm = ({
           <span className="font-bold">Email</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentEmailId}
+            value={currentEmailId || ""}
             onChange={(e) => setCurrentEmailId(e.target.value)}
           />
         </div>
@@ -24,7 +24,7 @@ const EmailForm = ({
           <span className="font-bold">Subject</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentEmailSubject}
+            value={currentEmailSubject || ""}
             onChange={(e) => setCurrentEmailSubject(e.target.value)}
           />
         </div>
@@ -32,7 +32,7 @@ const EmailForm = ({
           <span className="font-bold">Body</span>
           <textarea
             className="h-[200px] border outline-blue-500 w-full px-4 resize-none"
-            value={currentEmailBody}
+            value={currentEmailBody || ""}
             onChange={(e) => setCurrentEmailBody(e.target.value)}
           />
         </div>

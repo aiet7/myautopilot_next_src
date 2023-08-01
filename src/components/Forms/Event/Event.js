@@ -22,7 +22,7 @@ const EventForm = ({
           <span className="font-bold">Subject</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentEventSubject}
+            value={currentEventSubject || ""}
             onChange={(e) => setCurrentEventSubject(e.target.value)}
           />
         </div>
@@ -30,7 +30,7 @@ const EventForm = ({
           <span className="font-bold">Body</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentEventBody}
+            value={currentEventBody || ""}
             onChange={(e) => setCurrentEventBody(e.target.value)}
           />
         </div>
@@ -39,7 +39,7 @@ const EventForm = ({
           <input
             type="datetime-local"
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentEventStartTime}
+            value={currentEventStartTime || ""}
             onChange={(e) => setCurrentEventStartTime(e.target.value)}
           />
         </div>
@@ -48,7 +48,7 @@ const EventForm = ({
           <input
             type="datetime-local"
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentEventEndTime}
+            value={currentEventEndTime || ""}
             onChange={(e) => setCurrentEventEndTime(e.target.value)}
           />
         </div>
@@ -56,7 +56,7 @@ const EventForm = ({
           <span className="font-bold">Location</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentEventLocation}
+            value={currentEventLocation || ""}
             onChange={(e) => setCurrentEventLocation(e.target.value)}
           />
         </div>

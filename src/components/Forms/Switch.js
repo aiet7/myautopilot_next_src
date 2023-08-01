@@ -21,12 +21,13 @@ const Switch = ({
   setCurrentEmailSubject,
   currentEmailBody,
   setCurrentEmailBody,
-  currentContactEmailId,
-  setCurrentContactEmailId,
+
+  currentContactEmailIds,
+  setCurrentContactEmailIds,
   currentContactGivenName,
   setCurrentContactGivenName,
-  currentContactSurname,
-  setCurrentContactSurname,
+  currentContactFamilyName,
+  setCurrentContactFamilyName,
   currentContactMobileNumber,
   setCurrentContactMobileNumber,
 
@@ -114,8 +115,8 @@ const Switch = ({
                 loading={loading}
                 currentContactGivenName={currentContactGivenName}
                 setCurrentContactGivenName={setCurrentContactGivenName}
-                currentContactSurname={currentContactSurname}
-                setCurrentContactSurname={setCurrentContactSurname}
+                currentContactFamilyName={currentContactFamilyName}
+                setCurrentContactFamilyName={setCurrentContactFamilyName}
                 currentEmailId={currentEmailId}
                 setCurrentEmailId={setCurrentEmailId}
                 currentContactMobileNumber={currentContactMobileNumber}
@@ -145,10 +146,10 @@ const Switch = ({
                 loading={loading}
                 currentContactGivenName={currentContactGivenName}
                 setCurrentContactGivenName={setCurrentContactGivenName}
-                currentContactSurname={currentContactSurname}
-                setCurrentContactSurname={setCurrentContactSurname}
-                currentContactEmailId={currentContactEmailId}
-                setCurrentContactEmailId={setCurrentContactEmailId}
+                currentContactFamilyName={currentContactFamilyName}
+                setCurrentContactFamilyName={setCurrentContactFamilyName}
+                currentContactEmailIds={currentContactEmailIds}
+                setCurrentContactEmailIds={setCurrentContactEmailIds}
                 currentContactMobileNumber={currentContactMobileNumber}
                 setCurrentContactMobileNumber={setCurrentContactMobileNumber}
                 handleContactConfirmation={handleContactConfirmation}

@@ -52,7 +52,9 @@ const TabNavRail = ({
 
   const handleLogout = () => {
     localStorage.removeItem("lastTab");
-    localStorage.removeItem("lastConversationIndex");
+    localStorage.removeItem("lastConversationIndices");
+    localStorage.removeItem("wsIsPending");
+    localStorage.removeItem("lastRoomIndex");
 
     Cookie.remove("Secure-next.session-token-g");
     Cookie.remove("microsoft_session_token");

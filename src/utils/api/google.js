@@ -27,3 +27,12 @@ export const handleSendGmail = async (
   );
   return response;
 };
+
+export const handlegetTokenRemainingValidity = (expiryTime) => {
+  const expiryDate = new Date(expiryTime);
+  const currentDate = new Date();
+
+  const diffInMs = expiryDate - currentDate;
+
+  return Math.floor(diffInMs / 1000 / 60);
+};

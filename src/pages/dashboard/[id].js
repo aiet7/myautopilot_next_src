@@ -157,6 +157,7 @@ const DashboardPage = ({
     const stompClient = new Client({
       webSocketFactory: () => socket,
       onConnect: () => {
+        setShowSummarized(false);
         setWsIsPending({
           "/topic/mainResponses": { role: "CEO", status: "pending" },
           "/topic/reasonResponses": { role: "Advisor", status: "pending" },
@@ -372,6 +373,14 @@ const DashboardPage = ({
 
       if (response.ok) {
         const savedRoom = await response.json();
+        savedRoom.messages = [
+          {
+            id: Date.now() + "-user",
+            role: "user",
+            originalContent: savedRoom.roomUserInput,
+            summarizedContent: null,
+          },
+        ];
         setTeamsHistories((prevState) =>
           prevState.map((room, index) =>
             index === currentTeamsIndex ? savedRoom : room
@@ -583,10 +592,22 @@ const DashboardPage = ({
   }, [initialRooms, initialRoomMessages]);
 
   useEffect(() => {
+    localStorage.setItem(
+      "wsIsPending",
+      JSON.stringify({
+        "/topic/mainResponses": { role: "CEO", status: "complete" },
+        "/topic/reasonResponses": { role: "Advisor", status: "complete" },
+        "/topic/criticResponses": { role: "Critic", status: "complete" },
+        "/topic/decisionResponses": { role: "Analytic", status: "complete" },
+      })
+    );
+
     const lastTab = localStorage.getItem("lastTab");
     const lastConversationIndicesString = localStorage.getItem(
       "lastConversationIndices"
     );
+    const lastRoomIndex = localStorage.getItem("lastRoomIndex");
+    const lastWsPendingString = localStorage.getItem("wsIsPending");
 
     if (lastTab) {
       setActiveTab(lastTab);
@@ -596,6 +617,15 @@ const DashboardPage = ({
       const lastConversationIndices = JSON.parse(lastConversationIndicesString);
       setCurrentConversationIndices(lastConversationIndices);
     }
+
+    if (lastWsPendingString) {
+      const lastWsPending = JSON.parse(lastWsPendingString);
+      setWsIsPending(lastWsPending);
+    }
+
+    if (lastRoomIndex) {
+      setCurrentTeamsIndex(parseInt(lastRoomIndex, 10));
+    }
   }, []);
 
   useEffect(() => {
@@ -604,7 +634,8 @@ const DashboardPage = ({
       "lastConversationIndices",
       JSON.stringify(currentConversationIndices)
     );
-  }, [activeTab, currentConversationIndices, selectedAgent]);
+    localStorage.setItem("lastRoomIndex", JSON.stringify(currentTeamsIndex));
+  }, [activeTab, currentConversationIndices, selectedAgent, currentTeamsIndex]);
 
   useEffect(() => {
     if (activeTab === "general") {

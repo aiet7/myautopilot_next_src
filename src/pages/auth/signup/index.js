@@ -299,7 +299,15 @@ const Signup = () => {
                   </button>
 
                   <MicrosoftLogin
-                    graphScopes={["mail.read", "mail.readwrite", "mail.send"]}
+                    graphScopes={[
+                      "mail.read",
+                      "mail.readwrite",
+                      "mail.send",
+                      "calendars.read",
+                      "calendars.readwrite",
+                      "contacts.read",
+                      "contacts.readwrite",
+                    ]}
                     clientId="14a9d59a-1d19-486e-a4db-d81c5410a453"
                     authCallback={handleMicrosoftSignup}
                     redirectUri="https://myautopilot.ai"

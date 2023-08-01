@@ -12,7 +12,7 @@ const TaskForm = ({
           <span className="font-bold">Task Name</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentTaskName}
+            value={currentTaskName || ""}
             onChange={(e) => setCurrentTaskName(e.target.value)}
           />
         </div>
