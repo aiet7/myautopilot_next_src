@@ -1,16 +1,12 @@
 const EventForm = ({
-  currentEventSubject,
-  setCurrentEventSubject,
-  currentEventBody,
-  setCurrentEventBody,
+  currentEventSummary,
+  setCurrentEventSummary,
+  currentEventDescription,
+  setCurrentEventDescription,
   currentEventStartTime,
   setCurrentEventStartTime,
   currentEventEndTime,
   setCurrentEventEndTime,
-  currentEventLocation,
-  setCurrentEventLocation,
-  currentEventUserInfo,
-  setCurrentEventUserInfo,
   loading,
   handleScheduleConfirmation,
   itemId,
@@ -22,16 +18,16 @@ const EventForm = ({
           <span className="font-bold">Subject</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentEventSubject || ""}
-            onChange={(e) => setCurrentEventSubject(e.target.value)}
+            value={currentEventSummary || ""}
+            onChange={(e) => setCurrentEventSummary(e.target.value)}
           />
         </div>
         <div>
           <span className="font-bold">Body</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentEventBody || ""}
-            onChange={(e) => setCurrentEventBody(e.target.value)}
+            value={currentEventDescription || ""}
+            onChange={(e) => setCurrentEventDescription(e.target.value)}
           />
         </div>
         <div>
@@ -50,44 +46,6 @@ const EventForm = ({
             className="h-[50px] border outline-blue-500 w-full px-4"
             value={currentEventEndTime || ""}
             onChange={(e) => setCurrentEventEndTime(e.target.value)}
-          />
-        </div>
-        <div>
-          <span className="font-bold">Location</span>
-          <input
-            className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentEventLocation || ""}
-            onChange={(e) => setCurrentEventLocation(e.target.value)}
-          />
-        </div>
-        <div>
-          <span className="font-bold">Name</span>
-          <input
-            className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentEventUserInfo[0]?.name || ""}
-            onChange={(e) =>
-              setCurrentEventUserInfo([
-                {
-                  ...currentEventUserInfo[0],
-                  name: e.target.value,
-                },
-              ])
-            }
-          />
-        </div>
-        <div>
-          <span className="font-bold">Email</span>
-          <input
-            className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentEventUserInfo[0]?.email || ""}
-            onChange={(e) =>
-              setCurrentEventUserInfo([
-                {
-                  ...currentEventUserInfo[0],
-                  email: e.target.value,
-                },
-              ])
-            }
           />
         </div>
       </div>

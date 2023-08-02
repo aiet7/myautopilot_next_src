@@ -37,37 +37,41 @@ const ChatHistory = ({
     updatedConversation.conversationName = tempTitle;
     updatedConversation.customPrompt = tempPrompt;
 
-    const response = await fetch(
-      `https://etech7-wf-etech7-db-service.azuremicroservices.io/addConversation`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: id,
-          userID: userID,
-          agentID: selectedAgent,
-          conversationName: updatedConversation.conversationName,
-          customPrompt: updatedConversation.customPrompt,
-          timeStamp: Date.now(),
-          deleted: false,
-        }),
-      }
-    );
+    try {
+      const response = await fetch(
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/addConversation`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: id,
+            userID: userID,
+            agentID: selectedAgent,
+            conversationName: updatedConversation.conversationName,
+            customPrompt: updatedConversation.customPrompt,
+            timeStamp: Date.now(),
+            deleted: false,
+          }),
+        }
+      );
 
-    if (response.status === 200) {
-      let updatedConversationHistory = [
-        ...conversationHistories[selectedAgent],
-      ];
-      updatedConversationHistory[currentConversationIndices[selectedAgent]] =
-        updatedConversation;
-      let newConversationHistories = { ...conversationHistories };
-      newConversationHistories[selectedAgent] = updatedConversationHistory;
-      setConversationHistories(newConversationHistories);
-      setEditing(false);
-    } else {
-      console.log("Error occurred.");
+      if (response.status === 200) {
+        let updatedConversationHistory = [
+          ...conversationHistories[selectedAgent],
+        ];
+        updatedConversationHistory[currentConversationIndices[selectedAgent]] =
+          updatedConversation;
+        let newConversationHistories = { ...conversationHistories };
+        newConversationHistories[selectedAgent] = updatedConversationHistory;
+        setConversationHistories(newConversationHistories);
+        setEditing(false);
+      } else {
+        console.log("Error occurred.");
+      }
+    } catch (e) {
+      console.log(e);
     }
   };
 

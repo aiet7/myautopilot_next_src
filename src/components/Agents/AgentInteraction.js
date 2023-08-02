@@ -100,14 +100,10 @@ const AgentInteraction = ({
 
   const [filteredSubCategories, setFilteredSubCategories] = useState([]);
 
-  const [currentEventSubject, setCurrentEventSubject] = useState("");
-  const [currentEventBody, setCurrentEventBody] = useState("");
+  const [currentEventSummary, setCurrentEventSummary] = useState("");
+  const [currentEventDescription, setCurrentEventDescription] = useState("");
   const [currentEventStartTime, setCurrentEventStartTime] = useState("");
   const [currentEventEndTime, setCurrentEventEndTime] = useState("");
-  const [currentEventLocation, setCurrentEventLocation] = useState("");
-  const [currentEventUserInfo, setCurrentEventUserInfo] = useState([
-    { name: "", email: "" },
-  ]);
 
   const [currentTaskName, setCurrentTaskName] = useState("");
 
@@ -481,17 +477,19 @@ const AgentInteraction = ({
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              subject: currentEventSubject,
-              body: currentEventBody,
+              summary: currentEventSummary,
+              description: currentEventDescription,
               start: currentEventStartTime,
               end: currentEventEndTime,
-              locationDisplayName: currentEventLocation,
-              userInfo: currentEventUserInfo,
             }),
           }
         );
         if (scheduleResponse.status === 200) {
-          const aiContent = `Event Scheduled!\nSubject: ${currentEventSubject}\nBody: ${currentEventBody}\nStart Time: ${currentEventStartTime}\nEnd Time: ${currentEventEndTime}\nLocation: ${currentEventLocation}\nName: ${currentEventUserInfo[0].name}\nEmail:${currentEventUserInfo[0].email}.`;
+          const aiContent = `Event Scheduled!\nSummary: ${currentEventSummary}\nDescription: ${currentEventDescription}\nStart Time: ${new Date(
+            currentEventStartTime
+          ).toLocaleString()}\nEnd Time: ${new Date(
+            currentEventEndTime
+          ).toLocaleString()}`;
           const formSummaryResponse = await handleAddMessageToDB(
             aiContent,
             previousResponseBodyForConversation
@@ -726,16 +724,12 @@ const AgentInteraction = ({
 
   const handleScheduleProcess = (message) => {
     let conversationId;
-
-    const { subject, body, start, end, locationDisplayName, userInfo } =
-      message;
+    const { summary, description, start, end } = message;
     conversationId = handleAddForm("eventForm");
-    setCurrentEventSubject(subject);
-    setCurrentEventBody(body);
+    setCurrentEventSummary(summary);
+    setCurrentEventDescription(description);
     setCurrentEventStartTime(start);
     setCurrentEventEndTime(end);
-    setCurrentEventLocation(locationDisplayName);
-    setCurrentEventUserInfo(userInfo);
 
     setIsFormOpen((prevState) => ({
       ...prevState,
@@ -818,19 +812,19 @@ const AgentInteraction = ({
     if (events.length > 0) {
       let eventCards = `<div class="flex flex-col gap-2">`;
       events.forEach((event) => {
-        const {
-          subject,
-          start: { dateTime: startDateTime },
-          end: { dateTime: endDateTime },
-          webLink,
-        } = event;
-        const formattedStartDateTime = new Date(startDateTime).toLocaleString();
-        const formattedEndDateTime = new Date(endDateTime).toLocaleString();
+        const { summary, description, start, end } = event;
+
+        const formattedStartDateTime = new Date(start).toLocaleString();
+        const formattedEndDateTime = new Date(end).toLocaleString();
 
         eventCards += `<div class="flex flex-col">
           <div class="flex items-center">
-            <h2>Subject:</h2>
-            <p>${subject}</p>
+            <h2>Summary: </h2>
+            <p>${summary}</p>
+          </div>
+          <div class="flex items-center">
+            <h2>Description: </h2>
+            <p>${description}</p>
           </div>
           <div class="flex items-center">
             <h2>Start Time: </h2>
@@ -839,9 +833,6 @@ const AgentInteraction = ({
           <div class="flex items-center">
             <h2>End Time: </h2>
             <p>${formattedEndDateTime}</p>
-          </div>
-          <div class="flex items-center">
-            <a class="dark:text-purple-400 text-purple-800" href="${webLink}" target="_blank">Meeting Link</a>
           </div>
           </div>
         `;
@@ -1155,7 +1146,6 @@ const AgentInteraction = ({
   };
 
   const handleRemoveForm = (formId) => {
-  
     setConversationHistories((prevState) => {
       const newConversations = { ...prevState };
       const currentAgentConversations = newConversations[selectedAgent];
@@ -1323,18 +1313,14 @@ const AgentInteraction = ({
                     }
                     currentTicketLicenseId={currentTicketLicenseId}
                     setCurrentTicketLicenseId={setCurrentTicketLicenseId}
-                    currentEventSubject={currentEventSubject}
-                    setCurrentEventSubject={setCurrentEventSubject}
-                    currentEventBody={currentEventBody}
-                    setCurrentEventBody={setCurrentEventBody}
+                    currentEventSummary={currentEventSummary}
+                    setCurrentEventSummary={setCurrentEventSummary}
+                    currentEventDescription={currentEventDescription}
+                    setCurrentEventDescription={setCurrentEventDescription}
                     currentEventStartTime={currentEventStartTime}
                     setCurrentEventStartTime={setCurrentEventStartTime}
                     currentEventEndTime={currentEventEndTime}
                     setCurrentEventEndTime={setCurrentEventEndTime}
-                    currentEventLocation={currentEventLocation}
-                    setCurrentEventLocation={setCurrentEventLocation}
-                    currentEventUserInfo={currentEventUserInfo}
-                    setCurrentEventUserInfo={setCurrentEventUserInfo}
                     currentTaskName={currentTaskName}
                     setCurrentTaskName={setCurrentTaskName}
                     handleEmailConfirmation={handleEmailConfirmation}

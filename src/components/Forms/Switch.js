@@ -58,18 +58,14 @@ const Switch = ({
   currentTicketLicenseId,
   setCurrentTicketLicenseId,
 
-  currentEventSubject,
-  setCurrentEventSubject,
-  currentEventBody,
-  setCurrentEventBody,
+  currentEventSummary,
+  setCurrentEventSummary,
+  currentEventDescription,
+  setCurrentEventDescription,
   currentEventStartTime,
   setCurrentEventStartTime,
   currentEventEndTime,
   setCurrentEventEndTime,
-  currentEventLocation,
-  setCurrentEventLocation,
-  currentEventUserInfo,
-  setCurrentEventUserInfo,
 
   currentTaskName,
   setCurrentTaskName,
@@ -200,18 +196,14 @@ const Switch = ({
               <EventForm
                 itemId={itemId}
                 loading={loading}
-                currentEventSubject={currentEventSubject}
-                setCurrentEventSubject={setCurrentEventSubject}
-                currentEventBody={currentEventBody}
-                setCurrentEventBody={setCurrentEventBody}
+                currentEventSummary={currentEventSummary}
+                setCurrentEventSummary={setCurrentEventSummary}
+                currentEventDescription={currentEventDescription}
+                setCurrentEventDescription={setCurrentEventDescription}
                 currentEventStartTime={currentEventStartTime}
                 setCurrentEventStartTime={setCurrentEventStartTime}
                 currentEventEndTime={currentEventEndTime}
                 setCurrentEventEndTime={setCurrentEventEndTime}
-                currentEventLocation={currentEventLocation}
-                setCurrentEventLocation={setCurrentEventLocation}
-                currentEventUserInfo={currentEventUserInfo}
-                setCurrentEventUserInfo={setCurrentEventUserInfo}
                 handleScheduleConfirmation={handleScheduleConfirmation}
               />
             </div>

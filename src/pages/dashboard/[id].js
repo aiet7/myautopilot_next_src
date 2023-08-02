@@ -68,6 +68,8 @@ const DashboardPage = ({
   const handleShowSummarized = async () => {
     setShowSummarized(!showSummarized);
 
+    const currentRoomId = teamsHistories[currentTeamsIndex].id;
+
     const rooms = await handleGetRooms(initialUser.id);
 
     const roomMessages = await Promise.all(
@@ -126,7 +128,12 @@ const DashboardPage = ({
       };
     });
 
+    const currentIndex = updatedTeamHistories.findIndex(
+      (room) => room.id === currentRoomId
+    );
+
     setTeamsHistories(updatedTeamHistories);
+    setCurrentTeamsIndex(currentIndex);
   };
 
   const handleInitialWebSocketResponse = (role, roomId, content) => {
@@ -393,7 +400,32 @@ const DashboardPage = ({
     }
   };
 
-  const handleDeleteTeamRoom = (index) => {};
+  const handleDeleteTeamRoom = async (index) => {
+    if (index < teamsHistories.length) {
+      const teamRoomToDelete = teamsHistories[index];
+
+      try {
+        const response = await fetch(
+          `https://etech7-wf-etech7-db-service.azuremicroservices.io/deleteRoom?roomId=${teamRoomToDelete.id}`
+        );
+
+        if (response.ok) {
+          const updatedTeamHistories = teamsHistories.filter(
+            (_, currentIndex) => currentIndex !== index
+          );
+          setTeamsHistories(updatedTeamHistories);
+
+          if (currentTeamsIndex > 0) {
+            setCurrentTeamsIndex((prevState) => prevState - 1);
+          } else if (updatedTeamHistories.length > 0) {
+            setCurrentTeamsIndex(0);
+          }
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
 
   const handleTeamRoomSelected = (index) => {
     if (client) {
@@ -401,6 +433,7 @@ const DashboardPage = ({
     }
 
     setCurrentTeamsIndex(index);
+    setOpenTeamsHistory(false)
   };
 
   const handleAgentSelected = (id) => {
@@ -770,6 +803,7 @@ const DashboardPage = ({
                 handleShowSummarized={handleShowSummarized}
                 handleCreateNewRoom={handleCreateNewRoom}
                 handleSaveRoom={handleSaveRoom}
+                handleDeleteTeamRoom={handleDeleteTeamRoom}
                 handleTeamRoomSelected={handleTeamRoomSelected}
                 handleOpenTeamsHistory={handleOpenTeamsHistory}
                 handleOpenTeamsAssistant={handleOpenTeamsAssistant}

@@ -31,7 +31,7 @@ const SettingsRail = ({
         onClick={handleHistoryMenu}
         className="cursor-pointer"
       />
-      {selectedAgent || activeTab === "teams" ? (
+      {selectedAgent && activeTab !== "teams" ? (
         <BiBrain
           size={20}
           onClick={handleAssistantMenu}

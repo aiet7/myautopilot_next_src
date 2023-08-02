@@ -17,6 +17,7 @@ const Teams = ({
   handleShowSummarized,
   handleTeamRoomSelected,
   handleCreateNewRoom,
+  handleDeleteTeamRoom,
   handleSaveRoom,
   handleOpenTeamsHistory,
   handleOpenTeamsAssistant,
@@ -31,6 +32,7 @@ const Teams = ({
         handleTeamRoomSelected={handleTeamRoomSelected}
         handleCreateNewRoom={handleCreateNewRoom}
         handleSaveRoom={handleSaveRoom}
+        handleDeleteTeamRoom={handleDeleteTeamRoom}
       />
       <TeamInteraction
         showSummarized={showSummarized}

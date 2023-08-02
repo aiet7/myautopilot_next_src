@@ -120,7 +120,7 @@ const ChatAssistant = ({
           : "translate-x-full w-[300px]"
       } dark:bg-[#111111] dark:xl:border-white/20 xl:relative xl:translate-x-0 xl:min-w-[300px] xl:static xl:border-l`}
     >
-      <h2 className="text-2xl font-bold text-center">AI Assistant</h2>
+      <h2 className="text-2xl font-bold text-center">AI Autopilot</h2>
       <div className="dark:bg-white/20 bg-white flex items-center w-full  rounded-md">
         <button
           onClick={() => setActiveButton("General")}

@@ -15,7 +15,7 @@ export const generalSkills = [
     prompt: "Add John Doe to my contacts with number 1234567890.",
   },
   {
-    name: "Todo",
+    name: "Task",
     description: "Create a task.",
     prompt: "Create a to-do list with the item Buy Groceries.",
   },
