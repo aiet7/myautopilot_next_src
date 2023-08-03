@@ -108,7 +108,7 @@ const ChatHistory = ({
       onMouseLeave={handleOpenChatHistoryHide}
       className={`${
         openChatHistoryHover
-          ? "dark:bg-[#111111] dark:lg:shadow-lg dark:lg:shadow-white/50 bubble-chat bg-[#f6f8fc] absolute bottom-[74px] z-[99] w-full rounded-md flex flex-col lg:left-[63px] lg:top-0 lg:bottom-[28px] lg:w-[310px] lg:shadow-lg lg:shadow-black/50 lg:mt-6"
+          ? "dark:bg-[#111111] dark:lg:shadow-lg dark:lg:shadow-white/50 bubble-chat bg-[#f6f8fc] absolute bottom-[60px] z-[99] w-full rounded-md flex flex-col lg:left-[60px] lg:top-0 lg:bottom-[20px] lg:w-[300px] lg:shadow-lg lg:shadow-black/50 lg:mt-4"
           : `px-4 py-6 bg-[#f6f8fc] absolute z-10 top-0 bottom-0 transition-all duration-300 ease-in-out transform flex flex-col ${
               openChatHistory
                 ? "translate-x-0 w-[300px] dark:shadow-white shadow-lg shadow-black/50"
@@ -125,7 +125,7 @@ const ChatHistory = ({
           )
         }
         className={`${
-          openChatHistoryHover && "rounded-tr-md  p-8"
+          openChatHistoryHover && "rounded-tr-md  p-7"
         } w-full p-4 bg-blue-800 text-white`}
       >
         + New Chat

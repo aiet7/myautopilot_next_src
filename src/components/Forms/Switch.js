@@ -12,9 +12,11 @@ const Switch = ({
   itemId,
   loading,
   categories,
+
+  handleEmailSelection,
   availableEmailIds,
   selectedEmailIndex,
-  handleEmailSelection,
+
   currentEmailId,
   setCurrentEmailId,
   currentEmailSubject,

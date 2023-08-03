@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 
+
 import { AiOutlineUser, AiOutlineRobot } from "react-icons/ai";
 import {
   BsFillMicFill,
@@ -71,10 +72,11 @@ const ChatInteraction = ({
     ticketForm: false,
     taskForm: false,
   });
-
   const [feedback, setFeedback] = useState({});
 
+
   const [selectedEmailIndex, setSelectedEmailIndex] = useState(null);
+
   const [currentEmailId, setCurrentEmailId] = useState("");
   const [currentEmailSubject, setCurrentEmailSubject] = useState("");
   const [currentEmailBody, setCurrentEmailBody] = useState("");
@@ -97,7 +99,7 @@ const ChatInteraction = ({
   const [currentTicketNewFirstName, setCurrentTicketNewFirstName] =
     useState("");
   const [currentTicketNewLastName, setCurrentTicketNewLastName] = useState("");
-  const [] = useState("");
+
   const [currentTicketNewEmailId, setCurrentTicketNewEmailId] = useState("");
   const [currentTicketNewPhoneNumber, setCurrentTicketNewPhoneNumber] =
     useState("");
@@ -354,7 +356,6 @@ const ChatInteraction = ({
           previousResponseBodyForConversation
         );
         if (formSummaryResponse.status === 200) {
-          handleAddAssistantMessage(aiContent, "emailForm");
           let providerResponse;
           let tokenToSend = initialUser.accessToken;
           if (Cookies.get("Secure-next.session-token-g")) {
@@ -385,9 +386,9 @@ const ChatInteraction = ({
             providerResponse.status === 200 ||
             providerResponse.status === 202
           ) {
-            console.log("Mail from provider sent!");
+            handleAddAssistantMessage(aiContent, "emailForm");
           } else {
-            console.log("error");
+            setIsServerError(true);
           }
         }
       } catch (e) {
@@ -435,7 +436,6 @@ const ChatInteraction = ({
         );
 
         if (formSummaryResponse.status === 200) {
-          handleAddAssistantMessage(aiContent, "contactForm");
           let providerResponse;
           let tokenToSend = initialUser.accessToken;
           if (Cookies.get("Secure-next.session-token-g")) {
@@ -474,7 +474,9 @@ const ChatInteraction = ({
                 body: JSON.stringify({
                   givenName: currentContactGivenName,
                   familyName: currentContactFamilyName,
-                  emailAddresses: currentContactEmailIds,
+                  emailAddresses: currentContactEmailIds[0]
+                    ? currentContactEmailIds
+                    : [currentEmailId],
                   mobileNumber: currentContactMobileNumber,
                 }),
               }
@@ -483,10 +485,13 @@ const ChatInteraction = ({
             console.log("Activate provider in settings.");
           }
 
-          if (providerResponse.status === 200) {
-            console.log("Contact from provider added!");
+          if (
+            providerResponse.status === 200 ||
+            providerResponse.status === 202
+          ) {
+            handleAddAssistantMessage(aiContent, "contactForm");
           } else {
-            console.log("Error");
+            setIsServerError(true);
           }
         }
       } catch (e) {
@@ -522,31 +527,71 @@ const ChatInteraction = ({
     if (isConfirmed) {
       setLoading((prevState) => ({ ...prevState, eventForm: true }));
       try {
-        const scheduleResponse = await fetch(
-          `https://etech7-wf-etech7-mail-service.azuremicroservices.io/scheduleEvent`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              summary: currentEventSummary,
-              description: currentEventDescription,
-              start: currentEventStartTime,
-              end: currentEventEndTime,
-            }),
-          }
+        const remainingValidity = handlegetTokenRemainingValidity(
+          initialUser.expiryTime
         );
-        if (scheduleResponse.status === 200) {
-          const aiContent = `Event Scheduled!\nSummary: ${currentEventSummary}\nDescription: ${currentEventDescription}\nStart Time: ${new Date(
-            currentEventStartTime
-          ).toLocaleString()}\nEnd Time: ${new Date(
-            currentEventEndTime
-          ).toLocaleString()}`;
-          const formSummaryResponse = await handleAddMessageToDB(
-            aiContent,
-            previousResponseBodyForConversation
-          );
-          if (formSummaryResponse.status === 200) {
+        const aiContent = `Event Scheduled!\nSummary: ${currentEventSummary}\nDescription: ${currentEventDescription}\nStart Time: ${new Date(
+          currentEventStartTime
+        ).toLocaleString()}\nEnd Time: ${new Date(
+          currentEventEndTime
+        ).toLocaleString()}`;
+        const formSummaryResponse = await handleAddMessageToDB(
+          aiContent,
+          previousResponseBodyForConversation
+        );
+        if (formSummaryResponse.status === 200) {
+          let providerResponse;
+          let tokenToSend = initialUser.accessToken;
+          if (Cookies.get("Secure-next.session-token-g")) {
+            if (remainingValidity <= 60) {
+              const newTokenResponse = await fetch(
+                `https://etech7-wf-etech7-db-service.azuremicroservices.io/getGoogleRefreshToken?userId=${initialUser.id}`
+              );
+              const newToken = await newTokenResponse.json();
+              tokenToSend = newToken.access_token;
+            }
+            providerResponse = await fetch(
+              `https://etech7-wf-etech7-user-service.azuremicroservices.io/addGEvents?token=${tokenToSend}`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  summary: currentEventSummary,
+                  description: currentEventDescription,
+                  start: currentEventStartTime + ":00",
+                  end: currentEventEndTime + ":00",
+                }),
+              }
+            );
+          } else if (Cookies.get("microsoft_session_token")) {
+            providerResponse = await fetch(
+              `https://etech7-wf-etech7-user-service.azuremicroservices.io/addMEvents?token=${token}`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  ummary: currentEventSummary,
+                  description: currentEventDescription,
+                  start: currentEventStartTime + ":00",
+                  end: currentEventEndTime + ":00",
+                }),
+              }
+            );
+          } else {
+            console.log("Activate provider in settings.");
+          }
+
+          if (
+            providerResponse.status === 200 ||
+            providerResponse.status === 202
+          ) {
             handleAddAssistantMessage(aiContent, "eventForm");
+          } else {
+            setIsServerError(true);
           }
         }
       } catch (e) {
@@ -782,8 +827,8 @@ const ChatInteraction = ({
     conversationId = handleAddForm("eventForm");
     setCurrentEventSummary(summary);
     setCurrentEventDescription(description);
-    setCurrentEventStartTime(start);
-    setCurrentEventEndTime(end);
+    setCurrentEventStartTime(start.slice(0, -3));
+    setCurrentEventEndTime(end.slice(0, -3));
 
     setIsFormOpen((prevState) => ({
       ...prevState,
@@ -1334,9 +1379,9 @@ const ChatInteraction = ({
                     itemId={item.id}
                     loading={loading}
                     categories={categories}
+                    handleEmailSelection={handleEmailSelection}
                     availableEmailIds={availableEmailIds}
                     selectedEmailIndex={selectedEmailIndex}
-                    handleEmailSelection={handleEmailSelection}
                     currentEmailId={currentEmailId}
                     setCurrentEmailId={setCurrentEmailId}
                     currentEmailSubject={currentEmailSubject}

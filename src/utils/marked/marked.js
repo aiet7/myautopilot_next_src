@@ -48,8 +48,6 @@ export const MarkedChatInteraction = ({ markdown, context }) => {
     }
   }, [markdown]);
 
-  
-
   const renderer = new marked.Renderer();
 
   renderer.code = (code, language) => {

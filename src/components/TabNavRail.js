@@ -81,10 +81,10 @@ const TabNavRail = ({
         className="relative flex flex-col items-center cursor-pointer"
       >
         <BsChatDots
-          size={30}
+          size={20}
           className={`${activeTab === "general" && "text-blue-600"}`}
         />
-        <span className="text-sm">General</span>
+        <span className="text-xs">General</span>
       </div>
       {openChatHistoryHover && (
         <ChatHistory
@@ -110,10 +110,10 @@ const TabNavRail = ({
         onClick={() => handleTabChange("agents")}
       >
         <DiMagento
-          size={30}
+          size={20}
           className={`${activeTab === "agents" && "text-blue-600"}`}
         />
-        <span className="text-sm">Agents</span>
+        <span className="text-xs">Agents</span>
       </div>
       {openAgentSelectionHover && (
         <AgentSelection
@@ -134,10 +134,10 @@ const TabNavRail = ({
         className="relative flex flex-col items-center cursor-pointer"
       >
         <AiOutlineTeam
-          size={30}
+          size={20}
           className={`${activeTab === "teams" && "text-blue-600"} `}
         />
-        <span className="text-sm">Teams</span>
+        <span className="text-xs">Teams</span>
       </div>
 
       <div
@@ -145,12 +145,12 @@ const TabNavRail = ({
         className="flex flex-col items-center cursor-pointer lg:absolute lg:bottom-0 lg:py-3"
       >
         <FiSettings
-          size={30}
+          size={20}
           className={`${activeTab === "settings" && "text-blue-600"}`}
         />
-        <span className="text-sm">Settings</span>
+        <span className="text-xs">Settings</span>
         {openSettings && (
-          <div className="dark:bg-black dark:border-white/40 dark:border bg-white border border-black/10 absolute z-[99] bottom-[74px] right-0 w-[150px] lg:bottom-0 lg:left-[59px] lg:w-[250px]">
+          <div className="dark:bg-black dark:border-white/40 dark:border bg-white border border-black/10 absolute z-[99] bottom-[74px] right-0 w-[150px] lg:bottom-0 lg:left-[51px] lg:w-[301px]">
             <div className="flex flex-col">
               <div
                 onClick={handleLogout}

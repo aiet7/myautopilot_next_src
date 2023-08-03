@@ -303,7 +303,6 @@ const AgentInteraction = ({
           previousResponseBodyForConversation
         );
         if (formSummaryResponse.status === 200) {
-          handleAddAssistantMessage(aiContent, "emailForm");
           let providerResponse;
           let tokenToSend = initialUser.accessToken;
           if (Cookies.get("Secure-next.session-token-g")) {
@@ -334,9 +333,9 @@ const AgentInteraction = ({
             providerResponse.status === 200 ||
             providerResponse.status === 202
           ) {
-            console.log("Mail from provider sent!");
+            handleAddAssistantMessage(aiContent, "emailForm");
           } else {
-            console.log("error");
+            setIsServerError(true);
           }
         }
       } catch (e) {
@@ -384,7 +383,6 @@ const AgentInteraction = ({
         );
 
         if (formSummaryResponse.status === 200) {
-          handleAddAssistantMessage(aiContent, "contactForm");
           let providerResponse;
           let tokenToSend = initialUser.accessToken;
           if (Cookies.get("Secure-next.session-token-g")) {
@@ -423,7 +421,9 @@ const AgentInteraction = ({
                 body: JSON.stringify({
                   givenName: currentContactGivenName,
                   familyName: currentContactFamilyName,
-                  emailAddresses: currentContactEmailIds,
+                  emailAddresses: currentContactEmailIds[0]
+                    ? currentContactEmailIds
+                    : [currentEmailId],
                   mobileNumber: currentContactMobileNumber,
                 }),
               }
@@ -432,10 +432,13 @@ const AgentInteraction = ({
             console.log("Activate provider in settings.");
           }
 
-          if (providerResponse.status === 200) {
-            console.log("Contact from provider added!");
+          if (
+            providerResponse.status === 200 ||
+            providerResponse.status === 202
+          ) {
+            handleAddAssistantMessage(aiContent, "contactForm");
           } else {
-            console.log("Error");
+            setIsServerError(true);
           }
         }
       } catch (e) {
@@ -471,31 +474,71 @@ const AgentInteraction = ({
     if (isConfirmed) {
       setLoading((prevState) => ({ ...prevState, eventForm: true }));
       try {
-        const scheduleResponse = await fetch(
-          `https://etech7-wf-etech7-mail-service.azuremicroservices.io/scheduleEvent`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              summary: currentEventSummary,
-              description: currentEventDescription,
-              start: currentEventStartTime,
-              end: currentEventEndTime,
-            }),
-          }
+        const remainingValidity = handlegetTokenRemainingValidity(
+          initialUser.expiryTime
         );
-        if (scheduleResponse.status === 200) {
-          const aiContent = `Event Scheduled!\nSummary: ${currentEventSummary}\nDescription: ${currentEventDescription}\nStart Time: ${new Date(
-            currentEventStartTime
-          ).toLocaleString()}\nEnd Time: ${new Date(
-            currentEventEndTime
-          ).toLocaleString()}`;
-          const formSummaryResponse = await handleAddMessageToDB(
-            aiContent,
-            previousResponseBodyForConversation
-          );
-          if (formSummaryResponse.status === 200) {
+        const aiContent = `Event Scheduled!\nSummary: ${currentEventSummary}\nDescription: ${currentEventDescription}\nStart Time: ${new Date(
+          currentEventStartTime
+        ).toLocaleString()}\nEnd Time: ${new Date(
+          currentEventEndTime
+        ).toLocaleString()}`;
+        const formSummaryResponse = await handleAddMessageToDB(
+          aiContent,
+          previousResponseBodyForConversation
+        );
+        if (formSummaryResponse.status === 200) {
+          let providerResponse;
+          let tokenToSend = initialUser.accessToken;
+          if (Cookies.get("Secure-next.session-token-g")) {
+            if (remainingValidity <= 60) {
+              const newTokenResponse = await fetch(
+                `https://etech7-wf-etech7-db-service.azuremicroservices.io/getGoogleRefreshToken?userId=${initialUser.id}`
+              );
+              const newToken = await newTokenResponse.json();
+              tokenToSend = newToken.access_token;
+            }
+            providerResponse = await fetch(
+              `https://etech7-wf-etech7-user-service.azuremicroservices.io/addGEvents?token=${tokenToSend}`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  summary: currentEventSummary,
+                  description: currentEventDescription,
+                  start: currentEventStartTime + ":00",
+                  end: currentEventEndTime + ":00",
+                }),
+              }
+            );
+          } else if (Cookies.get("microsoft_session_token")) {
+            providerResponse = await fetch(
+              `https://etech7-wf-etech7-user-service.azuremicroservices.io/addMEvents?token=${token}`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  ummary: currentEventSummary,
+                  description: currentEventDescription,
+                  start: currentEventStartTime + ":00",
+                  end: currentEventEndTime + ":00",
+                }),
+              }
+            );
+          } else {
+            console.log("Activate provider in settings.");
+          }
+
+          if (
+            providerResponse.status === 200 ||
+            providerResponse.status === 202
+          ) {
             handleAddAssistantMessage(aiContent, "eventForm");
+          } else {
+            setIsServerError(true);
           }
         }
       } catch (e) {
@@ -505,6 +548,7 @@ const AgentInteraction = ({
           ...prevState,
           [previousResponseBodyForConversation.conversationId]: false,
         }));
+
         setLoading((prevState) => ({ ...prevState, eventForm: false }));
         handleRemoveForm(formId);
       }
@@ -728,8 +772,8 @@ const AgentInteraction = ({
     conversationId = handleAddForm("eventForm");
     setCurrentEventSummary(summary);
     setCurrentEventDescription(description);
-    setCurrentEventStartTime(start);
-    setCurrentEventEndTime(end);
+    setCurrentEventStartTime(start.slice(0, -3));
+    setCurrentEventEndTime(end.slice(0, -3));
 
     setIsFormOpen((prevState) => ({
       ...prevState,

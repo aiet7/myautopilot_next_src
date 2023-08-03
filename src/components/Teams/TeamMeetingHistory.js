@@ -101,21 +101,31 @@ const TeamMeetingHistory = ({
           const { id, userID, roomName, roomIndustry, roomUserInput } = team;
 
           return (
-            <div
-              onClick={() => handleTeamRoomSelected(index)}
-              key={index}
-              className="flex flex-col items-start my-2"
-            >
+            <div key={index} className="flex flex-col items-start my-2">
               <div
                 className={`${
                   currentTeamsIndex === index && "dark:bg-white/40 bg-black/20"
                 } dark:text-white dark:hover:bg-white/40 hover:bg-black/20 text-black w-full flex items-center justify-between px-2 h-[50px] cursor-pointer`}
               >
                 <div className="flex items-center gap-1">
-                  <div className="w-8">
+                  <div
+                    className="w-8"
+                    onClick={
+                      !editing && !deleting
+                        ? () => handleTeamRoomSelected(index)
+                        : null
+                    }
+                  >
                     <RiTeamLine size={20} />
                   </div>
-                  <div className="w-40 truncate flex">
+                  <div
+                    className="w-40 truncate flex"
+                    onClick={
+                      !editing && !deleting
+                        ? () => handleTeamRoomSelected(index)
+                        : null
+                    }
+                  >
                     {currentTeamsIndex === index &&
                     ((!roomIndustry && !roomUserInput) || editing) ? (
                       <input
