@@ -856,18 +856,18 @@ export const getServerSideProps = async (context) => {
     req: { cookies },
   } = context;
 
-  // const googleSessionToken = cookies["Secure-next.session-token-g"];
-  // const microsoftSessionToken = cookies["microsoft_session_token"];
-  // const regularSessionToken = cookies["session_token"];
+  const googleSessionToken = cookies["Secure-next.session-token-g"];
+  const microsoftSessionToken = cookies["microsoft_session_token"];
+  const regularSessionToken = cookies["session_token"];
 
-  // if (!googleSessionToken && !microsoftSessionToken && !regularSessionToken) {
-  //   return {
-  //     redirect: {
-  //       destination: "/auth/login",
-  //       permanent: false,
-  //     },
-  //   };
-  // }
+  if (!googleSessionToken && !microsoftSessionToken && !regularSessionToken) {
+    return {
+      redirect: {
+        destination: "/auth/login",
+        permanent: false,
+      },
+    };
+  }
 
   const userId = params.id;
 
