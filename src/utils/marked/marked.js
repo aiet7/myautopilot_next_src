@@ -129,14 +129,14 @@ export const MarkedChatAssistant = ({
 
   renderer.list = (body, ordered, start) => {
     if (ordered) {
-      return `<ol start="${start}" class="flex flex-col gap-2 list-decimal pl-4">${body}</ol>`;
+      return `<ol start="${start}" class="flex flex-col gap-2">${body}</ol>`;
     } else {
-      return `<ul class="flex flex-col gap-2 list-disc pl-4">${body}</ul>`;
+      return `<ul class="flex flex-col gap-2">${body}</ul>`;
     }
   };
 
   renderer.listitem = (text) => {
-    return `<li class="dark:bg-white/20 bg-black/5 px-2 py-1 rounded-md mx-2 list-item cursor-pointer">${text}</li>`;
+    return `<li class="dark:bg-white/20 bg-black/5 px-2 py-1 rounded-md list-item cursor-pointer">${text}</li>`;
   };
 
   marked.setOptions({ renderer, gfm: true });

@@ -19,6 +19,9 @@ export const generalSkills = [
     description: "Create a task.",
     prompt: "Create a to-do list with the item Buy Groceries.",
   },
+];
+
+export const generalUpdates = [
   {
     name: "Weather",
     description: "Get current weather.",
@@ -33,18 +36,5 @@ export const generalSkills = [
     name: "Stocks",
     description: "Get stock prices.",
     prompt: "Get me the latest stock price of Apple.",
-  },
-];
-
-export const generalPrompts = [
-  {
-    promptName: "Language Translation",
-    prompt:
-      "Please provide a french translation for 'hello' along with its corresponding definition.",
-  },
-
-  {
-    promptName: "JavaScript GET request",
-    prompt: "Provide me code for a GET request in JavaScript",
   },
 ];
