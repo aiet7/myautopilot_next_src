@@ -39,8 +39,8 @@ const Login = () => {
       setLoading(true);
       try {
         const tokenResponse = await fetch(
-          `http://localhost:9019/getGoogleToken?code=${codeResponse.code}`
-          // `https://etech7-wf-etech7-db-service.azuremicroservices.io/getGoogleToken?code=${codeResponse.code}`
+          // `http://localhost:9019/getGoogleToken?code=${codeResponse.code}`
+          `https://etech7-wf-etech7-db-service.azuremicroservices.io/getGoogleToken?code=${codeResponse.code}`
         );
 
         const token = await tokenResponse.json();
