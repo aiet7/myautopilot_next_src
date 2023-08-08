@@ -3,15 +3,14 @@ import { BiBrain } from "react-icons/bi";
 
 const SettingsRail = ({
   activeTab,
-
   selectedAgent,
   handleOpenChatHistory,
   handleOpenChatAssistant,
   handleOpenAgentHistory,
   handleOpenAgentAssistant,
   handleOpenTeamsHistory,
-  handleOpenTeamsAssistant,
 }) => {
+  
   const handleHistoryMenu = () => {
     if (handleOpenChatHistory) handleOpenChatHistory();
     if (handleOpenAgentHistory) handleOpenAgentHistory();
@@ -21,7 +20,6 @@ const SettingsRail = ({
   const handleAssistantMenu = () => {
     if (handleOpenChatAssistant) handleOpenChatAssistant();
     if (handleOpenAgentAssistant) handleOpenAgentAssistant();
-    if (handleOpenTeamsAssistant) handleOpenTeamsAssistant();
   };
 
   return (

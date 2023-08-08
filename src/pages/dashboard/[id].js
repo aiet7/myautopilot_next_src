@@ -2,14 +2,25 @@
 
 import { ThemeProvider } from "next-themes";
 
-import TabNavRail from "../../components/TabNavRail.js";
-import SettingsRail from "../../components/SettingsRail.js";
-import Chat from "../../components/Chat/Chat.js";
-import Agent from "../..//components/Agents/Agent.js";
-import Account from "../../components/Account.js";
+import TabNavRail from "../../components/Dashboard/TabNavRail.js";
+import SettingsRail from "../../components/Dashboard/SettingsRail.js";
+
+import Interaction from "../../components/Dashboard/Interaction.js";
+import Discussion from "../../components/Dashboard/Teams/Discussion.js";
+
+import GeneralChatHistory from "../../components/Dashboard/General/GeneralChatHistory.js";
+import GeneralAssistant from "../../components/Dashboard/General/GeneralAssistant.js";
+
+import AgentChatHistory from "../../components/Dashboard/Agents/AgentChatHistory.js";
+import AgentAssistant from "../../components/Dashboard/Agents/AgentAssistant.js";
+import AgentGuide from "../../components/Dashboard/Agents/AgentGuide.js";
+import AgentSelection from "../../components/Dashboard/Agents/AgentSelection.js";
+
+import TeamsChatHistory from "../../components/Dashboard/Teams/TeamsChatHistory.js";
+
+import Account from "../../components/Dashboard/Account.js";
 
 import { useState, useEffect } from "react";
-import Teams from "../../components/Teams/Teams.js";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 
@@ -26,17 +37,30 @@ const DashboardPage = ({
   initialMessages,
   initialRooms,
   initialRoomMessages,
+  initialTasks,
 }) => {
+  const [tasks, setTasks] = useState(initialTasks);
+
   const [height, setHeight] = useState(null);
   const [connected, setConnected] = useState(false);
   const [client, setClient] = useState(null);
   const [subscribed, setSubscribed] = useState(false);
+
+  const [ticketIsPending, setTicketIsPending] = useState({
+    ticketCreated: undefined,
+    ticketAssigned: undefined,
+    ticketClosed: undefined,
+    userCreatedInActiveDirectory: undefined,
+    userEmailCreated: undefined,
+  });
+
   const [wsIsPending, setWsIsPending] = useState({
     "/topic/mainResponses": { role: "CEO", status: "pending" },
     "/topic/reasonResponses": { role: "Advisor", status: "pending" },
     "/topic/criticResponses": { role: "Critic", status: "pending" },
     "/topic/decisionResponses": { role: "Analytic", status: "pending" },
   });
+
   const [activeTab, setActiveTab] = useState(null);
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [hoverPreview, setHoverPreview] = useState(null);
@@ -53,7 +77,6 @@ const DashboardPage = ({
   const [openAgentSelectionHover, setOpenAgentSelectionHover] = useState(false);
 
   const [openTeamsHistory, setOpenTeamsHistory] = useState(false);
-  const [openTeamsAssistant, setOpenTeamsAssistant] = useState(false);
 
   const [openSettings, setOpenSettings] = useState(false);
 
@@ -64,6 +87,13 @@ const DashboardPage = ({
   );
   const [teamsHistories, setTeamsHistories] = useState([]);
   const [currentTeamsIndex, setCurrentTeamsIndex] = useState(0);
+
+  const handleTicketStatus = (status) => {
+    setTicketIsPending((prevState) => ({
+      ...prevState,
+      ...status,
+    }));
+  };
 
   const handleShowSummarized = async () => {
     setShowSummarized(!showSummarized);
@@ -156,7 +186,7 @@ const DashboardPage = ({
       return newHistories;
     });
   };
-
+console.log(ticketIsPending)
   const handleConnectToWebSocket = (roomId, goal) => {
     const socket = new SockJS(
       "https://etech7-wf-etech7-room-service.azuremicroservices.io/ws"
@@ -251,6 +281,29 @@ const DashboardPage = ({
       setPromptAssistantInput(prompt);
       setOpenChatAssistant(false);
     }, 0);
+  };
+
+  const handleNewTask = (task) => {
+    setTasks((prevState) => [...prevState, task]);
+  };
+
+  const handleDeleteTask = async (index) => {
+    if (index < tasks.length) {
+      const taskToDelete = tasks[index];
+      try {
+        const response = await fetch(
+          `https://etech7-wf-etech7-db-service.azuremicroservices.io/deleteTask?taskId=${taskToDelete.id}`
+        );
+        if (response.ok) {
+          const updatedTasks = tasks.filter(
+            (_, currentIndex) => currentIndex !== index
+          );
+          setTasks(updatedTasks);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
   };
 
   const handleNewConversation = async (index) => {
@@ -433,7 +486,7 @@ const DashboardPage = ({
     }
 
     setCurrentTeamsIndex(index);
-    setOpenTeamsHistory(false)
+    setOpenTeamsHistory(false);
   };
 
   const handleAgentSelected = (id) => {
@@ -481,10 +534,6 @@ const DashboardPage = ({
 
   const handleOpenTeamsHistory = () => {
     setOpenTeamsHistory(!openTeamsHistory);
-  };
-
-  const handleOpenTeamsAssistant = () => {
-    setOpenTeamsAssistant(!openTeamsAssistant);
   };
 
   const handleOpenSettings = () => {
@@ -641,6 +690,7 @@ const DashboardPage = ({
     );
     const lastRoomIndex = localStorage.getItem("lastRoomIndex");
     const lastWsPendingString = localStorage.getItem("wsIsPending");
+    const lastTicketPendingString = localStorage.getItem("ticketIsPending");
 
     if (lastTab) {
       setActiveTab(lastTab);
@@ -713,25 +763,41 @@ const DashboardPage = ({
                   activeTab === "general" ? handleOpenChatAssistant : undefined
                 }
               />
-
-              <Chat
-                initialUser={initialUser}
-                activeTab={activeTab}
-                selectedAgent={selectedAgent}
-                promptAssistantInput={promptAssistantInput}
-                openChatHistory={openChatHistory}
-                openChatAssistant={openChatAssistant}
-                openChatHistoryHover={openChatHistoryHover}
-                currentConversationIndices={currentConversationIndices}
-                conversationHistories={conversationHistories}
-                setConversationHistories={setConversationHistories}
-                handlePromptAssistantInput={handlePromptAssistantInput}
-                handleNewConversation={handleNewConversation}
-                handleDeleteConversation={handleDeleteConversation}
-                handleConversationSelected={handleConversationSelected}
-                handleOpenChatHistory={handleOpenChatHistory}
-                handleOpenChatAssistant={handleOpenChatAssistant}
-              />
+              <div className="flex flex-1 relative overflow-hidden">
+                <GeneralChatHistory
+                  selectedAgent={selectedAgent}
+                  openChatHistoryHover={openChatHistoryHover}
+                  openChatHistory={openChatHistory}
+                  currentConversationIndices={currentConversationIndices}
+                  conversationHistories={conversationHistories}
+                  setConversationHistories={setConversationHistories}
+                  handleNewConversation={handleNewConversation}
+                  handleDeleteConversation={handleDeleteConversation}
+                  handleConversationSelected={handleConversationSelected}
+                />
+                <Interaction
+                  selectedAgent={selectedAgent}
+                  activeTab={activeTab}
+                  initialUser={initialUser}
+                  promptAssistantInput={promptAssistantInput}
+                  openChatHistory={openChatHistory}
+                  openChatAssistant={openChatAssistant}
+                  currentConversationIndices={currentConversationIndices}
+                  conversationHistories={conversationHistories}
+                  setConversationHistories={setConversationHistories}
+                  handleNewTask={handleNewTask}
+                  handleNewConversation={handleNewConversation}
+                  handleOpenChatHistory={handleOpenChatHistory}
+                  handleOpenChatAssistant={handleOpenChatAssistant}
+                />
+                <GeneralAssistant
+                  tasks={tasks}
+                  initialUser={initialUser}
+                  openChatAssistant={openChatAssistant}
+                  handlePromptAssistantInput={handlePromptAssistantInput}
+                  handleDeleteTask={handleDeleteTask}
+                />
+              </div>
             </div>
             <div
               className={
@@ -750,27 +816,63 @@ const DashboardPage = ({
                   activeTab === "agents" ? handleOpenAgentAssistant : undefined
                 }
               />
-              <Agent
-                activeTab={activeTab}
-                initialUser={initialUser}
-                initialAgents={initialAgents}
-                selectedAgent={selectedAgent}
-                promptAssistantInput={promptAssistantInput}
-                conversationHistories={conversationHistories}
-                currentConversationIndices={currentConversationIndices}
-                openAgentHistory={openAgentHistory}
-                openAgentAssistant={openAgentAssistant}
-                openAgentHistoryHover={openAgentSelectionHover}
-                setConversationHistories={setConversationHistories}
-                handlePromptAssistantInput={handlePromptAssistantInput}
-                handleConversationSelected={handleConversationSelected}
-                handleNewConversation={handleNewConversation}
-                handleDeleteConversation={handleDeleteConversation}
-                handleOpenAgentHistory={handleOpenAgentHistory}
-                handleOpenAgentAssistant={handleOpenAgentAssistant}
-                handleOpenAgentSelectionHide={handleOpenAgentSelectionHide}
-                handleAgentSelected={handleAgentSelected}
-              />
+              <div className="flex flex-1 relative overflow-hidden">
+                <AgentChatHistory
+                  initialAgents={initialAgents}
+                  selectedAgent={selectedAgent}
+                  conversationHistories={conversationHistories}
+                  currentConversationIndices={currentConversationIndices}
+                  setConversationHistories={setConversationHistories}
+                  openAgentHistory={openAgentHistory}
+                  handleConversationSelected={handleConversationSelected}
+                  handleNewConversation={handleNewConversation}
+                  handleDeleteConversation={handleDeleteConversation}
+                />
+
+                <AgentSelection
+                  activeTab={activeTab}
+                  selectedAgent={selectedAgent}
+                  initialAgents={initialAgents}
+                  openAgentHistory={openAgentHistory}
+                  openAgentSelectionHover={openAgentSelectionHover}
+                  handleOpenAgentSelectionHide={handleOpenAgentSelectionHide}
+                  handleAgentSelected={handleAgentSelected}
+                />
+                {selectedAgent ? (
+                  <Interaction
+                    activeTab={activeTab}
+                    initialUser={initialUser}
+                    selectedAgent={selectedAgent}
+                    promptAssistantInput={promptAssistantInput}
+                    conversationHistories={conversationHistories}
+                    currentConversationIndices={currentConversationIndices}
+                    setConversationHistories={setConversationHistories}
+                    openAgentHistory={openAgentHistory}
+                    openAgentAssistant={openAgentAssistant}
+                    handleTicketStatus={handleTicketStatus}
+                    handleNewTask={handleNewTask}
+                    handleNewConversation={handleNewConversation}
+                    handleOpenAgentHistory={handleOpenAgentHistory}
+                    handleOpenAgentAssistant={handleOpenAgentAssistant}
+                  />
+                ) : (
+                  <AgentGuide
+                    selectedAgent={selectedAgent}
+                    openAgentHistory={openAgentHistory}
+                    handleOpenAgentHistory={handleOpenAgentHistory}
+                  />
+                )}
+
+                <AgentAssistant
+                  tasks={tasks}
+                  ticketIsPending={ticketIsPending}
+                  initialAgents={initialAgents}
+                  selectedAgent={selectedAgent}
+                  openAgentAssistant={openAgentAssistant}
+                  handlePromptAssistantInput={handlePromptAssistantInput}
+                  handleDeleteTask={handleDeleteTask}
+                />
+              </div>
             </div>
             <div
               className={
@@ -785,29 +887,32 @@ const DashboardPage = ({
                 handleOpenTeamsHistory={
                   activeTab === "teams" ? handleOpenTeamsHistory : undefined
                 }
-                handleOpenTeamsAssistant={
-                  activeTab === "teams" ? handleOpenTeamsAssistant : undefined
-                }
               />
-              <Teams
-                showSummarized={showSummarized}
-                connected={connected}
-                wsIsPending={wsIsPending}
-                activeTab={activeTab}
-                teamsHistories={teamsHistories}
-                currentTeamsIndex={currentTeamsIndex}
-                openTeamsHistory={openTeamsHistory}
-                openTeamsAssistant={openTeamsAssistant}
-                setTeamsHistories={setTeamsHistories}
-                handleConnectToWebSocket={handleConnectToWebSocket}
-                handleShowSummarized={handleShowSummarized}
-                handleCreateNewRoom={handleCreateNewRoom}
-                handleSaveRoom={handleSaveRoom}
-                handleDeleteTeamRoom={handleDeleteTeamRoom}
-                handleTeamRoomSelected={handleTeamRoomSelected}
-                handleOpenTeamsHistory={handleOpenTeamsHistory}
-                handleOpenTeamsAssistant={handleOpenTeamsAssistant}
-              />
+              <div className="flex flex-1 relative overflow-hidden">
+                <TeamsChatHistory
+                  teamsHistories={teamsHistories}
+                  currentTeamsIndex={currentTeamsIndex}
+                  openTeamsHistory={openTeamsHistory}
+                  setTeamsHistories={setTeamsHistories}
+                  handleTeamRoomSelected={handleTeamRoomSelected}
+                  handleCreateNewRoom={handleCreateNewRoom}
+                  handleSaveRoom={handleSaveRoom}
+                  handleDeleteTeamRoom={handleDeleteTeamRoom}
+                />
+                <Discussion
+                  showSummarized={showSummarized}
+                  connected={connected}
+                  wsIsPending={wsIsPending}
+                  activeTab={activeTab}
+                  teamsHistories={teamsHistories}
+                  currentTeamsIndex={currentTeamsIndex}
+                  setTeamsHistories={setTeamsHistories}
+                  openTeamsHistory={openTeamsHistory}
+                  handleConnectToWebSocket={handleConnectToWebSocket}
+                  handleShowSummarized={handleShowSummarized}
+                  handleOpenTeamsHistory={handleOpenTeamsHistory}
+                />
+              </div>
             </div>
 
             <div

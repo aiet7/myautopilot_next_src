@@ -16,8 +16,8 @@ import { DiMagento } from "react-icons/di";
 import { useTheme } from "next-themes";
 
 import Cookie from "js-cookie";
-import AgentSelection from "./Agents/AgentSelection";
-import ChatHistory from "./Chat/ChatHistory";
+import AgentSelection from "../Dashboard/Agents/AgentSelection";
+import GeneralChatHistory from "../Dashboard/General/GeneralChatHistory";
 
 const TabNavRail = ({
   initialAgents,
@@ -87,7 +87,7 @@ const TabNavRail = ({
         <span className="text-xs">General</span>
       </div>
       {openChatHistoryHover && (
-        <ChatHistory
+        <GeneralChatHistory
           selectedAgent={activeTab === "general" ? selectedAgent : hoverPreview}
           openChatHistory={openChatHistory}
           openChatHistoryHover={openChatHistoryHover}

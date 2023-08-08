@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { marked } from "marked";
 import { encode } from "html-entities";
 
@@ -6,6 +6,14 @@ import Prism from "prismjs";
 import "./languages.js";
 
 export const MarkedChatInteraction = ({ markdown, context }) => {
+  const [highlightedText, setHighlightedText] = useState("");
+  const handleMouseUp = () => {
+    const selectedText = window.getSelection().toString();
+    if (selectedText) {
+      setHighlightedText(selectedText);
+    }
+  };
+
   const ref = useRef(null);
 
   useEffect(() => {
@@ -98,6 +106,7 @@ export const MarkedChatInteraction = ({ markdown, context }) => {
 
   return (
     <div
+      onMouseUp={handleMouseUp}
       ref={ref}
       className="flex flex-col gap-2 whitespace-pre-wrap"
       dangerouslySetInnerHTML={{

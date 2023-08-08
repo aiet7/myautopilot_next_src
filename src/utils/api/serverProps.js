@@ -1,11 +1,17 @@
 export const handleServerPropsData = async (userId) => {
-  const [initialUser, initialConversations, initialAgents, initialRooms] =
-    await Promise.all([
-      handeGetUser(userId),
-      handleGetConversations(userId),
-      handleGetAgents(),
-      handleGetRooms(userId),
-    ]);
+  const [
+    initialUser,
+    initialConversations,
+    initialAgents,
+    initialRooms,
+    initialTasks,
+  ] = await Promise.all([
+    handeGetUser(userId),
+    handleGetConversations(userId),
+    handleGetAgents(),
+    handleGetRooms(userId),
+    handleGetTasks(userId),
+  ]);
 
   const initialMessages = await Promise.all(
     initialConversations.map((conversation) =>
@@ -24,6 +30,7 @@ export const handleServerPropsData = async (userId) => {
     initialMessages,
     initialRooms,
     initialRoomMessages,
+    initialTasks,
   };
 };
 
@@ -65,6 +72,13 @@ export const handleGetMessages = async (conversationId) => {
 export const handleGetRoomMessages = async (roomId) => {
   const response = await fetch(
     `https://etech7-wf-etech7-db-service.azuremicroservices.io/getRoomMessages?roomId=${roomId}`
+  );
+  return await response.json();
+};
+
+export const handleGetTasks = async (userId) => {
+  const response = await fetch(
+    `https://etech7-wf-etech7-db-service.azuremicroservices.io/getTasks?userId=${userId}`
   );
   return await response.json();
 };

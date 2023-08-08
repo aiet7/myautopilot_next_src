@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 
-import AssistantRail from "../AssistantRail.js";
+import AssistantRail from "../AssistantRail";
 
 import { AiOutlinePlus, AiOutlineDelete } from "react-icons/ai";
 import { MdOutlineArrowDropDown, MdOutlineArrowDropUp } from "react-icons/md";
@@ -10,17 +10,19 @@ import { MdOutlineArrowDropDown, MdOutlineArrowDropUp } from "react-icons/md";
 import { FaSpinner } from "react-icons/fa";
 import { SiOpenai } from "react-icons/si";
 
-import { MarkedChatAssistant } from "../../utils/marked/marked.js";
+import { MarkedChatAssistant } from "../../../utils/marked/marked.js";
 
 import {
   generalSkills,
   generalUpdates,
-} from "../../utils/prompts/generalPromptLibrary.js";
+} from "../../../utils/prompts/generalPromptLibrary.js";
 
-const ChatAssistant = ({
+const GeneralAssistant = ({
+  tasks,
   initialUser,
   openChatAssistant,
   handlePromptAssistantInput,
+  handleDeleteTask,
 }) => {
   const inputRef = useRef(null);
 
@@ -134,7 +136,7 @@ const ChatAssistant = ({
         activeButton={activeButton}
         handleAssistantTabChange={handleAssistantTabChange}
       />
-      <div className="flex flex-col px-4 py-6 gap-4 w-full">
+      <div className="flex flex-col px-4 py-6 gap-4 w-full overflow-hidden">
         <h2 className="text-2xl font-bold text-center">AI Autopilot</h2>
         {activeButton === "Skills" && (
           <div className="flex-grow flex flex-col gap-4 overflow-hidden">
@@ -197,8 +199,8 @@ const ChatAssistant = ({
             <h3 className="text-left text-lg">Prompt Engineer</h3>
             <div className="flex-grow overflow-y-auto scrollbar-thin">
               <div className="flex flex-grow flex-col gap-4 ">
-                <div className="relative w-full flex items-center">
-                  <input
+                <div className="w-full flex flex-col items-center rounded gap-1">
+                  <textarea
                     value={userInput}
                     ref={inputRef}
                     onChange={(e) => setUserInput(e.target.value)}
@@ -208,11 +210,11 @@ const ChatAssistant = ({
                         handleSendPromptGenerator();
                       }
                     }}
-                    className="w-full px-2 py-1 pr-8"
+                    className="w-full p-2 scrollbar-thin min-h-[100px] max-h-[200px]"
                     placeholder="Ex. Marketing, IT, Finance etc"
                   />
 
-                  <div className="absolute right-2">
+                  <div className="bg-[#10a37f] w-full flex items-center justify-center p-2 ">
                     {isWaiting ? (
                       <FaSpinner size={20} className="animate-spin" />
                     ) : (
@@ -220,9 +222,9 @@ const ChatAssistant = ({
                         size={20}
                         className={` ${
                           userInput !== ""
-                            ? "dark:text-white dark:hover:text-blue-500 hover:text-blue-500 text-black cursor-pointer"
-                            : "dark:text-gray-500 text-gray-300 select-none"
-                        } cursor-pointer`}
+                            ? "hover:text-blue-600 text-white cursor-pointer"
+                            : "text-white/20 select-none"
+                        }`}
                         onClick={handleSendPromptGenerator}
                       />
                     )}
@@ -236,9 +238,48 @@ const ChatAssistant = ({
             </div>
           </div>
         )}
+        {activeButton === "Tasks" && (
+          <div className="flex-grow flex flex-col gap-4 overflow-hidden">
+            <h3 className="text-left text-lg">Tasks</h3>
+            <div className="flex-grow overflow-y-auto scrollbar-thin">
+              <div className="flex flex-grow flex-col gap-4">
+                {tasks.map((task, index) => {
+                  const { taskName, timeStamp } = task;
+                  return (
+                    <div
+                      key={index}
+                      className="dark:bg-white/30 dark:text-white dark:border-white/20 flex flex-col justify-between gap-3 border rounded-md text-black bg-white p-2"
+                    >
+                      <div className="flex justify-between">
+                        <p className="break-words whitespace-pre-wrap">
+                          {taskName}
+                        </p>
+                        <div className="flex">
+                          <AiOutlineDelete
+                            size={20}
+                            className="cursor-pointer"
+                            onClick={() => handleDeleteTask(index)}
+                          />
+                        </div>
+                      </div>
+                      <p>{new Date(timeStamp).toLocaleString()}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+        {activeButton === "Notes" && (
+          <div className="flex-grow flex flex-col gap-4 overflow-hidden">
+            <h3 className="text-left text-lg">Notes</h3>
+            <div className="flex flex-col gap-1 w-full"></div>
+          </div>
+        )}
 
         {activeButton === "Favorites" && (
           <div className="flex-grow flex flex-col gap-4 overflow-hidden">
+            <h3 className="text-left text-lg">Favorites</h3>
             <div className="flex flex-col gap-1 w-full">
               <input
                 value={customPrompt.promptName}
@@ -348,4 +389,4 @@ const ChatAssistant = ({
   );
 };
 
-export default ChatAssistant;
+export default GeneralAssistant;

@@ -3,15 +3,23 @@
 import { useState, useEffect, useRef } from "react";
 
 import { AiOutlineUser, AiOutlineRobot } from "react-icons/ai";
-import { BsFillMicFill, BsFillStopFill, BsFillSendFill } from "react-icons/bs";
-import { FiThumbsUp, FiThumbsDown } from "react-icons/fi";
+import {
+  BsFillMicFill,
+  BsFillStopFill,
+  BsFillSendFill,
+  BsImageFill,
+} from "react-icons/bs";
 import { HiOutlineArrowSmallDown } from "react-icons/hi2";
+import { FiThumbsUp, FiThumbsDown } from "react-icons/fi";
 import { FaSpinner } from "react-icons/fa";
 
-import { trimQuotes } from "../../utils/stringManipulation.js";
+import {
+  categories,
+  subCategories,
+} from "../../utils/tickets/ticketCreation.js";
 import { convertKelvinToFahrenheit } from "../../utils/conversions.js";
-import { categories, subCategories } from "../../utils/ticketCreation.js";
 import { recognition } from "../../utils/speechToText.js";
+import { trimQuotes } from "../../utils/stringManipulation.js";
 import {
   handleSendGmail,
   handlegetTokenRemainingValidity,
@@ -22,24 +30,26 @@ import Cookies from "js-cookie";
 
 import Switch from "../Forms/Switch.js";
 
-const AgentInteraction = ({
+const Interaction = ({
   activeTab,
   initialUser,
   selectedAgent,
   promptAssistantInput,
-  conversationHistories,
+  openChatHistory,
+  openChatAssistant,
   currentConversationIndices,
+  conversationHistories,
   setConversationHistories,
-  openAgentHistory,
-  openAgentAssistant,
+  handleTicketStatus,
+  handleNewTask,
   handleNewConversation,
-  handleOpenAgentHistory,
-  handleOpenAgentAssistant,
+  handleOpenChatHistory,
+  handleOpenChatAssistant,
 }) => {
   const token =
     Cookies.get("microsoft_session_token") || Cookies.get("session_token");
-  const latestMessageRef = useRef(null);
 
+  const latestMessageRef = useRef(null);
   const chatContainerRef = useRef(null);
   const controllerRef = useRef(null);
   const inputRef = useRef(null);
@@ -66,10 +76,10 @@ const AgentInteraction = ({
     ticketForm: false,
     taskForm: false,
   });
-
   const [feedback, setFeedback] = useState({});
 
   const [selectedEmailIndex, setSelectedEmailIndex] = useState(null);
+
   const [currentEmailId, setCurrentEmailId] = useState("");
   const [currentEmailSubject, setCurrentEmailSubject] = useState("");
   const [currentEmailBody, setCurrentEmailBody] = useState("");
@@ -92,7 +102,7 @@ const AgentInteraction = ({
   const [currentTicketNewFirstName, setCurrentTicketNewFirstName] =
     useState("");
   const [currentTicketNewLastName, setCurrentTicketNewLastName] = useState("");
-  const [] = useState("");
+
   const [currentTicketNewEmailId, setCurrentTicketNewEmailId] = useState("");
   const [currentTicketNewPhoneNumber, setCurrentTicketNewPhoneNumber] =
     useState("");
@@ -198,6 +208,55 @@ const AgentInteraction = ({
     }
   };
 
+  const handleImageGenerator = async (message) => {
+    if (controllerRef.current) {
+      controllerRef.current.abort();
+    }
+
+    controllerRef.current = new AbortController();
+
+    let currentConversation = await handleIfConversationExists();
+
+    if (message.trim() !== "") {
+      inputRef.current.focus();
+      handleAddUserMessage(message);
+      setIsWaiting(true);
+      setIsServerError(false);
+      setUserInput("");
+
+      try {
+        const encodedMessage = encodeURIComponent(trimQuotes(message));
+        const response = await fetch(
+          `https://etech7-wf-etech7-worflow-2.azuremicroservices.io/image?message=${encodedMessage}&conversationId=${currentConversation.id}&userId=${initialUser.id}`,
+          {
+            signal: controllerRef.current.signal,
+          }
+        );
+
+        if (response.status === 200) {
+          const responseBody = await response.json();
+          messageIdRef.current = responseBody.id;
+          handleProcessResponse(
+            responseBody.intent,
+            null,
+            JSON.parse(responseBody.message),
+            {
+              ...responseBody,
+              conversationId: currentConversation.id,
+              userContent: message,
+            }
+          );
+        } else if (response.status === 500) {
+          setIsServerError(true);
+        }
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setIsWaiting(false);
+      }
+    }
+  };
+
   const handleSendUserMessage = async (message) => {
     if (controllerRef.current) {
       controllerRef.current.abort();
@@ -217,7 +276,6 @@ const AgentInteraction = ({
 
       try {
         const encodedMessage = encodeURIComponent(trimQuotes(message));
-
         const response = await fetch(
           `https://etech7-wf-etech7-clu-service.azuremicroservices.io/jarvis4?text=${encodedMessage}&conversationId=${
             currentConversation.id
@@ -230,7 +288,6 @@ const AgentInteraction = ({
         if (response.status === 200) {
           const responseBody = await response.json();
           messageIdRef.current = responseBody.id;
-
           setPreviousResponseBodyForForms((prevState) => ({
             ...prevState,
             [currentConversation.id]: {
@@ -240,7 +297,6 @@ const AgentInteraction = ({
             },
           }));
           handleProcessResponse(
-            responseBody.entities,
             responseBody.intent,
             responseBody.mailEntities,
             responseBody.message,
@@ -590,9 +646,18 @@ const AgentInteraction = ({
           }
         );
         if (ticketResponse.status === 200) {
-          const ticketResponseJson = await ticketResponse.json();
-          const { id } = ticketResponseJson;
-
+          const ticket = await ticketResponse.json();
+          const {
+            ticketCreated,
+            ticketAssigned,
+            ticketClosed,
+            ticketDetails: { id },
+          } = ticket;
+          handleTicketStatus({
+            ticketCreated,
+            ticketAssigned,
+            ticketClosed,
+          });
           if (
             currentTicketCategory === "TRAINING_OR_ONBOARDING" &&
             currentTicketSubCategory === "NEW_EMPLOYEE_ONBOARDING"
@@ -614,7 +679,17 @@ const AgentInteraction = ({
             );
 
             if (ticketOnboardingResponse.status === 200) {
-              console.log("New Employee Onboarded");
+              const ticketOnBoarding = await ticketOnboardingResponse.json();
+              const {
+                userCreatedInActiveDirectory,
+                userEmailCreated,
+                ticketClosed,
+              } = ticketOnBoarding;
+              handleTicketStatus({
+                ticketClosed,
+                userCreatedInActiveDirectory,
+                userEmailCreated,
+              });
             }
           }
 
@@ -647,6 +722,7 @@ const AgentInteraction = ({
         ...prevState,
         [previousResponseBodyForConversation.conversationId]: false,
       }));
+
       handleAddAssistantMessage(aiContent, "ticketForm");
       handleRemoveForm(formId);
     }
@@ -658,11 +734,21 @@ const AgentInteraction = ({
     if (isConfirmed) {
       setLoading((prevState) => ({ ...prevState, taskForm: true }));
       try {
-        const encodedTask = encodeURIComponent(currentTaskName);
         const taskResponse = await fetch(
-          `https://etech7-wf-etech7-mail-service.azuremicroservices.io/addTask?task=${encodedTask}`
+          `https://etech7-wf-etech7-db-service.azuremicroservices.io/addTask`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userID: initialUser.id,
+              taskName: currentTaskName,
+            }),
+          }
         );
         if (taskResponse.status === 200) {
+          const task = await taskResponse.json();
           const aiContent = `Task Created!\n\nTask Name: ${currentTaskName}`;
           const formSummaryResponse = await handleAddMessageToDB(
             aiContent,
@@ -670,6 +756,7 @@ const AgentInteraction = ({
           );
           if (formSummaryResponse.status === 200) {
             handleAddAssistantMessage(aiContent, "taskForm");
+            handleNewTask(task);
           }
         }
       } catch (e) {
@@ -679,6 +766,7 @@ const AgentInteraction = ({
           ...prevState,
           [previousResponseBodyForConversation.conversationId]: false,
         }));
+
         setLoading((prevState) => ({ ...prevState, taskForm: false }));
         handleRemoveForm(formId);
       }
@@ -692,13 +780,13 @@ const AgentInteraction = ({
         ...prevState,
         [previousResponseBodyForConversation.conversationId]: false,
       }));
+
       handleAddAssistantMessage(aiContent, "taskForm");
       handleRemoveForm(formId);
     }
   };
 
   const handleProcessResponse = (
-    entities,
     intent,
     mailEntities,
     message,
@@ -712,7 +800,7 @@ const AgentInteraction = ({
         handleScheduleProcess(JSON.parse(message));
         break;
       case "createTicket":
-        handleCreateTicketProcess(entities, JSON.parse(message));
+        handleCreateTicketProcess(JSON.parse(message));
         break;
       case "addContact":
         handleAddContactProcess(JSON.parse(message));
@@ -736,7 +824,7 @@ const AgentInteraction = ({
         handleGetWeatherProcess(JSON.parse(message), responseBody);
         break;
       default:
-        handleDefaultActionProcess(message);
+        handleDefaultActionProcess(message, responseBody);
         break;
     }
   };
@@ -781,9 +869,8 @@ const AgentInteraction = ({
     }));
   };
 
-  const handleCreateTicketProcess = (entities, message) => {
+  const handleCreateTicketProcess = (message) => {
     let conversationId;
-
     const {
       title,
       description,
@@ -802,26 +889,17 @@ const AgentInteraction = ({
     setCurrentTicketEmailId(emailID);
     setCurrentTicketPhoneNumber(phoneNumber);
 
-    entities.forEach((entity) => {
-      switch (entity.category) {
-        case "personName":
-          const names = entity.text.split(" ");
-          setCurrentTicketNewFirstName(names[0]);
-          setCurrentTicketNewLastName(names[names.length - 1]);
-        case "phoneNumber":
-          setCurrentTicketNewPhoneNumber(entity.text);
-          break;
-        case "mailID":
-          setCurrentTicketNewEmailId(entity.text);
-          break;
-        default:
-          null;
-      }
-    });
     setIsFormOpen((prevState) => ({
       ...prevState,
       [conversationId]: true,
     }));
+    handleTicketStatus({
+      ticketCreated: undefined,
+      ticketAssigned: undefined,
+      ticketClosed: undefined,
+      userCreatedInActiveDirectory: undefined,
+      userEmailCreated: undefined,
+    });
   };
 
   const handleAddContactProcess = (message) => {
@@ -841,9 +919,9 @@ const AgentInteraction = ({
 
   const handleCreateTaskProcess = (message) => {
     let conversationId;
-
     conversationId = handleAddForm("taskForm");
     setCurrentTaskName(message);
+
     setIsFormOpen((prevState) => ({
       ...prevState,
       [conversationId]: true,
@@ -854,10 +932,9 @@ const AgentInteraction = ({
     const { events } = responseBody;
 
     if (events.length > 0) {
-      let eventCards = `<div class="flex flex-col gap-2">`;
+      let eventCards = `<div class="flex flex-col gap-3">`;
       events.forEach((event) => {
         const { summary, description, start, end } = event;
-
         const formattedStartDateTime = new Date(start).toLocaleString();
         const formattedEndDateTime = new Date(end).toLocaleString();
 
@@ -868,7 +945,7 @@ const AgentInteraction = ({
           </div>
           <div class="flex items-center">
             <h2>Description: </h2>
-            <p>${description}</p>
+            <p>${description || "No Description"}</p>
           </div>
           <div class="flex items-center">
             <h2>Start Time: </h2>
@@ -912,17 +989,15 @@ const AgentInteraction = ({
   };
 
   const handleGetTasksProcess = async (responseBody) => {
-    const {
-      tasks: { currentPage },
-    } = responseBody;
+    const { tasks } = responseBody;
 
-    if (currentPage.length > 0) {
+    if (tasks.length > 0) {
       let taskCards = `<div class="flex flex-col gap-2">`;
-      currentPage.forEach((task, index) => {
-        const { displayName } = task;
+      tasks.forEach((task, index) => {
+        const { taskName } = task;
         taskCards += `<div class="flex flex-col">
             <h2 class="font-bold">Task ${index + 1}</h2>
-            <p>${displayName}</p>
+            <p>${taskName}</p>
             </div>
         `;
       });
@@ -955,7 +1030,6 @@ const AgentInteraction = ({
       }
     }
   };
-
   const handleGetNewsProcess = async (message, responseBody) => {
     const { articles } = message;
     if (articles.length > 0) {
@@ -1097,8 +1171,39 @@ const AgentInteraction = ({
     }
   };
 
-  const handleDefaultActionProcess = async (message) => {
-    handleAddAssistantMessage(message, null);
+  const handleDefaultActionProcess = async (message, responseBody) => {
+    if (message.data && message.data[0].url) {
+      const imageUrl = message.data[0].url;
+      const markDownImage = `![Generated Image](${imageUrl})`;
+      const openLink = `[Open Image](${imageUrl})`;
+
+      try {
+        const imageResponse = await handleAddMessageToDB(
+          `${openLink}`,
+          responseBody
+        );
+        if (imageResponse.status === 200) {
+          handleAddAssistantMessage(`${markDownImage}`);
+        } else {
+          try {
+            const imageResponse = await handleAddMessageToDB(
+              "No Image Generated",
+              responseBody
+            );
+
+            if (imageResponse.status === 200) {
+              handleAddAssistantMessage("No Image Generated", null);
+            }
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      handleAddAssistantMessage(message, null);
+    }
   };
 
   const handleAddUserMessage = async (message) => {
@@ -1123,10 +1228,10 @@ const AgentInteraction = ({
         role: "user",
         timeStamp: new Date().toISOString(),
       });
-
       return newConversations;
     });
   };
+
   const handleAddAssistantMessage = (message, formType) => {
     setConversationHistories((prevState) => {
       const newConversations = { ...prevState };
@@ -1182,6 +1287,7 @@ const AgentInteraction = ({
         id: formId,
         type: "form",
         formType,
+        conversationId,
       });
 
       return newConversations;
@@ -1253,7 +1359,7 @@ const AgentInteraction = ({
   }, [currentConversationIndices[selectedAgent]]);
 
   useEffect(() => {
-    if (activeTab === "agents") {
+    if (activeTab === "chat") {
       handleScrollToBottom();
     }
   }, [activeTab]);
@@ -1261,14 +1367,12 @@ const AgentInteraction = ({
   return (
     <div
       onClick={() => {
-        openAgentHistory && handleOpenAgentHistory(false);
-        openAgentAssistant && handleOpenAgentAssistant(false);
+        openChatHistory && handleOpenChatHistory(false);
+        openChatAssistant && handleOpenChatAssistant(false);
       }}
-      className={`${
-        selectedAgent ? "block" : "hidden"
-      } relative flex flex-col h-full w-full  ${
-        (openAgentHistory && "lg:opacity-100 opacity-5") ||
-        (openAgentAssistant && "lg:opacity-100 opacity-5")
+      className={`relative flex flex-col h-full w-full  ${
+        (openChatHistory && "lg:opacity-100 opacity-5") ||
+        (openChatAssistant && "lg:opacity-100 opacity-5")
       } dark:bg-black transition-all duration-300 ease-in-out bg-white`}
     >
       {!isAtBottom && isOverflowed && (
@@ -1280,9 +1384,9 @@ const AgentInteraction = ({
         </button>
       )}
       <div
+        className="flex-grow overflow-auto no-scrollbar"
         ref={chatContainerRef}
         onScroll={handleCheckScroll}
-        className="flex-grow overflow-auto no-scrollbar"
       >
         {conversationHistories[selectedAgent]?.[
           currentConversationIndices[selectedAgent]
@@ -1305,15 +1409,16 @@ const AgentInteraction = ({
                     <AiOutlineRobot size={20} />
                   )}
                 </span>
+
                 <div className="flex-grow min-w-[0]">
                   <Switch
                     item={item}
                     itemId={item.id}
                     loading={loading}
                     categories={categories}
+                    handleEmailSelection={handleEmailSelection}
                     availableEmailIds={availableEmailIds}
                     selectedEmailIndex={selectedEmailIndex}
-                    handleEmailSelection={handleEmailSelection}
                     currentEmailId={currentEmailId}
                     setCurrentEmailId={setCurrentEmailId}
                     currentEmailSubject={currentEmailSubject}
@@ -1434,7 +1539,17 @@ const AgentInteraction = ({
           }}
           disabled={isFormOpen[handleGetConversationId()?.conversationId]}
         />
+
         <div className="flex items-center gap-3 absolute right-24 pr-2 flex items-center bottom-0 top-0">
+          <BsImageFill
+            onClick={() => handleImageGenerator(userInput)}
+            size={23}
+            className={`${
+              userInput !== ""
+                ? "dark:text-white dark:hover:text-blue-500 hover:text-blue-500 text-black cursor-pointer"
+                : "dark:text-gray-500 text-gray-300 select-none"
+            } `}
+          />
           <BsFillSendFill
             size={25}
             onClick={() => handleSendUserMessage(userInput)}
@@ -1464,4 +1579,4 @@ const AgentInteraction = ({
   );
 };
 
-export default AgentInteraction;
+export default Interaction;

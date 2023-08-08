@@ -10,7 +10,7 @@ import { IoChatboxOutline } from "react-icons/io5";
 
 import { useEffect, useState } from "react";
 
-const ChatHistory = ({
+const GeneralChatHistory = ({
   selectedAgent,
   openChatHistory,
   openChatHistoryHover,
@@ -258,4 +258,4 @@ const ChatHistory = ({
   );
 };
 
-export default ChatHistory;
+export default GeneralChatHistory;

@@ -1,24 +1,26 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 
+import { AiOutlineDelete, AiOutlineCheck } from "react-icons/ai";
 import { FaSpinner } from "react-icons/fa";
 import { SiOpenai } from "react-icons/si";
 
-import { MarkedChatAssistant } from "../../utils/marked/marked.js";
+import { MarkedChatAssistant } from "../../../utils/marked/marked.js";
 
-import {
-  ITSkills,
-  ITPrompts as exampleItPrompts,
-} from "../../utils/prompts/ITPromptLibrary.js";
-import { generalUpdates } from "../../utils/prompts/generalPromptLibrary.js";
+import { ITSkills } from "../../../utils/prompts/ITPromptLibrary.js";
+import { generalUpdates } from "../../../utils/prompts/generalPromptLibrary.js";
+import { PROCESS_NAMES } from "../../../utils/tickets/ticketProcess.js";
 import AssistantRail from "../AssistantRail.js";
 
 const AgentAssistant = ({
+  tasks,
+  ticketIsPending,
   initialAgents,
   selectedAgent,
   openAgentAssistant,
   handlePromptAssistantInput,
+  handleDeleteTask,
 }) => {
   const inputRef = useRef(null);
 
@@ -76,7 +78,7 @@ const AgentAssistant = ({
         activeButton={activeButton}
         handleAssistantTabChange={handleAssistantTabChange}
       />
-      <div className="flex flex-col px-4 py-6 gap-4 w-full">
+      <div className="flex flex-col px-4 py-6 gap-4 w-full overflow-hidden">
         <h2 className="text-2xl font-bold text-center">
           {initialAgents.find((agent) => agent.id === selectedAgent)
             ?.agentName + " Assistant"}
@@ -144,8 +146,8 @@ const AgentAssistant = ({
             <h3 className="text-left text-lg">Prompt Engineer</h3>
             <div className="flex-grow overflow-y-auto scrollbar-thin">
               <div className="flex flex-grow flex-col gap-4 ">
-                <div className="relative w-full flex items-center">
-                  <input
+                <div className="w-full flex flex-col items-center rounded gap-1">
+                  <textarea
                     value={userInput}
                     ref={inputRef}
                     onChange={(e) => setUserInput(e.target.value)}
@@ -155,11 +157,11 @@ const AgentAssistant = ({
                         handleSendPromptGenerator();
                       }
                     }}
-                    className="w-full px-2 py-1 pr-8"
+                    className="w-full p-2 scrollbar-thin min-h-[100px] max-h-[200px]"
                     placeholder="Ex. Marketing, IT, Finance etc"
                   />
 
-                  <div className="absolute right-2">
+                  <div className="bg-[#10a37f] w-full flex items-center justify-center p-2 ">
                     {isWaiting ? (
                       <FaSpinner size={20} className="animate-spin" />
                     ) : (
@@ -167,9 +169,9 @@ const AgentAssistant = ({
                         size={20}
                         className={` ${
                           userInput !== ""
-                            ? "dark:text-white dark:hover:text-blue-500 hover:text-blue-500 text-black cursor-pointer"
-                            : "dark:text-gray-500 text-gray-300 select-none"
-                        } cursor-pointer`}
+                            ? "hover:text-blue-600 text-white cursor-pointer"
+                            : "text-white/20 select-none"
+                        }`}
                         onClick={handleSendPromptGenerator}
                       />
                     )}
@@ -180,6 +182,75 @@ const AgentAssistant = ({
                   handlePromptAssistantInput={handlePromptAssistantInput}
                 />
               </div>
+            </div>
+          </div>
+        )}
+        {activeButton === "Tasks" && (
+          <div className="flex-grow flex flex-col gap-4 overflow-hidden">
+            <h3 className="text-left text-lg">Tasks</h3>
+            <div className="flex-grow overflow-y-auto scrollbar-thin">
+              <div className="flex flex-grow flex-col gap-4">
+                {tasks.map((task, index) => {
+                  const { taskName, timeStamp } = task;
+                  return (
+                    <div
+                      key={index}
+                      className="dark:bg-white/30 dark:text-white dark:border-white/20 flex flex-col justify-between gap-3 border rounded-md text-black bg-white p-2"
+                    >
+                      <div className="flex justify-between">
+                        <p className="break-words whitespace-pre-wrap">
+                          {taskName}
+                        </p>
+                        <div className="flex">
+                          <AiOutlineDelete
+                            size={20}
+                            className="cursor-pointer"
+                            onClick={() => handleDeleteTask(index)}
+                          />
+                        </div>
+                      </div>
+                      <p>{new Date(timeStamp).toLocaleString()}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+        {activeButton === "Notes" && (
+          <div className="flex-grow flex flex-col gap-4 overflow-hidden">
+            <h3 className="text-left text-lg">Notes</h3>
+            <div className="flex-grow overflow-y-auto scrollbar-thin"></div>
+          </div>
+        )}
+        {activeButton === "Workflows" && (
+          <div className="flex-grow flex flex-col gap-4 overflow-hidden">
+            <h3 className="text-left text-lg">Workflows</h3>
+            <div className="flex-grow overflow-y-auto scrollbar-thin">
+              {ticketIsPending.ticketCreated !== undefined && (
+                <div className="flex flex-grow flex-col gap-4">
+                  {PROCESS_NAMES.filter(
+                    (process) => ticketIsPending[process.name] !== undefined
+                  ).map((process) => {
+                    return (
+                      <div
+                        key={process.name}
+                        className="flex items-center justify-between border shadow p-2"
+                      >
+                        <span>{process.displayName}</span>
+                        {ticketIsPending[process.name] ? (
+                          <AiOutlineCheck size={20} />
+                        ) : (
+                          process.waitingMessage &&
+                          !ticketIsPending[process.name] && (
+                            <span>{process.waitingMessage}</span>
+                          )
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
         )}
