@@ -16,8 +16,8 @@ import { DiMagento } from "react-icons/di";
 import { useTheme } from "next-themes";
 
 import Cookie from "js-cookie";
-import AgentSelection from "../Dashboard/Agents/AgentSelection";
-import GeneralChatHistory from "../Dashboard/General/GeneralChatHistory";
+import Selection from "../Dashboard/Selection.js";
+import History from "../Dashboard/History/History.js";
 
 const TabNavRail = ({
   initialAgents,
@@ -29,13 +29,9 @@ const TabNavRail = ({
   openAgentSelectionHover,
   openAgentHistory,
   openSettings,
-
   currentConversationIndices,
-
   conversationHistories,
-
   setConversationHistories,
-
   handleNewConversation,
   handleDeleteConversation,
   handleConversationSelected,
@@ -87,16 +83,18 @@ const TabNavRail = ({
         <span className="text-xs">General</span>
       </div>
       {openChatHistoryHover && (
-        <GeneralChatHistory
+        <History
+          initialAgents={initialAgents}
           selectedAgent={activeTab === "general" ? selectedAgent : hoverPreview}
-          openChatHistory={openChatHistory}
-          openChatHistoryHover={openChatHistoryHover}
-          currentConversationIndices={currentConversationIndices}
           conversationHistories={conversationHistories}
+          currentConversationIndices={currentConversationIndices}
           setConversationHistories={setConversationHistories}
+          openChatHistoryHover={openChatHistoryHover}
+          openChatHistory={openChatHistory}
+          openAgentHistory={openAgentHistory}
+          handleConversationSelected={handleConversationSelected}
           handleNewConversation={handleNewConversation}
           handleDeleteConversation={handleDeleteConversation}
-          handleConversationSelected={handleConversationSelected}
           handleOpenChatHistoryHide={handleOpenChatHistoryHide}
         />
       )}
@@ -116,7 +114,7 @@ const TabNavRail = ({
         <span className="text-xs">Agents</span>
       </div>
       {openAgentSelectionHover && (
-        <AgentSelection
+        <Selection
           activeTab={activeTab}
           selectedAgent={selectedAgent}
           initialAgents={initialAgents}
@@ -150,7 +148,7 @@ const TabNavRail = ({
         />
         <span className="text-xs">Settings</span>
         {openSettings && (
-          <div className="dark:bg-black dark:border-white/40 dark:border bg-white border border-black/10 absolute z-[99] bottom-[74px] right-0 w-[150px] lg:bottom-0 lg:left-[51px] lg:w-[301px]">
+          <div className="dark:bg-black dark:border-white/40 dark:border bg-white border border-black/10 absolute z-[99] bottom-[60px] right-0 w-[150px] lg:bottom-0 lg:left-[51px] lg:w-[301px]">
             <div className="flex flex-col">
               <div
                 onClick={handleLogout}

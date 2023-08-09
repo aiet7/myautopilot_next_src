@@ -16,19 +16,19 @@ import { FaSpinner } from "react-icons/fa";
 import {
   categories,
   subCategories,
-} from "../../utils/tickets/ticketCreation.js";
-import { convertKelvinToFahrenheit } from "../../utils/conversions.js";
-import { recognition } from "../../utils/speechToText.js";
-import { trimQuotes } from "../../utils/stringManipulation.js";
+} from "../../../utils/tickets/ticketCreation.js";
+import { convertKelvinToFahrenheit } from "../../../utils/conversions.js";
+import { recognition } from "../../../utils/speechToText.js";
+import { trimQuotes } from "../../../utils/stringManipulation.js";
 import {
   handleSendGmail,
   handlegetTokenRemainingValidity,
-} from "../../utils/api/google.js";
-import { handleSendGraphMail } from "../../utils/api/microsoft.js";
+} from "../../../utils/api/google.js";
+import { handleSendGraphMail } from "../../../utils/api/microsoft.js";
 
 import Cookies from "js-cookie";
 
-import Switch from "../Dashboard/Forms/Switch.js";
+import Switch from "../../Dashboard/Interaction/Forms/Switch.js";
 
 const Interaction = ({
   activeTab,

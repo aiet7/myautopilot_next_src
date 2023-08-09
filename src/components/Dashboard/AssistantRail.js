@@ -11,52 +11,53 @@ import {
 } from "react-icons/md";
 
 const AssistantRail = ({
-  selectedAgent,
-  activeButton,
+  activeTab,
+  activeAssistantButton,
   handleAssistantTabChange,
 }) => {
+  console.log(activeTab)
   return (
     <div className="dark:lg:border-white/10 dark:bg-[#373737] bg-[#eaf1fb] px-2 py-7 flex flex-col gap-7 items-center">
       <GiSkills
         className={`${
-          activeButton === "Skills" && "text-blue-800"
+          activeAssistantButton === "Skills" && "text-blue-800"
         } cursor-pointer`}
         size={20}
         onClick={() => handleAssistantTabChange("Skills")}
       />
       <MdOutlineTipsAndUpdates
         className={`${
-          activeButton === "Updates" && "text-blue-800"
+          activeAssistantButton === "Updates" && "text-blue-800"
         } cursor-pointer`}
         size={20}
         onClick={() => handleAssistantTabChange("Updates")}
       />
       <MdOutlineEngineering
         className={`${
-          activeButton === "Engineer" && "text-blue-800"
+          activeAssistantButton === "Engineer" && "text-blue-800"
         } cursor-pointer`}
         size={20}
         onClick={() => handleAssistantTabChange("Engineer")}
       />
       <BsListTask
         className={`${
-          activeButton === "Tasks" && "text-blue-800"
+          activeAssistantButton === "Tasks" && "text-blue-800"
         } cursor-pointer`}
         size={20}
         onClick={() => handleAssistantTabChange("Tasks")}
       />
       <BiNotepad
         className={`${
-          activeButton === "Notes" && "text-blue-800"
+          activeAssistantButton === "Notes" && "text-blue-800"
         } cursor-pointer `}
         size={20}
         onClick={() => handleAssistantTabChange("Notes")}
       />
 
-      {!selectedAgent ? (
+      {activeTab === "general" ? (
         <MdOutlineFavoriteBorder
           className={`${
-            activeButton === "Favorites" && "text-blue-800"
+            activeAssistantButton === "Favorites" && "text-blue-800"
           } cursor-pointer`}
           size={20}
           onClick={() => handleAssistantTabChange("Favorites")}

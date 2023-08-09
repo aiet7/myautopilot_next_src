@@ -5,7 +5,7 @@ import { GiClawHammer } from "react-icons/gi";
 import { SiMarketo } from "react-icons/si";
 import { TbWorldWww } from "react-icons/tb";
 
-const AgentSelection = ({
+const Selection = ({
   activeTab,
   selectedAgent,
   initialAgents,
@@ -69,4 +69,4 @@ const AgentSelection = ({
   );
 };
 
-export default AgentSelection;
+export default Selection;

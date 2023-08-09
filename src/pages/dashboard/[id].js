@@ -5,18 +5,14 @@ import { ThemeProvider } from "next-themes";
 import TabNavRail from "../../components/Dashboard/TabNavRail.js";
 import SettingsRail from "../../components/Dashboard/SettingsRail.js";
 
-import Interaction from "../../components/Dashboard/Interaction.js";
+import Interaction from "../../components/Dashboard/Interaction/Interaction.js";
 import Discussion from "../../components/Dashboard/Teams/Discussion.js";
+import Assistant from "../../components/Dashboard/Assistant/Assistant.js";
+import History from "../../components/Dashboard/History/History.js";
+import Rooms from "../../components/Dashboard/Teams/Rooms.js";
 
-import GeneralChatHistory from "../../components/Dashboard/General/GeneralChatHistory.js";
-import GeneralAssistant from "../../components/Dashboard/General/GeneralAssistant.js";
-
-import AgentChatHistory from "../../components/Dashboard/Agents/AgentChatHistory.js";
-import AgentAssistant from "../../components/Dashboard/Agents/AgentAssistant.js";
-import AgentGuide from "../../components/Dashboard/Agents/AgentGuide.js";
-import AgentSelection from "../../components/Dashboard/Agents/AgentSelection.js";
-
-import TeamsChatHistory from "../../components/Dashboard/Teams/TeamsChatHistory.js";
+import Guide from "../../components/Dashboard/Guide.js";
+import Selection from "../../components/Dashboard/Selection.js";
 
 import Account from "../../components/Dashboard/Account.js";
 
@@ -186,7 +182,7 @@ const DashboardPage = ({
       return newHistories;
     });
   };
-console.log(ticketIsPending)
+  console.log(ticketIsPending);
   const handleConnectToWebSocket = (roomId, goal) => {
     const socket = new SockJS(
       "https://etech7-wf-etech7-room-service.azuremicroservices.io/ws"
@@ -690,7 +686,6 @@ console.log(ticketIsPending)
     );
     const lastRoomIndex = localStorage.getItem("lastRoomIndex");
     const lastWsPendingString = localStorage.getItem("wsIsPending");
-    const lastTicketPendingString = localStorage.getItem("ticketIsPending");
 
     if (lastTab) {
       setActiveTab(lastTab);
@@ -764,16 +759,17 @@ console.log(ticketIsPending)
                 }
               />
               <div className="flex flex-1 relative overflow-hidden">
-                <GeneralChatHistory
+                <History
+                  initialAgents={initialAgents}
                   selectedAgent={selectedAgent}
-                  openChatHistoryHover={openChatHistoryHover}
-                  openChatHistory={openChatHistory}
-                  currentConversationIndices={currentConversationIndices}
                   conversationHistories={conversationHistories}
+                  currentConversationIndices={currentConversationIndices}
                   setConversationHistories={setConversationHistories}
+                  openChatHistory={openChatHistory}
+                  openAgentHistory={openAgentHistory}
+                  handleConversationSelected={handleConversationSelected}
                   handleNewConversation={handleNewConversation}
                   handleDeleteConversation={handleDeleteConversation}
-                  handleConversationSelected={handleConversationSelected}
                 />
                 <Interaction
                   selectedAgent={selectedAgent}
@@ -790,9 +786,14 @@ console.log(ticketIsPending)
                   handleOpenChatHistory={handleOpenChatHistory}
                   handleOpenChatAssistant={handleOpenChatAssistant}
                 />
-                <GeneralAssistant
+                <Assistant
+                  activeTab={activeTab}
                   tasks={tasks}
+                  ticketIsPending={ticketIsPending}
+                  initialAgents={initialAgents}
                   initialUser={initialUser}
+                  selectedAgent={selectedAgent}
+                  openAgentAssistant={openAgentAssistant}
                   openChatAssistant={openChatAssistant}
                   handlePromptAssistantInput={handlePromptAssistantInput}
                   handleDeleteTask={handleDeleteTask}
@@ -817,27 +818,31 @@ console.log(ticketIsPending)
                 }
               />
               <div className="flex flex-1 relative overflow-hidden">
-                <AgentChatHistory
-                  initialAgents={initialAgents}
-                  selectedAgent={selectedAgent}
-                  conversationHistories={conversationHistories}
-                  currentConversationIndices={currentConversationIndices}
-                  setConversationHistories={setConversationHistories}
-                  openAgentHistory={openAgentHistory}
-                  handleConversationSelected={handleConversationSelected}
-                  handleNewConversation={handleNewConversation}
-                  handleDeleteConversation={handleDeleteConversation}
-                />
+                {selectedAgent ? (
+                  <History
+                    initialAgents={initialAgents}
+                    selectedAgent={selectedAgent}
+                    conversationHistories={conversationHistories}
+                    currentConversationIndices={currentConversationIndices}
+                    setConversationHistories={setConversationHistories}
+                    openChatHistory={openChatHistory}
+                    openAgentHistory={openAgentHistory}
+                    handleConversationSelected={handleConversationSelected}
+                    handleNewConversation={handleNewConversation}
+                    handleDeleteConversation={handleDeleteConversation}
+                  />
+                ) : (
+                  <Selection
+                    activeTab={activeTab}
+                    selectedAgent={selectedAgent}
+                    initialAgents={initialAgents}
+                    openAgentHistory={openAgentHistory}
+                    openAgentSelectionHover={openAgentSelectionHover}
+                    handleOpenAgentSelectionHide={handleOpenAgentSelectionHide}
+                    handleAgentSelected={handleAgentSelected}
+                  />
+                )}
 
-                <AgentSelection
-                  activeTab={activeTab}
-                  selectedAgent={selectedAgent}
-                  initialAgents={initialAgents}
-                  openAgentHistory={openAgentHistory}
-                  openAgentSelectionHover={openAgentSelectionHover}
-                  handleOpenAgentSelectionHide={handleOpenAgentSelectionHide}
-                  handleAgentSelected={handleAgentSelected}
-                />
                 {selectedAgent ? (
                   <Interaction
                     activeTab={activeTab}
@@ -856,22 +861,26 @@ console.log(ticketIsPending)
                     handleOpenAgentAssistant={handleOpenAgentAssistant}
                   />
                 ) : (
-                  <AgentGuide
+                  <Guide
                     selectedAgent={selectedAgent}
                     openAgentHistory={openAgentHistory}
                     handleOpenAgentHistory={handleOpenAgentHistory}
                   />
                 )}
-
-                <AgentAssistant
-                  tasks={tasks}
-                  ticketIsPending={ticketIsPending}
-                  initialAgents={initialAgents}
-                  selectedAgent={selectedAgent}
-                  openAgentAssistant={openAgentAssistant}
-                  handlePromptAssistantInput={handlePromptAssistantInput}
-                  handleDeleteTask={handleDeleteTask}
-                />
+                {selectedAgent && (
+                  <Assistant
+                    activeTab={activeTab}
+                    tasks={tasks}
+                    ticketIsPending={ticketIsPending}
+                    initialAgents={initialAgents}
+                    initialUser={initialUser}
+                    selectedAgent={selectedAgent}
+                    openAgentAssistant={openAgentAssistant}
+                    openChatAssistant={openChatAssistant}
+                    handlePromptAssistantInput={handlePromptAssistantInput}
+                    handleDeleteTask={handleDeleteTask}
+                  />
+                )}
               </div>
             </div>
             <div
@@ -889,7 +898,7 @@ console.log(ticketIsPending)
                 }
               />
               <div className="flex flex-1 relative overflow-hidden">
-                <TeamsChatHistory
+                <Rooms
                   teamsHistories={teamsHistories}
                   currentTeamsIndex={currentTeamsIndex}
                   openTeamsHistory={openTeamsHistory}

@@ -9,7 +9,7 @@ import {
 import { RiTeamLine } from "react-icons/ri";
 import { useState, useEffect } from "react";
 
-const TeamMeetingHistory = ({
+const Rooms = ({
   teamsHistories,
   currentTeamsIndex,
   openTeamsHistory,
@@ -239,4 +239,4 @@ const TeamMeetingHistory = ({
   );
 };
 
-export default TeamMeetingHistory;
+export default Rooms;

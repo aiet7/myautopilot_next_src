@@ -1,7 +1,6 @@
 "use client";
 
-const AgentGuide = ({
-  selectedAgent,
+const Guide = ({
   openAgentHistory,
   handleOpenAgentHistory,
 }) => {
@@ -11,8 +10,8 @@ const AgentGuide = ({
         openAgentHistory && handleOpenAgentHistory(false);
       }}
       className={`${
-        selectedAgent ? "hidden" : "block"
-      } w-full h-full overflow-y-auto scrollbar-thin`}
+        openAgentHistory && "lg:opacity-100 opacity-5"
+      } dark:bg-black w-full h-full overflow-y-auto scrollbar-thin transition-all duration-300 ease-in-out bg-white`}
     >
       <div className="dark:text-white/80 text-black/70 p-4 max-w-[850px] mx-auto">
         <h2 className="dark:text-white text-black text-center text-4xl font-bold mb-4">
@@ -86,4 +85,4 @@ const AgentGuide = ({
   );
 };
 
-export default AgentGuide;
+export default Guide;

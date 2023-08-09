@@ -1,4 +1,4 @@
-import { MarkedChatInteraction } from "../../utils/marked/marked.js";
+import { MarkedChatInteraction } from "../../../../utils/marked/marked.js";
 
 import EmailButtons from "./Email/EmailButtons.js";
 import EmailForm from "./Email/EmailForm.js";
