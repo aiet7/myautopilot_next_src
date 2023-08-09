@@ -1,6 +1,7 @@
 "use client";
 
 import { PROCESS_NAMES } from "../../../../utils/tickets/ticketProcess";
+import { AiOutlineCheck } from "react-icons/ai";
 
 const Workflows = ({ ticketIsPending }) => {
   return (
