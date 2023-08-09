@@ -67,7 +67,7 @@ const Favorites = ({ initialUser }) => {
     }
   };
   return (
-    <div className="flex-grow flex flex-col gap-4 overflow-hidden">
+    <>
       <h3 className="text-left text-lg">Favorites</h3>
       <div className="flex flex-col gap-1 w-full">
         <input
@@ -168,7 +168,7 @@ const Favorites = ({ initialUser }) => {
           })}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -15,7 +15,6 @@ const AssistantRail = ({
   activeAssistantButton,
   handleAssistantTabChange,
 }) => {
-  console.log(activeTab)
   return (
     <div className="dark:lg:border-white/10 dark:bg-[#373737] bg-[#eaf1fb] px-2 py-7 flex flex-col gap-7 items-center">
       <GiSkills

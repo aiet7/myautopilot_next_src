@@ -30,6 +30,8 @@ const History = ({
   const [editing, setEditing] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
+ 
+
   const handleSaveConversationTitle = async (id, userID, selectedAgent) => {
     let updatedConversation = {
       ...conversationHistories[selectedAgent][
@@ -118,7 +120,6 @@ const History = ({
             } dark:bg-[#111111] dark:xl:border-white/20 xl:relative xl:translate-x-0 xl:min-w-[300px] xl:static xl:border-r`
       }`}
     >
-      
       <button
         onClick={() =>
           handleNewConversation(

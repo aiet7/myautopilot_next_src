@@ -182,7 +182,6 @@ const DashboardPage = ({
       return newHistories;
     });
   };
-  console.log(ticketIsPending);
   const handleConnectToWebSocket = (roomId, goal) => {
     const socket = new SockJS(
       "https://etech7-wf-etech7-room-service.azuremicroservices.io/ws"
@@ -510,6 +509,13 @@ const DashboardPage = ({
     setOpenAgentSelectionHover(false);
     setOpenChatHistoryHover(false);
     setSelectedAgent(null);
+    setOpenAgentAssistant(false);
+    setOpenAgentHistory(false);
+    setOpenAgentSelectionHover(false);
+    setOpenChatAssistant(false);
+    setOpenChatHistory(false);
+    setOpenChatHistoryHover(false);
+    setOpenTeamsHistory(false);
   };
 
   const handleOpenChatHistory = () => {

@@ -4,7 +4,7 @@ import { generalUpdates } from "../../../../utils/prompts/generalPromptLibrary";
 
 const Updates = ({ handlePromptAssistantInput }) => {
   return (
-    <div className="flex-grow flex flex-col gap-4 overflow-hidden">
+    <>
       <h3 className="text-left text-lg">Updates</h3>
       <div className="flex-grow overflow-y-auto scrollbar-thin">
         <div className="flex flex-grow flex-col gap-4 ">
@@ -29,7 +29,7 @@ const Updates = ({ handlePromptAssistantInput }) => {
           })}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

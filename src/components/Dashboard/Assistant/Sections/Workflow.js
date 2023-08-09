@@ -4,7 +4,7 @@ import { PROCESS_NAMES } from "../../../../utils/tickets/ticketProcess";
 
 const Workflows = ({ ticketIsPending }) => {
   return (
-    <div className="flex-grow flex flex-col gap-4 overflow-hidden">
+    <>
       <h3 className="text-left text-lg">Workflows</h3>
       <div className="flex-grow overflow-y-auto scrollbar-thin">
         {ticketIsPending.ticketCreated !== undefined && (
@@ -32,7 +32,7 @@ const Workflows = ({ ticketIsPending }) => {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

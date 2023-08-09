@@ -24,6 +24,9 @@ const Assistant = ({
   handleDeleteTask,
 }) => {
   const [activeAssistantButton, setActiveAssistantButton] = useState("Skills");
+  const selectedAgentName = initialAgents.find(
+    (agent) => agent.id === selectedAgent
+  )?.agentName;
 
   const handleAssistantTabChange = (tab) => {
     setActiveAssistantButton(tab);
@@ -43,36 +46,73 @@ const Assistant = ({
         handleAssistantTabChange={handleAssistantTabChange}
       />
       <div className="flex flex-col px-4 py-6 gap-4 w-full overflow-hidden">
-        <h2 className="text-2xl font-bold text-center">
-          {initialAgents.find((agent) => agent.id === selectedAgent)
-            ?.agentName === "General Agent"
-            ? "MyAutoPilot"
-            : initialAgents.find((agent) => agent.id === selectedAgent)
-                ?.agentName + " Assistant"}
-        </h2>
-        {activeAssistantButton === "Skills" && (
+        <div
+          className={`${
+            activeAssistantButton === "Skills"
+              ? "flex-grow flex flex-col gap-4 overflow-hidden"
+              : "hidden"
+          }`}
+        >
           <Skills
             initialAgents={initialAgents}
             selectedAgent={selectedAgent}
             handlePromptAssistantInput={handlePromptAssistantInput}
           />
-        )}
-        {activeAssistantButton === "Updates" && (
+        </div>
+        <div
+          className={`${
+            activeAssistantButton === "Updates"
+              ? "flex-grow flex flex-col gap-4 overflow-hidden"
+              : "hidden"
+          }`}
+        >
           <Updates handlePromptAssistantInput={handlePromptAssistantInput} />
-        )}
-        {activeAssistantButton === "Engineer" && (
+        </div>
+        <div
+          className={`${
+            activeAssistantButton === "Engineer"
+              ? "flex-grow flex flex-col gap-4 overflow-hidden"
+              : "hidden"
+          }`}
+        >
           <Engineer handlePromptAssistantInput={handlePromptAssistantInput} />
-        )}
-        {activeAssistantButton === "Tasks" && (
+        </div>
+        <div
+          className={`${
+            activeAssistantButton === "Tasks"
+              ? "flex-grow flex flex-col gap-4 overflow-hidden"
+              : "hidden"
+          }`}
+        >
           <Tasks tasks={tasks} handleDeleteTask={handleDeleteTask} />
-        )}
-        {activeAssistantButton === "Notes" && <Notes />}
-        {activeAssistantButton === "Favorites" && (
+        </div>
+        <div
+          className={`${
+            activeAssistantButton === "Notes"
+              ? "flex-grow flex flex-col gap-4 overflow-hidden"
+              : "hidden"
+          }`}
+        >
+          <Notes />
+        </div>
+        <div
+          className={`${
+            activeAssistantButton === "Favorites"
+              ? "flex-grow flex flex-col gap-4 overflow-hidden"
+              : "hidden"
+          }`}
+        >
           <Favorites initialUser={initialUser} />
-        )}
-        {activeAssistantButton === "Workflows" && (
+        </div>
+        <div
+          className={`${
+            activeAssistantButton === "Workflows"
+              ? "flex-grow flex flex-col gap-4 overflow-hidden"
+              : "hidden"
+          }`}
+        >
           <Workflows ticketIsPending={ticketIsPending} />
-        )}
+        </div>
       </div>
     </div>
   );
