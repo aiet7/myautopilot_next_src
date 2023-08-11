@@ -389,6 +389,7 @@ const DashboardPage = ({
     }
 
     handleOpenChatHistoryHide();
+    handleCloseAllMenus();
   };
 
   const handleCreateNewRoom = () => {
@@ -482,6 +483,7 @@ const DashboardPage = ({
 
     setCurrentTeamsIndex(index);
     setOpenTeamsHistory(false);
+    handleCloseAllMenus();
   };
 
   const handleAgentSelected = (id) => {
@@ -494,9 +496,12 @@ const DashboardPage = ({
     }
     setActiveTab("agents");
     handleOpenAgentSelectionHide();
+    handleCloseAllMenus();
   };
 
   const handleTabChange = (tab) => {
+    handleCloseAllMenus();
+
     if (tab === "agents") {
       setActiveTab("agents");
     }
@@ -509,13 +514,6 @@ const DashboardPage = ({
     setOpenAgentSelectionHover(false);
     setOpenChatHistoryHover(false);
     setSelectedAgent(null);
-    setOpenAgentAssistant(false);
-    setOpenAgentHistory(false);
-    setOpenAgentSelectionHover(false);
-    setOpenChatAssistant(false);
-    setOpenChatHistory(false);
-    setOpenChatHistoryHover(false);
-    setOpenTeamsHistory(false);
   };
 
   const handleOpenChatHistory = () => {
@@ -569,6 +567,16 @@ const DashboardPage = ({
 
   const handleOpenAgentSelectionHide = () => {
     setOpenAgentSelectionHover(false);
+  };
+
+  const handleCloseAllMenus = () => {
+    setOpenAgentAssistant(false);
+    setOpenAgentHistory(false);
+    setOpenAgentSelectionHover(false);
+    setOpenChatAssistant(false);
+    setOpenChatHistory(false);
+    setOpenChatHistoryHover(false);
+    setOpenTeamsHistory(false);
   };
 
   useEffect(() => {
@@ -976,18 +984,18 @@ export const getServerSideProps = async (context) => {
     req: { cookies },
   } = context;
 
-  const googleSessionToken = cookies["Secure-next.session-token-g"];
-  const microsoftSessionToken = cookies["microsoft_session_token"];
-  const regularSessionToken = cookies["session_token"];
+  // const googleSessionToken = cookies["Secure-next.session-token-g"];
+  // const microsoftSessionToken = cookies["microsoft_session_token"];
+  // const regularSessionToken = cookies["session_token"];
 
-  if (!googleSessionToken && !microsoftSessionToken && !regularSessionToken) {
-    return {
-      redirect: {
-        destination: "/auth/login",
-        permanent: false,
-      },
-    };
-  }
+  // if (!googleSessionToken && !microsoftSessionToken && !regularSessionToken) {
+  //   return {
+  //     redirect: {
+  //       destination: "/auth/login",
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
   const userId = params.id;
 

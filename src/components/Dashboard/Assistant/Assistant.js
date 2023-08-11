@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import AssistantRail from "../AssistantRail.js";
 import Skills from "./Sections/Skills.js";
-import Updates from "./Sections/Updates.js";
+import Updates from "./Sections/Updates/Updates.js";
 import Engineer from "./Sections/Engineer.js";
 import Tasks from "./Sections/Tasks.js";
 import Notes from "./Sections/Notes.js";
@@ -45,7 +45,7 @@ const Assistant = ({
         activeAssistantButton={activeAssistantButton}
         handleAssistantTabChange={handleAssistantTabChange}
       />
-      <div className="flex flex-col px-4 py-6 gap-4 w-full overflow-hidden">
+      <div className="flex flex-col px-4 py-6 gap-4 w-full overflow-hidden ">
         <div
           className={`${
             activeAssistantButton === "Skills"
@@ -66,7 +66,10 @@ const Assistant = ({
               : "hidden"
           }`}
         >
-          <Updates handlePromptAssistantInput={handlePromptAssistantInput} />
+          <Updates
+            initialUser={initialUser}
+            handlePromptAssistantInput={handlePromptAssistantInput}
+          />
         </div>
         <div
           className={`${
