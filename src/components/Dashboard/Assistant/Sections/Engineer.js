@@ -59,12 +59,12 @@ const Engineer = ({ handlePromptAssistantInput }) => {
                 }
               }}
               className="w-full p-2 scrollbar-thin min-h-[100px] max-h-[200px]"
-              placeholder="Ex. Marketing, IT, Finance etc"
+              placeholder="A well-crafted prompt can make all the difference.  Provide us any topic!"
             />
 
             <div className="bg-[#10a37f] w-full flex items-center justify-center p-2 ">
               {isWaiting ? (
-                <FaSpinner size={20} className="animate-spin" />
+                <FaSpinner size={20} className="animate-spin text-white" />
               ) : (
                 <SiOpenai
                   size={20}

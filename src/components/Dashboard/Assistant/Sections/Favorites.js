@@ -98,7 +98,7 @@ const Favorites = ({ initialUser }) => {
         </button>
       </div>
       <div className="flex-grow overflow-y-auto scrollbar-thin">
-        <div className="flex flex-grow flex-col gap-2">
+        <div className="flex flex-grow flex-col gap-4">
           {favoritePrompts.length === 0 && (
             <div className="dark:text-white/40 flex flex-col gap-2 text-black/40 italic">
               <h2 className="text-xl">Welcome to the favorites feature!</h2>

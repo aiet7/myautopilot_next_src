@@ -138,9 +138,9 @@ export const MarkedChatAssistant = ({
 
   renderer.list = (body, ordered, start) => {
     if (ordered) {
-      return `<ol start="${start}" class="flex flex-col gap-2">${body}</ol>`;
+      return `<ol start="${start}" class="flex flex-col gap-4">${body}</ol>`;
     } else {
-      return `<ul class="flex flex-col gap-2">${body}</ul>`;
+      return `<ul class="flex flex-col gap-4">${body}</ul>`;
     }
   };
 

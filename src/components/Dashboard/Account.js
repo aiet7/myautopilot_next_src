@@ -155,9 +155,11 @@ const Account = ({ initialUser }) => {
       );
       if (response.ok) {
         localStorage.removeItem("lastTab");
-        localStorage.removeItem("lastConversationIndex");
+        localStorage.removeItem("lastConversationIndices");
+        localStorage.removeItem("wsIsPending");
+        localStorage.removeItem("lastRoomIndex");
 
-        Cookie.remove("google_session_token");
+        Cookie.remove("Secure-next.session-token-g");
         Cookie.remove("microsoft_session_token");
         Cookie.remove("session_token");
         Cookie.remove("user_id");

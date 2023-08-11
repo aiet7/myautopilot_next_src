@@ -30,21 +30,28 @@ const News = ({ wns, handleNewsUpdate }) => {
         return (
           <div
             key={index}
-            className="dark:shadow-white/40 dark:shadow-md flex flex-col gap-1 border shadow-black/20 shadow-md p-2 rounded"
+            className="dark:shadow-white/40 dark:shadow-md flex flex-col  border shadow-black/20 shadow-md  rounded"
           >
-            <div className="flex flex-col">
+            <img
+              src={article.urlToImage || "/image_not_available.png"}
+              alt=""
+            />
+            <div className="flex flex-col gap-1 p-2">
               <h2 className="truncate font-bold">
                 {article.title || "No title available"}
               </h2>
               <h3>{article.author || "No author available"}</h3>
-              <img
-                src={article.urlToImage || "/image_not_available.png"}
-                alt=""
-              />
+
               <p className="line-clamp-3 text-sm">
                 {article.content || "No content available"}
               </p>
-              <a href={article.url} target="_blank" className="dark:text-purple-500 text-purple-700">Read more...</a>
+              <a
+                href={article.url}
+                target="_blank"
+                className="dark:text-purple-500 text-purple-700"
+              >
+                Read more...
+              </a>
             </div>
           </div>
         );

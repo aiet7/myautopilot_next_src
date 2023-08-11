@@ -5,9 +5,10 @@ import { convertKelvinToFahrenheit } from "../../../../../../utils/conversions";
 
 const Weather = ({ wns, handleWeatherUpdate }) => {
   const {
-    initialWeather: { main, weather, name },
+    initialWeather: { main, weather, name, code },
   } = wns;
   const [userWeatherInput, setUserWeatherInput] = useState("");
+
   return (
     <div className="flex flex-col gap-3 ">
       <div className="flex flex-col">
@@ -24,17 +25,23 @@ const Weather = ({ wns, handleWeatherUpdate }) => {
           Search
         </button>
       </div>
-      <div className="dark:shadow-white/40 dark:shadow-md border shadow-black/20 shadow-md p-1">
-        <p>{name}</p>
-        <div className="flex justify-between items-center">
-          <div className="flex flex-col">
-            <p className="font-bold text-xl">{weather[0]?.main}</p>
+      {code !== 500 ? (
+        <div className="dark:shadow-white/40 dark:shadow-md border shadow-black/20 shadow-md p-1">
+          <p>{name}</p>
+          <div className="flex justify-between items-center">
+            <div className="flex flex-col">
+              <p className="font-bold text-xl">{weather[0]?.main}</p>
+            </div>
+            <p className="text-2xl">{convertKelvinToFahrenheit(main.temp)}</p>
           </div>
-          <p className="text-2xl">{convertKelvinToFahrenheit(main.temp)}</p>
+          <p>High: {convertKelvinToFahrenheit(main.temp_max)}</p>
+          <p>Low: {convertKelvinToFahrenheit(main.temp_min)}</p>
         </div>
-        <p>High: {convertKelvinToFahrenheit(main.temp_max)}</p>
-        <p>Low: {convertKelvinToFahrenheit(main.temp_min)}</p>
-      </div>
+      ) : (
+        <p className="text-red-600 text-sm">
+          Zipcode not found.
+        </p>
+      )}
     </div>
   );
 };

@@ -4,7 +4,7 @@ const Stocks = ({ wns, symbols }) => {
   const { initialStocks } = wns;
   
   return (
-    <div className="flex flex-col gap-3 ">
+    <div className="flex flex-col gap-3">
       {initialStocks?.map((stocks, index) => {
         return (
           <div

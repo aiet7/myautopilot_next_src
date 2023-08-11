@@ -26,7 +26,7 @@ const Updates = ({ initialUser, handlePromptAssistantInput }) => {
   ]);
   const [locationNews, setLocationNews] = useState("New York");
   const [locationWeather, setLocationWeather] = useState(
-    initialUser.address.zipcode
+    initialUser.address.zipcode || "10001"
   );
   const handleActiveWnsButton = (button) => {
     setActiveWnsButton(button);
@@ -54,16 +54,15 @@ const Updates = ({ initialUser, handlePromptAssistantInput }) => {
       }
     };
     handleGetWns();
-  }, [symbols, locationNews, locationWeather]);
+  }, [initialUser, symbols, locationNews, locationWeather]);
 
   return (
     <>
       <h3 className="text-left text-lg">Updates</h3>
-
       {generalUpdates.map((generalUpdates, index) => {
         const { name, description, prompt } = generalUpdates;
         return (
-          <div key={index} className="flex flex-col gap-1">
+          <div key={index} className="flex flex-col ">
             <div className="w-full flex items-center justify-between text-white font-bold bg-blue-800 py-1 px-2">
               <span
                 className="w-full cursor-pointer"
@@ -80,12 +79,12 @@ const Updates = ({ initialUser, handlePromptAssistantInput }) => {
         );
       })}
 
-      <div className="dark:border-white/20 flex items-center border rounded">
+      <div className="dark:border-white/20 flex  items-center border rounded">
         <button
           onClick={() => handleActiveWnsButton("Stocks")}
           className={`${
             activeWnsButton === "Stocks" && "bg-blue-800 text-white"
-          } w-full rounded`}
+          } w-full rounded p-2`}
         >
           Stocks
         </button>
@@ -93,7 +92,7 @@ const Updates = ({ initialUser, handlePromptAssistantInput }) => {
           onClick={() => handleActiveWnsButton("News")}
           className={`${
             activeWnsButton === "News" && "bg-blue-800 text-white"
-          } w-full rounded`}
+          } w-full rounded p-2`}
         >
           News
         </button>
@@ -101,12 +100,12 @@ const Updates = ({ initialUser, handlePromptAssistantInput }) => {
           onClick={() => handleActiveWnsButton("Weather")}
           className={`${
             activeWnsButton === "Weather" && "bg-blue-800 text-white"
-          } w-full rounded`}
+          } w-full rounded p-2`}
         >
           Weather
         </button>
       </div>
-      <div className="flex-grow overflow-y-auto scrollbar-thin">
+      <div className="flex-grow overflow-y-auto scrollbar-thin ">
         <div className="flex flex-grow flex-col gap-4 ">
           {activeWnsButton === "Stocks" && (
             <Stocks wns={wns} symbols={symbols} />

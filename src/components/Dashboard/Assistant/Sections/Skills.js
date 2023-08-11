@@ -29,7 +29,7 @@ const Skills = ({
           {skillsArray.map((skill, index) => {
             const { name, description, prompt } = skill;
             return (
-              <div key={index} className="flex flex-col gap-1">
+              <div key={index} className="flex flex-col">
                 <div className="w-full flex items-center justify-between text-white font-bold bg-blue-800 py-1 px-2">
                   <span
                     className="w-full cursor-pointer"

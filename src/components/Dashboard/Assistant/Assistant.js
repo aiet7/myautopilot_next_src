@@ -45,7 +45,7 @@ const Assistant = ({
         activeAssistantButton={activeAssistantButton}
         handleAssistantTabChange={handleAssistantTabChange}
       />
-      <div className="flex flex-col px-4 py-6 gap-4 w-full overflow-hidden ">
+      <div className="flex flex-col px-4 py-6 w-full overflow-hidden ">
         <div
           className={`${
             activeAssistantButton === "Skills"
