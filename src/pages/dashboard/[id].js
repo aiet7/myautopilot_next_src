@@ -277,9 +277,17 @@ const DashboardPage = ({
       setOpenChatAssistant(false);
     }, 0);
   };
-
+  console.log(tasks);
   const handleNewTask = (task) => {
     setTasks((prevState) => [...prevState, task]);
+  };
+
+  const handleMarkCompleteTask = (taskId) => {
+    setTasks((prevState) =>
+      prevState.map((task) =>
+        task.id === taskId ? { ...task, completed: true } : task
+      )
+    );
   };
 
   const handleDeleteTask = async (index) => {
@@ -810,7 +818,9 @@ const DashboardPage = ({
                   openAgentAssistant={openAgentAssistant}
                   openChatAssistant={openChatAssistant}
                   handlePromptAssistantInput={handlePromptAssistantInput}
+                  handleNewTask={handleNewTask}
                   handleDeleteTask={handleDeleteTask}
+                  handleMarkCompleteTask={handleMarkCompleteTask}
                 />
               </div>
             </div>
@@ -984,18 +994,18 @@ export const getServerSideProps = async (context) => {
     req: { cookies },
   } = context;
 
-  const googleSessionToken = cookies["Secure-next.session-token-g"];
-  const microsoftSessionToken = cookies["microsoft_session_token"];
-  const regularSessionToken = cookies["session_token"];
+  // const googleSessionToken = cookies["Secure-next.session-token-g"];
+  // const microsoftSessionToken = cookies["microsoft_session_token"];
+  // const regularSessionToken = cookies["session_token"];
 
-  if (!googleSessionToken && !microsoftSessionToken && !regularSessionToken) {
-    return {
-      redirect: {
-        destination: "/auth/login",
-        permanent: false,
-      },
-    };
-  }
+  // if (!googleSessionToken && !microsoftSessionToken && !regularSessionToken) {
+  //   return {
+  //     redirect: {
+  //       destination: "/auth/login",
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
   const userId = params.id;
 

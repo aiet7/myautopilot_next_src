@@ -658,10 +658,11 @@ const Interaction = ({
             ticketDetails: { id },
           } = ticket;
           handleTicketStatus({
-            ticketCreated,
-            ticketAssigned,
-            ticketClosed,
+            ticketCreated: ticketCreated && "done",
+            ticketAssigned: ticketAssigned ? "done" : "pending",
+            ticketClosed: ticketClosed ? "done" : "waiting",
           });
+
           if (
             currentTicketCategory === "TRAINING_OR_ONBOARDING" &&
             currentTicketSubCategory === "NEW_EMPLOYEE_ONBOARDING"
@@ -690,9 +691,11 @@ const Interaction = ({
                 ticketClosed,
               } = ticketOnBoarding;
               handleTicketStatus({
-                ticketClosed,
-                userCreatedInActiveDirectory,
-                userEmailCreated,
+                userCreatedInActiveDirectory: userCreatedInActiveDirectory
+                  ? "done"
+                  : "pending",
+                userEmailCreated: userEmailCreated ? "done" : "pending",
+                ticketClosed: ticketClosed ? "done" : "pending",
               });
             }
           }
@@ -722,6 +725,13 @@ const Interaction = ({
         aiContent,
         previousResponseBodyForConversation
       );
+      handleTicketStatus({
+        ticketCreated: undefined,
+        ticketAssigned: undefined,
+        ticketClosed: undefined,
+        userCreatedInActiveDirectory: undefined,
+        userEmailCreated: undefined,
+      });
       setIsFormOpen((prevState) => ({
         ...prevState,
         [previousResponseBodyForConversation.conversationId]: false,
@@ -897,13 +907,25 @@ const Interaction = ({
       ...prevState,
       [conversationId]: true,
     }));
-    handleTicketStatus({
-      ticketCreated: undefined,
-      ticketAssigned: undefined,
-      ticketClosed: undefined,
-      userCreatedInActiveDirectory: undefined,
-      userEmailCreated: undefined,
-    });
+
+    if (
+      category === "TRAINING_OR_ONBOARDING" &&
+      subcategory === "NEW_EMPLOYEE_ONBOARDING"
+    ) {
+      handleTicketStatus({
+        ticketCreated: "pending",
+        ticketAssigned: "pending",
+        ticketClosed: "pending",
+        userCreatedInActiveDirectory: "pending",
+        userEmailCreated: "pending",
+      });
+    } else {
+      handleTicketStatus({
+        ticketCreated: "pending",
+        ticketAssigned: "pending",
+        ticketClosed: "pending",
+      });
+    }
   };
 
   const handleAddContactProcess = (message) => {

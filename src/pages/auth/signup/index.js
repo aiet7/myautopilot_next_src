@@ -11,8 +11,9 @@ import { FcGoogle } from "react-icons/fc";
 import Loading from "../../../components/Loading.js";
 
 import {
-  isInputEmpty,
   isEmailInputValid,
+  isInputEmpty,
+  validateInput,
 } from "../../../utils/formValidations.js";
 
 import { UsaStates } from "usa-states";
@@ -176,16 +177,6 @@ const Signup = () => {
   };
 
   const handleEmailSignup = async () => {
-    if (isInputEmpty(password)) {
-      setErrorMessage("A password is required.");
-      return;
-    }
-
-    if (isInputEmpty(phoneNumber)) {
-      setErrorMessage("A phone number is required.");
-      return;
-    }
-
     const user = {
       firstName: firstName,
       lastName: lastName,
@@ -195,6 +186,12 @@ const Signup = () => {
       address: address,
       password: password,
     };
+
+    const validationError = validateInput(user);
+    if (validationError) {
+      setErrorMessage(validationError);
+      return;
+    }
 
     try {
       const response = await fetch(
@@ -246,6 +243,7 @@ const Signup = () => {
         >
           <form className="w-[300px] flex flex-col items-center gap-4">
             <Image
+              priority
               src="/myautopilot_logo.png"
               alt="Circuit board in the shape of a human brain"
               width={125}
@@ -450,7 +448,7 @@ const Signup = () => {
                   </select>
                 </div>
                 <input
-                  maxLength={14}
+                  maxLength={10}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {

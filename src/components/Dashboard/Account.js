@@ -8,6 +8,8 @@ import { AiFillEdit } from "react-icons/ai";
 import { IoMdFingerPrint } from "react-icons/io";
 import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
 
+import { validateField } from "../../utils/formValidations";
+
 import Cookie from "js-cookie";
 
 const Account = ({ initialUser }) => {
@@ -29,6 +31,7 @@ const Account = ({ initialUser }) => {
   const [editing, setEditing] = useState({});
   const [deleting, setDeleting] = useState(false);
   const [confirmationEmail, setConfirmationEmail] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [userInputs, setUserInputs] = useState({
     id: id,
@@ -101,6 +104,12 @@ const Account = ({ initialUser }) => {
   const handleSaveChanges = async (field, input) => {
     let updatedUser;
 
+    const validationError = validateField(field, input);
+    if (validationError) {
+      setErrorMessage(validationError);
+      return;
+    }
+
     if (addressFields.includes(field)) {
       const updatedInputs = {
         ...userInputs,
@@ -136,6 +145,7 @@ const Account = ({ initialUser }) => {
 
       if (response.ok) {
         console.log("Saved!");
+        setErrorMessage("");
       } else {
         console.log("Error saving.");
       }
@@ -193,6 +203,7 @@ const Account = ({ initialUser }) => {
           <IoMdFingerPrint size={200} />
         </div>
         <div className="flex flex-col w-full border dark:border-white/40 rounded-md p-5 gap-6">
+          <p className="text-red-500 text-sm text-center">{errorMessage}</p>
           <p className="text-2xl">Basic Info</p>
           <div className="flex items-center justify-between h-[20px]">
             <p className="w-18">First Name</p>
@@ -308,6 +319,7 @@ const Account = ({ initialUser }) => {
             {editing["businessPhone"] ? (
               <div className="flex items-center gap-4">
                 <input
+                  maxLength={10}
                   className="px-1 w-40 border bg-white text-black "
                   value={userInputs["businessPhone"]}
                   onChange={(e) => handleEditOnChange("businessPhone", e)}

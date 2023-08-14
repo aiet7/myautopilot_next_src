@@ -17,6 +17,13 @@ const AssistantRail = ({
 }) => {
   return (
     <div className="dark:lg:border-white/10 dark:bg-[#373737] bg-[#eaf1fb] px-2 py-7 flex flex-col gap-7 items-center">
+      <MdOutlineEngineering
+        className={`${
+          activeAssistantButton === "Engineer" && "text-blue-800"
+        } cursor-pointer`}
+        size={20}
+        onClick={() => handleAssistantTabChange("Engineer")}
+      />
       <GiSkills
         className={`${
           activeAssistantButton === "Skills" && "text-blue-800"
@@ -31,13 +38,7 @@ const AssistantRail = ({
         size={20}
         onClick={() => handleAssistantTabChange("Updates")}
       />
-      <MdOutlineEngineering
-        className={`${
-          activeAssistantButton === "Engineer" && "text-blue-800"
-        } cursor-pointer`}
-        size={20}
-        onClick={() => handleAssistantTabChange("Engineer")}
-      />
+
       <BsListTask
         className={`${
           activeAssistantButton === "Tasks" && "text-blue-800"

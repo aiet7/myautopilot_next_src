@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import AssistantRail from "../AssistantRail.js";
+import AssistantRail from "./AssistantRail.js";
 import Skills from "./Sections/Skills.js";
 import Updates from "./Sections/Updates/Updates.js";
 import Engineer from "./Sections/Engineer.js";
@@ -21,9 +21,13 @@ const Assistant = ({
   openAgentAssistant,
   openChatAssistant,
   handlePromptAssistantInput,
+  handleNewTask,
   handleDeleteTask,
+  handleMarkCompleteTask,
 }) => {
-  const [activeAssistantButton, setActiveAssistantButton] = useState("Skills");
+  const [activeAssistantButton, setActiveAssistantButton] =
+    useState("Engineer");
+
   const selectedAgentName = initialAgents.find(
     (agent) => agent.id === selectedAgent
   )?.agentName;
@@ -46,6 +50,15 @@ const Assistant = ({
         handleAssistantTabChange={handleAssistantTabChange}
       />
       <div className="flex flex-col px-4 py-6 w-full overflow-hidden ">
+        <div
+          className={`${
+            activeAssistantButton === "Engineer"
+              ? "flex-grow flex flex-col gap-4 overflow-hidden"
+              : "hidden"
+          }`}
+        >
+          <Engineer handlePromptAssistantInput={handlePromptAssistantInput} />
+        </div>
         <div
           className={`${
             activeAssistantButton === "Skills"
@@ -71,15 +84,7 @@ const Assistant = ({
             handlePromptAssistantInput={handlePromptAssistantInput}
           />
         </div>
-        <div
-          className={`${
-            activeAssistantButton === "Engineer"
-              ? "flex-grow flex flex-col gap-4 overflow-hidden"
-              : "hidden"
-          }`}
-        >
-          <Engineer handlePromptAssistantInput={handlePromptAssistantInput} />
-        </div>
+
         <div
           className={`${
             activeAssistantButton === "Tasks"
@@ -87,7 +92,13 @@ const Assistant = ({
               : "hidden"
           }`}
         >
-          <Tasks tasks={tasks} handleDeleteTask={handleDeleteTask} />
+          <Tasks
+            initialUser={initialUser}
+            tasks={tasks}
+            handleNewTask={handleNewTask}
+            handleDeleteTask={handleDeleteTask}
+            handleMarkCompleteTask={handleMarkCompleteTask}
+          />
         </div>
         <div
           className={`${
