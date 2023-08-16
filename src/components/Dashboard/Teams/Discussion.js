@@ -18,10 +18,10 @@ const Discussion = ({
   teamsHistories,
   currentTeamsIndex,
   setTeamsHistories,
-  openTeamsHistory,
+  openRooms,
   handleConnectToWebSocket,
   handleShowSummarized,
-  handleOpenTeamsHistory,
+  handleOpenRooms,
 }) => {
   const inputRef = useRef(null);
   const chatContainerRef = useRef(null);
@@ -102,10 +102,10 @@ const Discussion = ({
   return (
     <div
       onClick={() => {
-        openTeamsHistory && handleOpenTeamsHistory(false);
+        openRooms && handleOpenRooms(false);
       }}
       className={`relative flex flex-col h-full w-full ${
-        openTeamsHistory && "lg:opacity-100 opacity-5"
+        openRooms && "lg:opacity-100 opacity-5"
       } dark:bg-black transition-all duration-300 ease-in-out bg-white`}
     >
       {!isAtBottom && isOverflowed && (

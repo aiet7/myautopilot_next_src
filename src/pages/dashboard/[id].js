@@ -64,15 +64,13 @@ const DashboardPage = ({
 
   const [promptAssistantInput, setPromptAssistantInput] = useState("");
 
-  const [openChatHistory, setOpenChatHistory] = useState(false);
-  const [openChatAssistant, setOpenChatAssistant] = useState(false);
-  const [openChatHistoryHover, setOpenChatHistoryHover] = useState(false);
+  const [openHistory, setOpenHistory] = useState(false);
+  const [openAssistant, setOpenAssistant] = useState(false);
+  const [openRooms, setOpenRooms] = useState(false);
 
-  const [openAgentHistory, setOpenAgentHistory] = useState(false);
-  const [openAgentAssistant, setOpenAgentAssistant] = useState(false);
-  const [openAgentSelectionHover, setOpenAgentSelectionHover] = useState(false);
-
-  const [openTeamsHistory, setOpenTeamsHistory] = useState(false);
+  const [openHistoryHover, setOpenHistoryHover] = useState(false);
+  const [openSelectionHover, setOpenSelectionHover] = useState(false);
+  const [openRoomsHover, setOpenRoomsHover] = useState(false);
 
   const [openSettings, setOpenSettings] = useState(false);
 
@@ -274,33 +272,31 @@ const DashboardPage = ({
     setPromptAssistantInput("");
     setTimeout(() => {
       setPromptAssistantInput(prompt);
-      setOpenChatAssistant(false);
+      setOpenAssistant(false);
     }, 0);
   };
-  console.log(tasks);
+
   const handleNewTask = (task) => {
     setTasks((prevState) => [...prevState, task]);
   };
 
-  const handleMarkCompleteTask = (taskId) => {
+  const handleUpdateTaskCompletion = (taskId, completed) => {
     setTasks((prevState) =>
       prevState.map((task) =>
-        task.id === taskId ? { ...task, completed: true } : task
+        task.id === taskId ? { ...task, completed: completed } : task
       )
     );
   };
 
-  const handleDeleteTask = async (index) => {
-    if (index < tasks.length) {
-      const taskToDelete = tasks[index];
+  const handleDeleteTask = async (taskId) => {
+    const taskToDelete = tasks.find((task) => task.id === taskId);
+    if (taskToDelete) {
       try {
         const response = await fetch(
           `https://etech7-wf-etech7-db-service.azuremicroservices.io/deleteTask?taskId=${taskToDelete.id}`
         );
         if (response.ok) {
-          const updatedTasks = tasks.filter(
-            (_, currentIndex) => currentIndex !== index
-          );
+          const updatedTasks = tasks.filter((task) => task.id !== taskId);
           setTasks(updatedTasks);
         }
       } catch (e) {
@@ -350,17 +346,19 @@ const DashboardPage = ({
     }
   };
 
-  const handleDeleteConversation = async (index) => {
-    if (index < conversationHistories[selectedAgent].length) {
-      const conversationToDelete = conversationHistories[selectedAgent][index];
+  const handleDeleteConversation = async (conversationId) => {
+    const conversationToDelete = conversationHistories[selectedAgent].find(
+      (conversation) => conversation.id === conversationId
+    );
 
+    if (conversationToDelete) {
       try {
         const response = await fetch(
           `https://etech7-wf-etech7-db-service.azuremicroservices.io/deleteConversation?conversationId=${conversationToDelete.id}`
         );
         if (response.ok) {
           const updatedHistories = conversationHistories[selectedAgent].filter(
-            (_, currentIndex) => currentIndex !== index
+            (conversation) => conversation.id !== conversationId
           );
           setConversationHistories((prevState) => ({
             ...prevState,
@@ -390,13 +388,9 @@ const DashboardPage = ({
       ...prevState,
       [agentID]: index,
     }));
-    setOpenChatHistory(false);
-
-    if (openChatHistoryHover) {
+    if (openHistoryHover) {
       setActiveTab("general");
     }
-
-    handleOpenChatHistoryHide();
     handleCloseAllMenus();
   };
 
@@ -457,10 +451,10 @@ const DashboardPage = ({
     }
   };
 
-  const handleDeleteTeamRoom = async (index) => {
-    if (index < teamsHistories.length) {
-      const teamRoomToDelete = teamsHistories[index];
+  const handleDeleteTeamRoom = async (roomId) => {
+    const teamRoomToDelete = teamsHistories.find((room) => room.id === roomId);
 
+    if (teamRoomToDelete) {
       try {
         const response = await fetch(
           `https://etech7-wf-etech7-db-service.azuremicroservices.io/deleteRoom?roomId=${teamRoomToDelete.id}`
@@ -468,7 +462,7 @@ const DashboardPage = ({
 
         if (response.ok) {
           const updatedTeamHistories = teamsHistories.filter(
-            (_, currentIndex) => currentIndex !== index
+            (room) => room.id !== roomId
           );
           setTeamsHistories(updatedTeamHistories);
 
@@ -490,7 +484,6 @@ const DashboardPage = ({
     }
 
     setCurrentTeamsIndex(index);
-    setOpenTeamsHistory(false);
     handleCloseAllMenus();
   };
 
@@ -503,13 +496,10 @@ const DashboardPage = ({
       }));
     }
     setActiveTab("agents");
-    handleOpenAgentSelectionHide();
     handleCloseAllMenus();
   };
 
   const handleTabChange = (tab) => {
-    handleCloseAllMenus();
-
     if (tab === "agents") {
       setActiveTab("agents");
     }
@@ -519,38 +509,29 @@ const DashboardPage = ({
     }
 
     setActiveTab(tab);
-    setOpenAgentSelectionHover(false);
-    setOpenChatHistoryHover(false);
     setSelectedAgent(null);
+    handleCloseAllMenus();
   };
 
-  const handleOpenChatHistory = () => {
-    setOpenChatHistory(!openChatHistory);
+  const handleOpenHistory = () => {
+    setOpenHistory(!openHistory);
   };
 
-  const handleOpenChatAssistant = () => {
-    setOpenChatAssistant(!openChatAssistant);
+  const handleOpenAssistant = () => {
+    setOpenAssistant(!openAssistant);
   };
 
-  const handleOpenAgentHistory = () => {
-    setOpenAgentHistory(!openAgentHistory);
-  };
-
-  const handleOpenAgentAssistant = () => {
-    setOpenAgentAssistant(!openAgentAssistant);
-  };
-
-  const handleOpenTeamsHistory = () => {
-    setOpenTeamsHistory(!openTeamsHistory);
+  const handleOpenRooms = () => {
+    setOpenRooms(!openRooms);
   };
 
   const handleOpenSettings = () => {
     setOpenSettings(!openSettings);
   };
 
-  const handleOpenChatHistoryVisible = () => {
-    handleOpenAgentSelectionHide();
-    setOpenChatHistoryHover(true);
+  const handleOpenHistoryVisible = () => {
+    handleOpenSelectionHide();
+    setOpenHistoryHover(true);
     const generalAgent = initialAgents.find(
       (agent) => agent.agentName === "General Agent"
     );
@@ -561,30 +542,38 @@ const DashboardPage = ({
     }
   };
 
-  const handleOpenChatHistoryHide = () => {
-    setOpenChatHistoryHover(false);
+  const handleOpenHistoryHide = () => {
+    setOpenHistoryHover(false);
     if (activeTab !== "general") {
       setHoverPreview(null);
     }
   };
 
-  const handleOpenAgentSelectionVisible = () => {
-    handleOpenChatHistoryHide();
-    setOpenAgentSelectionHover(true);
+  const handleOpenSelectionVisible = () => {
+    handleOpenHistoryHide();
+    setOpenSelectionHover(true);
   };
 
-  const handleOpenAgentSelectionHide = () => {
-    setOpenAgentSelectionHover(false);
+  const handleOpenSelectionHide = () => {
+    setOpenSelectionHover(false);
+  };
+
+  const handleOpenRoomsVisible = () => {
+    setOpenRoomsHover(true);
+  };
+
+  const handleOpenRoomsHide = () => {
+    setOpenRoomsHover(false);
   };
 
   const handleCloseAllMenus = () => {
-    setOpenAgentAssistant(false);
-    setOpenAgentHistory(false);
-    setOpenAgentSelectionHover(false);
-    setOpenChatAssistant(false);
-    setOpenChatHistory(false);
-    setOpenChatHistoryHover(false);
-    setOpenTeamsHistory(false);
+    setOpenAssistant(false);
+    setOpenHistory(false);
+    setOpenRooms(false);
+
+    setOpenSelectionHover(false);
+    setOpenHistoryHover(false);
+    setOpenRoomsHover(false);
   };
 
   useEffect(() => {
@@ -762,7 +751,7 @@ const DashboardPage = ({
           className="flex flex-col h-full w-full"
           style={{ height: `calc(${height}px - 1px)` }}
         >
-          <div className="flex flex-col h-full w-full lg:flex-row-reverse">
+          <div className=" flex flex-col h-full w-full lg:flex-row-reverse">
             <div
               className={
                 activeTab === "general"
@@ -773,11 +762,11 @@ const DashboardPage = ({
               <SettingsRail
                 activeTab={activeTab}
                 selectedAgent={selectedAgent}
-                handleOpenChatHistory={
-                  activeTab === "general" ? handleOpenChatHistory : undefined
+                handleOpenHistory={
+                  activeTab === "general" ? handleOpenHistory : undefined
                 }
-                handleOpenChatAssistant={
-                  activeTab === "general" ? handleOpenChatAssistant : undefined
+                handleOpenAssistant={
+                  activeTab === "general" ? handleOpenAssistant : undefined
                 }
               />
               <div className="flex flex-1 relative overflow-hidden">
@@ -787,8 +776,7 @@ const DashboardPage = ({
                   conversationHistories={conversationHistories}
                   currentConversationIndices={currentConversationIndices}
                   setConversationHistories={setConversationHistories}
-                  openChatHistory={openChatHistory}
-                  openAgentHistory={openAgentHistory}
+                  openHistory={openHistory}
                   handleConversationSelected={handleConversationSelected}
                   handleNewConversation={handleNewConversation}
                   handleDeleteConversation={handleDeleteConversation}
@@ -798,15 +786,15 @@ const DashboardPage = ({
                   activeTab={activeTab}
                   initialUser={initialUser}
                   promptAssistantInput={promptAssistantInput}
-                  openChatHistory={openChatHistory}
-                  openChatAssistant={openChatAssistant}
+                  openHistory={openHistory}
+                  openAssistant={openAssistant}
                   currentConversationIndices={currentConversationIndices}
                   conversationHistories={conversationHistories}
                   setConversationHistories={setConversationHistories}
                   handleNewTask={handleNewTask}
                   handleNewConversation={handleNewConversation}
-                  handleOpenChatHistory={handleOpenChatHistory}
-                  handleOpenChatAssistant={handleOpenChatAssistant}
+                  handleOpenHistory={handleOpenHistory}
+                  handleOpenAssistant={handleOpenAssistant}
                 />
                 <Assistant
                   activeTab={activeTab}
@@ -815,12 +803,11 @@ const DashboardPage = ({
                   initialAgents={initialAgents}
                   initialUser={initialUser}
                   selectedAgent={selectedAgent}
-                  openAgentAssistant={openAgentAssistant}
-                  openChatAssistant={openChatAssistant}
+                  openAssistant={openAssistant}
                   handlePromptAssistantInput={handlePromptAssistantInput}
                   handleNewTask={handleNewTask}
                   handleDeleteTask={handleDeleteTask}
-                  handleMarkCompleteTask={handleMarkCompleteTask}
+                  handleUpdateTaskCompletion={handleUpdateTaskCompletion}
                 />
               </div>
             </div>
@@ -834,11 +821,11 @@ const DashboardPage = ({
               <SettingsRail
                 activeTab={activeTab}
                 selectedAgent={selectedAgent}
-                handleOpenAgentHistory={
-                  activeTab === "agents" ? handleOpenAgentHistory : undefined
+                handleOpenHistory={
+                  activeTab === "agents" ? handleOpenHistory : undefined
                 }
-                handleOpenAgentAssistant={
-                  activeTab === "agents" ? handleOpenAgentAssistant : undefined
+                handleOpenAssistant={
+                  activeTab === "agents" ? handleOpenAssistant : undefined
                 }
               />
               <div className="flex flex-1 relative overflow-hidden">
@@ -849,8 +836,7 @@ const DashboardPage = ({
                     conversationHistories={conversationHistories}
                     currentConversationIndices={currentConversationIndices}
                     setConversationHistories={setConversationHistories}
-                    openChatHistory={openChatHistory}
-                    openAgentHistory={openAgentHistory}
+                    openHistory={openHistory}
                     handleConversationSelected={handleConversationSelected}
                     handleNewConversation={handleNewConversation}
                     handleDeleteConversation={handleDeleteConversation}
@@ -860,9 +846,9 @@ const DashboardPage = ({
                     activeTab={activeTab}
                     selectedAgent={selectedAgent}
                     initialAgents={initialAgents}
-                    openAgentHistory={openAgentHistory}
-                    openAgentSelectionHover={openAgentSelectionHover}
-                    handleOpenAgentSelectionHide={handleOpenAgentSelectionHide}
+                    openHistory={openHistory}
+                    openSelectionHover={openSelectionHover}
+                    handleOpenSelectionHide={handleOpenSelectionHide}
                     handleAgentSelected={handleAgentSelected}
                   />
                 )}
@@ -876,19 +862,19 @@ const DashboardPage = ({
                     conversationHistories={conversationHistories}
                     currentConversationIndices={currentConversationIndices}
                     setConversationHistories={setConversationHistories}
-                    openAgentHistory={openAgentHistory}
-                    openAgentAssistant={openAgentAssistant}
+                    openHistory={openHistory}
+                    openAssistant={openAssistant}
                     handleTicketStatus={handleTicketStatus}
                     handleNewTask={handleNewTask}
                     handleNewConversation={handleNewConversation}
-                    handleOpenAgentHistory={handleOpenAgentHistory}
-                    handleOpenAgentAssistant={handleOpenAgentAssistant}
+                    handleOpenHistory={handleOpenHistory}
+                    handleOpenAssistant={handleOpenAssistant}
                   />
                 ) : (
                   <Guide
                     selectedAgent={selectedAgent}
-                    openAgentHistory={openAgentHistory}
-                    handleOpenAgentHistory={handleOpenAgentHistory}
+                    openHistory={openHistory}
+                    handleOpenHistory={handleOpenHistory}
                   />
                 )}
                 {selectedAgent && (
@@ -899,8 +885,7 @@ const DashboardPage = ({
                     initialAgents={initialAgents}
                     initialUser={initialUser}
                     selectedAgent={selectedAgent}
-                    openAgentAssistant={openAgentAssistant}
-                    openChatAssistant={openChatAssistant}
+                    openAssistant={openAssistant}
                     handlePromptAssistantInput={handlePromptAssistantInput}
                     handleDeleteTask={handleDeleteTask}
                   />
@@ -917,15 +902,15 @@ const DashboardPage = ({
               <SettingsRail
                 activeTab={activeTab}
                 selectedAgent={selectedAgent}
-                handleOpenTeamsHistory={
-                  activeTab === "teams" ? handleOpenTeamsHistory : undefined
+                handleOpenRooms={
+                  activeTab === "teams" ? handleOpenRooms : undefined
                 }
               />
               <div className="flex flex-1 relative overflow-hidden">
                 <Rooms
                   teamsHistories={teamsHistories}
                   currentTeamsIndex={currentTeamsIndex}
-                  openTeamsHistory={openTeamsHistory}
+                  openRooms={openRooms}
                   setTeamsHistories={setTeamsHistories}
                   handleTeamRoomSelected={handleTeamRoomSelected}
                   handleCreateNewRoom={handleCreateNewRoom}
@@ -940,10 +925,10 @@ const DashboardPage = ({
                   teamsHistories={teamsHistories}
                   currentTeamsIndex={currentTeamsIndex}
                   setTeamsHistories={setTeamsHistories}
-                  openTeamsHistory={openTeamsHistory}
+                  openRooms={openRooms}
                   handleConnectToWebSocket={handleConnectToWebSocket}
                   handleShowSummarized={handleShowSummarized}
-                  handleOpenTeamsHistory={handleOpenTeamsHistory}
+                  handleOpenRooms={handleOpenRooms}
                 />
               </div>
             </div>
@@ -963,10 +948,9 @@ const DashboardPage = ({
               selectedAgent={selectedAgent}
               hoverPreview={hoverPreview}
               activeTab={activeTab}
-              openChatHistory={openChatHistory}
-              openAgentHistory={openAgentHistory}
-              openChatHistoryHover={openChatHistoryHover}
-              openAgentSelectionHover={openAgentSelectionHover}
+              openHistory={openHistory}
+              openHistoryHover={openHistoryHover}
+              openSelectionHover={openSelectionHover}
               openSettings={openSettings}
               currentConversationIndices={currentConversationIndices}
               conversationHistories={conversationHistories}
@@ -977,10 +961,10 @@ const DashboardPage = ({
               handleAgentSelected={handleAgentSelected}
               handleTabChange={handleTabChange}
               handleOpenSettings={handleOpenSettings}
-              handleOpenChatHistoryVisible={handleOpenChatHistoryVisible}
-              handleOpenChatHistoryHide={handleOpenChatHistoryHide}
-              handleOpenAgentSelectionVisible={handleOpenAgentSelectionVisible}
-              handleOpenAgentSelectionHide={handleOpenAgentSelectionHide}
+              handleOpenHistoryVisible={handleOpenHistoryVisible}
+              handleOpenHistoryHide={handleOpenHistoryHide}
+              handleOpenSelectionVisible={handleOpenSelectionVisible}
+              handleOpenSelectionHide={handleOpenSelectionHide}
             />
           </div>
         </div>
@@ -994,18 +978,18 @@ export const getServerSideProps = async (context) => {
     req: { cookies },
   } = context;
 
-  // const googleSessionToken = cookies["Secure-next.session-token-g"];
-  // const microsoftSessionToken = cookies["microsoft_session_token"];
-  // const regularSessionToken = cookies["session_token"];
+  const googleSessionToken = cookies["Secure-next.session-token-g"];
+  const microsoftSessionToken = cookies["microsoft_session_token"];
+  const regularSessionToken = cookies["session_token"];
 
-  // if (!googleSessionToken && !microsoftSessionToken && !regularSessionToken) {
-  //   return {
-  //     redirect: {
-  //       destination: "/auth/login",
-  //       permanent: false,
-  //     },
-  //   };
-  // }
+  if (!googleSessionToken && !microsoftSessionToken && !regularSessionToken) {
+    return {
+      redirect: {
+        destination: "/auth/login",
+        permanent: false,
+      },
+    };
+  }
 
   const userId = params.id;
 

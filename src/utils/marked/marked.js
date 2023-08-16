@@ -5,20 +5,34 @@ import { encode } from "html-entities";
 import Prism from "prismjs";
 import "./languages.js";
 
-export const MarkedChatInteraction = ({ markdown, context }) => {
-  const [highlightedText, setHighlightedText] = useState("");
-  const handleMouseUp = () => {
-    const selectedText = window.getSelection().toString();
-    if (selectedText) {
-      setHighlightedText(selectedText);
-    }
+export const MarkedChatInteraction = ({
+  id,
+  markdown,
+  handleUpdateEditedResponse,
+}) => {
+  const copyRef = useRef(null);
+  const textAreaRef = useRef(null);
+
+  const [content, setContent] = useState(markdown);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingMessageId, setEditingMessageId] = useState(null);
+
+  const handleEdit = (id) => {
+    setIsEditing(true);
+    setEditingMessageId(id);
+    setContent(markdown);
   };
 
-  const ref = useRef(null);
+  useEffect(() => {
+    if (textAreaRef.current) {
+      textAreaRef.current.style.height = "auto";
+      textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
+    }
+  }, [isEditing]);
 
   useEffect(() => {
-    if (ref.current) {
-      ref.current.querySelectorAll(".copy-code").forEach((element) => {
+    if (copyRef.current) {
+      copyRef.current.querySelectorAll(".copy-code").forEach((element) => {
         element.addEventListener("click", (event) => {
           event.preventDefault();
           const code = element.getAttribute("data-code");
@@ -104,16 +118,54 @@ export const MarkedChatInteraction = ({ markdown, context }) => {
 
   marked.setOptions({ renderer, gfm: true });
 
-  return (
-    <div
-      onMouseUp={handleMouseUp}
-      ref={ref}
-      className="flex flex-col gap-2 whitespace-pre-wrap"
-      dangerouslySetInnerHTML={{
-        __html: marked(markdown, { headerIds: false, mangle: false }),
-      }}
-    />
-  );
+  if (isEditing && editingMessageId === id) {
+    return (
+      <div className="flex flex-col items-start gap-2 w-full">
+        <textarea
+          ref={textAreaRef}
+          className="p-2 w-full block scrollbar-thin"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+        />
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              handleUpdateEditedResponse(id, content);
+              setIsEditing(false);
+            }}
+            className="bg-blue-800 text-white px-2 py-1 rounded"
+          >
+            Save
+          </button>
+          <button
+            className="bg-blue-800 text-white px-2 py-1 rounded"
+            onClick={() => setIsEditing(false)}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    );
+  } else {
+    return (
+      <div ref={copyRef} className="flex flex-col items-start gap-2">
+        <div
+          className="flex flex-col gap-2 whitespace-pre-wrap"
+          dangerouslySetInnerHTML={{
+            __html: marked(markdown, { headerIds: false, mangle: false }),
+          }}
+        />
+        {id.endsWith("-ai") && (
+          <button
+            className="bg-blue-800 text-white px-2 rounded"
+            onClick={() => handleEdit(id)}
+          >
+            Edit
+          </button>
+        )}
+      </div>
+    );
+  }
 };
 
 export const MarkedChatAssistant = ({

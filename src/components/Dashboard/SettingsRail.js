@@ -4,22 +4,19 @@ import { BiBrain } from "react-icons/bi";
 const SettingsRail = ({
   activeTab,
   selectedAgent,
-  handleOpenChatHistory,
-  handleOpenChatAssistant,
-  handleOpenAgentHistory,
-  handleOpenAgentAssistant,
-  handleOpenTeamsHistory,
+  handleOpenHistory,
+  handleOpenAssistant,
+  handleOpenRooms,
 }) => {
+
   
   const handleHistoryMenu = () => {
-    if (handleOpenChatHistory) handleOpenChatHistory();
-    if (handleOpenAgentHistory) handleOpenAgentHistory();
-    if (handleOpenTeamsHistory) handleOpenTeamsHistory();
+    if (handleOpenHistory) handleOpenHistory();
+    if (handleOpenRooms) handleOpenRooms();
   };
 
   const handleAssistantMenu = () => {
-    if (handleOpenChatAssistant) handleOpenChatAssistant();
-    if (handleOpenAgentAssistant) handleOpenAgentAssistant();
+    if (handleOpenAssistant) handleOpenAssistant();
   };
 
   return (

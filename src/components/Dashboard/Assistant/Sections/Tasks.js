@@ -5,6 +5,7 @@ import {
   AiOutlineDelete,
   AiOutlinePlus,
   AiOutlineCheck,
+  AiOutlineMinus,
 } from "react-icons/ai";
 
 const Tasks = ({
@@ -12,7 +13,7 @@ const Tasks = ({
   tasks,
   handleNewTask,
   handleDeleteTask,
-  handleMarkCompleteTask,
+  handleUpdateTaskCompletion,
 }) => {
   const [activeTaskButton, setActiveTaskButton] = useState("In Progress");
 
@@ -50,17 +51,29 @@ const Tasks = ({
     }
   };
 
-  const handleCompleteTask = async (taskId) => {
-    try {
-      const taskResponse = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/completedTask?taskId=${taskId}`
-      );
-      if (taskResponse.status === 200) {
-        
-        handleMarkCompleteTask(taskId);
-      } 
-    } catch (e) {
-      console.log(e);
+  const handleToggleTaskCompletion = async (taskId, completed) => {
+    if (completed) {
+      try {
+        const taskResponse = await fetch(
+          `https://etech7-wf-etech7-db-service.azuremicroservices.io/completedTask?taskId=${taskId}`
+        );
+        if (taskResponse.status === 200) {
+          handleUpdateTaskCompletion(taskId, completed);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      try {
+        const taskResponse = await fetch(
+          `https://etech7-wf-etech7-db-service.azuremicroservices.io/notCompletedTask?taskId=${taskId}`
+        );
+        if (taskResponse.status === 200) {
+          handleUpdateTaskCompletion(taskId, completed);
+        }
+      } catch (e) {
+        console.log(e);
+      }
     }
   };
 
@@ -120,17 +133,23 @@ const Tasks = ({
                       {taskName}
                     </p>
                     <div className="flex gap-2">
-                      {!task.completed && (
+                      {!task.completed ? (
                         <AiOutlineCheck
                           size={20}
                           className="cursor-pointer"
-                          onClick={() => handleCompleteTask(id)}
+                          onClick={() => handleToggleTaskCompletion(id, true)}
+                        />
+                      ) : (
+                        <AiOutlineMinus
+                          size={20}
+                          className="cursor-pointer"
+                          onClick={() => handleToggleTaskCompletion(id, false)}
                         />
                       )}
                       <AiOutlineDelete
                         size={20}
                         className="cursor-pointer"
-                        onClick={() => handleDeleteTask(index)}
+                        onClick={() => handleDeleteTask(id)}
                       />
                     </div>
                   </div>

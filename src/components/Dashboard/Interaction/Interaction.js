@@ -35,20 +35,17 @@ const Interaction = ({
   initialUser,
   selectedAgent,
   promptAssistantInput,
-  openChatHistory,
-  openChatAssistant,
-  openAgentHistory,
-  openAgentAssistant,
+  openHistory,
+  openAssistant,
+
   currentConversationIndices,
   conversationHistories,
   setConversationHistories,
   handleTicketStatus,
   handleNewTask,
   handleNewConversation,
-  handleOpenChatHistory,
-  handleOpenChatAssistant,
-  handleOpenAgentHistory,
-  handleOpenAgentAssistant,
+  handleOpenHistory,
+  handleOpenAssistant,
 }) => {
   const token =
     Cookies.get("microsoft_session_token") || Cookies.get("session_token");
@@ -156,28 +153,72 @@ const Interaction = ({
 
     return currentConversation;
   };
+  const handleUpdateEditedResponse = async (messageId, content) => {
+    const cleanedMessageId = messageId.slice(0, -3);
+    try {
+      const response = await fetch(
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/updateAIMessage`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: cleanedMessageId,
+            aiText: content,
+          }),
+        }
+      );
+      if (response.status === 200) {
+        const editedMessageResponse = await response.json();
+        setConversationHistories((prevState) => {
+          const updatedHistories = { ...prevState };
+          const currentConversation =
+            updatedHistories[selectedAgent][
+              currentConversationIndices[selectedAgent]
+            ];
+          const messageIndex = currentConversation.messages.findIndex(
+            (message) => message.id === messageId
+          );
+          if (messageIndex !== 1) {
+            currentConversation.messages[messageIndex].content =
+              editedMessageResponse.aiContent;
+          }
+          return updatedHistories;
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const handleAddMessageToDB = async (aiContent, body) => {
-    const response = await fetch(
-      `https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: body.id,
-          conversationID: body.conversationId,
-          userContent: body.userContent,
-          aiContent: aiContent,
-          timeStamp: Date.now(),
-          deleted: false,
-          intents: body.intents,
-          entities: body.entities,
-        }),
+    try {
+      const response = await fetch(
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/addMessage`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: body.id,
+            conversationID: body.conversationId,
+            userContent: body.userContent,
+            aiContent: aiContent,
+            timeStamp: Date.now(),
+            deleted: false,
+            intents: body.intents,
+            entities: body.entities,
+          }),
+        }
+      );
+      if (response.status === 200) {
+        return response;
       }
-    );
-    return response;
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const handleSubmitFeedback = async (messageId, feedback) => {
@@ -1393,17 +1434,13 @@ const Interaction = ({
   return (
     <div
       onClick={() => {
-        openChatHistory && handleOpenChatHistory(false);
-        openChatAssistant && handleOpenChatAssistant(false);
-        openAgentHistory && handleOpenAgentHistory(false);
-        openAgentAssistant && handleOpenAgentAssistant(false);
+        openHistory && handleOpenHistory(false);
+        openAssistant && handleOpenAssistant(false);
       }}
       className={`relative flex flex-col h-full w-full ${
-        (openAgentHistory && "lg:opacity-100 opacity-5") ||
-        (openAgentAssistant && "lg:opacity-100 opacity-5")
-      }  ${
-        (openChatHistory && "lg:opacity-100 opacity-5") ||
-        (openChatAssistant && "lg:opacity-100 opacity-5")
+        (openHistory && "lg:opacity-100 opacity-5") ||
+        (openAssistant && "lg:opacity-100 opacity-5")
+      }  
       } dark:bg-black transition-all duration-300 ease-in-out bg-white`}
     >
       {!isAtBottom && isOverflowed && (
@@ -1508,6 +1545,7 @@ const Interaction = ({
                     handleTicketConfirmation={handleTicketConfirmation}
                     handleScheduleConfirmation={handleScheduleConfirmation}
                     handleTaskConfirmation={handleTaskConfirmation}
+                    handleUpdateEditedResponse={handleUpdateEditedResponse}
                   />
                 </div>
                 <span>

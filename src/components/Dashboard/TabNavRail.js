@@ -24,10 +24,9 @@ const TabNavRail = ({
   activeTab,
   hoverPreview,
   selectedAgent,
-  openChatHistoryHover,
-  openChatHistory,
-  openAgentSelectionHover,
-  openAgentHistory,
+  openHistoryHover,
+  openHistory,
+  openSelectionHover,
   openSettings,
   currentConversationIndices,
   conversationHistories,
@@ -38,10 +37,10 @@ const TabNavRail = ({
   handleAgentSelected,
   handleTabChange,
   handleOpenSettings,
-  handleOpenChatHistoryVisible,
-  handleOpenChatHistoryHide,
-  handleOpenAgentSelectionVisible,
-  handleOpenAgentSelectionHide,
+  handleOpenHistoryVisible,
+  handleOpenHistoryHide,
+  handleOpenSelectionVisible,
+  handleOpenSelectionHide,
 }) => {
   const { theme, setTheme } = useTheme();
   const router = useRouter();
@@ -70,8 +69,8 @@ const TabNavRail = ({
       <div
         onMouseEnter={
           activeTab === "general"
-            ? handleOpenChatHistoryHide
-            : handleOpenChatHistoryVisible
+            ? handleOpenHistoryHide
+            : handleOpenHistoryVisible
         }
         onClick={() => handleTabChange("general")}
         className="relative flex flex-col items-center cursor-pointer"
@@ -82,27 +81,26 @@ const TabNavRail = ({
         />
         <span className="text-xs">General</span>
       </div>
-      {openChatHistoryHover && (
+      {openHistoryHover && (
         <History
           initialAgents={initialAgents}
           selectedAgent={activeTab === "general" ? selectedAgent : hoverPreview}
           conversationHistories={conversationHistories}
           currentConversationIndices={currentConversationIndices}
           setConversationHistories={setConversationHistories}
-          openChatHistoryHover={openChatHistoryHover}
-          openChatHistory={openChatHistory}
-          openAgentHistory={openAgentHistory}
+          openHistoryHover={openHistoryHover}
+          openHistory={openHistory}
           handleConversationSelected={handleConversationSelected}
           handleNewConversation={handleNewConversation}
           handleDeleteConversation={handleDeleteConversation}
-          handleOpenChatHistoryHide={handleOpenChatHistoryHide}
+          handleOpenHistoryHide={handleOpenHistoryHide}
         />
       )}
       <div
         onMouseEnter={
           activeTab === "agents"
-            ? handleOpenAgentSelectionHide
-            : handleOpenAgentSelectionVisible
+            ? handleOpenSelectionHide
+            : handleOpenSelectionVisible
         }
         className="relative flex flex-col items-center cursor-pointer"
         onClick={() => handleTabChange("agents")}
@@ -113,15 +111,15 @@ const TabNavRail = ({
         />
         <span className="text-xs">Agents</span>
       </div>
-      {openAgentSelectionHover && (
+      {openSelectionHover && (
         <Selection
           activeTab={activeTab}
           selectedAgent={selectedAgent}
           initialAgents={initialAgents}
-          openAgentHistory={openAgentHistory}
-          openAgentSelectionHover={openAgentSelectionHover}
+          openHistory={openHistory}
+          openSelectionHover={openSelectionHover}
           handleAgentSelected={handleAgentSelected}
-          handleOpenAgentSelectionHide={handleOpenAgentSelectionHide}
+          handleOpenSelectionHide={handleOpenSelectionHide}
         />
       )}
 

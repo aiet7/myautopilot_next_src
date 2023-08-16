@@ -77,6 +77,7 @@ const Switch = ({
   handleTicketConfirmation,
   handleScheduleConfirmation,
   handleTaskConfirmation,
+  handleUpdateEditedResponse,
 }) => {
   switch (item.type) {
     case "form":
@@ -228,7 +229,13 @@ const Switch = ({
           return null;
       }
     default:
-      return <MarkedChatInteraction markdown={item.content} />;
+      return (
+        <MarkedChatInteraction
+          id={item.id}
+          markdown={item.content}
+          handleUpdateEditedResponse={handleUpdateEditedResponse}
+        />
+      );
   }
 };
 export default Switch;

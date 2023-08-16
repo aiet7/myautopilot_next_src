@@ -13,24 +13,22 @@ import { useEffect, useState } from "react";
 const History = ({
   initialAgents,
   selectedAgent,
-  openChatHistory,
-  openAgentHistory,
-  openChatHistoryHover,
+  openHistory,
+
+  openHistoryHover,
   currentConversationIndices,
   conversationHistories,
   setConversationHistories,
   handleNewConversation,
   handleDeleteConversation,
   handleConversationSelected,
-  handleOpenChatHistoryHide,
+  handleOpenHistoryHide,
 }) => {
   const [tempTitle, setTempTitle] = useState("");
   const [tempPrompt, setTempPrompt] = useState("");
 
   const [editing, setEditing] = useState(false);
   const [deleting, setDeleting] = useState(false);
-
- 
 
   const handleSaveConversationTitle = async (id, userID, selectedAgent) => {
     let updatedConversation = {
@@ -109,12 +107,12 @@ const History = ({
 
   return (
     <div
-      onMouseLeave={handleOpenChatHistoryHide}
+      onMouseLeave={handleOpenHistoryHide}
       className={`${
-        openChatHistoryHover
+        openHistoryHover
           ? "dark:bg-[#111111] dark:lg:shadow-lg dark:lg:shadow-white/50 bubble-chat bg-[#f6f8fc] absolute bottom-[60px] z-[99] w-full rounded-md flex flex-col lg:left-[60px] lg:top-0 lg:bottom-[20px] lg:w-[300px] lg:shadow-lg lg:shadow-black/50 lg:mt-4"
           : `px-4 py-6 bg-[#f6f8fc] absolute z-10 top-0 bottom-0 transition-all duration-300 ease-in-out transform flex flex-col ${
-              openChatHistory || openAgentHistory
+              openHistory
                 ? "translate-x-0 w-[300px] dark:shadow-white shadow-lg shadow-black/50"
                 : "-translate-x-full w-[300px]"
             } dark:bg-[#111111] dark:xl:border-white/20 xl:relative xl:translate-x-0 xl:min-w-[300px] xl:static xl:border-r`
@@ -129,14 +127,14 @@ const History = ({
           )
         }
         className={`${
-          openChatHistoryHover && "rounded-tr-md  p-7"
+          openHistoryHover && "rounded-tr-md  p-7"
         } w-full p-4 bg-blue-800 text-white`}
       >
         + New Chat
       </button>
       <div
         className={`${
-          openChatHistoryHover && "px-2"
+          openHistoryHover && "px-2"
         } h-[200px] overflow-y-auto h-full scrollbar-thin lg:h-full`}
       >
         {conversationHistories[selectedAgent]?.map((conversation, index) => {
@@ -146,7 +144,7 @@ const History = ({
             <div key={index} className="flex flex-col items-start my-2">
               <div
                 className={`${
-                  openChatHistoryHover
+                  openHistoryHover
                     ? null
                     : `${
                         currentConversationIndices[selectedAgent] === index &&
@@ -186,7 +184,7 @@ const History = ({
                   </div>
                 </div>
 
-                {!openChatHistoryHover && (
+                {!openHistoryHover && (
                   <div className="w-12">
                     {currentConversationIndices[selectedAgent] === index &&
                       editing && (
@@ -213,7 +211,7 @@ const History = ({
                           <AiOutlineCheck
                             size={20}
                             onClick={() => {
-                              handleDeleteConversation(index);
+                              handleDeleteConversation(id);
                               setDeleting(false);
                             }}
                           />

@@ -1,16 +1,16 @@
 "use client";
 
 const Guide = ({
-  openAgentHistory,
-  handleOpenAgentHistory,
+  openHistory,
+  handleOpenHistory,
 }) => {
   return (
     <div
       onClick={() => {
-        openAgentHistory && handleOpenAgentHistory(false);
+        openHistory && handleOpenHistory(false);
       }}
       className={`${
-        openAgentHistory && "lg:opacity-100 opacity-5"
+        openHistory && "lg:opacity-100 opacity-5"
       } dark:bg-black w-full h-full overflow-y-auto scrollbar-thin transition-all duration-300 ease-in-out bg-white`}
     >
       <div className="dark:text-white/80 text-black/70 p-4 max-w-[850px] mx-auto">
