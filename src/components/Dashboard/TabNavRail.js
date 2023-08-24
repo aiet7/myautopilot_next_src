@@ -16,37 +16,27 @@ import { DiMagento } from "react-icons/di";
 import { useTheme } from "next-themes";
 
 import Cookie from "js-cookie";
-import Selection from "../Dashboard/Selection.js";
-import History from "../Dashboard/History/History.js";
 
-const TabNavRail = ({
-  initialAgents,
-  activeTab,
-  hoverPreview,
-  selectedAgent,
-  openHistoryHover,
-  openHistory,
-  openSelectionHover,
-  openSettings,
-  currentConversationIndices,
-  conversationHistories,
-  setConversationHistories,
-  handleNewConversation,
-  handleDeleteConversation,
-  handleConversationSelected,
-  handleAgentSelected,
-  handleTabChange,
-  handleOpenSettings,
-  handleOpenHistoryVisible,
-  handleOpenHistoryHide,
-  handleOpenSelectionVisible,
-  handleOpenSelectionHide,
-}) => {
+import useUiStore from "@/utils/store/ui/uiStore.js";
+
+const TabNavRail = ({}) => {
+  const {
+    openSettings,
+    activeTab,
+    setHoverTab,
+    handleTabChange,
+    handleUpdateGeneralPreview,
+    handleUpdateAgentsPreview,
+    handleUpdateRoomsPreview,
+    handleToggleSettings,
+  } = useUiStore();
+
   const { theme, setTheme } = useTheme();
   const router = useRouter();
 
   const handleLogout = () => {
     localStorage.removeItem("lastTab");
+    localStorage.removeItem("lastAssistantTab");
     localStorage.removeItem("lastConversationIndices");
     localStorage.removeItem("wsIsPending");
     localStorage.removeItem("lastRoomIndex");
@@ -59,19 +49,18 @@ const TabNavRail = ({
     googleLogout();
     router.push("/auth/login");
   };
-
   const handleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
-
   return (
     <div className="dark:lg:border-white/10 dark:bg-[#373737] bg-[#eaf1fb] flex items-center justify-evenly py-3 px-2 gap-4 lg:relative lg:flex-col lg:justify-start lg:border-r">
       <div
-        onMouseEnter={
-          activeTab === "general"
-            ? handleOpenHistoryHide
-            : handleOpenHistoryVisible
-        }
+        onMouseEnter={() => {
+          if (window.innerWidth > 1024) {
+            setHoverTab("general");
+            handleUpdateGeneralPreview();
+          }
+        }}
         onClick={() => handleTabChange("general")}
         className="relative flex flex-col items-center cursor-pointer"
       >
@@ -81,27 +70,13 @@ const TabNavRail = ({
         />
         <span className="text-xs">General</span>
       </div>
-      {openHistoryHover && (
-        <History
-          initialAgents={initialAgents}
-          selectedAgent={activeTab === "general" ? selectedAgent : hoverPreview}
-          conversationHistories={conversationHistories}
-          currentConversationIndices={currentConversationIndices}
-          setConversationHistories={setConversationHistories}
-          openHistoryHover={openHistoryHover}
-          openHistory={openHistory}
-          handleConversationSelected={handleConversationSelected}
-          handleNewConversation={handleNewConversation}
-          handleDeleteConversation={handleDeleteConversation}
-          handleOpenHistoryHide={handleOpenHistoryHide}
-        />
-      )}
       <div
-        onMouseEnter={
-          activeTab === "agents"
-            ? handleOpenSelectionHide
-            : handleOpenSelectionVisible
-        }
+        onMouseEnter={() => {
+          if (window.innerWidth > 1024) {
+            setHoverTab("agents");
+            handleUpdateAgentsPreview();
+          }
+        }}
         className="relative flex flex-col items-center cursor-pointer"
         onClick={() => handleTabChange("agents")}
       >
@@ -111,19 +86,13 @@ const TabNavRail = ({
         />
         <span className="text-xs">Agents</span>
       </div>
-      {openSelectionHover && (
-        <Selection
-          activeTab={activeTab}
-          selectedAgent={selectedAgent}
-          initialAgents={initialAgents}
-          openHistory={openHistory}
-          openSelectionHover={openSelectionHover}
-          handleAgentSelected={handleAgentSelected}
-          handleOpenSelectionHide={handleOpenSelectionHide}
-        />
-      )}
-
       <div
+        onMouseEnter={() => {
+          if (window.innerWidth > 1024) {
+            setHoverTab("teams");
+            handleUpdateRoomsPreview();
+          }
+        }}
         onClick={() => {
           handleTabChange("teams");
         }}
@@ -137,7 +106,7 @@ const TabNavRail = ({
       </div>
 
       <div
-        onClick={handleOpenSettings}
+        onClick={() => handleToggleSettings(true)}
         className="flex flex-col items-center cursor-pointer lg:absolute lg:bottom-0 lg:py-3"
       >
         <FiSettings

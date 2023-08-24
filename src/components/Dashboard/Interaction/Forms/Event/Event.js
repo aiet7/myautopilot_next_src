@@ -1,16 +1,8 @@
-const EventForm = ({
-  currentEventSummary,
-  setCurrentEventSummary,
-  currentEventDescription,
-  setCurrentEventDescription,
-  currentEventStartTime,
-  setCurrentEventStartTime,
-  currentEventEndTime,
-  setCurrentEventEndTime,
-  loading,
-  handleScheduleConfirmation,
-  itemId,
-}) => {
+import useFormsStore from "@/utils/store/interaction/forms/formsStore";
+
+const EventForm = ({ itemId }) => {
+  const { loading, event, setEvent, handleScheduleConfirmation } =
+    useFormsStore();
   return (
     <div>
       <div className="flex flex-col gap-2">
@@ -18,16 +10,18 @@ const EventForm = ({
           <span className="font-bold">Subject</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentEventSummary || ""}
-            onChange={(e) => setCurrentEventSummary(e.target.value)}
+            value={event.currentEventSummary || ""}
+            onChange={(e) => setEvent("currentEventSummary", e.target.value)}
           />
         </div>
         <div>
           <span className="font-bold">Body</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentEventDescription || ""}
-            onChange={(e) => setCurrentEventDescription(e.target.value)}
+            value={event.currentEventDescription || ""}
+            onChange={(e) =>
+              setEvent("currentEventDescription", e.target.value)
+            }
           />
         </div>
         <div>
@@ -35,8 +29,8 @@ const EventForm = ({
           <input
             type="datetime-local"
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentEventStartTime || ""}
-            onChange={(e) => setCurrentEventStartTime(e.target.value)}
+            value={event.currentEventStartTime || ""}
+            onChange={(e) => setEvent("currentEventStartTime", e.target.value)}
           />
         </div>
         <div>
@@ -44,8 +38,8 @@ const EventForm = ({
           <input
             type="datetime-local"
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentEventEndTime || ""}
-            onChange={(e) => setCurrentEventEndTime(e.target.value)}
+            value={event.currentEventEndTime || ""}
+            onChange={(e) => setEvent("currentEventEndTime", e.target.value)}
           />
         </div>
       </div>

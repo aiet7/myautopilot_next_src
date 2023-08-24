@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect } from "react";
+import useTasksStore from "../../../../utils/store/assistant/sections/tasks/taskStore";
 import {
   AiOutlineDelete,
   AiOutlinePlus,
@@ -8,77 +9,25 @@ import {
   AiOutlineMinus,
 } from "react-icons/ai";
 
-const Tasks = ({
-  initialUser,
-  tasks,
-  handleNewTask,
-  handleDeleteTask,
-  handleUpdateTaskCompletion,
-}) => {
-  const [activeTaskButton, setActiveTaskButton] = useState("In Progress");
+const Tasks = ({}) => {
+  const {
+    tasks,
+    userTaskNameInput,
+    activeTaskButton,
+    setUserTaskNameInput,
+    setActiveTaskButton,
+    handleAddTask,
+    handleToggleTaskCompletion,
+    handleDeleteTask,
+    initializeTasks,
+  } = useTasksStore();
 
-  const [userTaskNameInput, setUserTaskNameInput] = useState("");
-
-  const handleActiveTaskButton = (button) => {
-    setActiveTaskButton(button);
-  };
-
-  const handleAddTask = async () => {
-    if (userTaskNameInput.trim() !== "") {
-      try {
-        const taskResponse = await fetch(
-          `https://etech7-wf-etech7-db-service.azuremicroservices.io/addTask`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              userID: initialUser.id,
-              taskName: userTaskNameInput,
-            }),
-          }
-        );
-
-        if (taskResponse.status === 200) {
-          const newTask = await taskResponse.json();
-          setUserTaskNameInput("");
-          handleNewTask(newTask);
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    }
-  };
-
-  const handleToggleTaskCompletion = async (taskId, completed) => {
-    if (completed) {
-      try {
-        const taskResponse = await fetch(
-          `https://etech7-wf-etech7-db-service.azuremicroservices.io/completedTask?taskId=${taskId}`
-        );
-        if (taskResponse.status === 200) {
-          handleUpdateTaskCompletion(taskId, completed);
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    } else {
-      try {
-        const taskResponse = await fetch(
-          `https://etech7-wf-etech7-db-service.azuremicroservices.io/notCompletedTask?taskId=${taskId}`
-        );
-        if (taskResponse.status === 200) {
-          handleUpdateTaskCompletion(taskId, completed);
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    }
-  };
+  useEffect(() => {
+    initializeTasks();
+  }, []);
 
   return (
-    <>
+    <div className="flex-grow flex flex-col gap-4 overflow-hidden">
       <h3 className="text-left text-lg">Tasks</h3>
       <div className="flex flex-col gap-1 w-full">
         <textarea
@@ -88,7 +37,7 @@ const Tasks = ({
           placeholder="Task"
         />
         <button
-          onClick={handleAddTask}
+          onClick={() => handleAddTask(userTaskNameInput)}
           className="flex items-center justify-center gap-1 bg-blue-800 py-2 text-white font-bold"
         >
           <AiOutlinePlus size={25} />
@@ -97,7 +46,7 @@ const Tasks = ({
       </div>
       <div className="dark:border-white/20 flex  items-center border rounded">
         <button
-          onClick={() => handleActiveTaskButton("In Progress")}
+          onClick={() => setActiveTaskButton("In Progress")}
           className={`${
             activeTaskButton === "In Progress" && "bg-blue-800 text-white"
           } w-full rounded p-2`}
@@ -105,7 +54,7 @@ const Tasks = ({
           In Progress
         </button>
         <button
-          onClick={() => handleActiveTaskButton("Complete")}
+          onClick={() => setActiveTaskButton("Complete")}
           className={`${
             activeTaskButton === "Complete" && "bg-blue-800 text-white"
           } w-full rounded p-2`}
@@ -159,7 +108,7 @@ const Tasks = ({
             })}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

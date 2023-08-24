@@ -1,23 +1,21 @@
-const TicketOnboarding = ({
-  currentTicketNewFirstName,
-  setCurrentTicketNewFirstName,
-  currentTicketNewLastName,
-  setCurrentTicketNewLastName,
-  currentTicketNewEmailId,
-  setCurrentTicketNewEmailId,
-  currentTicketNewPhoneNumber,
-  setCurrentTicketNewPhoneNumber,
-  currentTicketLicenseId,
-  setCurrentTicketLicenseId,
-}) => {
+import useFormsStore from "@/utils/store/interaction/forms/formsStore";
+
+const TicketOnboarding = ({}) => {
+  const {
+    ticket: { onBoarding },
+    setTicket,
+  } = useFormsStore();
+
   return (
     <div className="flex flex-col gap-2">
       <div>
         <div>
           <span className="font-bold">New Employee First name</span>
           <input
-            value={currentTicketNewFirstName || ""}
-            onChange={(e) => setCurrentTicketNewFirstName(e.target.value)}
+            value={onBoarding.currentTicketNewFirstName || ""}
+            onChange={(e) =>
+              setTicket("onBoarding.currentTicketNewFirstName", e.target.value)
+            }
             className="h-[50px] border outline-blue-500 w-full px-4"
           />
         </div>
@@ -25,32 +23,40 @@ const TicketOnboarding = ({
       <div>
         <span className="font-bold">New Employee Last name</span>
         <input
-          value={currentTicketNewLastName || ""}
-          onChange={(e) => setCurrentTicketNewLastName(e.target.value)}
+          value={onBoarding.currentTicketNewLastName || ""}
+          onChange={(e) =>
+            setTicket("onBoarding.currentTicketNewLastName", e.target.value)
+          }
           className="h-[50px] border outline-blue-500 w-full px-4"
         />
       </div>
       <div>
         <span className="font-bold">New Employee Email</span>
         <input
-          value={currentTicketNewEmailId || ""}
-          onChange={(e) => setCurrentTicketNewEmailId(e.target.value)}
+          value={onBoarding.currentTicketNewEmailId || ""}
+          onChange={(e) =>
+            setTicket("onBoarding.currentTicketNewEmailId", e.target.value)
+          }
           className="h-[50px] border outline-blue-500 w-full px-4"
         />
       </div>
       <div>
         <span className="font-bold">New Employee Phone Number</span>
         <input
-          value={currentTicketNewPhoneNumber || ""}
-          onChange={(e) => setCurrentTicketNewPhoneNumber(e.target.value)}
+          value={onBoarding.currentTicketNewPhoneNumber || ""}
+          onChange={(e) =>
+            setTicket("onBoarding.currentTicketNewPhoneNumber", e.target.value)
+          }
           className="h-[50px] border outline-blue-500 w-full px-4"
         />
       </div>
       <div>
         <span className="font-bold">LicenseId</span>
         <input
-          value={currentTicketLicenseId || ""}
-          onChange={(e) => setCurrentTicketLicenseId(e.target.value)}
+          value={onBoarding.currentTicketLicenseId || ""}
+          onChange={(e) =>
+            setTicket("onBoarding.currentTicketLicenseId", e.target.value)
+          }
           className="h-[50px] border outline-blue-500 w-full px-4"
         />
       </div>

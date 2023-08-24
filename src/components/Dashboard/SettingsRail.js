@@ -1,22 +1,25 @@
+import useAgentsStore from "@/utils/store/agents/agentsStore";
+import useUiStore from "@/utils/store/ui/uiStore";
 import { AiOutlineMenu } from "react-icons/ai";
 import { BiBrain } from "react-icons/bi";
 
-const SettingsRail = ({
-  activeTab,
-  selectedAgent,
-  handleOpenHistory,
-  handleOpenAssistant,
-  handleOpenRooms,
-}) => {
+const SettingsRail = ({}) => {
+  const { selectedAgent } = useAgentsStore();
+  const {
+    activeTab,
+    handleToggleHistory,
+    handleToggleAssistant,
+    handleToggleRooms,
+  } = useUiStore();
 
-  
   const handleHistoryMenu = () => {
-    if (handleOpenHistory) handleOpenHistory();
-    if (handleOpenRooms) handleOpenRooms();
+    if (activeTab === "general" || activeTab === "agents")
+      handleToggleHistory();
+    if (activeTab === "teams") handleToggleRooms();
   };
 
   const handleAssistantMenu = () => {
-    if (handleOpenAssistant) handleOpenAssistant();
+    if (handleToggleAssistant) handleToggleAssistant();
   };
 
   return (

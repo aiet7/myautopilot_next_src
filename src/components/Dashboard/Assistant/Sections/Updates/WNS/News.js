@@ -1,14 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState } from "react";
+import useUpdatesStore from "@/utils/store/assistant/sections/updates/updatesStore";
 
-const News = ({ wns, handleNewsUpdate }) => {
+const News = ({  }) => {
+  const { wns, userNewsInput, setUserNewsInput, handleNewsUpdate } = useUpdatesStore();
   const {
     initialNews: { articles },
   } = wns;
-
-  const [userNewsInput, setUserNewsInput] = useState("");
 
   return (
     <div className="flex flex-col gap-3">

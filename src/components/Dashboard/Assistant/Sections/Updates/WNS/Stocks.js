@@ -1,8 +1,11 @@
 "use client";
 
-const Stocks = ({ wns, symbols }) => {
+import useUpdatesStore from "@/utils/store/assistant/sections/updates/updatesStore";
+
+const Stocks = ({}) => {
+  const { wns, symbols } = useUpdatesStore();
   const { initialStocks } = wns;
-  
+
   return (
     <div className="flex flex-col gap-3">
       {initialStocks?.map((stocks, index) => {

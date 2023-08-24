@@ -8,98 +8,35 @@ import {
 } from "react-icons/ai";
 import { IoChatboxOutline } from "react-icons/io5";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
+import useAgentsStore from "@/utils/store/agents/agentsStore";
+import useUiStore from "@/utils/store/ui/uiStore";
 
-const History = ({
-  initialAgents,
-  selectedAgent,
-  openHistory,
+const History = ({}) => {
+  const {
+    editing,
+    deleting,
+    tempTitle,
+    tempPrompt,
+    conversationHistories,
+    currentConversationIndices,
+    setEditing,
+    setDeleting,
+    setTempTitle,
+    setTempPrompt,
+    handleSaveConversationTitle,
+    handleNewConversation,
+    handleConversationSelected,
+    handleDeleteConversation,
+    handleCancelEditConversationTitle,
+    handleEditConversationPrompt,
+    handleEditConversationTitle,
+  } = useConversationStore();
 
-  openHistoryHover,
-  currentConversationIndices,
-  conversationHistories,
-  setConversationHistories,
-  handleNewConversation,
-  handleDeleteConversation,
-  handleConversationSelected,
-  handleOpenHistoryHide,
-}) => {
-  const [tempTitle, setTempTitle] = useState("");
-  const [tempPrompt, setTempPrompt] = useState("");
+  const { displayedAgent } = useAgentsStore();
 
-  const [editing, setEditing] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-
-  const handleSaveConversationTitle = async (id, userID, selectedAgent) => {
-    let updatedConversation = {
-      ...conversationHistories[selectedAgent][
-        currentConversationIndices[selectedAgent]
-      ],
-    };
-    updatedConversation.conversationName = tempTitle;
-    updatedConversation.customPrompt = tempPrompt;
-
-    try {
-      const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/addConversation`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: id,
-            userID: userID,
-            agentID: selectedAgent,
-            conversationName: updatedConversation.conversationName,
-            customPrompt: updatedConversation.customPrompt,
-            timeStamp: Date.now(),
-            deleted: false,
-          }),
-        }
-      );
-
-      if (response.status === 200) {
-        let updatedConversationHistory = [
-          ...conversationHistories[selectedAgent],
-        ];
-        updatedConversationHistory[currentConversationIndices[selectedAgent]] =
-          updatedConversation;
-        let newConversationHistories = { ...conversationHistories };
-        newConversationHistories[selectedAgent] = updatedConversationHistory;
-        setConversationHistories(newConversationHistories);
-        setEditing(false);
-      } else {
-        console.log("Error occurred.");
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const handleEditConversationTitle = (selectedAgent) => {
-    setTempTitle(
-      conversationHistories[selectedAgent][
-        currentConversationIndices[selectedAgent]
-      ].conversationName
-    );
-    setEditing(true);
-  };
-
-  const handleEditConversationPrompt = (selectedAgent) => {
-    setTempPrompt(
-      conversationHistories[selectedAgent][
-        currentConversationIndices[selectedAgent]
-      ].customPrompt
-    );
-    setEditing(true);
-  };
-
-  const handleCancelEditConversationTitle = () => {
-    setTempTitle("");
-    setTempPrompt("");
-    setEditing(false);
-  };
+  const { hoverTab, openHistory } = useUiStore();
 
   useEffect(() => {
     setEditing(false);
@@ -107,50 +44,35 @@ const History = ({
 
   return (
     <div
-      onMouseLeave={handleOpenHistoryHide}
-      className={`${
-        openHistoryHover
-          ? "dark:bg-[#111111] dark:lg:shadow-lg dark:lg:shadow-white/50 bubble-chat bg-[#f6f8fc] absolute bottom-[60px] z-[99] w-full rounded-md flex flex-col lg:left-[60px] lg:top-0 lg:bottom-[20px] lg:w-[300px] lg:shadow-lg lg:shadow-black/50 lg:mt-4"
-          : `px-4 py-6 bg-[#f6f8fc] absolute z-10 top-0 bottom-0 transition-all duration-300 ease-in-out transform flex flex-col ${
-              openHistory
-                ? "translate-x-0 w-[300px] dark:shadow-white shadow-lg shadow-black/50"
-                : "-translate-x-full w-[300px]"
-            } dark:bg-[#111111] dark:xl:border-white/20 xl:relative xl:translate-x-0 xl:min-w-[300px] xl:static xl:border-r`
-      }`}
+      className={`${hoverTab === "general" && "bubble-chat h-full  shadow-lg shadow-blue-500"} ${
+        openHistory ? "translate-x-0 w-[300px]" : "-translate-x-full w-[300px] "
+      }  dark:bg-[#111111] bg-[#f6f8fc] absolute z-10 top-0 bottom-0 left-0 p-4 flex flex-col transition-all duration-300 ease-in-out transform xl:relative xl:min-w-[300px] xl:translate-x-0`}
     >
       <button
         onClick={() =>
           handleNewConversation(
-            conversationHistories[selectedAgent]
-              ? conversationHistories[selectedAgent].length
+            conversationHistories[displayedAgent]
+              ? conversationHistories[displayedAgent].length
               : 0
           )
         }
-        className={`${
-          openHistoryHover && "rounded-tr-md  p-7"
-        } w-full p-4 bg-blue-800 text-white`}
+        className={`w-full p-4 bg-blue-800 text-white`}
       >
         + New Chat
       </button>
       <div
-        className={`${
-          openHistoryHover && "px-2"
-        } h-[200px] overflow-y-auto h-full scrollbar-thin lg:h-full`}
+        className={`h-[200px] overflow-y-auto h-full scrollbar-thin lg:h-full`}
       >
-        {conversationHistories[selectedAgent]?.map((conversation, index) => {
+        {conversationHistories[displayedAgent]?.map((conversation, index) => {
           const { id, userID, conversationName, customPrompt, agentID } =
             conversation;
           return (
             <div key={index} className="flex flex-col items-start my-2">
               <div
-                className={`${
-                  openHistoryHover
-                    ? null
-                    : `${
-                        currentConversationIndices[selectedAgent] === index &&
-                        "dark:bg-white/40 bg-black/20"
-                      }`
-                } dark:text-white dark:hover:bg-white/40 hover:bg-black/20 text-black w-full flex items-center justify-between px-2 h-[50px] cursor-pointer`}
+                className={`${`${
+                  currentConversationIndices[displayedAgent] === index &&
+                  "dark:bg-white/40 bg-black/20"
+                }`} dark:text-white dark:hover:bg-white/40 hover:bg-black/20 text-black w-full flex items-center justify-between px-2 h-[50px] cursor-pointer`}
               >
                 <div className="flex items-center">
                   <div
@@ -171,7 +93,7 @@ const History = ({
                     }
                     className="w-40 truncate flex"
                   >
-                    {currentConversationIndices[selectedAgent] === index &&
+                    {currentConversationIndices[displayedAgent] === index &&
                     editing ? (
                       <input
                         value={tempTitle}
@@ -184,9 +106,9 @@ const History = ({
                   </div>
                 </div>
 
-                {!openHistoryHover && (
+                {
                   <div className="w-12">
-                    {currentConversationIndices[selectedAgent] === index &&
+                    {currentConversationIndices[displayedAgent] === index &&
                       editing && (
                         <div className="flex items-center gap-2">
                           <AiOutlineCheck
@@ -195,7 +117,7 @@ const History = ({
                               handleSaveConversationTitle(
                                 id,
                                 userID,
-                                selectedAgent
+                                displayedAgent
                               )
                             }
                           />
@@ -205,7 +127,7 @@ const History = ({
                           />
                         </div>
                       )}
-                    {currentConversationIndices[selectedAgent] === index &&
+                    {currentConversationIndices[displayedAgent] === index &&
                       deleting && (
                         <div className="flex items-center gap-2">
                           <AiOutlineCheck
@@ -221,15 +143,15 @@ const History = ({
                           />
                         </div>
                       )}
-                    {currentConversationIndices[selectedAgent] === index &&
+                    {currentConversationIndices[displayedAgent] === index &&
                       !editing &&
                       !deleting && (
                         <div className="flex items-center gap-2">
                           <AiFillEdit
                             size={20}
                             onClick={() => {
-                              handleEditConversationTitle(selectedAgent);
-                              handleEditConversationPrompt(selectedAgent);
+                              handleEditConversationTitle(displayedAgent);
+                              handleEditConversationPrompt(displayedAgent);
                             }}
                           />
                           <AiFillDelete
@@ -239,9 +161,9 @@ const History = ({
                         </div>
                       )}
                   </div>
-                )}
+                }
               </div>
-              {currentConversationIndices[selectedAgent] === index &&
+              {currentConversationIndices[displayedAgent] === index &&
                 editing && (
                   <div className="w-full">
                     <textarea

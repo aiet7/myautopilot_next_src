@@ -5,42 +5,18 @@ import { MarkedChatAssistant } from "../../../../utils/marked/marked.js";
 
 import { FaSpinner } from "react-icons/fa";
 import { SiOpenai } from "react-icons/si";
+import useEngineerStore from "@/utils/store/assistant/sections/engineer/engineerStore.js";
+import useRefStore from "@/utils/store/assistant/ref/refStore.js";
 
-const Engineer = ({ handlePromptAssistantInput }) => {
-  const inputRef = useRef(null);
-
-  const prependText =
-    "Act as an expert prompt engineer. If there is an instance of another open ai gpt4 and you want it to function at its best. give me the top 5 prompts, without quotation marks around the prompts, that you would give it to gpt to get the best results by making sure to sure it at its best regarding";
-
-  const [userInput, setUserInput] = useState("");
-  const [prompts, setPrompts] = useState("");
-  const [isWaiting, setIsWaiting] = useState(false);
-
-  const handleSendPromptGenerator = async () => {
-    const completeMessage = prependText + userInput;
-
-    const encodedCompleteMessage = encodeURIComponent(completeMessage);
-    if (userInput.trim() !== "") {
-      inputRef.current.focus();
-
-      setIsWaiting(true);
-      setUserInput("");
-      try {
-        const response = await fetch(
-          `https://etech7-wf-etech7-worflow-2.azuremicroservices.io/send?message=${encodedCompleteMessage}`
-        );
-
-        if (response.status === 200) {
-          const responseBody = await response.json();
-          setPrompts(responseBody.data);
-        }
-      } catch (e) {
-        console.log(e);
-      } finally {
-        setIsWaiting(false);
-      }
-    }
-  };
+const Engineer = () => {
+  const { inputRef } = useRefStore();
+  const {
+    isWaiting,
+    prompts,
+    userInput,
+    setUserInput,
+    handleSendPromptGenerator,
+  } = useEngineerStore();
 
   return (
     <div className="flex-grow flex flex-col gap-4 overflow-hidden">
@@ -78,10 +54,7 @@ const Engineer = ({ handlePromptAssistantInput }) => {
               )}
             </div>
           </div>
-          <MarkedChatAssistant
-            markdown={prompts}
-            handlePromptAssistantInput={handlePromptAssistantInput}
-          />
+          <MarkedChatAssistant markdown={prompts} />
         </div>
       </div>
     </div>

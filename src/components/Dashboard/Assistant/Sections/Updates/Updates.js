@@ -1,63 +1,30 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { generalUpdates } from "../../../../../utils/prompts/generalPromptLibrary";
-import { handleWnsData } from "../../../../../utils/api/wns";
+import { useEffect } from "react";
 
 import Stocks from "./WNS/Stocks";
 import News from "./WNS/News";
 import Weather from "./WNS/Weather";
+import useAssistantStore from "@/utils/store/assistant/assistantStore";
+import useUpdatesStore from "@/utils/store/assistant/sections/updates/updatesStore";
 
-const Updates = ({ initialUser, handlePromptAssistantInput }) => {
-  const [wns, setWns] = useState({
-    initialStocks: null,
-    initialNews: null,
-    initialWeather: null,
-  });
-
-  const [activeWnsButton, setActiveWnsButton] = useState("Stocks");
-
-  const [symbols, setSymbols] = useState([
-    "GOOGL",
-    "AAPL",
-    "MSFT",
-    "META",
-    "NVDA",
-  ]);
-  const [locationNews, setLocationNews] = useState("New York");
-  const [locationWeather, setLocationWeather] = useState(
-    initialUser.address.zipcode || "10001"
-  );
-  const handleActiveWnsButton = (button) => {
-    setActiveWnsButton(button);
-  };
-
-  const handleNewsUpdate = (newNews) => {
-    setLocationNews(newNews);
-  };
-
-  const handleWeatherUpdate = (newWeather) => {
-    setLocationWeather(newWeather);
-  };
+const Updates = ({}) => {
+  const { handlePromptAssistantInput } = useAssistantStore();
+  const {
+    locationNews,
+    locationWeather,
+    generalUpdates,
+    activeWnsButton,
+    handleActiveWnsButton,
+    initializeWns,
+  } = useUpdatesStore();
 
   useEffect(() => {
-    const handleGetWns = async () => {
-      try {
-        const response = await handleWnsData(
-          symbols,
-          locationNews,
-          locationWeather
-        );
-        setWns(response);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    handleGetWns();
-  }, [initialUser, symbols, locationNews, locationWeather]);
+    initializeWns();
+  }, [locationNews, locationWeather]);
 
   return (
-    <>
+    <div className="flex-grow flex flex-col gap-4 overflow-hidden">
       <h3 className="text-left text-lg">Updates</h3>
       {generalUpdates.map((generalUpdates, index) => {
         const { name, description, prompt } = generalUpdates;
@@ -107,19 +74,12 @@ const Updates = ({ initialUser, handlePromptAssistantInput }) => {
       </div>
       <div className="flex-grow overflow-y-auto scrollbar-thin ">
         <div className="flex flex-grow flex-col gap-4 ">
-          {activeWnsButton === "Stocks" && (
-            <Stocks wns={wns} symbols={symbols} />
-          )}
-
-          {activeWnsButton === "News" && (
-            <News wns={wns} handleNewsUpdate={handleNewsUpdate} />
-          )}
-          {activeWnsButton === "Weather" && (
-            <Weather wns={wns} handleWeatherUpdate={handleWeatherUpdate} />
-          )}
+          {activeWnsButton === "Stocks" && <Stocks />}
+          {activeWnsButton === "News" && <News />}
+          {activeWnsButton === "Weather" && <Weather h />}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

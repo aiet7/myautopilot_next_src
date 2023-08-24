@@ -49,12 +49,11 @@ body {
 }
 
 @media (min-width: 1024px) {
-
   .bubble-chat::after {
     content: "";
     position: absolute;
     left: -10px;
-    top: 0px;
+    top: 15px;
     width: 0;
     height: 0;
     border-style: solid;
@@ -66,19 +65,19 @@ body {
     content: "";
     position: absolute;
     left: -10px;
-    top: 0px;
+    top: 15px;
     width: 0;
     height: 0;
     border-style: solid;
     border-width: 10px 10px 10px 0;
-    border-color: transparent #1e40af transparent transparent;
+    border-color: transparent #f6f8fc transparent transparent;
   }
 
   .dark .bubble-chat::after {
     content: "";
     position: absolute;
     left: -10px;
-    top: 0px;
+    top: 15px;
     width: 0;
     height: 0;
     border-style: solid;
@@ -90,19 +89,19 @@ body {
     content: "";
     position: absolute;
     left: -10px;
-    top: 0px;
+    top: 15px;
     width: 0;
     height: 0;
     border-style: solid;
     border-width: 10px 10px 10px 0;
-    border-color: transparent #1e40af transparent transparent;
+    border-color: transparent #111111 transparent transparent;
   }
 
   .bubble-agents::after {
     content: "";
     position: absolute;
     left: -10px;
-    top: 59px;
+    top: 70px;
     width: 0;
     height: 0;
     border-style: solid;
@@ -114,19 +113,19 @@ body {
     content: "";
     position: absolute;
     left: -10px;
-    top: 59px;
+    top: 70px;
     width: 0;
     height: 0;
     border-style: solid;
     border-width: 10px 10px 10px 0;
-    border-color: transparent #1e40af transparent transparent;
+    border-color: transparent #f6f8fc transparent transparent;
   }
 
   .dark .bubble-agents::after {
     content: "";
     position: absolute;
     left: -10px;
-    top: 59px;
+    top: 70px;
     width: 0;
     height: 0;
     border-style: solid;
@@ -138,12 +137,60 @@ body {
     content: "";
     position: absolute;
     left: -10px;
-    top: 59px;
+    top: 70px;
     width: 0;
     height: 0;
     border-style: solid;
     border-width: 10px 10px 10px 0;
-    border-color: transparent #1e40af transparent transparent;
+    border-color: transparent #111111 transparent transparent;
+  }
+
+  .bubble-teams::after {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 120px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 10px 10px 0;
+    border-color: transparent rgba(0, 0, 0, 0.8) transparent transparent;
+    z-index: -1;
+  }
+  .bubble-teams::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 120px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 10px 10px 0;
+    border-color: transparent #f6f8fc transparent transparent;
+  }
+
+  .dark .bubble-teams::after {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 120px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 10px 10px 0;
+    border-color: transparent rgba(0, 0, 0, 0.8) transparent transparent;
+    z-index: -1;
+  }
+  .dark .bubble-teams::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 120px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 10px 10px 0;
+    border-color: transparent #111111 transparent transparent;
   }
 }
 

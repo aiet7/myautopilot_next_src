@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { MarkedChatInteraction } from "../../../utils/marked/marked.js";
 import { BsFillSendFill } from "react-icons/bs";
 import { AiOutlineUser } from "react-icons/ai";
@@ -9,78 +9,30 @@ import { HiOutlineLightBulb } from "react-icons/hi";
 import { HiOutlineArrowSmallDown } from "react-icons/hi2";
 
 import { FaSpinner } from "react-icons/fa";
+import useTeamsStore from "@/utils/store/teams/teamsStore.js";
+import useUiStore from "@/utils/store/ui/uiStore.js";
+import useRefStore from "@/utils/store/teams/refStore.js";
 
-const Discussion = ({
-  showSummarized,
-  connected,
-  wsIsPending,
-  activeTab,
-  teamsHistories,
-  currentTeamsIndex,
-  setTeamsHistories,
-  openRooms,
-  handleConnectToWebSocket,
-  handleShowSummarized,
-  handleOpenRooms,
-}) => {
-  const inputRef = useRef(null);
-  const chatContainerRef = useRef(null);
+const Discussion = () => {
+  const { activeTab, openRooms, handleToggleRooms } = useUiStore();
+  const {
+    userInput,
+    textAreaHeight,
+    isAtBottom,
+    isOverflowed,
+    connected,
+    wsIsPending,
+    showSummarized,
+    teamsHistories,
+    currentTeamsIndex,
+    handleShowSummarized,
+    handleSendUserMessage,
+    handleCheckScroll,
+    handleScrollToBottom,
+    handleTextAreaChange,
+  } = useTeamsStore();
 
-  const latestMessageRef = useRef(null);
-
-  const [userInput, setUserInput] = useState("");
-  const [textAreaHeight, setTextAreaHeight] = useState("24px");
-
-  const [isAtBottom, setIsAtBottom] = useState(false);
-  const [isOverflowed, setIsOverflowed] = useState(false);
-
-  const handleSendUserMessage = (message) => {
-    if (message.trim() !== "") {
-      handleAddUserMessage(message);
-      setUserInput("");
-      try {
-        handleConnectToWebSocket(teamsHistories[currentTeamsIndex].id, message);
-      } catch (e) {
-        console.log(e);
-      }
-    }
-  };
-
-  const handleAddUserMessage = (message) => {
-    setTeamsHistories((prevState) => {
-      const newHistories = [...prevState];
-      newHistories[currentTeamsIndex].messages.push({
-        id: Date.now() + "-user",
-        originalContent: message,
-        summarizedContent: null,
-        role: "user",
-        timeStamp: new Date().toISOString(),
-      });
-      return newHistories;
-    });
-  };
-
-  const handleTextAreaChange = (e) => {
-    setUserInput(e.target.value);
-    setTextAreaHeight(`${e.target.scrollHeight}px`);
-  };
-
-  const handleScrollToBottom = (smooth) => {
-    latestMessageRef.current?.scrollIntoView({
-      behavior: smooth ? "smooth" : "auto",
-      block: "end",
-    });
-  };
-
-  const handleCheckScroll = () => {
-    const container = chatContainerRef.current;
-    const atBottom =
-      Math.abs(
-        container.scrollHeight - container.scrollTop - container.clientHeight
-      ) < 5;
-    setIsAtBottom(atBottom);
-    setIsOverflowed(container.scrollHeight > container.clientHeight);
-  };
+  const { inputRef, chatContainerRef, latestMessageRef } = useRefStore();
 
   useEffect(() => {
     if (inputRef.current) {
@@ -102,7 +54,7 @@ const Discussion = ({
   return (
     <div
       onClick={() => {
-        openRooms && handleOpenRooms(false);
+        openRooms && handleToggleRooms(false);
       }}
       className={`relative flex flex-col h-full w-full ${
         openRooms && "lg:opacity-100 opacity-5"
@@ -150,7 +102,10 @@ const Discussion = ({
                       <p className="text-lg font-bold">{item.role}</p>
                     )}
 
-                    <MarkedChatInteraction markdown={displayedContent} />
+                    <MarkedChatInteraction
+                      id={item.id}
+                      markdown={displayedContent}
+                    />
                   </div>
                 </div>
               </div>
@@ -174,9 +129,10 @@ const Discussion = ({
               );
             })}
         </div>
-        {Object.values(wsIsPending).every(
-          (statusObj) => statusObj.status === "complete"
-        ) &&
+        {wsIsPending &&
+          Object.values(wsIsPending).every(
+            (statusObj) => statusObj.status === "complete"
+          ) &&
           teamsHistories[currentTeamsIndex]?.messages?.length > 0 && (
             <button
               className="bg-blue-800 text-white px-4 rounded-sm  w-[150px]"

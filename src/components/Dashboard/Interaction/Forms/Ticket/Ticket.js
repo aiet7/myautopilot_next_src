@@ -1,36 +1,28 @@
+import useFormsStore from "@/utils/store/interaction/forms/formsStore";
 import TicketOnboarding from "./TicketOnboarding";
-
-const TicketForm = ({
-  currentTicketTitle,
-  setCurrentTicketTitle,
-  currentTicketDescription,
-  setCurrentTicketDescription,
-  currentTicketCategory,
-  setCurrentTicketCategory,
+import {
   categories,
-  currentTicketSubCategory,
-  setCurrentTicketSubCategory,
-  filteredSubCategories,
-  currentTicketName,
-  setCurrentTicketName,
-  currentTicketEmailId,
-  setCurrentTicketEmailId,
-  currentTicketPhoneNumber,
-  setCurrentTicketPhoneNumber,
-  currentTicketNewFirstName,
-  setCurrentTicketNewFirstName,
-  currentTicketNewLastName,
-  setCurrentTicketNewLastName,
-  currentTicketNewEmailId,
-  setCurrentTicketNewEmailId,
-  currentTicketNewPhoneNumber,
-  setCurrentTicketNewPhoneNumber,
-  currentTicketLicenseId,
-  setCurrentTicketLicenseId,
-  loading,
-  handleTicketConfirmation,
-  itemId,
-}) => {
+  subCategories,
+} from "../../../../../utils/tickets/ticketCreation";
+import { useEffect } from "react";
+
+const TicketForm = ({ itemId }) => {
+  const {
+    loading,
+    ticket,
+    filteredSubCategories,
+    setTicket,
+    setFilteredSubCategories,
+    handleTicketConfirmation,
+  } = useFormsStore();
+
+  useEffect(() => {
+    const filtered = subCategories.filter(
+      (subCategory) => subCategory.category === ticket.currentTicketCategory
+    );
+    setFilteredSubCategories(filtered);
+  }, [ticket.currentTicketCategory, subCategories]);
+
   return (
     <div>
       <div className="flex flex-col gap-2">
@@ -38,24 +30,26 @@ const TicketForm = ({
           <span className="font-bold">Ticket Name</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentTicketTitle || ""}
-            onChange={(e) => setCurrentTicketTitle(e.target.value)}
+            value={ticket.currentTicketTitle || ""}
+            onChange={(e) => setTicket("currentTicketTitle", e.target.value)}
           />
         </div>
         <div>
           <span className="font-bold">Description</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentTicketDescription || ""}
-            onChange={(e) => setCurrentTicketDescription(e.target.value)}
+            value={ticket.currentTicketDescription || ""}
+            onChange={(e) =>
+              setTicket("currentTicketDescription", e.target.value)
+            }
           />
         </div>
         <div>
           <span className="font-bold">Category</span>
 
           <select
-            value={currentTicketCategory || ""}
-            onChange={(e) => setCurrentTicketCategory(e.target.value)}
+            value={ticket.currentTicketCategory || ""}
+            onChange={(e) => setTicket("currentTicketCategory", e.target.value)}
             className="h-[50px] border outline-blue-500 w-full px-4"
           >
             <option value="">Select a category</option>
@@ -69,8 +63,10 @@ const TicketForm = ({
         <div>
           <span className="font-bold">Subcategory</span>
           <select
-            value={currentTicketSubCategory || ""}
-            onChange={(e) => setCurrentTicketSubCategory(e.target.value)}
+            value={ticket.currentTicketSubCategory || ""}
+            onChange={(e) =>
+              setTicket("currentTicketSubCategory", e.target.value)
+            }
             className="h-[50px] border outline-blue-500 w-full px-4"
           >
             <option value="">Select a subcategory</option>
@@ -81,43 +77,34 @@ const TicketForm = ({
             ))}
           </select>
         </div>
-        {currentTicketCategory === "TRAINING_OR_ONBOARDING" &&
-          currentTicketSubCategory === "NEW_EMPLOYEE_ONBOARDING" && (
-            <TicketOnboarding
-              currentTicketNewFirstName={currentTicketNewFirstName}
-              setCurrentTicketNewFirstName={setCurrentTicketNewFirstName}
-              currentTicketNewLastName={currentTicketNewLastName}
-              setCurrentTicketNewLastName={setCurrentTicketNewLastName}
-              currentTicketNewEmailId={currentTicketNewEmailId}
-              setCurrentTicketNewEmailId={setCurrentTicketNewEmailId}
-              currentTicketNewPhoneNumber={currentTicketNewPhoneNumber}
-              setCurrentTicketNewPhoneNumber={setCurrentTicketNewPhoneNumber}
-              currentTicketLicenseId={currentTicketLicenseId}
-              setCurrentTicketLicenseId={setCurrentTicketLicenseId}
-            />
+        {ticket.currentTicketCategory === "TRAINING_OR_ONBOARDING" &&
+          ticket.currentTicketSubCategory === "NEW_EMPLOYEE_ONBOARDING" && (
+            <TicketOnboarding />
           )}
         <div>
           <span className="font-bold">Name</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentTicketName || ""}
-            onChange={(e) => setCurrentTicketName(e.target.value)}
+            value={ticket.currentTicketName || ""}
+            onChange={(e) => setTicket("currentTicketName", e.target.value)}
           />
         </div>
         <div>
           <span className="font-bold">Email</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentTicketEmailId || ""}
-            onChange={(e) => setCurrentTicketEmailId(e.target.value)}
+            value={ticket.currentTicketEmailId || ""}
+            onChange={(e) => setTicket("currentTicketEmailId", e.target.value)}
           />
         </div>
         <div>
           <span className="font-bold">Phone Number</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentTicketPhoneNumber || ""}
-            onChange={(e) => setCurrentTicketPhoneNumber(e.target.value)}
+            value={ticket.currentTicketPhoneNumber || ""}
+            onChange={(e) =>
+              setTicket("currentTicketPhoneNumber", e.target.value)
+            }
           />
         </div>
       </div>

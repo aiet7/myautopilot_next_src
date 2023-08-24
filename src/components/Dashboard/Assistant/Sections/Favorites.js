@@ -1,91 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import useAssistantStore from "@/utils/store/assistant/assistantStore";
+import useFavoritesStore from "@/utils/store/assistant/sections/favorites/favoritesStore";
+import { useEffect } from "react";
 
 import { AiOutlinePlus, AiOutlineDelete } from "react-icons/ai";
 import { MdOutlineArrowDropUp, MdOutlineArrowDropDown } from "react-icons/md";
 
-const Favorites = ({ initialUser }) => {
-  const [customPrompt, setCustomPrompt] = useState({
-    promptName: "",
-    prompt: "",
-  });
+const Favorites = ({}) => {
+  const { handlePromptAssistantInput } = useAssistantStore();
+  const {
+    customPrompt,
+    favoritePrompts,
+    showPromptIndex,
+    setCustomPrompt,
+    setShowPromptIndex,
+    handleAddPrompt,
+    handleDeletePrompt,
+    initializeFavorites,
+  } = useFavoritesStore();
 
-  const [favoritePrompts, setFavoritePrompts] = useState(
-    initialUser.favorite || []
-  );
-
-  const [showPromptIndex, setShowPromptIndex] = useState(null);
-
-  const handleAddPrompt = async () => {
-    if (
-      customPrompt.promptName.trim() !== "" &&
-      customPrompt.prompt.trim() !== ""
-    ) {
-      try {
-        const response = await fetch(
-          `https://etech7-wf-etech7-db-service.azuremicroservices.io/addFavorite?userId=${initialUser.id}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(customPrompt),
-          }
-        );
-
-        if (response.status === 200) {
-          const updatedFavoritePrompts = [...favoritePrompts, customPrompt];
-          setFavoritePrompts(updatedFavoritePrompts);
-        } else {
-          console.log("Failed to add");
-        }
-      } catch (e) {
-        console.log(e);
-      }
-
-      setCustomPrompt({ promptName: "", prompt: "" });
-    }
-  };
-
-  const handleDeletePrompt = async (index) => {
-    const promptToDelete = favoritePrompts[index];
-    try {
-      const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/deleteFavorite?id=${initialUser.id}&promptName=${promptToDelete.promptName}`
-      );
-      if (response.status === 200) {
-        const updatedFavoritePrompts = favoritePrompts.filter(
-          (prompt) => prompt.promptName !== promptToDelete.promptName
-        );
-        setFavoritePrompts(updatedFavoritePrompts);
-      } else {
-        console.log("delete failed");
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  useEffect(() => {
+    initializeFavorites();
+  }, []);
   return (
-    <>
+    <div className="flex-grow flex flex-col gap-4 overflow-hidden">
       <h3 className="text-left text-lg">Favorites</h3>
       <div className="flex flex-col gap-1 w-full">
         <input
           value={customPrompt.promptName}
-          onChange={(e) =>
-            setCustomPrompt({
-              ...customPrompt,
-              promptName: e.target.value,
-            })
-          }
+          onChange={(e) => setCustomPrompt("promptName", e.target.value)}
           className="px-2 py-1"
           placeholder="Prompt Name"
         />
         <textarea
           value={customPrompt.prompt}
-          onChange={(e) =>
-            setCustomPrompt({ ...customPrompt, prompt: e.target.value })
-          }
+          onChange={(e) => setCustomPrompt("prompt", e.target.value)}
           className="px-2 py-1 scrollbar-thin min-h-[100px] max-h-[200px]"
           placeholder="Prompt"
         />
@@ -168,7 +118,7 @@ const Favorites = ({ initialUser }) => {
           })}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

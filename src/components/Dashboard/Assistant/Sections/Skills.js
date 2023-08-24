@@ -1,28 +1,16 @@
 "use client";
 
-import { ITSkills } from "../../../../utils/prompts/ITPromptLibrary.js";
-import { generalSkills } from "../../../../utils/prompts/generalPromptLibrary.js";
+import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
+import useSkillsStore from "@/utils/store/assistant/sections/skills/skillsStore";
 
-const Skills = ({
-  initialAgents,
-  selectedAgent,
-  handlePromptAssistantInput,
-}) => {
-  const handleGetSkills = () => {
-    const agentName = initialAgents.find(
-      (agent) => agent.id === selectedAgent
-    )?.agentName;
-    if (agentName === "IT Agent") {
-      return ITSkills;
-    } else {
-      return generalSkills;
-    }
-  };
+const Skills = ({}) => {
+  const { handlePromptAssistantInput } = useAssistantStore();
+  const { handleGetSkills } = useSkillsStore();
 
   const skillsArray = handleGetSkills();
-
+  
   return (
-    <>
+    <div className="flex-grow flex flex-col gap-4 overflow-hidden">
       <h3 className="text-left text-lg ">Skills</h3>
       <div className="flex-grow overflow-y-auto scrollbar-thin">
         <div className="flex flex-grow flex-col gap-4">
@@ -47,7 +35,7 @@ const Skills = ({
           })}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

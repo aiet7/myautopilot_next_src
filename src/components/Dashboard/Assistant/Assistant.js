@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 import AssistantRail from "./AssistantRail.js";
 import Skills from "./Sections/Skills.js";
 import Updates from "./Sections/Updates/Updates.js";
@@ -10,122 +8,28 @@ import Tasks from "./Sections/Tasks.js";
 import Notes from "./Sections/Notes.js";
 import Workflows from "./Sections/Workflow.js";
 import Favorites from "./Sections/Favorites.js";
+import useUiStore from "@/utils/store/ui/uiStore.js";
+import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
 
-const Assistant = ({
-  activeTab,
-  tasks,
-  ticketIsPending,
-  initialAgents,
-  initialUser,
-  selectedAgent,
-  openAssistant,
-  handlePromptAssistantInput,
-  handleNewTask,
-  handleDeleteTask,
-  handleUpdateTaskCompletion,
-}) => {
-  const [activeAssistantButton, setActiveAssistantButton] =
-    useState("Engineer");
-
-  const selectedAgentName = initialAgents.find(
-    (agent) => agent.id === selectedAgent
-  )?.agentName;
-
-  const handleAssistantTabChange = (tab) => {
-    setActiveAssistantButton(tab);
-  };
+const Assistant = ({}) => {
+  const { openAssistant } = useUiStore();
+  const { activeAssistantButton } = useAssistantStore();
 
   return (
     <div
-      className={`bg-[#f6f8fc] absolute z-10 top-0 bottom-0 right-0 transition-all duration-300 ease-in-out transform flex ${
-        openAssistant
-          ? "translate-x-0 w-[300px] dark:shadow-white shadow-lg shadow-black/50"
-          : "translate-x-full w-[300px]"
-      } dark:bg-[#111111] dark:xl:border-white/20 xl:relative xl:translate-x-0 xl:min-w-[300px] xl:static xl:border-l`}
+      className={`absolute z-10 top-0 bottom-0 right-0 ${
+        openAssistant ? "translate-x-0 w-[300px]" : "translate-x-full w-[300px]"
+      }  dark:bg-[#111111] bg-[#f6f8fc] flex  transition-all duration-300 ease-in-out transform xl:relative xl:min-w-[300px]  xl:translate-x-0`}
     >
-      <AssistantRail
-        activeTab={activeTab}
-        activeAssistantButton={activeAssistantButton}
-        handleAssistantTabChange={handleAssistantTabChange}
-      />
+      <AssistantRail />
       <div className="flex flex-col px-4 py-6 w-full overflow-hidden ">
-        <div
-          className={`${
-            activeAssistantButton === "Engineer"
-              ? "flex-grow flex flex-col gap-4 overflow-hidden"
-              : "hidden"
-          }`}
-        >
-          <Engineer handlePromptAssistantInput={handlePromptAssistantInput} />
-        </div>
-        <div
-          className={`${
-            activeAssistantButton === "Skills"
-              ? "flex-grow flex flex-col gap-4 overflow-hidden"
-              : "hidden"
-          }`}
-        >
-          <Skills
-            initialAgents={initialAgents}
-            selectedAgent={selectedAgent}
-            handlePromptAssistantInput={handlePromptAssistantInput}
-          />
-        </div>
-        <div
-          className={`${
-            activeAssistantButton === "Updates"
-              ? "flex-grow flex flex-col gap-4 overflow-hidden"
-              : "hidden"
-          }`}
-        >
-          <Updates
-            initialUser={initialUser}
-            handlePromptAssistantInput={handlePromptAssistantInput}
-          />
-        </div>
-
-        <div
-          className={`${
-            activeAssistantButton === "Tasks"
-              ? "flex-grow flex flex-col gap-4 overflow-hidden"
-              : "hidden"
-          }`}
-        >
-          <Tasks
-            initialUser={initialUser}
-            tasks={tasks}
-            handleNewTask={handleNewTask}
-            handleDeleteTask={handleDeleteTask}
-            handleUpdateTaskCompletion={handleUpdateTaskCompletion}
-          />
-        </div>
-        <div
-          className={`${
-            activeAssistantButton === "Notes"
-              ? "flex-grow flex flex-col gap-4 overflow-hidden"
-              : "hidden"
-          }`}
-        >
-          <Notes />
-        </div>
-        <div
-          className={`${
-            activeAssistantButton === "Favorites"
-              ? "flex-grow flex flex-col gap-4 overflow-hidden"
-              : "hidden"
-          }`}
-        >
-          <Favorites initialUser={initialUser} />
-        </div>
-        <div
-          className={`${
-            activeAssistantButton === "Workflows"
-              ? "flex-grow flex flex-col gap-4 overflow-hidden"
-              : "hidden"
-          }`}
-        >
-          <Workflows ticketIsPending={ticketIsPending} />
-        </div>
+        {activeAssistantButton === "Engineer" && <Engineer />}
+        {activeAssistantButton === "Skills" && <Skills />}
+        {activeAssistantButton === "Updates" && <Updates />}
+        {activeAssistantButton === "Tasks" && <Tasks />}
+        {activeAssistantButton === "Notes" && <Notes />}
+        {activeAssistantButton === "Favorites" && <Favorites />}
+        {activeAssistantButton === "Workflows" && <Workflows />}
       </div>
     </div>
   );

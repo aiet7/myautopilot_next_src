@@ -1,14 +1,7 @@
-const EmailForm = ({
-  currentEmailId,
-  setCurrentEmailId,
-  currentEmailSubject,
-  setCurrentEmailSubject,
-  currentEmailBody,
-  setCurrentEmailBody,
-  loading,
-  handleEmailConfirmation,
-  itemId,
-}) => {
+import useFormsStore from "@/utils/store/interaction/forms/formsStore";
+
+const EmailForm = ({ itemId }) => {
+  const { loading, email, setEmail, handleEmailConfirmation } = useFormsStore();
   return (
     <div>
       <div className="flex flex-col gap-2">
@@ -16,24 +9,24 @@ const EmailForm = ({
           <span className="font-bold">Email</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentEmailId || ""}
-            onChange={(e) => setCurrentEmailId(e.target.value)}
+            value={email.currentEmailId || ""}
+            onChange={(e) => setEmail("currentEmailId", e.target.value)}
           />
         </div>
         <div>
           <span className="font-bold">Subject</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentEmailSubject || ""}
-            onChange={(e) => setCurrentEmailSubject(e.target.value)}
+            value={email.currentEmailSubject || ""}
+            onChange={(e) => setEmail("currentEmailSubject", e.target.value)}
           />
         </div>
         <div>
           <span className="font-bold">Body</span>
           <textarea
             className="h-[200px] border outline-blue-500 w-full px-4 resize-none"
-            value={currentEmailBody || ""}
-            onChange={(e) => setCurrentEmailBody(e.target.value)}
+            value={email.currentEmailBody || ""}
+            onChange={(e) => setEmail("currentEmailBody", e.target.value)}
           />
         </div>
       </div>

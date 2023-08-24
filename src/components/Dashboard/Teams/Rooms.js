@@ -7,76 +7,28 @@ import {
   AiOutlineClose,
 } from "react-icons/ai";
 import { RiTeamLine } from "react-icons/ri";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import useTeamsStore from "@/utils/store/teams/teamsStore";
+import useUiStore from "@/utils/store/ui/uiStore";
 
-const Rooms = ({
-  teamsHistories,
-  currentTeamsIndex,
-  openRooms,
-  setTeamsHistories,
-  handleTeamRoomSelected,
-  handleCreateNewRoom,
-  handleSaveRoom,
-  handleDeleteTeamRoom,
-}) => {
-  const [tempTitle, setTempTitle] = useState("");
-  const [editing, setEditing] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-
-  const handleSaveRoomTitle = async (id, userID) => {
-    let updatedTeamRoom = { ...teamsHistories[currentTeamsIndex] };
-    try {
-      const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/addRoom`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: id,
-            userID: userID,
-            roomIndustry: updatedTeamRoom.roomIndustry,
-            roomUserInput: updatedTeamRoom.roomUserInput,
-            roomName: updatedTeamRoom.roomName,
-          }),
-        }
-      );
-
-      if (response.status === 200) {
-        let updatedTeamHistory = [...teamsHistories];
-        updatedTeamHistory[currentTeamsIndex] = updatedTeamRoom;
-        setTeamsHistories(updatedTeamHistory);
-        setEditing(false);
-      } else {
-        console.log("error occured");
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const handleEditRoomTitle = (index) => {
-    setTempTitle(teamsHistories[index].roomName);
-    setEditing(true);
-  };
-
-  const handleCancelEditRoomTitle = () => {
-    setTeamsHistories((prevState) => {
-      const updatedRooms = [...prevState];
-      updatedRooms[currentTeamsIndex].roomName = tempTitle;
-      return updatedRooms;
-    });
-    setEditing(false);
-  };
-
-  const handleRoomConfig = (field, value) => {
-    setTeamsHistories((prevState) => {
-      const newHistories = [...prevState];
-      newHistories[currentTeamsIndex][field] = value;
-      return newHistories;
-    });
-  };
+const Rooms = ({}) => {
+  const { hoverTab, openRooms } = useUiStore();
+  const {
+    editing,
+    deleting,
+    setEditing,
+    setDeleting,
+    teamsHistories,
+    currentTeamsIndex,
+    handleCreateNewRoom,
+    handleSaveRoom,
+    handleDeleteTeamRoom,
+    handleTeamRoomSelected,
+    handleEditRoomTitle,
+    handleCancelEditRoomTitle,
+    handleSaveRoomTitle,
+    handleRoomConfig,
+  } = useTeamsStore();
 
   useEffect(() => {
     setEditing(false);
@@ -84,11 +36,11 @@ const Rooms = ({
 
   return (
     <div
-      className={`px-4 py-6 bg-[#f6f8fc] absolute z-10 top-0 bottom-0 transition-all duration-300 ease-in-out transform flex flex-col ${
-        openRooms
-          ? "translate-x-0 w-[300px] dark:shadow-white shadow-lg shadow-black/50"
-          : "-translate-x-full w-[300px]"
-      } dark:bg-[#111111] dark:xl:border-white/20 xl:relative xl:translate-x-0 xl:min-w-[300px] xl:static xl:border-r`}
+      className={`${
+        hoverTab === "teams" && "bubble-teams h-full  shadow-lg shadow-blue-500"
+      } ${
+        openRooms ? "translate-x-0 w-[300px]" : "-translate-x-full w-[300px] "
+      }  dark:bg-[#111111] bg-[#f6f8fc] absolute z-10 top-0 bottom-0 left-0 p-4 flex flex-col transition-all duration-300 ease-in-out transform xl:relative xl:min-w-[300px] xl:translate-x-0`}
     >
       <button
         onClick={handleCreateNewRoom}

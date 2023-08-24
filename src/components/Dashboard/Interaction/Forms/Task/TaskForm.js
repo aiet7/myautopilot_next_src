@@ -1,10 +1,7 @@
-const TaskForm = ({
-  currentTaskName,
-  setCurrentTaskName,
-  loading,
-  handleTaskConfirmation,
-  itemId,
-}) => {
+import useFormsStore from "@/utils/store/interaction/forms/formsStore";
+
+const TaskForm = ({ itemId }) => {
+  const { loading, task, handleTaskConfirmation } = useFormsStore();
   return (
     <div>
       <div className="flex flex-col gap-2">
@@ -12,7 +9,7 @@ const TaskForm = ({
           <span className="font-bold">Task Name</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentTaskName || ""}
+            value={task.currentTaskName || ""}
             onChange={(e) => setCurrentTaskName(e.target.value)}
           />
         </div>

@@ -1,19 +1,14 @@
-const ContactForm = ({
-  currentContactGivenName,
-  setCurrentContactGivenName,
-  currentContactFamilyName,
-  setCurrentContactFamilyName,
-  currentEmailId,
-  setCurrentEmailId,
-  currentContactEmailIds,
-  setCurrentContactEmailIds,
-  currentContactMobileNumber,
-  setCurrentContactMobileNumber,
-  loading,
-  handleContactConfirmation,
-  itemId,
-  showCancelButton,
-}) => {
+import useFormsStore from "@/utils/store/interaction/forms/formsStore";
+
+const ContactForm = ({ itemId }) => {
+  const {
+    loading,
+    contact,
+    email,
+    setContact,
+    setEmail,
+    handleContactConfirmation,
+  } = useFormsStore();
   return (
     <div>
       <div className="flex flex-col gap-2">
@@ -21,16 +16,20 @@ const ContactForm = ({
           <span className="font-bold">First Name</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentContactGivenName || ""}
-            onChange={(e) => setCurrentContactGivenName(e.target.value)}
+            value={contact.currentContactGivenName || ""}
+            onChange={(e) =>
+              setContact("currentContactGivenName", e.target.value)
+            }
           />
         </div>
         <div>
           <span className="font-bold">Last Name</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentContactFamilyName || ""}
-            onChange={(e) => setCurrentContactFamilyName(e.target.value)}
+            value={contact.currentContactFamilyName || ""}
+            onChange={(e) =>
+              setContact("currentContactFamilyName", e.target.value)
+            }
           />
         </div>
         <div>
@@ -38,14 +37,14 @@ const ContactForm = ({
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
             value={
-              showCancelButton
-                ? currentContactEmailIds?.[0] || ""
-                : currentEmailId || ""
+              contact.showCancelButton
+                ? contact.currentContactEmailIds?.[0] || ""
+                : email.currentEmailId || ""
             }
             onChange={(e) =>
-              showCancelButton
-                ? setCurrentContactEmailIds([e.target.value])
-                : setCurrentEmailId(e.target.value)
+              contact.showCancelButton
+                ? setContact("currentContactEmailIds", [e.target.value])
+                : setEmail("currentEmailId", e.target.value)
             }
           />
         </div>
@@ -53,8 +52,10 @@ const ContactForm = ({
           <span className="font-bold">Phone Number</span>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
-            value={currentContactMobileNumber || ""}
-            onChange={(e) => setCurrentContactMobileNumber(e.target.value)}
+            value={contact.currentContactMobileNumber || ""}
+            onChange={(e) =>
+              setContact("currentContactMobileNumber", e.target.value)
+            }
           />
         </div>
       </div>
@@ -66,7 +67,7 @@ const ContactForm = ({
         >
           {loading.contactForm ? "Adding..." : "Add Contact"}
         </button>
-        {showCancelButton && (
+        {contact.showCancelButton && (
           <button
             className="dark:text-white dark:border-white/30 border border-blue-800 px-3 py-1 text-blue-800"
             onClick={() => handleContactConfirmation(false, itemId)}

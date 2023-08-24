@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import { convertKelvinToFahrenheit } from "../../../../../../utils/conversions";
+import useUpdatesStore from "@/utils/store/assistant/sections/updates/updatesStore";
 
-const Weather = ({ wns, handleWeatherUpdate }) => {
+const Weather = ({}) => {
+  const { wns, userWeatherInput, setUserWeatherInput, handleWeatherUpdate } =
+    useUpdatesStore();
   const {
     initialWeather: { main, weather, name, code },
   } = wns;
-  const [userWeatherInput, setUserWeatherInput] = useState("");
 
   return (
     <div className="flex flex-col gap-3 ">
@@ -38,9 +39,7 @@ const Weather = ({ wns, handleWeatherUpdate }) => {
           <p>Low: {convertKelvinToFahrenheit(main.temp_min)}</p>
         </div>
       ) : (
-        <p className="text-red-600 text-sm">
-          Zipcode not found.
-        </p>
+        <p className="text-red-600 text-sm">Zipcode not found.</p>
       )}
     </div>
   );

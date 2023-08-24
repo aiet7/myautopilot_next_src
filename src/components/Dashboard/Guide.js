@@ -1,13 +1,13 @@
 "use client";
 
-const Guide = ({
-  openHistory,
-  handleOpenHistory,
-}) => {
+import useUiStore from "@/utils/store/ui/uiStore";
+
+const Guide = ({}) => {
+  const { openHistory, handleToggleHistory } = useUiStore();
   return (
     <div
       onClick={() => {
-        openHistory && handleOpenHistory(false);
+        openHistory && handleToggleHistory(false);
       }}
       className={`${
         openHistory && "lg:opacity-100 opacity-5"
