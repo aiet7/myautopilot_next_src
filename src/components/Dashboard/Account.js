@@ -1,188 +1,33 @@
 "use client";
 
-import { googleLogout } from "@react-oauth/google";
-
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AiFillEdit } from "react-icons/ai";
 import { IoMdFingerPrint } from "react-icons/io";
 import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
 
-import { validateField } from "../../utils/formValidations";
-
-import Cookie from "js-cookie";
+import useUserStore from "@/utils/store/user/userStore";
 
 const Account = ({ initialUser }) => {
   const router = useRouter();
 
   const {
-    id,
-    businessEmail,
-    businessName,
-    businessPhone,
-    firstName,
-    lastName,
-    address: { street, city, zipcode, state },
-    password,
-  } = initialUser;
-
-  const addressFields = ["street", "city", "zipcode", "state"];
-
-  const [editing, setEditing] = useState({});
-  const [deleting, setDeleting] = useState(false);
-  const [confirmationEmail, setConfirmationEmail] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const [userInputs, setUserInputs] = useState({
-    id: id,
-    firstName: firstName,
-    lastName: lastName,
-    businessEmail: businessEmail,
-    businessName: businessName,
-    businessPhone: businessPhone,
-    address: {
-      street: street,
-      city: city,
-      zipcode: zipcode,
-      state: state,
-    },
-
-    password: password,
-  });
-
-  const [userPasswords, setUserPasswords] = useState({
-    oldPassword: "",
-    newPassword: "",
-  });
-
-  const [passwordError, setPasswordError] = useState(false);
-
-  const handleStartEdit = (field) => {
-    setEditing({ ...editing, [field]: true });
-  };
-
-  const handleCancelEdit = (field) => {
-    if (addressFields.includes(field)) {
-      setUserInputs({
-        ...userInputs,
-        address: {
-          ...userInputs.address,
-          [field]: initialUser.address[field],
-        },
-      });
-    } else {
-      setUserInputs({
-        ...userInputs,
-        [field]: initialUser[field],
-      });
-    }
-
-    setEditing({ ...editing, [field]: false });
-  };
-
-  const handleEditOnChange = (field, e) => {
-    if (addressFields.includes(field)) {
-      setUserInputs({
-        ...userInputs,
-        address: {
-          ...userInputs.address,
-          [field]: e.target.value,
-        },
-      });
-    } else {
-      setUserInputs({
-        ...userInputs,
-        [field]: e.target.value,
-      });
-    }
-  };
-
-  const handlePasswordChange = (field, e) => {
-    setUserPasswords({ ...userPasswords, [field]: e.target.value });
-  };
-
-  const handleSaveChanges = async (field, input) => {
-    let updatedUser;
-
-    const validationError = validateField(field, input);
-    if (validationError) {
-      setErrorMessage(validationError);
-      return;
-    }
-
-    if (addressFields.includes(field)) {
-      const updatedInputs = {
-        ...userInputs,
-        address: {
-          ...userInputs.address,
-          [field]: input,
-        },
-      };
-      setUserInputs(updatedInputs);
-      updatedUser = updatedInputs;
-    } else {
-      const updatedInputs = {
-        ...userInputs,
-        [field]: input,
-      };
-      setUserInputs(updatedInputs);
-      updatedUser = updatedInputs;
-    }
-
-    setEditing({ ...editing, [field]: false });
-
-    try {
-      const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/editBusinessUserProfile`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedUser),
-        }
-      );
-
-      if (response.ok) {
-        console.log("Saved!");
-        setErrorMessage("");
-      } else {
-        console.log("Error saving.");
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const handleDeleteUser = async () => {
-    if (confirmationEmail !== businessEmail) {
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/deleteUser?id=${id}`
-      );
-      if (response.ok) {
-        localStorage.removeItem("lastTab");
-        localStorage.removeItem("lastConversationIndices");
-        localStorage.removeItem("wsIsPending");
-        localStorage.removeItem("lastRoomIndex");
-
-        Cookie.remove("Secure-next.session-token-g");
-        Cookie.remove("microsoft_session_token");
-        Cookie.remove("session_token");
-        Cookie.remove("user_id");
-
-        googleLogout();
-        router.push("/auth/login");
-      } else {
-        console.log("Error Deleting");
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
+    userInputs,
+    editing,
+    deleting,
+    errorMessage,
+    confirmationEmail,
+    userPasswords,
+    passwordError,
+    setDeleting,
+    setConfirmationEmail,
+    setPasswordError,
+    setUserPasswords,
+    handleStartEdit,
+    handleEditOnChange,
+    handleSaveChanges,
+    handleCancelEdit,
+    handleDeleteUser,
+  } = useUserStore();
 
   return (
     <div className="relative overflow-y-auto px-4 py-2 w-full flex items-center justify-center">
@@ -212,7 +57,9 @@ const Account = ({ initialUser }) => {
                 <input
                   className="px-1 w-40 border bg-white text-black "
                   value={userInputs["firstName"]}
-                  onChange={(e) => handleEditOnChange("firstName", e)}
+                  onChange={(e) =>
+                    handleEditOnChange("firstName", e.target.value)
+                  }
                   placeholder="First name"
                 />
                 <AiOutlineCheck
@@ -245,7 +92,9 @@ const Account = ({ initialUser }) => {
                 <input
                   className="px-1 w-40 border bg-white text-black  "
                   value={userInputs["lastName"]}
-                  onChange={(e) => handleEditOnChange("lastName", e)}
+                  onChange={(e) =>
+                    handleEditOnChange("lastName", e.target.value)
+                  }
                   placeholder="Last name"
                 />
                 <AiOutlineCheck
@@ -278,7 +127,9 @@ const Account = ({ initialUser }) => {
                 <input
                   className="px-1 w-40 border bg-white text-black "
                   value={userInputs["businessName"]}
-                  onChange={(e) => handleEditOnChange("businessName", e)}
+                  onChange={(e) =>
+                    handleEditOnChange("businessName", e.target.value)
+                  }
                   placeholder="Business name"
                 />
                 <AiOutlineCheck
@@ -312,7 +163,7 @@ const Account = ({ initialUser }) => {
           <p className="text-2xl">Contact Info</p>
           <div className="flex items-center justify-between h-[20px]">
             <p className="w-18">Email</p>
-            <p>{businessEmail}</p>
+            <p>{userInputs.businessEmail}</p>
           </div>
           <div className="flex items-center justify-between h-[20px]">
             <p className="w-18">Phone</p>
@@ -322,7 +173,9 @@ const Account = ({ initialUser }) => {
                   maxLength={10}
                   className="px-1 w-40 border bg-white text-black "
                   value={userInputs["businessPhone"]}
-                  onChange={(e) => handleEditOnChange("businessPhone", e)}
+                  onChange={(e) =>
+                    handleEditOnChange("businessPhone", e.target.value)
+                  }
                   placeholder="Business phone"
                 />
                 <AiOutlineCheck
@@ -361,7 +214,7 @@ const Account = ({ initialUser }) => {
                 <input
                   className="px-1 w-40 border bg-white text-black "
                   value={userInputs.address["street"]}
-                  onChange={(e) => handleEditOnChange("street", e)}
+                  onChange={(e) => handleEditOnChange("street", e.target.value)}
                   placeholder="Street"
                 />
                 <AiOutlineCheck
@@ -393,7 +246,7 @@ const Account = ({ initialUser }) => {
                 <input
                   className="px-1 w-40 border bg-white text-black "
                   value={userInputs.address["city"]}
-                  onChange={(e) => handleEditOnChange("city", e)}
+                  onChange={(e) => handleEditOnChange("city", e.target.value)}
                   placeholder="City"
                 />
                 <AiOutlineCheck
@@ -426,7 +279,9 @@ const Account = ({ initialUser }) => {
                   maxLength={5}
                   className="px-1 w-40 border bg-white text-black "
                   value={userInputs.address["zipcode"]}
-                  onChange={(e) => handleEditOnChange("zipcode", e)}
+                  onChange={(e) =>
+                    handleEditOnChange("zipcode", e.target.value)
+                  }
                   placeholder="Zipcode"
                 />
                 <AiOutlineCheck
@@ -459,7 +314,7 @@ const Account = ({ initialUser }) => {
                   maxLength={2}
                   className="px-1 w-40 border bg-white text-black "
                   value={userInputs.address["state"]}
-                  onChange={(e) => handleEditOnChange("state", e)}
+                  onChange={(e) => handleEditOnChange("state", e.target.value)}
                   placeholder="State"
                 />
                 <AiOutlineCheck
@@ -485,7 +340,7 @@ const Account = ({ initialUser }) => {
             )}
           </div>
         </div>
-        {password !== null && (
+        {userInputs.password !== null && (
           <div className="flex flex-col w-full border dark:border-white/40 rounded-md p-5 gap-6">
             <div className="flex items-center justify-between h-[40px]">
               <p className="w-18">Password</p>
@@ -500,7 +355,7 @@ const Account = ({ initialUser }) => {
                       type="password"
                       value={userPasswords.oldPassword}
                       onChange={(e) => {
-                        handlePasswordChange("oldPassword", e);
+                        handlePasswordChange("oldPassword", e.target.value);
                         setPasswordError(false);
                       }}
                       placeholder="Old password"
@@ -509,7 +364,9 @@ const Account = ({ initialUser }) => {
                       className="px-1 w-40 border bg-white text-black "
                       type="password"
                       value={userPasswords.newPassword}
-                      onChange={(e) => handlePasswordChange("newPassword", e)}
+                      onChange={(e) =>
+                        handlePasswordChange("newPassword", e.target.value)
+                      }
                       placeholder="New password"
                     />
                   </div>
@@ -560,7 +417,7 @@ const Account = ({ initialUser }) => {
                 ></input>
                 <div className="flex gap-2 items-center">
                   <button
-                    onClick={handleDeleteUser}
+                    onClick={() => handleDeleteUser(router.push)}
                     className="dark:border-white/20 hover:bg-red-500 hover:text-white border rounded-md px-1"
                   >
                     Delete

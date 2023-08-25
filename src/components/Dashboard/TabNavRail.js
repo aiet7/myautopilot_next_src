@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { googleLogout } from "@react-oauth/google";
 
 import { AiOutlinePoweroff, AiOutlineTeam } from "react-icons/ai";
 import { BsChatDots } from "react-icons/bs";
@@ -15,11 +14,12 @@ import { DiMagento } from "react-icons/di";
 
 import { useTheme } from "next-themes";
 
-import Cookie from "js-cookie";
-
 import useUiStore from "@/utils/store/ui/uiStore.js";
+import useUserStore from "@/utils/store/user/userStore";
 
 const TabNavRail = ({}) => {
+  const { handleLogout } = useUserStore();
+
   const {
     openSettings,
     activeTab,
@@ -34,21 +34,6 @@ const TabNavRail = ({}) => {
   const { theme, setTheme } = useTheme();
   const router = useRouter();
 
-  const handleLogout = () => {
-    localStorage.removeItem("lastTab");
-    localStorage.removeItem("lastAssistantTab");
-    localStorage.removeItem("lastConversationIndices");
-    localStorage.removeItem("wsIsPending");
-    localStorage.removeItem("lastRoomIndex");
-
-    Cookie.remove("Secure-next.session-token-g");
-    Cookie.remove("microsoft_session_token");
-    Cookie.remove("session_token");
-    Cookie.remove("user_id");
-
-    googleLogout();
-    router.push("/auth/login");
-  };
   const handleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
@@ -118,7 +103,7 @@ const TabNavRail = ({}) => {
           <div className="dark:bg-black dark:border-white/40 dark:border bg-white border border-black/10 absolute z-[99] bottom-[60px] right-0 w-[150px] lg:bottom-0 lg:left-[51px] lg:w-[301px]">
             <div className="flex flex-col">
               <div
-                onClick={handleLogout}
+                onClick={() => handleLogout(router.push)}
                 className="dark:border-white/40 dark:hover:bg-white/20 hover:bg-black/10 border-b border-black/10 w-full text-lg flex items-center gap-3 px-6 py-3"
               >
                 <AiOutlinePoweroff />

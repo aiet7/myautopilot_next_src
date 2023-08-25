@@ -77,7 +77,6 @@ const useUiStore = create((set, get) => ({
     }),
 
   handleTabChange: (tab) => {
-    
     const { setSelectedAgent } = useAgentsStore.getState();
     const { activeTab } = get();
     if (tab === "agents") {

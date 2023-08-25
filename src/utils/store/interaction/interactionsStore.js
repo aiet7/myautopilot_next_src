@@ -92,7 +92,8 @@ const useInteractionStore = create((set, get) => ({
     const userStore = useUserStore.getState();
 
     const { handleProcessResponse } = get();
-    const { handleIfConversationExists } = useConversationStore.getState();
+    const { handleIfConversationExists, handleAddUserMessage } =
+      useConversationStore.getState();
     if (controllerRef.current) {
       controllerRef.current.abort();
     }

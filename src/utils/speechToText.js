@@ -1,11 +1,19 @@
 export let recognition;
+
 if (typeof window !== "undefined") {
-  recognition = new (window.SpeechRecognition ||
+  const SpeechRecognitionConstructor =
+    window.SpeechRecognition ||
     window.webkitSpeechRecognition ||
     window.mozSpeechRecognition ||
-    window.msSpeechRecognition)();
-  recognition.lang = "en-US";
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
-  recognition.continuous = true;
+    window.msSpeechRecognition;
+
+  if (SpeechRecognitionConstructor) {
+    recognition = new SpeechRecognitionConstructor();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognition.continuous = true;
+  } else {
+    alert("Speech Recognition is not available in this browser.")
+  }
 }

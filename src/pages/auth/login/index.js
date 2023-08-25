@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useGoogleLogin } from "@react-oauth/google";
 import MicrosoftLogin from "react-microsoft-login";
@@ -10,207 +10,39 @@ import { FcGoogle } from "react-icons/fc";
 
 import Loading from "../../../components/Loading.js";
 
-import {
-  isInputEmpty,
-  isEmailInputValid,
-} from "../../../utils/formValidations.js";
-
 import Cookie from "js-cookie";
+import useAuthStore from "@/utils/store/auth/authStore.js";
+import useUiStore from "@/utils/store/ui/uiStore.js";
 
 const Login = () => {
-  const [height, setHeight] = useState(null);
-
-  const [loading, setLoading] = useState(false);
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const [showLoginForm, setShowLoginForm] = useState(false);
-
   const router = useRouter();
+  const { height, setHeight } = useUiStore();
+  const {
+    loading,
+    errorMessage,
+    showLoginForm,
+    setEmail,
+    setPassword,
+    handleGoogleAuth,
+    handleMicrosoftAuth,
+    handleLoginCredentialsAuth,
+    handleLoginEmailCheck,
+    handleShowSignup,
+  } = useAuthStore();
+
+  const handleSuccess = handleGoogleAuth(router.push);
 
   const handleGoogleLogin = useGoogleLogin({
     flow: "auth-code",
     scope:
       "https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.events.readonly https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/contacts https://www.googleapis.com/auth/contacts.readonly",
     onSuccess: async (codeResponse) => {
-      setLoading(true);
-      try {
-        const tokenResponse = await fetch(
-          // `http://localhost:9019/getGoogleToken?code=${codeResponse.code}`
-          `https://etech7-wf-etech7-db-service.azuremicroservices.io/getGoogleToken?code=${codeResponse.code}`
-        );
-
-        const token = await tokenResponse.json();
-
-        const user = {
-          accessToken: token.access_token,
-          refreshToken: token.refresh_token,
-          expiryTime: token.expiryTime,
-          firstName: token.firstName,
-          lastName: token.lastName,
-          businessEmail: token.email,
-          businessName: "",
-          businessPhone: "",
-          address: {
-            street: "",
-            city: "",
-            zipcode: "",
-            state: "",
-          },
-        };
-        const validateGoogleResponse = await fetch(
-          `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=google`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(user),
-          }
-        );
-        if (validateGoogleResponse.status === 200) {
-          const googleUser = await validateGoogleResponse.json();
-          router.push(`/dashboard/${googleUser.id}`);
-          Cookie.set("Secure-next.session-token-g", token.id_token, {
-            expires: 7,
-            secure: true,
-            sameSite: "lax",
-          });
-        } else {
-          console.log("error");
-        }
-      } catch (e) {
-        console.log(e);
-      } finally {
-        setLoading(false);
-      }
+      await handleSuccess(codeResponse);
     },
   });
 
-  const handleMicrosoftLogin = async (err, data) => {
-    setLoading(true);
-    try {
-      const {
-        accessToken,
-        account: { name, username },
-      } = data;
-
-      const fullName = name.split(" ");
-
-      const user = {
-        firstName: fullName[0],
-        lastName: fullName[1],
-        businessEmail: username,
-        businessName: "",
-        businessPhone: "",
-        address: {
-          street: "",
-          city: "",
-          zipcode: "",
-          state: "",
-        },
-      };
-
-      const validateMicrosoftResponse = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=microsoft`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(user),
-        }
-      );
-
-      if (validateMicrosoftResponse.status === 200) {
-        const microsoftUser = await validateMicrosoftResponse.json();
-        router.push(`/dashboard/${microsoftUser.id}`);
-        Cookie.set("microsoft_session_token", accessToken, {
-          expires: 7,
-        });
-        Cookie.set("user_id", microsoftUser.id, {
-          expires: 7,
-        });
-      } else {
-        setErrorMessage("Error with Microsoft Login.");
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleEmailCheck = async () => {
-    if (isInputEmpty(email) || !isEmailInputValid(email)) {
-      setErrorMessage("A valid email is required.");
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/getUserByEmail?email=${email}`
-      );
-      const user = await response.json();
-      if (user.message === "No Users") {
-        setErrorMessage("Account does not exists.  Please sign up.");
-      } else if (user.password === null) {
-        setErrorMessage(
-          "Account was created with a provider sign in.  Please sign in with your provider."
-        );
-      } else {
-        setErrorMessage("");
-        setShowLoginForm(true);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const handleEmailLogin = async () => {
-    if (isInputEmpty(password)) {
-      setErrorMessage("A password is required.");
-      return;
-    }
-    setLoading(true);
-
-    const user = {
-      businessEmail: email,
-      password: password,
-    };
-
-    try {
-      const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(user),
-        }
-      );
-
-      setErrorMessage("");
-      if (response.ok) {
-        const user = await response.json();
-        router.push(`/dashboard/${user.id}`);
-        Cookie.set("session_token", user.id, { expires: 7 });
-      } else {
-        setErrorMessage("Invalid username or password.");
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleShowSignup = () => {
-    router.push("/auth/signup");
+  const handleMicrosoftLogin = (err, data) => {
+    handleMicrosoftAuth(router.push, err, data);
   };
 
   useEffect(() => {
@@ -263,7 +95,7 @@ const Login = () => {
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
-                      handleEmailCheck();
+                      handleLoginEmailCheck();
                     }
                   }}
                   type="email"
@@ -272,7 +104,7 @@ const Login = () => {
                 />
 
                 <button
-                  onClick={handleEmailCheck}
+                  onClick={() => handleLoginEmailCheck()}
                   type="button"
                   className="w-full py-2 bg-green-700 text-white font-bold rounded-sm"
                 >
@@ -285,7 +117,7 @@ const Login = () => {
                 </div>
                 <div className="flex flex-col gap-1">
                   <button
-                    onClick={() => handleGoogleLogin()}
+                    onClick={handleGoogleLogin}
                     type="button"
                     className="w-[300px] p-2 bg-red-500 text-white font-bold flex items-center justify-start rounded-sm gap-2"
                   >
@@ -325,7 +157,7 @@ const Login = () => {
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
-                      handleEmailLogin();
+                      handleLoginCredentialsAuth(router.push);
                     }
                   }}
                   type="password"
@@ -333,7 +165,7 @@ const Login = () => {
                   className="w-full p-2 border border-gray-300  bg-white text-black"
                 />
                 <button
-                  onClick={handleEmailLogin}
+                  onClick={() => handleLoginCredentialsAuth(router.push)}
                   type="button"
                   className="w-full  py-2 bg-green-700 text-white font-bold rounded-sm"
                 >
@@ -343,7 +175,7 @@ const Login = () => {
             )}
 
             <button
-              onClick={() => handleShowSignup()}
+              onClick={() => handleShowSignup(router.push)}
               type="button"
               className="w-full text-blue-500 text-sm flex items-center justify-start"
             >

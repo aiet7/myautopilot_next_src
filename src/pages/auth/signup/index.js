@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useGoogleLogin } from "@react-oauth/google";
 import MicrosoftLogin from "react-microsoft-login";
@@ -10,215 +10,47 @@ import { FcGoogle } from "react-icons/fc";
 
 import Loading from "../../../components/Loading.js";
 
-import {
-  isEmailInputValid,
-  isInputEmpty,
-  validateInput,
-} from "../../../utils/formValidations.js";
-
 import { UsaStates } from "usa-states";
-
-import Cookie from "js-cookie";
+import useAuthStore from "@/utils/store/auth/authStore.js";
+import useUiStore from "@/utils/store/ui/uiStore.js";
 
 const Signup = () => {
   const usStates = new UsaStates();
-
-  const [height, setHeight] = useState(null);
-
-  const [loading, setLoading] = useState(false);
-
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const [email, setEmail] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [businessName, setBusinessName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [address, setAddress] = useState({
-    street: "",
-    city: "",
-    zipcode: "",
-    state: "",
-  });
-  const [password, setPassword] = useState("");
-
-  const [showSignupForm, setShowSignupForm] = useState(false);
-
   const router = useRouter();
+  const { height, setHeight } = useUiStore();
+
+  const {
+    address,
+    loading,
+    errorMessage,
+    showSignupForm,
+    setEmail,
+    setPassword,
+    setFirstName,
+    setLastName,
+    setBusinessName,
+    setPhoneNumber,
+    setAddress,
+    handleGoogleAuth,
+    handleMicrosoftAuth,
+    handleSignupEmailCheck,
+    handleSignupCredentialsAuth,
+    handleShowLogin,
+  } = useAuthStore();
+
+  const handleSuccess = handleGoogleAuth(router.push);
 
   const handleGoogleSignup = useGoogleLogin({
     flow: "auth-code",
     scope:
       "https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.events.readonly https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/contacts https://www.googleapis.com/auth/contacts.readonly",
     onSuccess: async (codeResponse) => {
-      setLoading(true);
-      try {
-        const tokenResponse = await fetch(
-          `https://etech7-wf-etech7-db-service.azuremicroservices.io/getGoogleToken?code=${codeResponse.code}`
-        );
-
-        const token = await tokenResponse.json();
-
-        const user = {
-          accessToken: token.access_token,
-          refreshToken: token.refresh_token,
-          expiryTime: token.expiryTime,
-          firstName: token.firstName,
-          lastName: token.lastName,
-          businessEmail: token.email,
-          businessName: "",
-          businessPhone: "",
-          address: {
-            street: "",
-            city: "",
-            zipcode: "",
-            state: "",
-          },
-        };
-        const validateGoogleResponse = await fetch(
-          `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=google`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(user),
-          }
-        );
-        if (validateGoogleResponse.status === 200) {
-          const googleUser = await validateGoogleResponse.json();
-          router.push(`/dashboard/${googleUser.id}`);
-          Cookie.set("Secure-next.session-token-g", token.id_token, {
-            expires: 7,
-            secure: true,
-            sameSite: "lax",
-          });
-        } else {
-          console.log("error");
-        }
-      } catch (e) {
-        console.log(e);
-      } finally {
-        setLoading(false);
-      }
+      await handleSuccess(codeResponse);
     },
   });
 
-  const handleMicrosoftSignup = async (err, data) => {
-    setLoading(true);
-    try {
-      const {
-        accessToken,
-        account: { name, username },
-      } = data;
-
-      const fullName = name.split(" ");
-
-      const user = {
-        firstName: fullName[0],
-        lastName: fullName[1],
-        businessEmail: username,
-        businessName: "",
-        businessPhone: "",
-        address: {
-          street: "",
-          city: "",
-          zipcode: "",
-          state: "",
-        },
-      };
-
-      const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser?token=microsoft`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(user),
-        }
-      );
-
-      if (response.ok) {
-        const microsoftUser = await response.json();
-        router.push(`/dashboard/${microsoftUser.id}`);
-        Cookie.set("microsoft_session_token", accessToken, { expires: 7 });
-        Cookie.set("user_id", microsoftUser.id, { expires: 7 });
-      } else {
-        setErrorMessage("Error with Microsoft Login.");
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleEmailCheck = async () => {
-    if (isInputEmpty(email) || !isEmailInputValid(email)) {
-      setErrorMessage("A valid email is required.");
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/getUserByEmail?email=${email}`
-      );
-      const user = await response.json();
-      setErrorMessage("");
-      if (user.message === "No Users") {
-        setShowSignupForm(true);
-      } else {
-        setErrorMessage("Account exists.");
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const handleEmailSignup = async () => {
-    const user = {
-      firstName: firstName,
-      lastName: lastName,
-      businessName: businessName,
-      businessEmail: email,
-      businessPhone: phoneNumber,
-      address: address,
-      password: password,
-    };
-
-    const validationError = validateInput(user);
-    if (validationError) {
-      setErrorMessage(validationError);
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(user),
-        }
-      );
-      setErrorMessage("");
-      if (response.ok) {
-        router.push("/auth/login");
-      } else {
-        setErrorMessage("Error occurred during sign up.");
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleShowLogin = () => {
-    router.push("/auth/login");
+  const handleMicrosoftSignup = (err, data) => {
+    handleMicrosoftAuth(router.push, err, data);
   };
 
   useEffect(() => {
@@ -266,7 +98,7 @@ const Signup = () => {
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
-                      handleEmailCheck();
+                      handleSignupEmailCheck();
                     }
                   }}
                   type="email"
@@ -274,7 +106,7 @@ const Signup = () => {
                   className="w-full p-2 border border-gray-300  bg-white text-black"
                 />
                 <button
-                  onClick={handleEmailCheck}
+                  onClick={handleSignupEmailCheck}
                   type="button"
                   className="w-full py-2 bg-green-700 text-white font-bold rounded-sm"
                 >
@@ -329,7 +161,7 @@ const Signup = () => {
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        handleEmailSignup();
+                        handleSignupCredentialsAuth(router.push);
                       }
                     }}
                     type="text"
@@ -341,7 +173,7 @@ const Signup = () => {
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        handleEmailSignup();
+                        handleSignupCredentialsAuth(router.push);
                       }
                     }}
                     type="text"
@@ -354,7 +186,7 @@ const Signup = () => {
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
-                      handleEmailSignup();
+                      handleSignupCredentialsAuth(router.push);
                     }
                   }}
                   type="text"
@@ -363,16 +195,11 @@ const Signup = () => {
                 />
                 <div className="flex gap-2">
                   <input
-                    onChange={(e) =>
-                      setAddress((prevState) => ({
-                        ...prevState,
-                        street: e.target.value,
-                      }))
-                    }
+                    onChange={(e) => setAddress("street", e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        handleEmailSignup();
+                        handleSignupCredentialsAuth(router.push);
                       }
                     }}
                     type="text"
@@ -381,16 +208,11 @@ const Signup = () => {
                   />
 
                   <input
-                    onChange={(e) =>
-                      setAddress((prevState) => ({
-                        ...prevState,
-                        city: e.target.value,
-                      }))
-                    }
+                    onChange={(e) => setAddress("city", e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        handleEmailSignup();
+                        handleSignupCredentialsAuth(router.push);
                       }
                     }}
                     type="text"
@@ -401,16 +223,11 @@ const Signup = () => {
                 <div className="w-full flex gap-2">
                   <input
                     maxLength={5}
-                    onChange={(e) =>
-                      setAddress((prevState) => ({
-                        ...prevState,
-                        zipcode: e.target.value,
-                      }))
-                    }
+                    onChange={(e) => setAddress("zipcode", e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        handleEmailSignup();
+                        handleSignupCredentialsAuth(router.push);
                       }
                     }}
                     type="text"
@@ -418,16 +235,11 @@ const Signup = () => {
                     className="w-full p-2 border border-gray-300 bg-white text-black"
                   />
                   <select
-                    onChange={(e) =>
-                      setAddress((prevState) => ({
-                        ...prevState,
-                        state: e.target.value,
-                      }))
-                    }
+                    onChange={(e) => setAddress("state", e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        handleEmailSignup();
+                        handleSignupCredentialsAuth(router.push);
                       }
                     }}
                     className={`w-full p-2 border rounded-none border-gray-300  ${
@@ -453,7 +265,7 @@ const Signup = () => {
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
-                      handleEmailSignup();
+                      handleSignupCredentialsAuth(router.push);
                     }
                   }}
                   type="text"
@@ -465,7 +277,7 @@ const Signup = () => {
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
-                      handleEmailSignup();
+                      handleSignupCredentialsAuth(router.push);
                     }
                   }}
                   type="password"
@@ -473,7 +285,7 @@ const Signup = () => {
                   className="w-full p-2 border border-gray-300 bg-white text-black"
                 />
                 <button
-                  onClick={handleEmailSignup}
+                  onClick={() => handleSignupCredentialsAuth(router.push)}
                   type="button"
                   className="w-full  py-2 bg-green-700 text-white font-bold rounded-sm"
                 >
@@ -482,7 +294,7 @@ const Signup = () => {
               </>
             )}
             <button
-              onClick={() => handleShowLogin()}
+              onClick={() => handleShowLogin(router.push)}
               type="button"
               className="w-full text-blue-500 text-sm flex items-center justify-start"
             >

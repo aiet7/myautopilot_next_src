@@ -26,6 +26,7 @@ const useFavoritesStore = create((set, get) => ({
 
   handleAddPrompt: async () => {
     const userStore = useUserStore.getState();
+    const { handleAddFavoriteToUser } = useUserStore.getState();
     const { customPrompt, favoritePrompts } = get();
     if (
       customPrompt.promptName.trim() !== "" &&
@@ -46,6 +47,7 @@ const useFavoritesStore = create((set, get) => ({
         if (response.status === 200) {
           const updatedFavoritePrompts = [...favoritePrompts, customPrompt];
           set({ favoritePrompts: updatedFavoritePrompts });
+          handleAddFavoriteToUser(customPrompt);
         } else {
           console.log("Failed to add");
         }
@@ -57,6 +59,8 @@ const useFavoritesStore = create((set, get) => ({
     }
   },
   handleDeletePrompt: async (index) => {
+    const { handleRemoveFavoriteFromuser } = useUserStore.getState();
+
     const userStore = useUserStore.getState();
 
     const { favoritePrompts } = get();
@@ -70,6 +74,7 @@ const useFavoritesStore = create((set, get) => ({
           (prompt) => prompt.promptName !== promptToDelete.promptName
         );
         set({ favoritePrompts: updatedFavoritePrompts });
+        handleRemoveFavoriteFromuser(promptToDelete);
       } else {
         console.log("delete failed");
       }

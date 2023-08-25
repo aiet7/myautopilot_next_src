@@ -1,4 +1,5 @@
 export const validateInput = (user) => {
+  console.log(user)
   if (isInputEmpty(user.password)) return "A password is required.";
   if (!isPasswordValid(user.password))
     return "Password should be at least 8 characters.";
@@ -91,6 +92,7 @@ export const validateField = (field, value) => {
 };
 
 export const isInputEmpty = (input) => {
+  console.log(input)
   return input.trim() === "";
 };
 

@@ -94,10 +94,11 @@ const DashboardPage = ({
       };
     }
   }, []);
-  console.log(openSettings);
+
   useEffect(() => {
     getStorage();
   }, [getStorage]);
+
   useEffect(() => {
     saveStorage();
 
