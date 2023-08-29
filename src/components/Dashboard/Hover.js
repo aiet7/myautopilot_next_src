@@ -6,13 +6,19 @@ import useUiStore from "@/utils/store/ui/uiStore";
 import Rooms from "./Teams/Rooms";
 
 const Hover = ({}) => {
-  const { hoverTab, handleUpdateHoverMouseLeave } = useUiStore();
+  const { hoverTab, openHistory, handleUpdateHoverMouseLeave } =
+    useUiStore();
   return (
     <div
       onMouseLeave={() => {
         handleUpdateHoverMouseLeave();
       }}
-      className={`absolute z-[99] lg:top-0 lg:bottom-0 lg:left-[360px] xl:left-[60px]`}
+      className={`absolute z-[99] lg:top-0 lg:bottom-0 ${
+        (hoverTab === "general" && openHistory) ||
+        (hoverTab === "agents" && openHistory)
+          ? "lg:left-[60px]"
+          : "lg:left-[360px]"
+      } xl:left-[60px]`}
     >
       {hoverTab === "general" && <History />}
       {hoverTab === "agents" && <Selection />}

@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { MarkedChatAssistant } from "../../../../utils/marked/marked.js";
+import MarkedAssistant from "../../Marked/MarkedAssistant";
 
 import { FaSpinner } from "react-icons/fa";
 import { SiOpenai } from "react-icons/si";
@@ -54,7 +53,7 @@ const Engineer = () => {
               )}
             </div>
           </div>
-          <MarkedChatAssistant markdown={prompts} />
+          <MarkedAssistant markdown={prompts} />
         </div>
       </div>
     </div>

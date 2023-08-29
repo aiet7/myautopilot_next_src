@@ -1,10 +1,12 @@
 import { create } from "zustand";
 
-const inputRef = { current: null };
+const listRef = { current: null };
+const copyRef = { current: null };
 const textAreaRef = { current: null };
 
 const useRefStore = create((set, get) => ({
-  inputRef,
+  listRef,
+  copyRef,
   textAreaRef,
 }));
 

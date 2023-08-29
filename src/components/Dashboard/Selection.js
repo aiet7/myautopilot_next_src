@@ -22,8 +22,8 @@ const Selection = ({}) => {
       <button className={`w-full p-4 bg-blue-800 text-white `}>
         + New Agent
       </button>
-      <div className={` h-[200px] overflow-y-auto scrollbar-thin lg:h-full`}>
-        {agents.slice(0, -1).map((agent, index) => {
+      <div className={`h-[200px] overflow-y-auto scrollbar-thin lg:h-full`}>
+        {agents.slice(1).map((agent, index) => {
           const { id, agentName } = agent;
           return (
             <div key={id} className=" flex flex-col items-start my-2">

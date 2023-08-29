@@ -42,17 +42,14 @@ const Interaction = ({}) => {
   const {
     textAreaHeight,
     userInput,
-    feedback,
     isWaiting,
     isAtBottom,
     isOverflowed,
     isFeedbackSubmitted,
-
     handleTextAreaChange,
     handleSendUserMessage,
     handleImageGenerator,
     handleAbortRequest,
-    handleSubmitFeedback,
     handleScrollToBottom,
     handleCheckScroll,
   } = useInteractionStore();
@@ -132,26 +129,6 @@ const Interaction = ({}) => {
                 <div className="flex-grow min-w-[0] ">
                   <Switch item={item} itemId={item.id} />
                 </div>
-                <span>
-                  {item.role === "assistant" && (
-                    <div className="flex gap-1">
-                      <FiThumbsUp
-                        onClick={() => handleSubmitFeedback(item.id, false)}
-                        size={15}
-                        className={`${
-                          feedback[item.id] === false ? "text-green-200" : ""
-                        } cursor-pointer select-none`}
-                      />
-                      <FiThumbsDown
-                        onClick={() => handleSubmitFeedback(item.id, true)}
-                        size={15}
-                        className={`${
-                          feedback[item.id] === true ? "text-red-200" : ""
-                        } cursor-pointer select-none`}
-                      />
-                    </div>
-                  )}
-                </span>
               </div>
             </div>
           );

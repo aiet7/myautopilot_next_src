@@ -29,21 +29,6 @@ const Tasks = ({}) => {
   return (
     <div className="flex-grow flex flex-col gap-4 overflow-hidden">
       <h3 className="text-left text-lg">Tasks</h3>
-      <div className="flex flex-col gap-1 w-full">
-        <textarea
-          value={userTaskNameInput}
-          onChange={(e) => setUserTaskNameInput(e.target.value)}
-          className="px-2 py-1 scrollbar-thin min-h-[100px] max-h-[200px]"
-          placeholder="Task"
-        />
-        <button
-          onClick={() => handleAddTask(userTaskNameInput)}
-          className="flex items-center justify-center gap-1 bg-blue-800 py-2 text-white font-bold"
-        >
-          <AiOutlinePlus size={25} />
-          Add Task
-        </button>
-      </div>
       <div className="dark:border-white/20 flex  items-center border rounded">
         <button
           onClick={() => setActiveTaskButton("In Progress")}
@@ -59,9 +44,25 @@ const Tasks = ({}) => {
             activeTaskButton === "Complete" && "bg-blue-800 text-white"
           } w-full rounded p-2`}
         >
-          Complete
+          Completed
         </button>
       </div>
+      <div className="flex flex-col gap-1 w-full">
+        <textarea
+          value={userTaskNameInput}
+          onChange={(e) => setUserTaskNameInput(e.target.value)}
+          className="px-2 py-1 scrollbar-thin min-h-[100px] max-h-[200px]"
+          placeholder="Task"
+        />
+        <button
+          onClick={handleAddTask}
+          className="flex items-center justify-center gap-1 bg-blue-800 py-2 text-white font-bold"
+        >
+          <AiOutlinePlus size={25} />
+          Add Task
+        </button>
+      </div>
+
       <div className="flex-grow overflow-y-auto scrollbar-thin">
         <div className="flex flex-grow flex-col gap-4">
           {tasks

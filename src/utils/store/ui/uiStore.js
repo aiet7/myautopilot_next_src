@@ -78,7 +78,7 @@ const useUiStore = create((set, get) => ({
 
   handleTabChange: (tab) => {
     const { setSelectedAgent } = useAgentsStore.getState();
-    const { activeTab } = get();
+    const { activeTab, handleCloseAllMenus } = get();
     if (tab === "agents") {
       set({ activeTab: "agents" });
     }
@@ -88,6 +88,7 @@ const useUiStore = create((set, get) => ({
     set({ activeTab: tab, hoverTab: null });
 
     setSelectedAgent(null);
+    handleCloseAllMenus();
   },
 }));
 

@@ -323,7 +323,7 @@ const useFormsStore = create((set, get) => ({
         const remainingValidity = handlegetTokenRemainingValidity(
           userStore.user.expiryTime
         );
-        const aiContent = `Email Sent!\n\nTo: ${currentEmailId}\nSubject: ${currentEmailSubject}\nBody: ${currentEmailBody}`;
+        const aiContent = `Email Sent!\n\nTo: ${currentEmailId}\n\nSubject: ${currentEmailSubject}\n\nBody: ${currentEmailBody}`;
         const formSummaryResponse = await handleAddMessageToDB(
           aiContent,
           previousResponseBodyForConversation
@@ -427,9 +427,9 @@ const useFormsStore = create((set, get) => ({
         const remainingValidity = handlegetTokenRemainingValidity(
           userStore.user.expiryTime
         );
-        const aiContent = `Contact Added!\n\nName: ${currentContactGivenName} ${currentContactFamilyName}\nEmail: ${
+        const aiContent = `Contact Added!\n\nName: ${currentContactGivenName} ${currentContactFamilyName}\n\nEmail: ${
           currentContactEmailIds[0] || currentEmailId
-        }\nMobile Number: ${currentContactMobileNumber}`;
+        }\n\nMobile Number: ${currentContactMobileNumber}`;
         const formSummaryResponse = await handleAddMessageToDB(
           aiContent,
           previousResponseBodyForConversation
@@ -553,9 +553,9 @@ const useFormsStore = create((set, get) => ({
         const remainingValidity = handlegetTokenRemainingValidity(
           userStore.user.expiryTime
         );
-        const aiContent = `Event Scheduled!\nSummary: ${currentEventSummary}\nDescription: ${currentEventDescription}\nStart Time: ${new Date(
+        const aiContent = `Event Scheduled!\n\nSummary: ${currentEventSummary}\n\nDescription: ${currentEventDescription}\n\nStart Time: ${new Date(
           currentEventStartTime
-        ).toLocaleString()}\nEnd Time: ${new Date(
+        ).toLocaleString()}\n\nEnd Time: ${new Date(
           currentEventEndTime
         ).toLocaleString()}`;
         const formSummaryResponse = await handleAddMessageToDB(
@@ -564,7 +564,7 @@ const useFormsStore = create((set, get) => ({
         );
         if (formSummaryResponse.status === 200) {
           let providerResponse;
-          let tokenToSend = initialUser.accessToken;
+          let tokenToSend = userStore.user.accessToken;
           if (Cookies.get("Secure-next.session-token-g")) {
             if (remainingValidity <= 60) {
               const newTokenResponse = await fetch(
@@ -756,7 +756,7 @@ const useFormsStore = create((set, get) => ({
             }
           }
 
-          const aiContent = `Ticket Created!\nID: ${id}\nTitle: ${currentTicketTitle}\nDescription: ${currentTicketDescription}\nCategory: ${currentTicketCategory}\nSubcategory: ${currentTicketSubCategory}\nName: ${currentTicketName}\nEmail: ${currentTicketEmailId}\nPhone: ${currentTicketPhoneNumber}.`;
+          const aiContent = `Ticket Created!\n\nID: ${id}\n\nTitle: ${currentTicketTitle}\n\nDescription: ${currentTicketDescription}\n\nCategory: ${currentTicketCategory}\n\nSubcategory: ${currentTicketSubCategory}\n\nName: ${currentTicketName}\n\nEmail: ${currentTicketEmailId}\n\nPhone: ${currentTicketPhoneNumber}.`;
           const formSummaryResponse = await handleAddMessageToDB(
             aiContent,
             previousResponseBodyForConversation

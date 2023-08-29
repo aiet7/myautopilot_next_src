@@ -9,11 +9,9 @@ import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import useUpdatesStore from "@/utils/store/assistant/sections/updates/updatesStore";
 
 const Updates = ({}) => {
-  const { handlePromptAssistantInput } = useAssistantStore();
   const {
     locationNews,
     locationWeather,
-    generalUpdates,
     activeWnsButton,
     handleActiveWnsButton,
     initializeWns,
@@ -26,26 +24,6 @@ const Updates = ({}) => {
   return (
     <div className="flex-grow flex flex-col gap-4 overflow-hidden">
       <h3 className="text-left text-lg">Updates</h3>
-      {generalUpdates.map((generalUpdates, index) => {
-        const { name, description, prompt } = generalUpdates;
-        return (
-          <div key={index} className="flex flex-col ">
-            <div className="w-full flex items-center justify-between text-white font-bold bg-blue-800 py-1 px-2">
-              <span
-                className="w-full cursor-pointer"
-                onClick={() => handlePromptAssistantInput(prompt)}
-              >
-                {name}
-              </span>
-            </div>
-
-            <pre className="dark:bg-white/20 whitespace-pre-wrap bg-black/5 p-2 text-xs w-full">
-              {description}
-            </pre>
-          </div>
-        );
-      })}
-
       <div className="dark:border-white/20 flex  items-center border rounded">
         <button
           onClick={() => handleActiveWnsButton("Stocks")}

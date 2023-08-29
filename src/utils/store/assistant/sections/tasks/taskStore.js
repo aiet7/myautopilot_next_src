@@ -19,8 +19,6 @@ const useTasksStore = create((set, get) => ({
 
   setUserTaskNameInput: (inputValue) => set({ userTaskNameInput: inputValue }),
 
-  setTasks: (initialTasks) => set({ tasks: initialTasks }),
-
   addTask: (task) => set((state) => ({ tasks: [...state.tasks, task] })),
 
   handleUpdateTaskCompletion: (taskId, completed) =>
@@ -31,8 +29,8 @@ const useTasksStore = create((set, get) => ({
     })),
 
   handleDeleteTask: async (taskId) => {
-    const currentTasks = get().tasks;
-    const taskToDelete = currentTasks.find((task) => task.id === taskId);
+    const { tasks } = get();
+    const taskToDelete = tasks.find((task) => task.id === taskId);
     if (taskToDelete) {
       try {
         const response = await fetch(
@@ -49,9 +47,10 @@ const useTasksStore = create((set, get) => ({
     }
   },
 
-  handleAddTask: async (userTaskNameInput) => {
+  handleAddTask: async () => {
     const userStore = useUserStore.getState();
-    if (get().userTaskNameInput.trim() !== "") {
+    const { userTaskNameInput, addTask } = get();
+    if (userTaskNameInput.trim() !== "") {
       try {
         const taskResponse = await fetch(
           `https://etech7-wf-etech7-db-service.azuremicroservices.io/addTask`,
@@ -69,7 +68,7 @@ const useTasksStore = create((set, get) => ({
 
         if (taskResponse.status === 200) {
           const newTask = await taskResponse.json();
-          get().addTask(newTask);
+          addTask(newTask);
         }
       } catch (e) {
         console.error(e);
@@ -79,6 +78,7 @@ const useTasksStore = create((set, get) => ({
   },
 
   handleToggleTaskCompletion: async (taskId, completed) => {
+    const { handleUpdateTaskCompletion } = get();
     let url = completed
       ? `https://etech7-wf-etech7-db-service.azuremicroservices.io/completedTask?taskId=${taskId}`
       : `https://etech7-wf-etech7-db-service.azuremicroservices.io/notCompletedTask?taskId=${taskId}`;
@@ -86,7 +86,7 @@ const useTasksStore = create((set, get) => ({
     try {
       const taskResponse = await fetch(url);
       if (taskResponse.status === 200) {
-        get().handleUpdateTaskCompletion(taskId, completed);
+        handleUpdateTaskCompletion(taskId, completed);
       }
     } catch (e) {
       console.error(e);

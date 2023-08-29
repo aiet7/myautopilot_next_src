@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { MarkedChatInteraction } from "../../../utils/marked/marked.js";
+import MarkedInteraction from "../Marked/MarkedInteraction";
 import { BsFillSendFill } from "react-icons/bs";
 import { AiOutlineUser } from "react-icons/ai";
 import { AiOutlineCheck } from "react-icons/ai";
@@ -102,7 +102,7 @@ const Discussion = () => {
                       <p className="text-lg font-bold">{item.role}</p>
                     )}
 
-                    <MarkedChatInteraction
+                    <MarkedInteraction
                       id={item.id}
                       markdown={displayedContent}
                     />

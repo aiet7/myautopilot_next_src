@@ -44,8 +44,8 @@ const History = ({}) => {
 
   return (
     <div
-      className={`${hoverTab === "general" && "bubble-chat h-full  shadow-lg shadow-blue-500"} ${
-        openHistory ? "translate-x-0 w-[300px]" : "-translate-x-full w-[300px] "
+      className={`${hoverTab === "general" && "bubble-chat h-full shadow-lg shadow-blue-500"} ${
+        openHistory ? "translate-x-0 w-[350px]" : "-translate-x-full w-[300px] "
       }  dark:bg-[#111111] bg-[#f6f8fc] absolute z-10 top-0 bottom-0 left-0 p-4 flex flex-col transition-all duration-300 ease-in-out transform xl:relative xl:min-w-[300px] xl:translate-x-0`}
     >
       <button

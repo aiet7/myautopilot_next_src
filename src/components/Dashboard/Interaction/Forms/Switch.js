@@ -1,4 +1,4 @@
-import { MarkedChatInteraction } from "../../../../utils/marked/marked.js";
+import MarkedInteraction from "../../Marked/MarkedInteraction";
 
 import EmailButtons from "./Email/EmailButtons.js";
 import EmailForm from "./Email/EmailForm.js";
@@ -61,7 +61,7 @@ const Switch = ({ item, itemId }) => {
           return null;
       }
     default:
-      return <MarkedChatInteraction id={item.id} markdown={item.content} />;
+      return <MarkedInteraction id={item.id} markdown={item.content} />;
   }
 };
 export default Switch;

@@ -18,7 +18,7 @@ const Assistant = ({}) => {
   return (
     <div
       className={`absolute z-10 top-0 bottom-0 right-0 ${
-        openAssistant ? "translate-x-0 w-[300px]" : "translate-x-full w-[300px]"
+        openAssistant ? "translate-x-0 w-[350px]" : "translate-x-full w-[300px]"
       }  dark:bg-[#111111] bg-[#f6f8fc] flex  transition-all duration-300 ease-in-out transform xl:relative xl:min-w-[300px]  xl:translate-x-0`}
     >
       <AssistantRail />

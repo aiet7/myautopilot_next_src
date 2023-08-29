@@ -300,8 +300,9 @@ const useConversationStore = create((set, get) => ({
   handleDeleteConversation: async (conversationId) => {
     const agentsStore = useAgentsStore.getState();
     const currentAgent = agentsStore.selectedAgent;
-    const conversationHistories = get().conversationHistories;
-    const conversationToDelete = get().conversationHistories[
+    const { conversationHistories } = get();
+
+    const conversationToDelete = conversationHistories[
       agentsStore.selectedAgent
     ].find((conversation) => conversation.id === conversationId);
 

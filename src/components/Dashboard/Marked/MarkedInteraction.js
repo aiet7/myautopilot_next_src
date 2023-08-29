@@ -1,27 +1,34 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { marked } from "marked";
 import { encode } from "html-entities";
 
 import Prism from "prismjs";
-import "./languages.js";
-import useConversationStore from "../store/interaction/conversations/conversationsStore.js";
-import useAssistantStore from "../store/assistant/assistantStore.js";
+import "../../../utils/marked/languages";
+import useConversationStore from "../../../utils/store/interaction/conversations/conversationsStore.js";
+import useRefStore from "@/utils/store/marked/ref/refStore";
+import useMarkedStore from "@/utils/store/marked/markedStore";
 
-export const MarkedChatInteraction = ({ id, markdown }) => {
+import { BiEdit, BiNotepad } from "react-icons/bi";
+import { BsLayoutSplit } from "react-icons/bs";
+import { MdOutlineHighlightAlt } from "react-icons/md";
+import { GiSettingsKnobs } from "react-icons/gi";
+import { FiThumbsUp, FiThumbsDown } from "react-icons/fi";
+import useInteractionStore from "@/utils/store/interaction/interactionsStore";
+import useNotesStore from "@/utils/store/assistant/sections/notes/notesStore";
+
+const MarkedInteraction = ({ id, markdown }) => {
   const { handleUpdateEditedResponse } = useConversationStore();
-
-  const copyRef = useRef(null);
-  const textAreaRef = useRef(null);
-
-  const [content, setContent] = useState(markdown);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingMessageId, setEditingMessageId] = useState(null);
-
-  const handleEdit = (id) => {
-    setIsEditing(true);
-    setEditingMessageId(id);
-    setContent(markdown);
-  };
+  const { feedback, handleSubmitFeedback } = useInteractionStore();
+  const { handleAddNote } = useNotesStore();
+  const { copyRef, textAreaRef } = useRefStore();
+  const {
+    content,
+    isEditing,
+    editingMessageId,
+    setContent,
+    setIsEditing,
+    handleEdit,
+  } = useMarkedStore();
 
   useEffect(() => {
     if (textAreaRef.current) {
@@ -96,6 +103,10 @@ export const MarkedChatInteraction = ({ id, markdown }) => {
     }
   };
 
+  // renderer.listitem = (text) => {
+  //   return `<li class="hover:bg-black/20">${text}</li>`;
+  // };
+
   renderer.link = (href, title, text) => {
     return `<a class="dark:text-purple-400 text-purple-800" href="${href}" title="${title}" target="_blank" rel="noopener">${text}</a>`;
   };
@@ -156,59 +167,52 @@ export const MarkedChatInteraction = ({ id, markdown }) => {
           }}
         />
         {id.endsWith("-ai") ? (
-          <button
-            className="bg-blue-800 text-white px-4 py-1 rounded mt-2"
-            onClick={() => handleEdit(id)}
-          >
-            Edit
-          </button>
+          <div className="dark:text-blue-500 flex items-center justify-between pt-2 text-blue-800 max-w-[450px]">
+            <div className="flex items-center gap-2">
+              <BiEdit
+                size={30}
+                className="dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded"
+                onClick={() => handleEdit(id, markdown)}
+              />
+              <MdOutlineHighlightAlt
+                size={30}
+                className="dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded"
+              />
+              <GiSettingsKnobs
+                size={30}
+                className="dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <BsLayoutSplit
+                size={30}
+                className="dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded"
+              />
+              <BiNotepad
+                onClick={() => handleAddNote(markdown)}
+                size={30}
+                className="dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded"
+              />
+              <FiThumbsUp
+                onClick={() => handleSubmitFeedback(id, false)}
+                className={`${
+                  feedback[id] === false ? "text-green-200" : ""
+                } dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded`}
+                size={30}
+              />
+              <FiThumbsDown
+                onClick={() => handleSubmitFeedback(id, true)}
+                className={`${
+                  feedback[id] === true ? "text-red-200" : ""
+                } dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded`}
+                size={30}
+              />
+            </div>
+          </div>
         ) : null}
       </div>
     );
   }
-  
 };
 
-export const MarkedChatAssistant = ({ markdown }) => {
-  const { handlePromptAssistantInput } = useAssistantStore();
-
-  const ref = useRef(null);
-
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.querySelectorAll(".list-item").forEach((element) => {
-        element.addEventListener("click", (event) => {
-          event.preventDefault();
-
-          handlePromptAssistantInput(element.textContent);
-        });
-      });
-    }
-  }, [handlePromptAssistantInput, markdown]);
-
-  const renderer = new marked.Renderer();
-
-  renderer.list = (body, ordered, start) => {
-    if (ordered) {
-      return `<ol start="${start}" class="flex flex-col gap-4">${body}</ol>`;
-    } else {
-      return `<ul class="flex flex-col gap-4">${body}</ul>`;
-    }
-  };
-
-  renderer.listitem = (text) => {
-    return `<li class="dark:bg-white/20 bg-black/5 px-2 py-1 rounded-md list-item cursor-pointer">${text}</li>`;
-  };
-
-  marked.setOptions({ renderer, gfm: true });
-
-  return (
-    <div
-      ref={ref}
-      className="flex flex-col gap-2 whitespace-pre-wrap"
-      dangerouslySetInnerHTML={{
-        __html: marked(markdown, { headerIds: false, mangle: false }),
-      }}
-    />
-  );
-};
+export default MarkedInteraction;

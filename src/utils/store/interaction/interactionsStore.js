@@ -49,9 +49,10 @@ const useInteractionStore = create((set, get) => ({
   handleSubmitFeedback: async (messageId, feedback) => {
     try {
       const cleanedMessageId = messageId.replace(
-        /-ai-(emailForm|contactForm|ticketForm|eventForm|taskForm)$/,
+        /-ai(-emailForm|-contactForm|-ticketForm|-eventForm|-taskForm)?$/,
         ""
       );
+      console.log(cleanedMessageId);
       const response = await fetch(
         `https://etech7-wf-etech7-db-service.azuremicroservices.io/updateFeedback?messageId=${cleanedMessageId}&feedback=${feedback}`
       );
@@ -131,8 +132,7 @@ const useInteractionStore = create((set, get) => ({
               ...responseBody,
               conversationId: currentConversation.id,
               userContent: message,
-            },
-            messageIdRef
+            }
           );
         } else if (response.status === 500) {
           set({
