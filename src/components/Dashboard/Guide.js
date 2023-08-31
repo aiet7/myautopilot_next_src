@@ -7,10 +7,12 @@ const Guide = ({}) => {
   return (
     <div
       onClick={() => {
-        openHistory && handleToggleHistory(false);
+        if (window.innerWidth < 1024) {
+          openHistory && handleToggleHistory(false);
+        }
       }}
       className={`${
-        openHistory && "lg:opacity-100 opacity-5"
+        openHistory && "lg:opacity-100 opacity-5 xl:ml-[350px]"
       } dark:bg-black w-full h-full overflow-y-auto scrollbar-thin transition-all duration-300 ease-in-out bg-white`}
     >
       <div className="dark:text-white/80 text-black/70 p-4 max-w-[850px] mx-auto">

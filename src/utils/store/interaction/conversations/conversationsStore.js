@@ -430,6 +430,7 @@ const useConversationStore = create((set, get) => ({
       return { ...state, conversationHistories: newConversations };
     });
   },
+  
   handleAddForm: (formType) => {
     const agentsStore = useAgentsStore.getState();
     const currentAgent = agentsStore.selectedAgent;
@@ -470,6 +471,7 @@ const useConversationStore = create((set, get) => ({
 
       return { ...state, conversationHistories: newConversations };
     });
+    return conversationId;
   },
 
   handleRemoveForm: (formId) => {

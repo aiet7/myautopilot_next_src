@@ -53,7 +53,7 @@ const MarkedAssistant = ({ markdown }) => {
   return (
     <div
       ref={listRef}
-      className="flex flex-col gap-2 whitespace-pre-wrap break-words"
+      className="text-sm flex flex-col gap-2 whitespace-pre-wrap break-words"
       dangerouslySetInnerHTML={{
         __html: marked(markdown, { headerIds: false, mangle: false }),
       }}

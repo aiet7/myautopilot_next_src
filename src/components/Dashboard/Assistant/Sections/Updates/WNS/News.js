@@ -29,7 +29,7 @@ const News = ({  }) => {
         return (
           <div
             key={index}
-            className="dark:shadow-white/40 dark:shadow-md flex flex-col  border shadow-black/20 shadow-md  rounded"
+            className="dark:shadow-white/40 dark:shadow-md flex flex-col gap-1  border shadow-black/20 shadow-md  rounded"
           >
             <img
               src={article.urlToImage || "/image_not_available.png"}

@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import Stocks from "./WNS/Stocks";
 import News from "./WNS/News";
 import Weather from "./WNS/Weather";
-import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import useUpdatesStore from "@/utils/store/assistant/sections/updates/updatesStore";
 
 const Updates = ({}) => {
@@ -24,7 +23,7 @@ const Updates = ({}) => {
   return (
     <div className="flex-grow flex flex-col gap-4 overflow-hidden">
       <h3 className="text-left text-lg">Updates</h3>
-      <div className="dark:border-white/20 flex  items-center border rounded">
+      <div className="dark:border-white/20 flex items-center border rounded">
         <button
           onClick={() => handleActiveWnsButton("Stocks")}
           className={`${

@@ -67,6 +67,18 @@ const useUiStore = create((set, get) => ({
     setHoverAgent(null);
   },
 
+  handleHistoryMenu: () => {
+    const { activeTab, handleToggleHistory, handleToggleRooms } = get();
+    if (activeTab === "general" || activeTab === "agents")
+      handleToggleHistory();
+    if (activeTab === "teams") handleToggleRooms();
+  },
+
+  handleAssistantMenu: () => {
+    const { handleToggleAssistant } = get();
+    if (handleToggleAssistant) handleToggleAssistant();
+  },
+
   handleCloseAllMenus: () =>
     set({
       hoverTab: false,

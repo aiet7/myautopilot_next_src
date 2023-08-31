@@ -1,9 +1,11 @@
 "use client";
 
+
 import { ThemeProvider } from "next-themes";
 
 import TabNavRail from "../../components/Dashboard/TabNavRail.js";
 import SettingsRail from "../../components/Dashboard/SettingsRail.js";
+import AssistantRail from "@/components/Dashboard/Assistant/AssistantRail.js";
 
 import Interaction from "../../components/Dashboard/Interaction/Interaction.js";
 import Discussion from "../../components/Dashboard/Teams/Discussion.js";
@@ -30,6 +32,7 @@ import useTeamsStore from "@/utils/store/teams/teamsStore.js";
 import useLocalStorageStore from "@/utils/store/localstorage/localStorageStore.js";
 import useInitializeAppStore from "@/utils/store/init/initializeAppStore.js";
 import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
+
 
 const DashboardPage = ({
   initialUser,
@@ -119,7 +122,7 @@ const DashboardPage = ({
       {height && (
         <div
           onClick={() => openSettings && handleToggleSettings(false)}
-          className="flex flex-col h-full w-full"
+          className="flex flex-col h-full w-full "
           style={{ height: `calc(${height}px - 1px)` }}
         >
           <div className="flex flex-col h-full w-full lg:flex-row-reverse">
@@ -127,9 +130,10 @@ const DashboardPage = ({
             <div className="flex flex-col h-full w-full overflow-hidden">
               {activeTab !== "settings" && <SettingsRail />}
               {activeTab === "general" && (
-                <div className="flex flex-1 relative overflow-hidden">
+                <div className="flex  flex-1 relative overflow-hidden">
                   <History />
                   <Interaction />
+                  {window.innerWidth > 1024 && <AssistantRail />}
                   <Assistant />
                 </div>
               )}
@@ -139,6 +143,7 @@ const DashboardPage = ({
                     <>
                       <History />
                       <Interaction />
+                      {window.innerWidth > 1024 && <AssistantRail />}
                       <Assistant />
                     </>
                   ) : (

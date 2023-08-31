@@ -65,6 +65,24 @@ const Tasks = ({}) => {
 
       <div className="flex-grow overflow-y-auto scrollbar-thin">
         <div className="flex flex-grow flex-col gap-4">
+          {tasks.length === 0 && (
+            <div className="dark:text-white/40 flex flex-col gap-2 text-black/40 italic">
+              <h2 className="text-xl">Welcome to the task manager!</h2>
+              <p className="text-sm">
+                With the tasks feature, you can seamlessly manage all your
+                to-dos in one place. Whether it&apos;s a work-related task or a
+                personal reminder, you have the flexibility to add, update, and
+                track its progress.
+              </p>
+              <p className="text-sm">
+                Kick off by adding a task using the `Add Task` button. Once it&apos;s
+                in the list, you can mark a task as &apos;complete&apos; or
+                &apos;in progress&apos; based on your progress. You also have
+                the freedom to remove any task if it&apos;s no longer relevant.
+                Stay on top of your duties and enjoy a more organized day!
+              </p>
+            </div>
+          )}
           {tasks
             .filter(
               (task) =>

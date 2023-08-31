@@ -16,6 +16,8 @@ import { FiThumbsUp, FiThumbsDown } from "react-icons/fi";
 import useInteractionStore from "@/utils/store/interaction/interactionsStore";
 import useNotesStore from "@/utils/store/assistant/sections/notes/notesStore";
 
+import { Tooltip as ReactTooltip } from "react-tooltip";
+
 const MarkedInteraction = ({ id, markdown }) => {
   const { handleUpdateEditedResponse } = useConversationStore();
   const { feedback, handleSubmitFeedback } = useInteractionStore();
@@ -104,7 +106,7 @@ const MarkedInteraction = ({ id, markdown }) => {
   };
 
   // renderer.listitem = (text) => {
-  //   return `<li class="hover:bg-black/20">${text}</li>`;
+  //   return `<li class="hover:bg-black/20 cursor-pointer rounded">${text}</li>`;
   // };
 
   renderer.link = (href, title, text) => {
@@ -170,42 +172,81 @@ const MarkedInteraction = ({ id, markdown }) => {
           <div className="dark:text-blue-500 flex items-center justify-between pt-2 text-blue-800 max-w-[450px]">
             <div className="flex items-center gap-2">
               <BiEdit
+                data-tooltip-id="Edit"
                 size={30}
-                className="dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded"
+                className="dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none"
                 onClick={() => handleEdit(id, markdown)}
               />
-              <MdOutlineHighlightAlt
-                size={30}
-                className="dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded"
+              <ReactTooltip
+                place="top"
+                content="Edit"
+                id="Edit"
+                className="z-[99]"
               />
+
               <GiSettingsKnobs
+                data-tooltip-id="Elaborate/Summarize"
                 size={30}
-                className="dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded"
+                className="dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none"
+              />
+              <ReactTooltip
+                place="top"
+                content="Elaborate/Summarize"
+                id="Elaborate/Summarize"
+                className="z-[99]"
               />
             </div>
             <div className="flex items-center gap-2">
               <BsLayoutSplit
+                data-tooltip-id="View ChatGPT Responses"
                 size={30}
-                className="dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded"
+                className="dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none"
+              />
+              <ReactTooltip
+                place="top"
+                content="View ChatGPT Responses"
+                id="View ChatGPT Responses"
+                className="z-[99]"
               />
               <BiNotepad
+                data-tooltip-id="Add To Notes"
                 onClick={() => handleAddNote(markdown)}
                 size={30}
-                className="dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded"
+                className="dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none"
+              />
+              <ReactTooltip
+                place="top"
+                content="Add To Notes"
+                id="Add To Notes"
+                className="z-[99]"
               />
               <FiThumbsUp
+                data-tooltip-id="Positive Feedback"
                 onClick={() => handleSubmitFeedback(id, false)}
                 className={`${
                   feedback[id] === false ? "text-green-200" : ""
-                } dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded`}
+                } dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none`}
                 size={30}
               />
+              <ReactTooltip
+                place="top"
+                content="Positive Feedback"
+                id="Positive Feedback"
+                className="z-[99]"
+              />
               <FiThumbsDown
+                data-tooltip-id="Negative Feedback"
                 onClick={() => handleSubmitFeedback(id, true)}
                 className={`${
                   feedback[id] === true ? "text-red-200" : ""
-                } dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded`}
+                } dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none`}
                 size={30}
+              />
+              <ReactTooltip
+                place="top"
+                content="Negative Feedback"
+                id="Negative Feedback"
+                className="z-[99]"
               />
             </div>
           </div>

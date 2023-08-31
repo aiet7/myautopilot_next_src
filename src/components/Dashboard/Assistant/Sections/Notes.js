@@ -74,6 +74,24 @@ const Notes = () => {
 
       <div className="flex-grow overflow-y-auto scrollbar-thin">
         <div className="flex flex-grow flex-col gap-4">
+          {notes.length === 0 && (
+            <div className="dark:text-white/40 flex flex-col gap-2 text-black/40 italic">
+              <h2 className="text-xl">Discover the Notes Feature!</h2>
+              <p className="text-sm">
+                The notes feature is your personal space to pin crucial pieces
+                of information from your conversations with the chatbot. Did the
+                chatbot share something insightful? Simply pin it to your notes!
+              </p>
+              <p className="text-sm">
+                Beyond just pinning, you have the freedom to edit these notes,
+                tailoring them to your liking or adding additional context. To
+                manage your pinned insights, use the `Add Note` button to create a
+                note, or the `Remove` button to delete any note you no longer
+                need. It&apos;s all about ensuring you never miss out on
+                important tidbits from your interactions!
+              </p>
+            </div>
+          )}
           {notes.map((note, index) => {
             const { id, noteHeading, noteContent, timeStamp } = note;
             return (
@@ -88,7 +106,9 @@ const Notes = () => {
                         value={tempHeading}
                         onChange={(e) => setTempHeading(e.target.value)}
                         className="p-2 w-44"
-                        placeholder={noteHeading || tempHeading === "" && "Title"}
+                        placeholder={
+                          noteHeading || (tempHeading === "" && "Title")
+                        }
                       />
                       <AiOutlineClose
                         size={20}
@@ -116,7 +136,7 @@ const Notes = () => {
                     className="flex flex-col gap-2 cursor-pointer"
                   >
                     <div className="flex justify-between">
-                      <p className="break-words whitespace-pre-wrap font-bold">
+                      <p className=" w-60 break-words whitespace-pre-wrap font-bold">
                         {noteHeading ? noteHeading : `Note ${index + 1}`}
                       </p>
                       <AiOutlineDelete

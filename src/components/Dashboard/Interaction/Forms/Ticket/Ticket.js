@@ -37,6 +37,7 @@ const TicketForm = ({ itemId }) => {
         <div>
           <span className="font-bold">Description</span>
           <input
+            maxLength={100}
             className="h-[50px] border outline-blue-500 w-full px-4"
             value={ticket.currentTicketDescription || ""}
             onChange={(e) =>
@@ -44,6 +45,15 @@ const TicketForm = ({ itemId }) => {
             }
           />
         </div>
+        <div>
+          <span className="font-bold">Summary</span>
+          <input
+            className="h-[50px] border outline-blue-500 w-full px-4"
+            value={ticket.currentTicketSummary || ""}
+            onChange={(e) => setTicket("currentTicketSummary", e.target.value)}
+          />
+        </div>
+
         <div>
           <span className="font-bold">Category</span>
 
@@ -76,6 +86,15 @@ const TicketForm = ({ itemId }) => {
               </option>
             ))}
           </select>
+        </div>
+        <div>
+          <span className="font-bold">Priority</span>
+          <input
+            disabled
+            className="h-[50px] border outline-blue-500 w-full px-4"
+            value={ticket.currentTicketPriority || ""}
+            onChange={(e) => setTicket("currentTicketPriority", e.target.value)}
+          />
         </div>
         {ticket.currentTicketCategory === "TRAINING_OR_ONBOARDING" &&
           ticket.currentTicketSubCategory === "NEW_EMPLOYEE_ONBOARDING" && (

@@ -39,8 +39,10 @@ const useFormsStore = create((set, get) => ({
   ticket: {
     currentTicketTitle: "",
     currentTicketDescription: "",
+    currentTicketSummary: "",
     currentTicketCategory: "",
     currentTicketSubCategory: "",
+    currentTicketPriority: "",
     currentTicketName: "",
     currentTicketEmailId: "",
     currentTicketPhoneNumber: "",
@@ -48,6 +50,7 @@ const useFormsStore = create((set, get) => ({
       currentTicketNewFirstName: "",
       currentTicketNewLastName: "",
       currentTicketNewEmailId: "",
+      currentTicketEmailOwner: "",
       currentTicketNewPhoneNumber: "",
       currentTicketLicenseId: "",
     },
@@ -199,8 +202,10 @@ const useFormsStore = create((set, get) => ({
     const {
       title,
       description,
+      summary,
       category,
       subcategory,
+      priorityLevel,
       name,
       emailID,
       phoneNumber,
@@ -213,8 +218,10 @@ const useFormsStore = create((set, get) => ({
         ...state.ticket,
         currentTicketTitle: title,
         currentTicketDescription: description,
+        currentTicketSummary: summary,
         currentTicketCategory: category,
         currentTicketSubCategory: subcategory,
+        currentTicketPriority: priorityLevel,
         currentTicketName: name,
         currentTicketEmailId: emailID,
         currentTicketPhoneNumber: phoneNumber,
@@ -652,8 +659,10 @@ const useFormsStore = create((set, get) => ({
     const {
       currentTicketTitle,
       currentTicketDescription,
+      currentTicketSummary,
       currentTicketCategory,
       currentTicketSubCategory,
+      currentTicketPriority,
       currentTicketName,
       currentTicketEmailId,
       currentTicketPhoneNumber,
@@ -662,6 +671,7 @@ const useFormsStore = create((set, get) => ({
       currentTicketNewFirstName,
       currentTicketNewLastName,
       currentTicketNewEmailId,
+      currentTicketEmailOwner,
       currentTicketNewPhoneNumber,
       currentTicketLicenseId,
     } = get().ticket.onBoarding;
@@ -689,8 +699,10 @@ const useFormsStore = create((set, get) => ({
             body: JSON.stringify({
               title: currentTicketTitle,
               description: currentTicketDescription,
+              summary: currentTicketSummary,
               category: currentTicketCategory,
               subcategory: currentTicketSubCategory,
+              priorityLevel: currentTicketPriority,
               name: currentTicketName,
               emailID: currentTicketEmailId,
               phoneNumber: currentTicketPhoneNumber,
@@ -729,6 +741,7 @@ const useFormsStore = create((set, get) => ({
                   firstName: currentTicketNewFirstName,
                   lastName: currentTicketNewLastName,
                   emailId: currentTicketNewEmailId,
+                  emailTicketOwner: currentTicketEmailOwner,
                   phoneNumber: currentTicketNewPhoneNumber,
                   licenseId: currentTicketLicenseId,
                 }),
@@ -756,7 +769,7 @@ const useFormsStore = create((set, get) => ({
             }
           }
 
-          const aiContent = `Ticket Created!\n\nID: ${id}\n\nTitle: ${currentTicketTitle}\n\nDescription: ${currentTicketDescription}\n\nCategory: ${currentTicketCategory}\n\nSubcategory: ${currentTicketSubCategory}\n\nName: ${currentTicketName}\n\nEmail: ${currentTicketEmailId}\n\nPhone: ${currentTicketPhoneNumber}.`;
+          const aiContent = `Ticket Created!\n\nID: ${id}\n\nTitle: ${currentTicketTitle}\n\nDescription: ${currentTicketDescription}\n\nSummary: ${currentTicketSummary}\n\nCategory: ${currentTicketCategory}\n\nSubcategory: ${currentTicketSubCategory}\n\nPriority: ${currentTicketPriority}\n\nName: ${currentTicketName}\n\nEmail: ${currentTicketEmailId}\n\nPhone: ${currentTicketPhoneNumber}.`;
           const formSummaryResponse = await handleAddMessageToDB(
             aiContent,
             previousResponseBodyForConversation

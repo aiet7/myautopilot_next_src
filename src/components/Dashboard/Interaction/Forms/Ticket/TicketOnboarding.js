@@ -41,6 +41,16 @@ const TicketOnboarding = ({}) => {
         />
       </div>
       <div>
+        <span className="font-bold">Ticket Creator Email</span>
+        <input
+          value={onBoarding.currentTicketEmailOwner || ""}
+          onChange={(e) =>
+            setTicket("onBoarding.currentTicketEmailOwner", e.target.value)
+          }
+          className="h-[50px] border outline-blue-500 w-full px-4"
+        />
+      </div>
+      <div>
         <span className="font-bold">New Employee Phone Number</span>
         <input
           value={onBoarding.currentTicketNewPhoneNumber || ""}

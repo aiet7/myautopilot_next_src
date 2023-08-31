@@ -36,11 +36,12 @@ const Rooms = ({}) => {
 
   return (
     <div
-      className={`${
-        hoverTab === "teams" && "bubble-teams h-full shadow-lg shadow-blue-500"
+      className={`absolute z-10 top-0 bottom-0 left-0 ${
+        hoverTab === "teams" &&
+        "bubble-teams h-full shadow-lg shadow-blue-500 min-w-[350px]"
       } ${
-        openRooms ? "translate-x-0 w-[300px]" : "-translate-x-full w-[300px]"
-      }  dark:bg-[#111111] bg-[#f6f8fc] absolute z-10 top-0 bottom-0 left-0 p-4 flex flex-col transition-all duration-300 ease-in-out transform xl:relative xl:min-w-[300px] xl:translate-x-0`}
+        openRooms ? "translate-x-0 w-[350px]" : "-translate-x-full w-[350px]"
+      }  dark:bg-[#111111] bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease-in-out transform `}
     >
       <button
         onClick={handleCreateNewRoom}
@@ -48,94 +49,98 @@ const Rooms = ({}) => {
       >
         + New Room
       </button>
-      <div className="h-[200px] overflow-y-auto h-full scrollbar-thin lg:h-full">
+      <div className="overflow-y-auto h-full scrollbar-thin">
         {teamsHistories?.map((team, index) => {
           const { id, userID, roomName, roomIndustry, roomUserInput } = team;
 
           return (
             <div key={index} className="flex flex-col items-start my-2">
               <div
+                onClick={() => handleTeamRoomSelected(index)}
                 className={`${
                   currentTeamsIndex === index && "dark:bg-white/40 bg-black/20"
                 } dark:text-white dark:hover:bg-white/40 hover:bg-black/20 text-black w-full flex items-center justify-between px-2 h-[50px] cursor-pointer`}
               >
-                <div className="flex items-center gap-1">
-                  <div
-                    className="w-8"
-                    onClick={
-                      !editing && !deleting
-                        ? () => handleTeamRoomSelected(index)
-                        : null
-                    }
-                  >
+                <div className="flex items-center">
+                  <div className="w-8">
                     <RiTeamLine size={20} />
                   </div>
-                  <div
-                    className="w-40 truncate flex"
-                    onClick={
-                      !editing && !deleting
-                        ? () => handleTeamRoomSelected(index)
-                        : null
-                    }
-                  >
+                  <div className="w-40 truncate flex">
                     {currentTeamsIndex === index &&
                     ((!roomIndustry && !roomUserInput) || editing) ? (
                       <input
+                        onClick={(e) => e.stopPropagation()}
                         value={teamsHistories[currentTeamsIndex]?.roomName}
-                        className="bg-white text-black truncate flex px-1 "
-                        onChange={(e) => {
-                          handleRoomConfig("roomName", e.target.value);
-                        }}
+                        className="bg-white text-black truncate flex px-1"
+                        onChange={(e) =>
+                          handleRoomConfig("roomName", e.target.value)
+                        }
                       />
                     ) : (
                       <span className="px-1">{roomName}</span>
                     )}
                   </div>
-                  {roomIndustry && roomUserInput && (
-                    <div className="w-12">
-                      {editing && currentTeamsIndex === index && (
-                        <div className="flex items-center gap-2">
-                          <AiOutlineCheck
-                            onClick={() => handleSaveRoomTitle(id, userID)}
-                            size={20}
-                          />
-                          <AiOutlineClose
-                            onClick={handleCancelEditRoomTitle}
-                            size={20}
-                          />
-                        </div>
-                      )}
-                      {deleting && currentTeamsIndex === index && (
-                        <div className="flex items-center gap-2">
-                          <AiOutlineCheck
-                            onClick={() => {
-                              handleDeleteTeamRoom(id);
-                              setDeleting(false);
-                            }}
-                            size={20}
-                          />
-                          <AiOutlineClose
-                            size={20}
-                            onClick={() => setDeleting(false)}
-                          />
-                        </div>
-                      )}
-
-                      {currentTeamsIndex === index && !editing && !deleting && (
-                        <div className="flex items-center gap-2">
-                          <AiFillEdit
-                            onClick={() => handleEditRoomTitle(index)}
-                            size={20}
-                          />
-                          <AiFillDelete
-                            onClick={() => setDeleting(true)}
-                            size={20}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  )}
                 </div>
+                {roomIndustry && roomUserInput && (
+                  <div className="w-12">
+                    {editing && currentTeamsIndex === index && (
+                      <div className="flex items-center gap-2">
+                        <AiOutlineCheck
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSaveRoomTitle(id, userID);
+                          }}
+                          size={20}
+                        />
+                        <AiOutlineClose
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCancelEditRoomTitle();
+                          }}
+                          size={20}
+                        />
+                      </div>
+                    )}
+                    {deleting && currentTeamsIndex === index && (
+                      <div className="flex items-center gap-2">
+                        <AiOutlineCheck
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteTeamRoom(id);
+                            setDeleting(false);
+                          }}
+                          size={20}
+                        />
+                        <AiOutlineClose
+                          size={20}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setDeleting(false);
+                          }}
+                        />
+                      </div>
+                    )}
+
+                    {currentTeamsIndex === index && !editing && !deleting && (
+                      <div className="flex items-center gap-2">
+                        <AiFillEdit
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditRoomTitle(index);
+                          }}
+                          size={20}
+                        />
+                        <AiFillDelete
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setDeleting(true);
+                          }}
+                          size={20}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
               {currentTeamsIndex === index && (
                 <div className="dark:bg-white/10 bg-black/10 w-full rounded-br-md rounded-bl-md">

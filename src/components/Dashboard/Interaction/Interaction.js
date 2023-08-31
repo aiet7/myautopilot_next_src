@@ -10,7 +10,6 @@ import {
   BsImageFill,
 } from "react-icons/bs";
 import { HiOutlineArrowSmallDown } from "react-icons/hi2";
-import { FiThumbsUp, FiThumbsDown } from "react-icons/fi";
 import { FaSpinner } from "react-icons/fa";
 
 import Switch from "../../Dashboard/Interaction/Forms/Switch.js";
@@ -22,6 +21,8 @@ import useFormsStore from "@/utils/store/interaction/forms/formsStore.js";
 import useInteractionStore from "@/utils/store/interaction/interactionsStore.js";
 import useRefStore from "@/utils/store/interaction/ref/refStore.js";
 import useSpeechStore from "@/utils/store/interaction/speech/speechStore.js";
+
+import { Tooltip as ReactTooltip } from "react-tooltip";
 
 const Interaction = ({}) => {
   const {
@@ -82,19 +83,22 @@ const Interaction = ({}) => {
   return (
     <div
       onClick={() => {
-        openHistory && handleToggleHistory(false);
-        openAssistant && handleToggleAssistant(false);
+        if (window.innerWidth < 1024) {
+          openHistory && handleToggleHistory(false);
+          openAssistant && handleToggleAssistant(false);
+        }
       }}
-      className={`relative flex flex-col h-full w-full ${
-        (openHistory && "lg:opacity-100 opacity-5") ||
-        (openAssistant && "lg:opacity-100 opacity-5")
-      }  
+      className={`flex flex-col h-full w-full ${
+        openHistory && openAssistant && "xl:mr-[350px]"
+      }  ${
+        (openHistory && "lg:opacity-100 opacity-5 xl:ml-[350px]") ||
+        (openAssistant && "lg:opacity-100 opacity-5 xl:mr-[350px]")
       } dark:bg-black transition-all duration-300 ease-in-out bg-white`}
     >
       {!isAtBottom && isOverflowed && (
         <button
           onClick={handleScrollToBottom}
-          className="dark:border-white/10 dark:bg-white/10 dark:text-gray-200 absolute bottom-28 right-4 rounded-full border border-gray-200 bg-gray-50 text-gray-600"
+          className="dark:border-white/10 dark:bg-white/10 dark:text-gray-200 absolute bottom-28 right-4 rounded-full border border-gray-200 bg-gray-50 text-gray-600 lg:right-14"
         >
           <HiOutlineArrowSmallDown className="m-1" size={18} />
         </button>
@@ -110,14 +114,14 @@ const Interaction = ({}) => {
           return (
             <div
               key={item.id}
-              className={`px-4 py-4 text-md w-full  ${
+              className={`px-4 py-4 text-md w-full ${
                 item.role === "user"
                   ? "dark:border-white/40 bg-black/5 border-b"
                   : "dark:bg-white/10 dark:border-white/40 border-b"
               }`}
               ref={index === arr.length - 1 ? latestMessageRef : null}
             >
-              <div className="flex items-start max-w-[600px] mx-auto gap-4">
+              <div className="flex  items-start max-w-[600px] mx-auto gap-4">
                 <span>
                   {item.role === "user" ? (
                     <AiOutlineUser size={20} />
@@ -172,42 +176,72 @@ const Interaction = ({}) => {
 
         <div className="flex items-center gap-3 absolute right-24 pr-2 flex items-center bottom-0 top-0">
           {activeTab === "general" && (
-            <BsImageFill
-              onClick={() => handleImageGenerator(userInput)}
-              size={23}
-              className={`${
-                userInput !== ""
-                  ? "dark:text-white dark:hover:text-blue-500 hover:text-blue-500 text-black cursor-pointer"
-                  : "dark:text-gray-500 text-gray-300 select-none"
-              } `}
-            />
+            <>
+              <BsImageFill
+                data-tooltip-id="Generate Image"
+                onClick={() => handleImageGenerator(userInput)}
+                size={23}
+                className={`outline-none ${
+                  userInput !== ""
+                    ? "dark:text-white dark:hover:text-blue-500 hover:text-blue-500 text-black cursor-pointer"
+                    : "dark:text-gray-500 text-gray-300 select-none"
+                } `}
+              />
+              <ReactTooltip
+                place="top"
+                content="Generate Image"
+                id="Generate Image"
+                className="z-[99]"
+              />
+            </>
           )}
           <BsFillSendFill
+            data-tooltip-id="Send Message"
             size={25}
             onClick={() => handleSendUserMessage(userInput)}
-            className={`${
+            className={`outline-none ${
               userInput !== ""
                 ? "dark:text-white dark:hover:text-blue-500 hover:text-blue-500 text-black cursor-pointer"
                 : "dark:text-gray-500 text-gray-300 select-none"
             } `}
           />
+          <ReactTooltip
+            place="top"
+            content="Send Message"
+            id="Send Message"
+            className="z-[99]"
+          />
         </div>
         <div className="flex items-center gap-1 pl-2">
           <BsFillStopFill
+            data-tooltip-id="Stop Generating"
             onClick={handleAbortRequest}
             size={35}
-            className={`${
+            className={`outline-none ${
               isWaiting
                 ? "hover:text-blue-500 cursor-pointer"
                 : "dark:text-gray-500 text-gray-300 select-none"
             } `}
           />
+          <ReactTooltip
+            place="top"
+            content="Stop Generating"
+            id="Stop Generating"
+            className="z-[99]"
+          />
           <BsFillMicFill
+            data-tooltip-id="Voice"
             onClick={handleTriggerSpeech}
-            className={`hover:text-blue-500 ${
+            className={`hover:text-blue-500 outline-none ${
               isListening ? "text-blue-500" : null
             } cursor-pointer`}
             size={25}
+          />
+          <ReactTooltip
+            place="top"
+            content={isListening ? "Stop Speech" : "Start Speech"}
+            id="Voice"
+            className="z-[99]"
           />
         </div>
       </div>

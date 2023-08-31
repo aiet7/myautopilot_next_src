@@ -13,6 +13,8 @@ import useTeamsStore from "@/utils/store/teams/teamsStore.js";
 import useUiStore from "@/utils/store/ui/uiStore.js";
 import useRefStore from "@/utils/store/teams/refStore.js";
 
+import { Tooltip as ReactTooltip } from "react-tooltip";
+
 const Discussion = () => {
   const { activeTab, openRooms, handleToggleRooms } = useUiStore();
   const {
@@ -54,10 +56,12 @@ const Discussion = () => {
   return (
     <div
       onClick={() => {
-        openRooms && handleToggleRooms(false);
+        if (window.innerWidth < 1024) {
+          openRooms && handleToggleRooms(false);
+        }
       }}
       className={`relative flex flex-col h-full w-full ${
-        openRooms && "lg:opacity-100 opacity-5"
+        openRooms && "lg:opacity-100 opacity-5 xl:ml-[350px]"
       } dark:bg-black transition-all duration-300 ease-in-out bg-white`}
     >
       {!isAtBottom && isOverflowed && (
@@ -167,6 +171,7 @@ const Discussion = () => {
 
         <div className="flex items-center gap-3 absolute right-6 pr-2 flex items-center bottom-0 top-0">
           <BsFillSendFill
+            data-tooltip-id="Send Message"
             onClick={() => handleSendUserMessage(userInput)}
             size={25}
             className={`${
@@ -174,6 +179,12 @@ const Discussion = () => {
                 ? "dark:text-white dark:hover:text-blue-500 hover:text-blue-500 text-black cursor-pointer"
                 : "dark:text-gray-500 text-gray-300 select-none"
             } `}
+          />
+          <ReactTooltip
+            place="top"
+            content="Send Message"
+            id="Send Message"
+            className="z-[99]"
           />
         </div>
       </div>

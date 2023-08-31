@@ -16,9 +16,9 @@ const Hover = ({}) => {
       className={`absolute z-[99] lg:top-0 lg:bottom-0 ${
         (hoverTab === "general" && openHistory) ||
         (hoverTab === "agents" && openHistory)
-          ? "lg:left-[60px]"
-          : "lg:left-[360px]"
-      } xl:left-[60px]`}
+          ? "lg:left-[60px] xl:left-[60px]"
+          : "lg:left-[410px] xl:left-[410px]"
+      } xl:left-[410px]`}
     >
       {hoverTab === "general" && <History />}
       {hoverTab === "agents" && <Selection />}
