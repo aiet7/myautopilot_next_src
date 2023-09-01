@@ -17,12 +17,12 @@ const Selection = ({}) => {
         "bubble-agents h-full shadow-lg shadow-blue-500 min-w-[350px]"
       } ${
         openHistory ? "translate-x-0 w-[350px]" : "-translate-x-full w-[350px]"
-      }  dark:bg-[#111111] bg-[#f6f8fc]  p-4 flex flex-col transition-all duration-300 ease-in-out transform`}
+      }  dark:bg-[#111111] bg-[#f6f8fc]  p-4 flex flex-col transition-transform duration-300 ease-in-out transform`}
     >
       <button className={`w-full p-4 bg-blue-800 text-white `}>
         + New Agent
       </button>
-      <div className={` overflow-y-auto scrollbar-thin `}>
+      <div className={`overflow-y-auto h-full scrollbar-thin `}>
         {agents.slice(1).map((agent, index) => {
           const { id, agentName } = agent;
           return (

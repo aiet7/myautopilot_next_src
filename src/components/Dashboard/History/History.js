@@ -49,7 +49,7 @@ const History = ({}) => {
         "bubble-chat h-full shadow-lg shadow-blue-500 min-w-[350px]"
       } ${
         openHistory ? "translate-x-0 w-[350px]" : "-translate-x-full w-[350px] "
-      }  dark:bg-[#111111] bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease-in-out transform `}
+      }  dark:bg-[#111111] bg-[#f6f8fc] p-4 flex flex-col transition-transform duration-300 ease-in-out transform `}
     >
       <button
         onClick={() =>
@@ -59,7 +59,7 @@ const History = ({}) => {
               : 0
           )
         }
-        className={`w-full p-4 bg-blue-800 text-white`}
+        className="w-full p-4 bg-blue-800 text-white"
       >
         + New Chat
       </button>

@@ -34,6 +34,7 @@ const Rooms = ({}) => {
     setEditing(false);
   }, [currentTeamsIndex]);
 
+
   return (
     <div
       className={`absolute z-10 top-0 bottom-0 left-0 ${
@@ -41,7 +42,7 @@ const Rooms = ({}) => {
         "bubble-teams h-full shadow-lg shadow-blue-500 min-w-[350px]"
       } ${
         openRooms ? "translate-x-0 w-[350px]" : "-translate-x-full w-[350px]"
-      }  dark:bg-[#111111] bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease-in-out transform `}
+      }  dark:bg-[#111111] bg-[#f6f8fc] p-4 flex flex-col transition-transform duration-300 ease-in-out transform `}
     >
       <button
         onClick={handleCreateNewRoom}

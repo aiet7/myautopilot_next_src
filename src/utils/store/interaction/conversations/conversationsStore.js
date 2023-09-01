@@ -341,8 +341,7 @@ const useConversationStore = create((set, get) => ({
   },
 
   handleConversationSelected: (index, agentID) => {
-    const { hoverTab, setActiveTab, handleCloseAllMenus } =
-      useUiStore.getState();
+    const { hoverTab, setActiveTab, setHoverTab } = useUiStore.getState();
     set((state) => {
       const updatedConversationIndices = {
         ...state.currentConversationIndices,
@@ -356,8 +355,7 @@ const useConversationStore = create((set, get) => ({
     if (hoverTab === "general") {
       setActiveTab("general");
     }
-
-    handleCloseAllMenus();
+    setHoverTab(null);
   },
 
   handleAddUserMessage: async (message) => {
@@ -430,7 +428,7 @@ const useConversationStore = create((set, get) => ({
       return { ...state, conversationHistories: newConversations };
     });
   },
-  
+
   handleAddForm: (formType) => {
     const agentsStore = useAgentsStore.getState();
     const currentAgent = agentsStore.selectedAgent;

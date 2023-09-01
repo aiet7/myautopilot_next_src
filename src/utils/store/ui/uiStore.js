@@ -8,6 +8,7 @@ const useUiStore = create((set, get) => ({
   openHistory: false,
   openAssistant: false,
   openRooms: false,
+  openDocs: false,
   openSettings: false,
 
   setActiveTab: (tab) => set({ activeTab: tab }),
@@ -20,6 +21,7 @@ const useUiStore = create((set, get) => ({
   handleToggleAssistant: () =>
     set((state) => ({ openAssistant: !state.openAssistant })),
   handleToggleRooms: () => set((state) => ({ openRooms: !state.openRooms })),
+  handleToggleDocs: () => set((state) => ({ openDocs: !state.openDocs })),
   handleToggleSettings: (toggle) => set({ openSettings: toggle }),
 
   handleUpdateGeneralPreview: () => {
@@ -60,6 +62,16 @@ const useUiStore = create((set, get) => ({
     setHoverAgent(null);
   },
 
+  handleUpdateDocsPreview: () => {
+    const { setHoverAgent } = useAgentsStore.getState();
+    const { activeTab } = get();
+
+    if (activeTab === "docs") {
+      set({ hoverTab: null });
+    }
+    setHoverAgent(null);
+  },
+
   handleUpdateHoverMouseLeave: () => {
     const { setHoverAgent } = useAgentsStore.getState();
 
@@ -68,29 +80,33 @@ const useUiStore = create((set, get) => ({
   },
 
   handleHistoryMenu: () => {
-    const { activeTab, handleToggleHistory, handleToggleRooms } = get();
-    if (activeTab === "general" || activeTab === "agents")
-      handleToggleHistory();
-    if (activeTab === "teams") handleToggleRooms();
+    const { openHistory, openRooms, openDocs } = get();
+    // if (openHistory || openRooms || openDocs) {
+    //   set({ openHistory: false, openRooms: false, openDocs: false });
+    // } else set({ openHistory: true, openRooms: true, openDocs: true });
+    if (openHistory) {
+      set({ openHistory: false });
+    } else set({ openHistory: true });
+    if (openRooms) {
+      set({ openRooms: false });
+    } else set({ openRooms: true });
+    if (openDocs) {
+      set({ openDocs: false });
+    } else set({ openDocs: true });
   },
 
   handleAssistantMenu: () => {
-    const { handleToggleAssistant } = get();
-    if (handleToggleAssistant) handleToggleAssistant();
+    const { openAssistant } = get();
+    if (openAssistant) {
+      set({ openAssistant: false });
+    } else {
+      set({ openAssistant: true });
+    }
   },
-
-  handleCloseAllMenus: () =>
-    set({
-      hoverTab: false,
-      openAssistant: false,
-      openHistory: false,
-      openRooms: false,
-      openSettings: false,
-    }),
 
   handleTabChange: (tab) => {
     const { setSelectedAgent } = useAgentsStore.getState();
-    const { activeTab, handleCloseAllMenus } = get();
+    const { activeTab } = get();
     if (tab === "agents") {
       set({ activeTab: "agents" });
     }
@@ -100,7 +116,6 @@ const useUiStore = create((set, get) => ({
     set({ activeTab: tab, hoverTab: null });
 
     setSelectedAgent(null);
-    handleCloseAllMenus();
   },
 }));
 

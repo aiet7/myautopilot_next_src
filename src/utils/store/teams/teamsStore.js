@@ -462,7 +462,7 @@ const useTeamsStore = create((set, get) => ({
     }
   },
   handleTeamRoomSelected: (index) => {
-    const { setActiveTab, handleCloseAllMenus } = useUiStore.getState();
+    const { setActiveTab, setHoverTab } = useUiStore.getState();
     set((state) => {
       if (state.client) {
         state.client.deactivate();
@@ -472,8 +472,8 @@ const useTeamsStore = create((set, get) => ({
         currentTeamsIndex: index,
       };
     });
-    setActiveTab("teams")
-    handleCloseAllMenus();
+    setActiveTab("teams");
+    setHoverTab(null);
   },
 
   handleAddUserMessage: (message) => {

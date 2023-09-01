@@ -3,12 +3,12 @@
 import useUiStore from "@/utils/store/ui/uiStore";
 
 const Guide = ({}) => {
-  const { openHistory, handleToggleHistory } = useUiStore();
+  const { openHistory, handleHistoryMenu } = useUiStore();
   return (
     <div
       onClick={() => {
         if (window.innerWidth < 1024) {
-          openHistory && handleToggleHistory(false);
+          openHistory && handleHistoryMenu(false);
         }
       }}
       className={`${

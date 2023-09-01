@@ -1,6 +1,5 @@
 "use client";
 
-
 import { ThemeProvider } from "next-themes";
 
 import TabNavRail from "../../components/Dashboard/TabNavRail.js";
@@ -12,6 +11,7 @@ import Discussion from "../../components/Dashboard/Teams/Discussion.js";
 import Assistant from "../../components/Dashboard/Assistant/Assistant.js";
 import History from "../../components/Dashboard/History/History.js";
 import Rooms from "../../components/Dashboard/Teams/Rooms.js";
+import Documents from "@/components/Dashboard/Document/Documents.js";
 
 import Guide from "../../components/Dashboard/Guide.js";
 import Selection from "../../components/Dashboard/Selection.js";
@@ -32,7 +32,8 @@ import useTeamsStore from "@/utils/store/teams/teamsStore.js";
 import useLocalStorageStore from "@/utils/store/localstorage/localStorageStore.js";
 import useInitializeAppStore from "@/utils/store/init/initializeAppStore.js";
 import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
-
+import DocumentForm from "@/components/Dashboard/Document/DocumentForm.js";
+import useDocStore from "@/utils/store/doc/docStore.js";
 
 const DashboardPage = ({
   initialUser,
@@ -50,6 +51,7 @@ const DashboardPage = ({
     useConversationStore();
   const { activeAssistantButton } = useAssistantStore();
   const { initializeTeams, currentTeamsIndex } = useTeamsStore();
+  const { currentDocIndex } = useDocStore();
   const { saveStorage, getStorage } = useLocalStorageStore();
 
   const {
@@ -116,6 +118,7 @@ const DashboardPage = ({
     activeAssistantButton,
     currentConversationIndices,
     currentTeamsIndex,
+    currentDocIndex
   ]);
   return (
     <ThemeProvider attribute="class">
@@ -158,6 +161,12 @@ const DashboardPage = ({
                 <div className="flex flex-1 relative overflow-hidden">
                   <Rooms />
                   <Discussion />
+                </div>
+              )}
+              {activeTab === "docs" && (
+                <div className="flex flex-1 relative overflow-hidden">
+                  <Documents />
+                  <DocumentForm />
                 </div>
               )}
               {activeTab === "settings" && (

@@ -9,6 +9,7 @@ import {
 } from "react-icons/ai";
 import { BsChatDots } from "react-icons/bs";
 import { FiSettings } from "react-icons/fi";
+import { FaDochub } from "react-icons/fa";
 import {
   MdOutlineAccountCircle,
   MdOutlineDarkMode,
@@ -35,6 +36,7 @@ const TabNavRail = ({}) => {
     handleUpdateGeneralPreview,
     handleUpdateAgentsPreview,
     handleUpdateRoomsPreview,
+    handleUpdateDocsPreview,
     handleUpdateHoverMouseLeave,
     handleHistoryMenu,
     handleToggleSettings,
@@ -112,6 +114,24 @@ const TabNavRail = ({}) => {
           className={`${activeTab === "teams" && "text-blue-600"} `}
         />
         <span className="text-xs">Teams</span>
+      </div>
+      <div
+        onMouseEnter={() => {
+          if (window.innerWidth > 1024) {
+            setHoverTab("docs");
+            handleUpdateDocsPreview();
+          }
+        }}
+        onClick={() => {
+          handleTabChange("docs");
+        }}
+        className="relative flex flex-col items-center cursor-pointer"
+      >
+        <FaDochub
+          size={20}
+          className={`${activeTab === "docs" && "text-blue-600"} `}
+        />
+        <span className="text-xs">Docs</span>
       </div>
 
       <div

@@ -18,7 +18,7 @@ const useAgentsStore = create((set, get) => ({
 
   handleAgentSelected: (id) => {
     const { conversationHistories } = useConversationStore.getState();
-    const { setActiveTab, handleCloseAllMenus } = useUiStore.getState();
+    const { setActiveTab } = useUiStore.getState();
     set({ selectedAgent: id, displayedAgent: null, hoverAgent: null });
 
     if (!conversationHistories[id]) {
@@ -31,7 +31,6 @@ const useAgentsStore = create((set, get) => ({
       }));
     }
     setActiveTab("agents");
-    handleCloseAllMenus();
   },
 }));
 

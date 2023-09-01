@@ -3,6 +3,7 @@ import useUiStore from "../ui/uiStore";
 import useConversationStore from "../interaction/conversations/conversationsStore";
 import useTeamsStore from "../teams/teamsStore";
 import useAssistantStore from "../assistant/assistantStore";
+import useDocStore from "../doc/docStore";
 
 const useLocalStorageStore = create((set, get) => ({
   getStorage: () => {
@@ -13,6 +14,7 @@ const useLocalStorageStore = create((set, get) => ({
     );
 
     const lastRoomIndex = localStorage.getItem("lastRoomIndex");
+    const lastDocIndex = localStorage.getItem("lastDocIndex");
     const lastWsPendingString = localStorage.getItem("wsIsPending");
 
     const lastConversationIndices = lastConversationIndicesString
@@ -25,6 +27,8 @@ const useLocalStorageStore = create((set, get) => ({
       ? parseInt(lastRoomIndex, 10)
       : null;
 
+    const parsedLastDocIndex = lastDocIndex ? parseInt(lastDocIndex, 10) : null;
+
     useUiStore.setState({ activeTab: lastTab || "general" });
     useAssistantStore.setState({
       activeAssistantButton: lastAssistantTab || "Engineer",
@@ -36,6 +40,10 @@ const useLocalStorageStore = create((set, get) => ({
       wsIsPending: lastWsPending,
       currentTeamsIndex: parsedLastRoomIndex || 0,
     });
+
+    useDocStore.setState({
+      currentDocIndex: parsedLastDocIndex || 0,
+    });
   },
 
   saveStorage: () => {
@@ -43,6 +51,7 @@ const useLocalStorageStore = create((set, get) => ({
     const { activeAssistantButton } = useAssistantStore.getState();
     const { currentConversationIndices } = useConversationStore.getState();
     const { currentTeamsIndex } = useTeamsStore.getState();
+    const { currentDocIndex } = useDocStore.getState();
     const wsIsPending = {
       "/topic/mainResponses": { role: "CEO", status: "complete" },
       "/topic/reasonResponses": { role: "Advisor", status: "complete" },
@@ -57,6 +66,7 @@ const useLocalStorageStore = create((set, get) => ({
     );
     localStorage.setItem("wsIsPending", JSON.stringify(wsIsPending));
     localStorage.setItem("lastRoomIndex", JSON.stringify(currentTeamsIndex));
+    localStorage.setItem("lastDocIndex", JSON.stringify(currentDocIndex));
   },
 
   clearStorage: () => {
@@ -65,6 +75,7 @@ const useLocalStorageStore = create((set, get) => ({
     localStorage.removeItem("lastConversationIndices");
     localStorage.removeItem("wsIsPending");
     localStorage.removeItem("lastRoomIndex");
+    localStorage.removeItem("lastDocIndex");
   },
 }));
 

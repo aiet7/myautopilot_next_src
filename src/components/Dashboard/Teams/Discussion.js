@@ -16,7 +16,7 @@ import useRefStore from "@/utils/store/teams/refStore.js";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 
 const Discussion = () => {
-  const { activeTab, openRooms, handleToggleRooms } = useUiStore();
+  const { activeTab, openRooms, handleHistoryMenu } = useUiStore();
   const {
     userInput,
     textAreaHeight,
@@ -57,7 +57,7 @@ const Discussion = () => {
     <div
       onClick={() => {
         if (window.innerWidth < 1024) {
-          openRooms && handleToggleRooms(false);
+          openRooms && handleHistoryMenu(false);
         }
       }}
       className={`relative flex flex-col h-full w-full ${

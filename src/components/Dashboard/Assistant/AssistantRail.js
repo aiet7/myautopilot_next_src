@@ -15,7 +15,7 @@ import { useEffect } from "react";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 
 const AssistantRail = ({}) => {
-  const { activeTab, openAssistant, handleCloseAllMenus } = useUiStore();
+  const { activeTab, openAssistant } = useUiStore();
   const { activeAssistantButton, handleAssistantTabChange } =
     useAssistantStore();
 
@@ -28,7 +28,6 @@ const AssistantRail = ({}) => {
     ) {
       handleAssistantTabChange("Workflows");
     }
-    handleCloseAllMenus();
   }, [activeTab]);
 
   return (

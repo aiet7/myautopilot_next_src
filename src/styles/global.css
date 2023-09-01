@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 
 html,
@@ -188,6 +186,55 @@ body {
     position: absolute;
     left: -10px;
     top: 155px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 10px 10px 0;
+    border-color: transparent #111111 transparent transparent;
+  }
+
+  /*docs*/
+  .bubble-docs::after {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 205px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 10px 10px 0;
+    border-color: transparent rgba(0, 0, 0, 0.8) transparent transparent;
+    z-index: -1;
+  }
+  .bubble-docs::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 205px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 10px 10px 0;
+    border-color: transparent #f6f8fc transparent transparent;
+  }
+
+  .dark .bubble-docs::after {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 205px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 10px 10px 0;
+    border-color: transparent rgba(0, 0, 0, 0.8) transparent transparent;
+    z-index: -1;
+  }
+  .dark .bubble-docs::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 205px;
     width: 0;
     height: 0;
     border-style: solid;

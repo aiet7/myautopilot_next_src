@@ -29,8 +29,8 @@ const Interaction = ({}) => {
     activeTab,
     openHistory,
     openAssistant,
-    handleToggleHistory,
-    handleToggleAssistant,
+    handleHistoryMenu,
+    handleAssistantMenu
   } = useUiStore();
   const { selectedAgent } = useAgentsStore();
   const {
@@ -84,8 +84,8 @@ const Interaction = ({}) => {
     <div
       onClick={() => {
         if (window.innerWidth < 1024) {
-          openHistory && handleToggleHistory(false);
-          openAssistant && handleToggleAssistant(false);
+          openHistory && handleHistoryMenu(false);
+          openAssistant && handleAssistantMenu(false);
         }
       }}
       className={`flex flex-col h-full w-full ${
@@ -130,7 +130,7 @@ const Interaction = ({}) => {
                   )}
                 </span>
 
-                <div className="flex-grow min-w-[0] ">
+                <div className="flex-grow min-w-[0]">
                   <Switch item={item} itemId={item.id} />
                 </div>
               </div>
