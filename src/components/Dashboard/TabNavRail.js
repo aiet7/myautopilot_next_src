@@ -17,6 +17,8 @@ import {
 } from "react-icons/md";
 import { DiMagento } from "react-icons/di";
 
+import { TbWorldWww } from "react-icons/tb";
+
 import { useTheme } from "next-themes";
 
 import useUiStore from "@/utils/store/ui/uiStore.js";
@@ -65,6 +67,7 @@ const TabNavRail = ({}) => {
         id="History Menu"
         className="z-[99]"
       />
+
       <div
         onMouseEnter={() => {
           if (window.innerWidth > 1024) {
@@ -81,6 +84,7 @@ const TabNavRail = ({}) => {
         />
         <span className="text-xs">General</span>
       </div>
+
       <div
         onMouseEnter={() => {
           if (window.innerWidth > 1024) {
@@ -97,6 +101,7 @@ const TabNavRail = ({}) => {
         />
         <span className="text-xs">Agents</span>
       </div>
+
       <div
         onMouseEnter={() => {
           if (window.innerWidth > 1024) {
@@ -115,6 +120,7 @@ const TabNavRail = ({}) => {
         />
         <span className="text-xs">Teams</span>
       </div>
+
       <div
         onMouseEnter={() => {
           if (window.innerWidth > 1024) {

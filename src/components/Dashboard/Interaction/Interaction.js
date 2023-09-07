@@ -88,7 +88,7 @@ const Interaction = ({}) => {
           openAssistant && handleAssistantMenu(false);
         }
       }}
-      className={`flex flex-col h-full w-full ${
+      className={`relative flex flex-col h-full w-full ${
         openHistory && openAssistant && "xl:mr-[350px]"
       }  ${
         (openHistory && "lg:opacity-100 opacity-5 xl:ml-[350px]") ||
@@ -98,13 +98,13 @@ const Interaction = ({}) => {
       {!isAtBottom && isOverflowed && (
         <button
           onClick={handleScrollToBottom}
-          className="dark:border-white/10 dark:bg-white/10 dark:text-gray-200 absolute bottom-28 right-4 rounded-full border border-gray-200 bg-gray-50 text-gray-600 lg:right-14"
+          className={`dark:border-white/10 dark:bg-white/10 dark:text-gray-200 absolute bottom-28 right-4 rounded-full border border-gray-200 bg-gray-50 text-gray-600`}
         >
           <HiOutlineArrowSmallDown className="m-1" size={18} />
         </button>
       )}
       <div
-        className="flex-grow overflow-auto no-scrollbar"
+        className="flex-grow overflow-auto scrollbar-thin"
         ref={chatContainerRef}
         onScroll={handleCheckScroll}
       >
@@ -121,7 +121,7 @@ const Interaction = ({}) => {
               }`}
               ref={index === arr.length - 1 ? latestMessageRef : null}
             >
-              <div className="flex  items-start max-w-[600px] mx-auto gap-4">
+              <div className="flex items-start max-w-[600px] mx-auto gap-4">
                 <span>
                   {item.role === "user" ? (
                     <AiOutlineUser size={20} />

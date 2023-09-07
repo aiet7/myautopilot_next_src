@@ -125,6 +125,7 @@ const useInteractionStore = create((set, get) => ({
           const responseBody = await response.json();
           messageIdRef.current = responseBody.id;
           handleProcessResponse(
+            null,
             responseBody.intent,
             null,
             JSON.parse(responseBody.message),
@@ -186,6 +187,7 @@ const useInteractionStore = create((set, get) => ({
 
         if (response.status === 200) {
           const responseBody = await response.json();
+          console.log(responseBody);
           messageIdRef.current = responseBody.id;
           useFormsStore.setState((prevState) => ({
             ...prevState,
@@ -200,6 +202,7 @@ const useInteractionStore = create((set, get) => ({
           }));
 
           handleProcessResponse(
+            responseBody.entities,
             responseBody.intent,
             responseBody.mailEntities,
             responseBody.message,
@@ -253,7 +256,13 @@ const useInteractionStore = create((set, get) => ({
     }
   },
 
-  handleProcessResponse: (intent, mailEntities, message, responseBody) => {
+  handleProcessResponse: (
+    entities,
+    intent,
+    mailEntities,
+    message,
+    responseBody
+  ) => {
     const {
       handleEmailProcess,
       handleScheduleProcess,
@@ -277,7 +286,7 @@ const useInteractionStore = create((set, get) => ({
         handleScheduleProcess(JSON.parse(message));
         break;
       case "createTicket":
-        handleCreateTicketProcess(JSON.parse(message));
+        handleCreateTicketProcess(entities, JSON.parse(message));
         break;
       case "addContact":
         handleAddContactProcess(JSON.parse(message));

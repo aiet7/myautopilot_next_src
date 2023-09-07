@@ -196,9 +196,9 @@ const useFormsStore = create((set, get) => ({
       },
     }));
   },
-  handleCreateTicketProcess: (message) => {
+  handleCreateTicketProcess: (entities, message) => {
     const { handleAddForm } = useConversationStore.getState();
-    let conversationId;
+
     const {
       title,
       description,
@@ -210,6 +210,23 @@ const useFormsStore = create((set, get) => ({
       emailID,
       phoneNumber,
     } = message;
+    const personName = entities.find(
+      (entity) => entity.category === "personName"
+    );
+    const personPhoneNumber = entities.find(
+      (entity) => entity.category === "phoneNumber"
+    );
+
+    const personEmail = entities.find((entity) => entity.category === "mailID");
+    let newEmployeeFirstName = "";
+    let newEmployeeLastName = "";
+    let conversationId;
+
+    if (personName) {
+      const names = personName.text.split(" ");
+      newEmployeeFirstName = names[0];
+      newEmployeeLastName = names.length > 1 ? names[1] : "";
+    }
 
     conversationId = handleAddForm("ticketForm");
 
@@ -225,6 +242,13 @@ const useFormsStore = create((set, get) => ({
         currentTicketName: name,
         currentTicketEmailId: emailID,
         currentTicketPhoneNumber: phoneNumber,
+        onBoarding: {
+          ...state.ticket.onBoarding,
+          currentTicketNewFirstName: newEmployeeFirstName,
+          currentTicketNewLastName: newEmployeeLastName,
+          currentTicketNewPhoneNumber: personPhoneNumber.text,
+          currentTicketNewEmailId: personEmail.text,
+        },
       },
       isFormOpen: {
         ...state.isFormOpen,

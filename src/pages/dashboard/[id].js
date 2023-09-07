@@ -118,7 +118,7 @@ const DashboardPage = ({
     activeAssistantButton,
     currentConversationIndices,
     currentTeamsIndex,
-    currentDocIndex
+    currentDocIndex,
   ]);
   return (
     <ThemeProvider attribute="class">
@@ -132,8 +132,9 @@ const DashboardPage = ({
             {hoverTab && activeTab !== hoverTab && <Hover />}
             <div className="flex flex-col h-full w-full overflow-hidden">
               {activeTab !== "settings" && <SettingsRail />}
+
               {activeTab === "general" && (
-                <div className="flex  flex-1 relative overflow-hidden">
+                <div className="flex flex-1 relative overflow-hidden">
                   <History />
                   <Interaction />
                   {window.innerWidth > 1024 && <AssistantRail />}

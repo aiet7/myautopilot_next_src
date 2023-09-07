@@ -75,7 +75,7 @@ const Discussion = () => {
       <div
         ref={chatContainerRef}
         onScroll={handleCheckScroll}
-        className="flex-grow overflow-auto no-scrollbar"
+        className="flex-grow overflow-auto scrollbar-thin"
       >
         {teamsHistories[currentTeamsIndex]?.messages?.map(
           (item, index, arr) => {

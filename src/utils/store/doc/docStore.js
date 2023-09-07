@@ -49,6 +49,7 @@ const useDocStore = create((set, get) => ({
   ],
   inputValues: {},
   currentDocIndex: null,
+  blobLink: null,
 
   setInputValues: (field, value) => {
     set((state) => ({
@@ -64,6 +65,72 @@ const useDocStore = create((set, get) => ({
     set({ currentDocIndex: index, inputValues: {} });
     setActiveTab("docs");
     setHoverTab(null);
+  },
+
+  handleSubmitDoc: async (policyTitle, data) => {
+    const [formattedDate] = data.date.split("T");
+    const [year, month, day] = formattedDate.split("-");
+    const newDate = `${month}-${day}-${year}`;
+
+    let endpoint = "";
+    let params = new URLSearchParams();
+
+    try {
+      switch (policyTitle) {
+        case "Data Protection":
+          endpoint = "/dataProtectionPolicy";
+          params.append("companyName", data.companyName);
+          params.append("name", data.name);
+          params.append("date", newDate);
+          params.append("email", data.email);
+          break;
+
+        case "Email":
+          endpoint = "/emailPolicy";
+          params.append("companyName", data.companyName);
+          params.append("name", data.name);
+          params.append("date", newDate);
+          break;
+
+        case "Internet":
+          endpoint = "/internetPolicy";
+          params.append("companyName", data.companyName);
+          params.append("name", data.name);
+          params.append("date", newDate);
+          break;
+
+        case "Tax Accounting Cyber Security":
+          endpoint = "/taxAccountingCybersecurity";
+          params.append("companyName", data.companyName);
+          params.append("employeeName", data.employeeName);
+          params.append("date", newDate);
+          params.append("employeeTitle", data.employeeTitle);
+          params.append("ownerTitle", data.ownerTitle);
+          break;
+
+        default:
+          throw new Error("Unknown policy title");
+      }
+
+      const response = await fetch(
+        `https://etech7-wf-etech7-document-service.azuremicroservices.io${endpoint}?${params.toString()}`,
+        {
+          method: "GET",
+          headers: {
+            Accept:
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        const blob = await response.blob();
+
+        set({ blobLink: URL.createObjectURL(blob), inputValues: {} });
+      }
+    } catch (e) {
+      console.log(e);
+    }
   },
 }));
 

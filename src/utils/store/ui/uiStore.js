@@ -81,9 +81,7 @@ const useUiStore = create((set, get) => ({
 
   handleHistoryMenu: () => {
     const { openHistory, openRooms, openDocs } = get();
-    // if (openHistory || openRooms || openDocs) {
-    //   set({ openHistory: false, openRooms: false, openDocs: false });
-    // } else set({ openHistory: true, openRooms: true, openDocs: true });
+ 
     if (openHistory) {
       set({ openHistory: false });
     } else set({ openHistory: true });

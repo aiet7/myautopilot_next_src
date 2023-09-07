@@ -10,13 +10,13 @@ import useMarkedStore from "@/utils/store/marked/markedStore";
 
 import { BiEdit, BiNotepad } from "react-icons/bi";
 import { BsLayoutSplit } from "react-icons/bs";
-import { MdOutlineHighlightAlt } from "react-icons/md";
 import { GiSettingsKnobs } from "react-icons/gi";
 import { FiThumbsUp, FiThumbsDown } from "react-icons/fi";
 import useInteractionStore from "@/utils/store/interaction/interactionsStore";
 import useNotesStore from "@/utils/store/assistant/sections/notes/notesStore";
 
 import { Tooltip as ReactTooltip } from "react-tooltip";
+import Tooltip from "rc-tooltip";
 
 const MarkedInteraction = ({ id, markdown }) => {
   const { handleUpdateEditedResponse } = useConversationStore();
@@ -177,24 +177,26 @@ const MarkedInteraction = ({ id, markdown }) => {
                 className="dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none"
                 onClick={() => handleEdit(id, markdown)}
               />
-              <ReactTooltip
+              {/* <ReactTooltip
                 place="top"
                 content="Edit"
                 id="Edit"
                 className="z-[99]"
-              />
+                closeOnScroll={true}
+              /> */}
 
               <GiSettingsKnobs
                 data-tooltip-id="Elaborate/Summarize"
                 size={30}
                 className="dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none"
               />
-              <ReactTooltip
+              {/* <ReactTooltip
                 place="top"
                 content="Elaborate/Summarize"
                 id="Elaborate/Summarize"
                 className="z-[99]"
-              />
+                closeOnScroll={true}
+              /> */}
             </div>
             <div className="flex items-center gap-2">
               <BsLayoutSplit
@@ -202,24 +204,26 @@ const MarkedInteraction = ({ id, markdown }) => {
                 size={30}
                 className="dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none"
               />
-              <ReactTooltip
+              {/* <ReactTooltip
                 place="top"
                 content="View ChatGPT Responses"
                 id="View ChatGPT Responses"
                 className="z-[99]"
-              />
+                closeOnScroll={true}
+              /> */}
               <BiNotepad
                 data-tooltip-id="Add To Notes"
                 onClick={() => handleAddNote(markdown)}
                 size={30}
                 className="dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none"
               />
-              <ReactTooltip
+              {/* <ReactTooltip
                 place="top"
                 content="Add To Notes"
                 id="Add To Notes"
                 className="z-[99]"
-              />
+                closeOnScroll={true}
+              /> */}
               <FiThumbsUp
                 data-tooltip-id="Positive Feedback"
                 onClick={() => handleSubmitFeedback(id, false)}
@@ -228,12 +232,13 @@ const MarkedInteraction = ({ id, markdown }) => {
                 } dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none`}
                 size={30}
               />
-              <ReactTooltip
+              {/* <ReactTooltip
                 place="top"
                 content="Positive Feedback"
                 id="Positive Feedback"
                 className="z-[99]"
-              />
+                closeOnScroll={true}
+              /> */}
               <FiThumbsDown
                 data-tooltip-id="Negative Feedback"
                 onClick={() => handleSubmitFeedback(id, true)}
@@ -242,12 +247,13 @@ const MarkedInteraction = ({ id, markdown }) => {
                 } dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none`}
                 size={30}
               />
-              <ReactTooltip
+              {/* <ReactTooltip
                 place="top"
                 content="Negative Feedback"
                 id="Negative Feedback"
                 className="z-[99]"
-              />
+                closeOnScroll={true}
+              /> */}
             </div>
           </div>
         ) : null}

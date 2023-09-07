@@ -21,12 +21,12 @@ const AssistantRail = ({}) => {
 
   useEffect(() => {
     if (activeTab === "general" && activeAssistantButton === "Workflows") {
-      handleAssistantTabChange("Favorites");
+      handleAssistantTabChange("Favorites", false);
     } else if (
       activeTab === "agents" &&
       activeAssistantButton === "Favorites"
     ) {
-      handleAssistantTabChange("Workflows");
+      handleAssistantTabChange("Workflows", false);
     }
   }, [activeTab]);
 
@@ -42,7 +42,7 @@ const AssistantRail = ({}) => {
           activeAssistantButton === "Engineer" && "text-blue-800"
         } cursor-pointer outline-none`}
         size={20}
-        onClick={() => handleAssistantTabChange("Engineer")}
+        onClick={() => handleAssistantTabChange("Engineer", true)}
       />
       <ReactTooltip
         place="left"
@@ -56,7 +56,7 @@ const AssistantRail = ({}) => {
           activeAssistantButton === "Skills" && "text-blue-800"
         } cursor-pointer outline-none`}
         size={20}
-        onClick={() => handleAssistantTabChange("Skills")}
+        onClick={() => handleAssistantTabChange("Skills", true)}
       />
       <ReactTooltip
         place="left"
@@ -70,7 +70,7 @@ const AssistantRail = ({}) => {
           activeAssistantButton === "Updates" && "text-blue-800"
         } cursor-pointer outline-none`}
         size={20}
-        onClick={() => handleAssistantTabChange("Updates")}
+        onClick={() => handleAssistantTabChange("Updates", true)}
       />
       <ReactTooltip
         place="left"
@@ -85,7 +85,7 @@ const AssistantRail = ({}) => {
           activeAssistantButton === "Tasks" && "text-blue-800"
         } cursor-pointer outline-none`}
         size={20}
-        onClick={() => handleAssistantTabChange("Tasks")}
+        onClick={() => handleAssistantTabChange("Tasks", true)}
       />
       <ReactTooltip
         place="left"
@@ -100,7 +100,7 @@ const AssistantRail = ({}) => {
           activeAssistantButton === "Notes" && "text-blue-800"
         } cursor-pointer  outline-none`}
         size={20}
-        onClick={() => handleAssistantTabChange("Notes")}
+        onClick={() => handleAssistantTabChange("Notes", true)}
       />
       <ReactTooltip
         place="left"
@@ -117,7 +117,7 @@ const AssistantRail = ({}) => {
               activeAssistantButton === "Favorites" && "text-blue-800"
             } cursor-pointer outline-none`}
             size={20}
-            onClick={() => handleAssistantTabChange("Favorites")}
+            onClick={() => handleAssistantTabChange("Favorites", true)}
           />
           <ReactTooltip
             place="left"
@@ -132,7 +132,7 @@ const AssistantRail = ({}) => {
             data-tooltip-id="Workflows"
             size={20}
             className="cursor-pointer outline-none"
-            onClick={() => handleAssistantTabChange("Workflows")}
+            onClick={() => handleAssistantTabChange("Workflows", true)}
           />
           <ReactTooltip
             place="left"

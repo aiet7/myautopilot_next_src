@@ -20,9 +20,9 @@ const useAssistantStore = create((set, get) => ({
     }, 0);
   },
 
-  handleAssistantTabChange: (tab) => {
+  handleAssistantTabChange: (tab, openMenu) => {
     const { openAssistant, handleAssistantMenu } = useUiStore.getState();
-    if (!openAssistant) {
+    if (!openAssistant && openMenu) {
       handleAssistantMenu();
     }
     set({ activeAssistantButton: tab });

@@ -83,6 +83,9 @@ const useAuthStore = create((set, get) => ({
             secure: true,
             sameSite: "lax",
           });
+          Cookie.set("user_id", googleUser.id, {
+            expires: 7,
+          });
         } else {
           console.log("error");
         }

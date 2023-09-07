@@ -18,8 +18,12 @@ const useUpdatesStore = create((set, get) => ({
   locationNews: "New York",
   locationWeather: "",
 
+  showStockIndex: null,
+
   setUserNewsInput: (input) => set({ userNewsInput: input }),
   setUserWeatherInput: (input) => set({ userWeatherInput: input }),
+
+  setShowStockIndex: (index) => set({ showStockIndex: index }),
 
   initializeWns: async () => {
     const userStore = useUserStore.getState();
