@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import useFormsStore from "./forms/formsStore";
-import useMessagesStore from "./messages/messagesStore";
 import useUserStore from "../user/userStore";
 import { trimQuotes } from "@/utils/stringManipulation";
 import useConversationStore from "./conversations/conversationsStore";
@@ -149,6 +148,52 @@ const useInteractionStore = create((set, get) => ({
       }
     }
   },
+
+  handleCreateTicketMessage: async (message) => {
+    const { inputRef, messageIdRef } = useRefStore.getState();
+    const userStore = useUserStore.getState();
+    const { handleAddUserMessage } = useConversationStore.getState();
+    const { handleCreateTicketProcess } = useFormsStore.getState();
+    if (message.trim() !== "") {
+      inputRef.current.focus();
+
+      handleAddUserMessage(message);
+      set({
+        isWaiting: true,
+        isServerError: false,
+        userInput: "",
+      });
+
+      try {
+        const encodedMessage = encodeURIComponent(trimQuotes(message));
+        const response = await fetch(
+          `https://etech7-wf-etech7-support-service.azuremicroservices.io/ticketCategorize?text=${encodedMessage}&userId=${userStore.user.id}`
+        );
+
+        if (response.status === 200) {
+          const responseBody = await response.json();
+          messageIdRef.current = Date.now();
+          handleCreateTicketProcess(
+            responseBody.emailID,
+            JSON.parse(responseBody.msg),
+            responseBody.personName,
+            responseBody.phoneNumber
+          );
+        } else if (response.status === 500) {
+          set({
+            isServerError: true,
+          });
+        }
+      } catch (e) {
+        console.log(e);
+      } finally {
+        set({
+          isWaiting: false,
+        });
+      }
+    }
+  },
+
   handleSendUserMessage: async (message) => {
     const { controllerRef, inputRef, messageIdRef } = useRefStore.getState();
 
@@ -256,64 +301,64 @@ const useInteractionStore = create((set, get) => ({
     }
   },
 
-  handleProcessResponse: (
-    entities,
-    intent,
-    mailEntities,
-    message,
-    responseBody
-  ) => {
-    const {
-      handleEmailProcess,
-      handleScheduleProcess,
-      handleCreateTicketProcess,
-      handleAddContactProcess,
-      handleCreateTasksProcess,
-    } = useFormsStore.getState();
-    const {
-      handleGetEventsProcess,
-      handleGetTasksProcess,
-      handleGetNewsProcess,
-      handleGetStocksProcess,
-      handleGetWeatherProcess,
-      handleDefaultActionProcess,
-    } = useMessagesStore.getState();
-    switch (intent) {
-      case "sendMail":
-        handleEmailProcess(mailEntities);
-        break;
-      case "scheduleEvent":
-        handleScheduleProcess(JSON.parse(message));
-        break;
-      case "createTicket":
-        handleCreateTicketProcess(entities, JSON.parse(message));
-        break;
-      case "addContact":
-        handleAddContactProcess(JSON.parse(message));
-        break;
-      case "createTask":
-        handleCreateTasksProcess(JSON.parse(message));
-        break;
-      case "getTasks":
-        handleGetTasksProcess(responseBody);
-        break;
-      case "getEvents":
-        handleGetEventsProcess(responseBody);
-        break;
-      case "getNews":
-        handleGetNewsProcess(JSON.parse(message), responseBody);
-        break;
-      case "getStocks":
-        handleGetStocksProcess(JSON.parse(message), responseBody);
-        break;
-      case "getWeather":
-        handleGetWeatherProcess(JSON.parse(message), responseBody);
-        break;
-      default:
-        handleDefaultActionProcess(message, responseBody);
-        break;
-    }
-  },
+  // handleProcessResponse: (
+  //   entities,
+  //   intent,
+  //   mailEntities,
+  //   message,
+  //   responseBody
+  // ) => {
+  //   const {
+  //     handleEmailProcess,
+  //     handleScheduleProcess,
+  //     handleCreateTicketProcess,
+  //     handleAddContactProcess,
+  //     handleCreateTasksProcess,
+  //   } = useFormsStore.getState();
+  //   const {
+  //     handleGetEventsProcess,
+  //     handleGetTasksProcess,
+  //     handleGetNewsProcess,
+  //     handleGetStocksProcess,
+  //     handleGetWeatherProcess,
+  //     handleDefaultActionProcess,
+  //   } = useMessagesStore.getState();
+  //   switch (intent) {
+  //     case "sendMail":
+  //       handleEmailProcess(mailEntities);
+  //       break;
+  //     case "scheduleEvent":
+  //       handleScheduleProcess(JSON.parse(message));
+  //       break;
+  //     case "createTicket":
+  //       handleCreateTicketProcess(entities, JSON.parse(message));
+  //       break;
+  //     case "addContact":
+  //       handleAddContactProcess(JSON.parse(message));
+  //       break;
+  //     case "createTask":
+  //       handleCreateTasksProcess(JSON.parse(message));
+  //       break;
+  //     case "getTasks":
+  //       handleGetTasksProcess(responseBody);
+  //       break;
+  //     case "getEvents":
+  //       handleGetEventsProcess(responseBody);
+  //       break;
+  //     case "getNews":
+  //       handleGetNewsProcess(JSON.parse(message), responseBody);
+  //       break;
+  //     case "getStocks":
+  //       handleGetStocksProcess(JSON.parse(message), responseBody);
+  //       break;
+  //     case "getWeather":
+  //       handleGetWeatherProcess(JSON.parse(message), responseBody);
+  //       break;
+  //     default:
+  //       handleDefaultActionProcess(message, responseBody);
+  //       break;
+  //   }
+  // },
 }));
 
 export default useInteractionStore;

@@ -1,18 +1,21 @@
 "use client";
 
-import { BsListTask } from "react-icons/bs";
-import { GiSkills } from "react-icons/gi";
-import { BiNotepad } from "react-icons/bi";
-import { FcWorkflow } from "react-icons/fc";
+import { SiOpenai } from "react-icons/si";
+import { HiDocumentReport } from "react-icons/hi";
+import { BsFiletypeDoc } from "react-icons/bs";
+import { FaMoneyBillAlt } from "react-icons/fa";
+import { AiFillProject } from "react-icons/ai";
 import {
-  MdOutlineTipsAndUpdates,
-  MdOutlineEngineering,
-  MdOutlineFavoriteBorder,
+  MdScreenShare,
+  MdPassword,
+  MdOutlineRequestQuote,
 } from "react-icons/md";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import { useEffect } from "react";
 import { Tooltip as ReactTooltip } from "react-tooltip";
+
+import { IoTicketSharp } from "react-icons/io5";
 
 const AssistantRail = ({}) => {
   const { activeTab, openAssistant } = useUiStore();
@@ -36,112 +39,132 @@ const AssistantRail = ({}) => {
         openAssistant && window.innerWidth > 1024 ? "translate-x-[-350px]" : ""
       } dark:lg:border-white/10 dark:bg-[#373737]  bg-[#eaf1fb] px-3 py-7 flex flex-col gap-7 items-center transition-all duration-300 ease-in-out transform`}
     >
-      <MdOutlineEngineering
-        data-tooltip-id="Engineer"
+      <IoTicketSharp
+        data-tooltip-id="Tickets"
         className={`${
-          activeAssistantButton === "Engineer" && "text-blue-800"
+          activeAssistantButton === "Tickets" && "text-blue-800"
         } cursor-pointer outline-none`}
         size={20}
-        onClick={() => handleAssistantTabChange("Engineer", true)}
+        onClick={() => handleAssistantTabChange("Tickets", true)}
       />
       <ReactTooltip
         place="left"
-        content="Engineer"
-        id="Engineer"
+        content="Tickets"
+        id="Tickets"
         className="z-[99]"
       />
-      <GiSkills
-        data-tooltip-id="Skills"
+      <MdScreenShare
+        data-tooltip-id="Screen Share"
         className={`${
-          activeAssistantButton === "Skills" && "text-blue-800"
+          activeAssistantButton === "Screen Share" && "text-blue-800"
         } cursor-pointer outline-none`}
         size={20}
-        onClick={() => handleAssistantTabChange("Skills", true)}
+        onClick={() => handleAssistantTabChange("Screen Share", true)}
       />
       <ReactTooltip
         place="left"
-        content="Skills"
-        id="Skills"
+        content="Screen Share"
+        id="Screen Share"
         className="z-[99]"
       />
-      <MdOutlineTipsAndUpdates
-        data-tooltip-id="Updates"
+      <MdPassword
+        data-tooltip-id="Passwords"
         className={`${
-          activeAssistantButton === "Updates" && "text-blue-800"
+          activeAssistantButton === "Passwords" && "text-blue-800"
         } cursor-pointer outline-none`}
         size={20}
-        onClick={() => handleAssistantTabChange("Updates", true)}
+        onClick={() => handleAssistantTabChange("Passwords", true)}
       />
       <ReactTooltip
         place="left"
-        content="Updates"
-        id="Updates"
+        content="Passwords"
+        id="Passwords"
         className="z-[99]"
       />
-
-      <BsListTask
-        data-tooltip-id="Tasks"
+      <FaMoneyBillAlt
+        data-tooltip-id="Billing"
         className={`${
-          activeAssistantButton === "Tasks" && "text-blue-800"
+          activeAssistantButton === "Billing" && "text-blue-800"
         } cursor-pointer outline-none`}
         size={20}
-        onClick={() => handleAssistantTabChange("Tasks", true)}
+        onClick={() => handleAssistantTabChange("Billing", true)}
       />
       <ReactTooltip
         place="left"
-        content="Tasks"
-        id="Tasks"
+        content="Billing"
+        id="Billing"
         className="z-[99]"
       />
-
-      <BiNotepad
-        data-tooltip-id="Notes"
+      <HiDocumentReport
+        data-tooltip-id="Reports"
         className={`${
-          activeAssistantButton === "Notes" && "text-blue-800"
-        } cursor-pointer  outline-none`}
+          activeAssistantButton === "Reports" && "text-blue-800"
+        } cursor-pointer outline-none`}
         size={20}
-        onClick={() => handleAssistantTabChange("Notes", true)}
+        onClick={() => handleAssistantTabChange("Reports", true)}
       />
       <ReactTooltip
         place="left"
-        content="Notes"
-        id="Notes"
+        content="Reports"
+        id="Reports"
         className="z-[99]"
       />
-
-      {activeTab === "general" ? (
-        <>
-          <MdOutlineFavoriteBorder
-            data-tooltip-id="Favorites"
-            className={`${
-              activeAssistantButton === "Favorites" && "text-blue-800"
-            } cursor-pointer outline-none`}
-            size={20}
-            onClick={() => handleAssistantTabChange("Favorites", true)}
-          />
-          <ReactTooltip
-            place="left"
-            content="Favorites"
-            id="Favorites"
-            className="z-[99]"
-          />
-        </>
-      ) : (
-        <>
-          <FcWorkflow
-            data-tooltip-id="Workflows"
-            size={20}
-            className="cursor-pointer outline-none"
-            onClick={() => handleAssistantTabChange("Workflows", true)}
-          />
-          <ReactTooltip
-            place="left"
-            content="Workflows"
-            id="Workflows"
-            className="z-[99]"
-          />
-        </>
-      )}
+      <BsFiletypeDoc
+        data-tooltip-id="Document"
+        className={`${
+          activeAssistantButton === "Document" && "text-blue-800"
+        } cursor-pointer outline-none`}
+        size={20}
+        onClick={() => handleAssistantTabChange("Document", true)}
+      />
+      <ReactTooltip
+        place="left"
+        content="Document"
+        id="Document"
+        className="z-[99]"
+      />
+      <MdOutlineRequestQuote
+        data-tooltip-id="Quotes"
+        className={`${
+          activeAssistantButton === "Quotes" && "text-blue-800"
+        } cursor-pointer outline-none`}
+        size={20}
+        onClick={() => handleAssistantTabChange("Quotes", true)}
+      />
+      <ReactTooltip
+        place="left"
+        content="Quotes"
+        id="Quotes"
+        className="z-[99]"
+      />
+      <AiFillProject
+        data-tooltip-id="Projects"
+        className={`${
+          activeAssistantButton === "Projects" && "text-blue-800"
+        } cursor-pointer outline-none`}
+        size={20}
+        onClick={() => handleAssistantTabChange("Projects", true)}
+      />
+      <ReactTooltip
+        place="left"
+        content="Projects"
+        id="Projects"
+        className="z-[99]"
+      />
+      <SiOpenai
+        data-tooltip-id="IT GPT"
+        className={`${
+          activeAssistantButton === "IT GPT" && "text-blue-800"
+        } cursor-pointer outline-none`}
+        size={20}
+        onClick={() => handleAssistantTabChange("IT GPT", true)}
+      />
+      <ReactTooltip
+        place="left"
+        content="IT GPT"
+        id="IT GPT"
+        className="z-[99]"
+      />
     </div>
   );
 };

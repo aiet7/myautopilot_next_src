@@ -1,17 +1,19 @@
 "use client";
 
-import Skills from "./Sections/Skills.js";
-import Updates from "./Sections/Updates/Updates.js";
-import Engineer from "./Sections/Engineer.js";
-import Tasks from "./Sections/Tasks.js";
-import Notes from "./Sections/Notes.js";
-import Workflows from "./Sections/Workflow.js";
-import Favorites from "./Sections/Favorites.js";
 import useUiStore from "@/utils/store/ui/uiStore.js";
 import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
 
 import { AiOutlineClose } from "react-icons/ai";
 import AssistantRail from "./AssistantRail.js";
+import Tickets from "./Sections/Tickets.js";
+import ScreenShare from "./Sections/ScreenShare.js";
+import Passwords from "./Sections/Passwords.js";
+import Billing from "./Sections/Billing.js";
+import Reports from "./Sections/Reports.js";
+import Documents from "./Sections/Documents.js";
+import Quotes from "./Sections/Quotes.js";
+import Projects from "./Sections/Projects.js";
+import ITGPT from "./Sections/ITGPT.js";
 
 const Assistant = ({}) => {
   const { openAssistant, handleAssistantMenu } = useUiStore();
@@ -32,14 +34,15 @@ const Assistant = ({}) => {
             className="absolute cursor-pointer top-[27px] self-end"
           />
         )}
-
-        {activeAssistantButton === "Engineer" && <Engineer />}
-        {activeAssistantButton === "Skills" && <Skills />}
-        {activeAssistantButton === "Updates" && <Updates />}
-        {activeAssistantButton === "Tasks" && <Tasks />}
-        {activeAssistantButton === "Notes" && <Notes />}
-        {activeAssistantButton === "Favorites" && <Favorites />}
-        {activeAssistantButton === "Workflows" && <Workflows />}
+        {activeAssistantButton === "Tickets" && <Tickets />}
+        {activeAssistantButton === "Screen Share" && <ScreenShare />}
+        {activeAssistantButton === "Passwords" && <Passwords />}
+        {activeAssistantButton === "Billing" && <Billing />}
+        {activeAssistantButton === "Reports" && <Reports />}
+        {activeAssistantButton === "Document" && <Documents />}
+        {activeAssistantButton === "Quotes" && <Quotes />}
+        {activeAssistantButton === "Projects" && <Projects />}
+        {activeAssistantButton === "IT GPT" && <ITGPT />}
       </div>
     </div>
   );

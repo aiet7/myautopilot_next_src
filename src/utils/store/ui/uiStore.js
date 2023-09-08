@@ -81,7 +81,7 @@ const useUiStore = create((set, get) => ({
 
   handleHistoryMenu: () => {
     const { openHistory, openRooms, openDocs } = get();
- 
+
     if (openHistory) {
       set({ openHistory: false });
     } else set({ openHistory: true });
@@ -109,6 +109,10 @@ const useUiStore = create((set, get) => ({
       set({ activeTab: "agents" });
     }
     if (tab === "general" && activeTab === "general") {
+      return;
+    }
+
+    if (tab === "iTAgent" && activeTab === "iTAgent") {
       return;
     }
     set({ activeTab: tab, hoverTab: null });

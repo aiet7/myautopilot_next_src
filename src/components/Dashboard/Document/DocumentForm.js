@@ -1,10 +1,9 @@
-import useDocStore from "@/utils/store/doc/docStore";
+import useDocumentStore from "@/utils/store/assistant/sections/document/documentStore";
 import useUiStore from "@/utils/store/ui/uiStore";
-import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import { AiOutlineArrowDown } from "react-icons/ai";
 
 const DocumentForm = () => {
-  const { openDocs, handleHistoryMenu } = useUiStore();
+  const { openAssistant, handleAssistantMenu } = useUiStore();
   const {
     blobLink,
     tempDocs,
@@ -12,16 +11,17 @@ const DocumentForm = () => {
     inputValues,
     setInputValues,
     handleSubmitDoc,
-  } = useDocStore();
+    handleDocDeselect,
+  } = useDocumentStore();
   return (
     <div
       onClick={() => {
         if (window.innerWidth < 1024) {
-          openDocs && handleHistoryMenu(false);
+          openAssistant && handleAssistantMenu(false);
         }
       }}
       className={`relative flex flex-col h-full w-full ${
-        openDocs && "lg:opacity-100 opacity-5 xl:ml-[350px]"
+        openAssistant && "lg:opacity-100 opacity-5 xl:mr-[350px]"
       } dark:bg-black transition-all duration-300 ease-in-out bg-white`}
     >
       <div className="flex-grow overflow-auto no-scrollbar px-2">
@@ -54,30 +54,40 @@ const DocumentForm = () => {
             </div>
           );
         })}
-        <div className="flex items-center gap-2 items-start max-w-[600px] mx-auto py-2">
-          <button
-            onClick={() =>
-              handleSubmitDoc(tempDocs[currentDocIndex]?.title, inputValues)
-            }
-            className="bg-blue-800 text-white px-4 py-2"
-          >
-            Submit
-          </button>
-          {blobLink && (
-            <a
-              href={blobLink}
-              download={`${tempDocs[currentDocIndex]?.title}_Etech7.docx`}
-              className="flex items-center "
+        <div className="flex flex-col  gap-2 items-start max-w-[600px] mx-auto py-2">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() =>
+                handleSubmitDoc(tempDocs[currentDocIndex]?.title, inputValues)
+              }
+              className="w-[100px] bg-blue-800 text-white px-4 py-2"
             >
-              <span className="bg-blue-800 text-white px-4 py-2">
-                Download 
-              </span>
-              <AiOutlineArrowDown
-                size={40}
-                className="bg-blue-600 text-white p-3"
-              />
-            </a>
-          )}
+              Submit
+            </button>
+
+            {blobLink && (
+              <a
+                href={blobLink}
+                download={`${tempDocs[currentDocIndex]?.title}_Etech7.docx`}
+                className="flex items-center "
+              >
+                <span className="bg-blue-800 text-white px-4 py-2">
+                  Download
+                </span>
+                <AiOutlineArrowDown
+                  size={40}
+                  className="bg-blue-600 text-white p-3"
+                />
+              </a>
+            )}
+          </div>
+
+          <button
+            onClick={handleDocDeselect}
+            className="w-[100px] bg-blue-800 text-white px-4 py-2"
+          >
+            Back
+          </button>
         </div>
       </div>
     </div>

@@ -196,9 +196,8 @@ const useFormsStore = create((set, get) => ({
       },
     }));
   },
-  handleCreateTicketProcess: (entities, message) => {
+  handleCreateTicketProcess: (email, msg, fullName, phone) => {
     const { handleAddForm } = useConversationStore.getState();
-
     const {
       title,
       description,
@@ -209,27 +208,15 @@ const useFormsStore = create((set, get) => ({
       name,
       emailID,
       phoneNumber,
-    } = message;
-    const personName = entities.find(
-      (entity) => entity.category === "personName"
-    );
-    const personPhoneNumber = entities.find(
-      (entity) => entity.category === "phoneNumber"
-    );
-
-    const personEmail = entities.find((entity) => entity.category === "mailID");
-    let newEmployeeFirstName = "";
-    let newEmployeeLastName = "";
-    let conversationId;
-
-    if (personName) {
-      const names = personName.text.split(" ");
+    } = msg;
+    let newEmployeeFirstName;
+    let newEmployeeLastName;
+    
+    if (fullName) {
+      const names = fullName?.split(" ");
       newEmployeeFirstName = names[0];
       newEmployeeLastName = names.length > 1 ? names[1] : "";
     }
-
-    conversationId = handleAddForm("ticketForm");
-
     set((state) => ({
       ticket: {
         ...state.ticket,
@@ -246,40 +233,13 @@ const useFormsStore = create((set, get) => ({
           ...state.ticket.onBoarding,
           currentTicketNewFirstName: newEmployeeFirstName,
           currentTicketNewLastName: newEmployeeLastName,
-          currentTicketNewPhoneNumber: personPhoneNumber.text,
-          currentTicketNewEmailId: personEmail.text,
+          currentTicketEmailOwner: emailID,
+          currentTicketNewPhoneNumber: phone,
+          currentTicketNewEmailId: email,
         },
-      },
-      isFormOpen: {
-        ...state.isFormOpen,
-        [conversationId]: true,
       },
     }));
-
-    if (
-      category === "TRAINING_OR_ONBOARDING" &&
-      subcategory === "NEW_EMPLOYEE_ONBOARDING"
-    ) {
-      set((state) => ({
-        ...state,
-        ticketStatus: {
-          ticketCreated: "pending",
-          ticketAssigned: "pending",
-          ticketClosed: "pending",
-          userCreatedInActiveDirectory: "pending",
-          userEmailCreated: "pending",
-        },
-      }));
-    } else {
-      set((state) => ({
-        ...state,
-        ticketStatus: {
-          ticketCreated: "pending",
-          ticketAssigned: "pending",
-          ticketClosed: "pending",
-        },
-      }));
-    }
+    handleAddForm("ticketForm");
   },
 
   handleAddContactProcess: (message) => {
@@ -680,6 +640,7 @@ const useFormsStore = create((set, get) => ({
     }
   },
   handleTicketConfirmation: async (isConfirmed, formId) => {
+    const userStore = useUserStore.getState();
     const {
       currentTicketTitle,
       currentTicketDescription,
@@ -699,13 +660,8 @@ const useFormsStore = create((set, get) => ({
       currentTicketNewPhoneNumber,
       currentTicketLicenseId,
     } = get().ticket.onBoarding;
-    const {
-      handleGetConversationId,
-      handleRemoveForm,
-      handleAddAssistantMessage,
-    } = useConversationStore.getState();
-    const { handleAddMessageToDB } = useInteractionStore.getState();
-    const previousResponseBodyForConversation = handleGetConversationId();
+    const { handleRemoveForm, handleAddAssistantMessage } =
+      useConversationStore.getState();
 
     if (isConfirmed) {
       set((state) => ({
@@ -721,6 +677,7 @@ const useFormsStore = create((set, get) => ({
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
+              userId: userStore.user.id,
               title: currentTicketTitle,
               description: currentTicketDescription,
               summary: currentTicketSummary,
@@ -733,23 +690,13 @@ const useFormsStore = create((set, get) => ({
             }),
           }
         );
+
         if (ticketResponse.status === 200) {
           const ticket = await ticketResponse.json();
           const {
-            ticketCreated,
-            ticketAssigned,
-            ticketClosed,
             ticketDetails: { id },
           } = ticket;
-          set((prevState) => ({
-            ...prevState,
-            ticketStatus: {
-              ...prevState.ticketStatus,
-              ticketCreated: ticketCreated && "done",
-              ticketAssigned: ticketAssigned ? "done" : "pending",
-              ticketClosed: ticketClosed ? "done" : "waiting",
-            },
-          }));
+          console.log("ticket created");
 
           if (
             currentTicketCategory === "TRAINING_OR_ONBOARDING" &&
@@ -771,75 +718,27 @@ const useFormsStore = create((set, get) => ({
                 }),
               }
             );
-
             if (ticketOnboardingResponse.status === 200) {
-              const ticketOnBoarding = await ticketOnboardingResponse.json();
-              const {
-                userCreatedInActiveDirectory,
-                userEmailCreated,
-                ticketClosed,
-              } = ticketOnBoarding;
-              set((prevState) => ({
-                ...prevState,
-                ticketStatus: {
-                  ...prevState.ticketStatus,
-                  userCreatedInActiveDirectory: userCreatedInActiveDirectory
-                    ? "done"
-                    : "pending",
-                  userEmailCreated: userEmailCreated ? "done" : "pending",
-                  ticketClosed: ticketClosed ? "done" : "pending",
-                },
-              }));
+              console.log("ticket onboarding created");
             }
           }
-
           const aiContent = `Ticket Created!\n\nID: ${id}\n\nTitle: ${currentTicketTitle}\n\nDescription: ${currentTicketDescription}\n\nSummary: ${currentTicketSummary}\n\nCategory: ${currentTicketCategory}\n\nSubcategory: ${currentTicketSubCategory}\n\nPriority: ${currentTicketPriority}\n\nName: ${currentTicketName}\n\nEmail: ${currentTicketEmailId}\n\nPhone: ${currentTicketPhoneNumber}.`;
-          const formSummaryResponse = await handleAddMessageToDB(
-            aiContent,
-            previousResponseBodyForConversation
-          );
-          if (formSummaryResponse.status === 200) {
-            handleAddAssistantMessage(aiContent, "ticketForm");
-          }
+          handleAddAssistantMessage(aiContent, "ticketForm");
         }
       } catch (e) {
         console.log(e);
       } finally {
-        set((prevState) => ({
+        set((state) => ({
           loading: {
-            ...prevState.loading,
+            ...state.loading,
             ticketForm: false,
-          },
-          isFormOpen: {
-            ...prevState.isFormOpen,
-            [previousResponseBodyForConversation.conversationId]: false,
           },
         }));
         handleRemoveForm(formId);
       }
     } else {
       const aiContent = "Ticket Creation Cancelled.";
-      await handleAddMessageToDB(
-        aiContent,
-        previousResponseBodyForConversation
-      );
-      set((prevState) => ({
-        ...prevState,
-        ticketStatus: {
-          ticketCreated: undefined,
-          ticketAssigned: undefined,
-          ticketClosed: undefined,
-          userCreatedInActiveDirectory: undefined,
-          userEmailCreated: undefined,
-        },
-      }));
-      set((prevState) => ({
-        isFormOpen: {
-          ...prevState.isFormOpen,
-          [previousResponseBodyForConversation.conversationId]: false,
-        },
-      }));
-
+      console.log("ticket cancelled");
       handleAddAssistantMessage(aiContent, "ticketForm");
       handleRemoveForm(formId);
     }

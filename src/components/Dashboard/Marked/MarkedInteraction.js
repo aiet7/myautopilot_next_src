@@ -15,9 +15,6 @@ import { FiThumbsUp, FiThumbsDown } from "react-icons/fi";
 import useInteractionStore from "@/utils/store/interaction/interactionsStore";
 import useNotesStore from "@/utils/store/assistant/sections/notes/notesStore";
 
-import { Tooltip as ReactTooltip } from "react-tooltip";
-import Tooltip from "rc-tooltip";
-
 const MarkedInteraction = ({ id, markdown }) => {
   const { handleUpdateEditedResponse } = useConversationStore();
   const { feedback, handleSubmitFeedback } = useInteractionStore();
@@ -171,59 +168,6 @@ const MarkedInteraction = ({ id, markdown }) => {
         {id.endsWith("-ai") ? (
           <div className="dark:text-blue-500 flex items-center justify-between pt-2 text-blue-800 max-w-[450px]">
             <div className="flex items-center gap-2">
-              <BiEdit
-                data-tooltip-id="Edit"
-                size={30}
-                className="dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none"
-                onClick={() => handleEdit(id, markdown)}
-              />
-              {/* <ReactTooltip
-                place="top"
-                content="Edit"
-                id="Edit"
-                className="z-[99]"
-                closeOnScroll={true}
-              /> */}
-
-              <GiSettingsKnobs
-                data-tooltip-id="Elaborate/Summarize"
-                size={30}
-                className="dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none"
-              />
-              {/* <ReactTooltip
-                place="top"
-                content="Elaborate/Summarize"
-                id="Elaborate/Summarize"
-                className="z-[99]"
-                closeOnScroll={true}
-              /> */}
-            </div>
-            <div className="flex items-center gap-2">
-              <BsLayoutSplit
-                data-tooltip-id="View ChatGPT Responses"
-                size={30}
-                className="dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none"
-              />
-              {/* <ReactTooltip
-                place="top"
-                content="View ChatGPT Responses"
-                id="View ChatGPT Responses"
-                className="z-[99]"
-                closeOnScroll={true}
-              /> */}
-              <BiNotepad
-                data-tooltip-id="Add To Notes"
-                onClick={() => handleAddNote(markdown)}
-                size={30}
-                className="dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none"
-              />
-              {/* <ReactTooltip
-                place="top"
-                content="Add To Notes"
-                id="Add To Notes"
-                className="z-[99]"
-                closeOnScroll={true}
-              /> */}
               <FiThumbsUp
                 data-tooltip-id="Positive Feedback"
                 onClick={() => handleSubmitFeedback(id, false)}
@@ -232,13 +176,7 @@ const MarkedInteraction = ({ id, markdown }) => {
                 } dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none`}
                 size={30}
               />
-              {/* <ReactTooltip
-                place="top"
-                content="Positive Feedback"
-                id="Positive Feedback"
-                className="z-[99]"
-                closeOnScroll={true}
-              /> */}
+
               <FiThumbsDown
                 data-tooltip-id="Negative Feedback"
                 onClick={() => handleSubmitFeedback(id, true)}
@@ -247,13 +185,6 @@ const MarkedInteraction = ({ id, markdown }) => {
                 } dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none`}
                 size={30}
               />
-              {/* <ReactTooltip
-                place="top"
-                content="Negative Feedback"
-                id="Negative Feedback"
-                className="z-[99]"
-                closeOnScroll={true}
-              /> */}
             </div>
           </div>
         ) : null}

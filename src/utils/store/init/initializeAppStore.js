@@ -7,19 +7,15 @@ const useInitializeAppStore = create((set, get) => ({
     const { activeTab } = useUiStore.getState();
     const { agents, setSelectedAgent } = useAgentsStore.getState();
 
-    if (activeTab === "general") {
-      const generalAgent = agents.find(
-        (agent) => agent.agentName === "General Agent"
-      );
-      if (generalAgent) {
-        setSelectedAgent(generalAgent.id);
+    if (activeTab === "iTAgent") {
+      const iTAgent = agents.find((agent) => agent.agentName === "IT Agent");
+      if (iTAgent) {
+        setSelectedAgent(iTAgent.id);
       } else {
         console.log("Not found");
       }
     }
   },
-
-  
 }));
 
 export default useInitializeAppStore;

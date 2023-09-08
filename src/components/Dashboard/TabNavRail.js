@@ -2,20 +2,13 @@
 
 import { useRouter } from "next/navigation";
 
-import {
-  AiOutlinePoweroff,
-  AiOutlineTeam,
-  AiOutlineMenu,
-} from "react-icons/ai";
-import { BsChatDots } from "react-icons/bs";
+import { AiOutlinePoweroff } from "react-icons/ai";
 import { FiSettings } from "react-icons/fi";
-import { FaDochub } from "react-icons/fa";
 import {
   MdOutlineAccountCircle,
   MdOutlineDarkMode,
   MdOutlineLightMode,
 } from "react-icons/md";
-import { DiMagento } from "react-icons/di";
 
 import { TbWorldWww } from "react-icons/tb";
 
@@ -24,23 +17,14 @@ import { useTheme } from "next-themes";
 import useUiStore from "@/utils/store/ui/uiStore.js";
 import useUserStore from "@/utils/store/user/userStore";
 
-import { Tooltip as ReactTooltip } from "react-tooltip";
-
 const TabNavRail = ({}) => {
   const { handleLogout } = useUserStore();
 
   const {
-    openHistory,
     openSettings,
     activeTab,
-    setHoverTab,
     handleTabChange,
-    handleUpdateGeneralPreview,
-    handleUpdateAgentsPreview,
-    handleUpdateRoomsPreview,
-    handleUpdateDocsPreview,
-    handleUpdateHoverMouseLeave,
-    handleHistoryMenu,
+
     handleToggleSettings,
   } = useUiStore();
 
@@ -52,92 +36,15 @@ const TabNavRail = ({}) => {
   };
   return (
     <div className="dark:lg:border-white/10 dark:bg-[#373737] bg-[#eaf1fb] flex items-center justify-evenly py-3 px-2 gap-4 lg:relative lg:flex-col lg:justify-start lg:border-r">
-      <AiOutlineMenu
-        data-tooltip-id="History Menu"
-        onMouseEnter={() => {
-          handleUpdateHoverMouseLeave();
-        }}
-        onClick={handleHistoryMenu}
-        size={20}
-        className="hidden cursor-pointer outline-none lg:flex"
-      />
-      <ReactTooltip
-        place="right"
-        content={openHistory ? "Hide History Menu" : "Show History Menu"}
-        id="History Menu"
-        className="z-[99]"
-      />
-
       <div
-        onMouseEnter={() => {
-          if (window.innerWidth > 1024) {
-            setHoverTab("general");
-            handleUpdateGeneralPreview();
-          }
-        }}
-        onClick={() => handleTabChange("general")}
-        className="relative flex flex-col items-center cursor-pointer"
+        onClick={() => handleTabChange("iTAgent")}
+        className="relative flex flex-col gap-2 items-center cursor-pointer"
       >
-        <BsChatDots
+        <TbWorldWww
           size={20}
-          className={`${activeTab === "general" && "text-blue-600"}`}
+          className={`${activeTab === "iTAgent" && "text-blue-600"}`}
         />
-        <span className="text-xs">General</span>
-      </div>
-
-      <div
-        onMouseEnter={() => {
-          if (window.innerWidth > 1024) {
-            setHoverTab("agents");
-            handleUpdateAgentsPreview();
-          }
-        }}
-        className="relative flex flex-col items-center cursor-pointer"
-        onClick={() => handleTabChange("agents")}
-      >
-        <DiMagento
-          size={20}
-          className={`${activeTab === "agents" && "text-blue-600"}`}
-        />
-        <span className="text-xs">Agents</span>
-      </div>
-
-      <div
-        onMouseEnter={() => {
-          if (window.innerWidth > 1024) {
-            setHoverTab("teams");
-            handleUpdateRoomsPreview();
-          }
-        }}
-        onClick={() => {
-          handleTabChange("teams");
-        }}
-        className="relative flex flex-col items-center cursor-pointer"
-      >
-        <AiOutlineTeam
-          size={20}
-          className={`${activeTab === "teams" && "text-blue-600"} `}
-        />
-        <span className="text-xs">Teams</span>
-      </div>
-
-      <div
-        onMouseEnter={() => {
-          if (window.innerWidth > 1024) {
-            setHoverTab("docs");
-            handleUpdateDocsPreview();
-          }
-        }}
-        onClick={() => {
-          handleTabChange("docs");
-        }}
-        className="relative flex flex-col items-center cursor-pointer"
-      >
-        <FaDochub
-          size={20}
-          className={`${activeTab === "docs" && "text-blue-600"} `}
-        />
-        <span className="text-xs">Docs</span>
+        <span className="text-xs text-center">IT Agent</span>
       </div>
 
       <div

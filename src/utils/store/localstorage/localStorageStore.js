@@ -29,9 +29,9 @@ const useLocalStorageStore = create((set, get) => ({
 
     const parsedLastDocIndex = lastDocIndex ? parseInt(lastDocIndex, 10) : null;
 
-    useUiStore.setState({ activeTab: lastTab || "general" });
+    useUiStore.setState({ activeTab: lastTab || "iTAgent" });
     useAssistantStore.setState({
-      activeAssistantButton: lastAssistantTab || "Engineer",
+      activeAssistantButton: lastAssistantTab || "Tickets",
     });
     useConversationStore.setState({
       currentConversationIndices: lastConversationIndices || {},

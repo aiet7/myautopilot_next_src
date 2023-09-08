@@ -6,6 +6,8 @@ import useFormsStore from "../forms/formsStore";
 import useRefStore from "../ref/refStore";
 
 const useConversationStore = create((set, get) => ({
+  messages: [],
+
   conversationHistories: {},
   currentConversationIndices: {},
   editing: false,
@@ -359,142 +361,195 @@ const useConversationStore = create((set, get) => ({
   },
 
   handleAddUserMessage: async (message) => {
-    const agentsStore = useAgentsStore.getState();
-    const currentAgent = agentsStore.selectedAgent;
-    const { currentConversationIndices } = get();
-
     set((state) => {
-      const newConversations = { ...state.conversationHistories };
-      const currentAgentConversations = newConversations[currentAgent];
-
-      if (
-        !currentAgentConversations[currentConversationIndices[currentAgent]]
-          .messages
-      ) {
-        currentAgentConversations[
-          currentConversationIndices[currentAgent]
-        ].messages = [];
-      }
-
-      currentAgentConversations[
-        currentConversationIndices[currentAgent]
-      ].messages.push({
+      const newUserMessage = {
         id: Date.now() + "-user",
         content: message,
         role: "user",
         timeStamp: new Date().toISOString(),
-      });
-      return { ...state, conversationHistories: newConversations };
+      };
+
+      return { ...state, messages: [...state.messages, newUserMessage] };
     });
   },
-
   handleAddAssistantMessage: (message, formType) => {
     const { messageIdRef } = useRefStore.getState();
+    const messageId = `${messageIdRef.current}-ai${
+      formType ? `-${formType}` : ""
+    }`;
 
-    const agentsStore = useAgentsStore.getState();
-    const currentAgent = agentsStore.selectedAgent;
-
-    const { currentConversationIndices } = get();
-    const currentConversationIndex = currentConversationIndices[currentAgent];
 
     set((state) => {
-      const newConversations = { ...state.conversationHistories };
-      const currentMessages =
-        newConversations[currentAgent]?.[currentConversationIndex]?.messages ||
-        [];
-
-      const messageId = `${messageIdRef.current}-ai${
-        formType ? `-${formType}` : ""
-      }`;
-
-      currentMessages.push({
+      const newMessage = {
         id: messageId,
         content: message,
         role: "assistant",
         timeStamp: new Date().toISOString(),
-      });
-
-      if (!newConversations[currentAgent]) {
-        newConversations[currentAgent] = [];
-      }
-      if (!newConversations[currentAgent][currentConversationIndex]) {
-        newConversations[currentAgent][currentConversationIndex] = {
-          messages: [],
-        };
-      }
-      newConversations[currentAgent][currentConversationIndex].messages =
-        currentMessages;
-
-      return { ...state, conversationHistories: newConversations };
+      };
+      return { ...state, messages: [...state.messages, newMessage] };
     });
   },
-
   handleAddForm: (formType) => {
-    const agentsStore = useAgentsStore.getState();
-    const currentAgent = agentsStore.selectedAgent;
-    const { conversationHistories, currentConversationIndices } = get();
-    const currentConversationIndex = currentConversationIndices[currentAgent];
-
     const formId = Date.now();
-    const currentAgentConversations = conversationHistories[currentAgent];
-    const selectedConversation =
-      currentAgentConversations?.[currentConversationIndex];
-
-    const conversationId = selectedConversation?.id;
 
     set((state) => {
-      const newConversations = {
-        ...state.conversationHistories,
-        [currentAgent]: [...(state.conversationHistories[currentAgent] || [])],
-      };
-      const currentMessages =
-        newConversations[currentAgent][currentConversationIndex]?.messages ||
-        [];
-
-      currentMessages.push({
+      const newForm = {
         id: formId,
         type: "form",
         formType,
-        conversationId,
-      });
-
-      if (!newConversations[currentAgent][currentConversationIndex]) {
-        newConversations[currentAgent][currentConversationIndex] = {
-          messages: [],
-        };
-      }
-
-      newConversations[currentAgent][currentConversationIndex].messages =
-        currentMessages;
-
-      return { ...state, conversationHistories: newConversations };
+      };
+      return { ...state, messages: [...state.messages, newForm] };
     });
-    return conversationId;
+
+    return formId;
   },
 
   handleRemoveForm: (formId) => {
-    const agentsStore = useAgentsStore.getState();
-    const currentAgent = agentsStore.selectedAgent;
-
-    const { currentConversationIndices } = get();
-    const currentConversationIndex = currentConversationIndices[currentAgent];
-
     set((state) => {
-      const newConversations = { ...state.conversationHistories };
-
-      if (
-        newConversations[currentAgent] &&
-        newConversations[currentAgent][currentConversationIndex]
-      ) {
-        const currentMessages =
-          newConversations[currentAgent][currentConversationIndex].messages;
-        newConversations[currentAgent][currentConversationIndex].messages =
-          currentMessages.filter((msg) => msg.id !== formId);
-      }
-
-      return { ...state, conversationHistories: newConversations };
+      return {
+        ...state,
+        messages: state.messages.filter((msg) => msg.id !== formId),
+      };
     });
   },
+
+  // handleAddUserMessage: async (message) => {
+  //   const agentsStore = useAgentsStore.getState();
+  //   const currentAgent = agentsStore.selectedAgent;
+  //   const { currentConversationIndices } = get();
+
+  //   set((state) => {
+  //     const newConversations = { ...state.conversationHistories };
+  //     const currentAgentConversations = newConversations[currentAgent];
+
+  //     if (
+  //       !currentAgentConversations[currentConversationIndices[currentAgent]]
+  //         .messages
+  //     ) {
+  //       currentAgentConversations[
+  //         currentConversationIndices[currentAgent]
+  //       ].messages = [];
+  //     }
+
+  //     currentAgentConversations[
+  //       currentConversationIndices[currentAgent]
+  //     ].messages.push({
+  //       id: Date.now() + "-user",
+  //       content: message,
+  //       role: "user",
+  //       timeStamp: new Date().toISOString(),
+  //     });
+  //     return { ...state, conversationHistories: newConversations };
+  //   });
+  // },
+
+  // handleAddAssistantMessage: (message, formType) => {
+  //   const { messageIdRef } = useRefStore.getState();
+
+  //   const agentsStore = useAgentsStore.getState();
+  //   const currentAgent = agentsStore.selectedAgent;
+
+  //   const { currentConversationIndices } = get();
+  //   const currentConversationIndex = currentConversationIndices[currentAgent];
+
+  //   set((state) => {
+  //     const newConversations = { ...state.conversationHistories };
+  //     const currentMessages =
+  //       newConversations[currentAgent]?.[currentConversationIndex]?.messages ||
+  //       [];
+
+  //     const messageId = `${messageIdRef.current}-ai${
+  //       formType ? `-${formType}` : ""
+  //     }`;
+
+  //     currentMessages.push({
+  //       id: messageId,
+  //       content: message,
+  //       role: "assistant",
+  //       timeStamp: new Date().toISOString(),
+  //     });
+
+  //     if (!newConversations[currentAgent]) {
+  //       newConversations[currentAgent] = [];
+  //     }
+  //     if (!newConversations[currentAgent][currentConversationIndex]) {
+  //       newConversations[currentAgent][currentConversationIndex] = {
+  //         messages: [],
+  //       };
+  //     }
+  //     newConversations[currentAgent][currentConversationIndex].messages =
+  //       currentMessages;
+
+  //     return { ...state, conversationHistories: newConversations };
+  //   });
+  // },
+
+  // handleAddForm: (formType) => {
+  //   const agentsStore = useAgentsStore.getState();
+  //   const currentAgent = agentsStore.selectedAgent;
+  //   const { conversationHistories, currentConversationIndices } = get();
+  //   const currentConversationIndex = currentConversationIndices[currentAgent];
+
+  //   const formId = Date.now();
+  //   const currentAgentConversations = conversationHistories[currentAgent];
+  //   const selectedConversation =
+  //     currentAgentConversations?.[currentConversationIndex];
+
+  //   const conversationId = selectedConversation?.id;
+
+  //   set((state) => {
+  //     const newConversations = {
+  //       ...state.conversationHistories,
+  //       [currentAgent]: [...(state.conversationHistories[currentAgent] || [])],
+  //     };
+  //     const currentMessages =
+  //       newConversations[currentAgent][currentConversationIndex]?.messages ||
+  //       [];
+
+  //     currentMessages.push({
+  //       id: formId,
+  //       type: "form",
+  //       formType,
+  //       conversationId,
+  //     });
+
+  //     if (!newConversations[currentAgent][currentConversationIndex]) {
+  //       newConversations[currentAgent][currentConversationIndex] = {
+  //         messages: [],
+  //       };
+  //     }
+
+  //     newConversations[currentAgent][currentConversationIndex].messages =
+  //       currentMessages;
+
+  //     return { ...state, conversationHistories: newConversations };
+  //   });
+  //   return conversationId;
+  // },
+
+  // handleRemoveForm: (formId) => {
+  //   const agentsStore = useAgentsStore.getState();
+  //   const currentAgent = agentsStore.selectedAgent;
+
+  //   const { currentConversationIndices } = get();
+  //   const currentConversationIndex = currentConversationIndices[currentAgent];
+
+  //   set((state) => {
+  //     const newConversations = { ...state.conversationHistories };
+
+  //     if (
+  //       newConversations[currentAgent] &&
+  //       newConversations[currentAgent][currentConversationIndex]
+  //     ) {
+  //       const currentMessages =
+  //         newConversations[currentAgent][currentConversationIndex].messages;
+  //       newConversations[currentAgent][currentConversationIndex].messages =
+  //         currentMessages.filter((msg) => msg.id !== formId);
+  //     }
+
+  //     return { ...state, conversationHistories: newConversations };
+  //   });
+  // },
 }));
 
 export default useConversationStore;
