@@ -14,6 +14,7 @@ import { useEffect } from "react";
 
 import { handleServerPropsData } from "../../utils/api/serverProps.js";
 
+
 import useUserStore from "@/utils/store/user/userStore.js";
 import useAgentsStore from "@/utils/store/agents/agentsStore.js";
 import useUiStore from "@/utils/store/ui/uiStore.js";
@@ -85,6 +86,7 @@ const DashboardPage = ({ initialUser, initialTickets, initialAgents }) => {
               {activeTab === "iTAgent" && (
                 <div className="flex flex-1 relative overflow-hidden">
                   <Interaction />
+
                   {window.innerWidth > 1024 && <AssistantRail />}
                   <Assistant />
                 </div>

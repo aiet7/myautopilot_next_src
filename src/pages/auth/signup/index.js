@@ -75,7 +75,7 @@ const Signup = () => {
             </p>
             <p className="text-red-500 text-sm">{errorMessage}</p>
 
-            {showSignupForm && (
+            {!showSignupForm && (
               <>
                 <input
                   onChange={(e) => setEmail(e.target.value)}
@@ -98,7 +98,7 @@ const Signup = () => {
                 </button>
               </>
             )}
-            {!showSignupForm && (
+            {showSignupForm && (
               <>
                 <div className="flex gap-2">
                   <input
@@ -129,6 +129,7 @@ const Signup = () => {
                   />
                 </div>
                 <input
+                  disabled
                   value={companyId || ""}
                   onChange={(e) => setCompanyId(e.target.value)}
                   onKeyDown={(e) => {

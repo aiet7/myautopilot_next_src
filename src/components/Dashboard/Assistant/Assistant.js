@@ -14,6 +14,7 @@ import Documents from "./Sections/Documents.js";
 import Quotes from "./Sections/Quotes.js";
 import Projects from "./Sections/Projects.js";
 import ITGPT from "./Sections/ITGPT.js";
+import Progress from "./Progress.js";
 
 const Assistant = ({}) => {
   const { openAssistant, handleAssistantMenu } = useUiStore();
@@ -43,7 +44,9 @@ const Assistant = ({}) => {
         {activeAssistantButton === "Quotes" && <Quotes />}
         {activeAssistantButton === "Projects" && <Projects />}
         {activeAssistantButton === "IT GPT" && <ITGPT />}
+        <Progress />
       </div>
+      
     </div>
   );
 };

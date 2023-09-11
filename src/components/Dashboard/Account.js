@@ -134,10 +134,7 @@ const Account = ({ initialUser }) => {
                 <AiOutlineCheck
                   className="cursor-pointer"
                   onClick={() =>
-                    handleSaveChanges(
-                      "companyName",
-                      userInputs["companyName"]
-                    )
+                    handleSaveChanges("companyName", userInputs["companyName"])
                   }
                 />
 
@@ -156,6 +153,10 @@ const Account = ({ initialUser }) => {
                 />
               </div>
             )}
+          </div>
+          <div className="flex items-center justify-between h-[20px]">
+            <p className="w-18">Company ID</p>
+            <p>{userInputs.companyId}</p>
           </div>
         </div>
         <div className="flex flex-col w-full border dark:border-white/40 rounded-md p-5 gap-6">
@@ -180,10 +181,7 @@ const Account = ({ initialUser }) => {
                 <AiOutlineCheck
                   className="cursor-pointer"
                   onClick={() =>
-                    handleSaveChanges(
-                      "phoneNumber",
-                      userInputs["phoneNumber"]
-                    )
+                    handleSaveChanges("phoneNumber", userInputs["phoneNumber"])
                   }
                 />
                 <AiOutlineClose
@@ -219,7 +217,10 @@ const Account = ({ initialUser }) => {
                 <AiOutlineCheck
                   className="cursor-pointer"
                   onClick={() =>
-                    handleSaveChanges("street", userInputs.companyAddress["street"])
+                    handleSaveChanges(
+                      "street",
+                      userInputs.companyAddress["street"]
+                    )
                   }
                 />
                 <AiOutlineClose
@@ -286,7 +287,10 @@ const Account = ({ initialUser }) => {
                 <AiOutlineCheck
                   className="cursor-pointer"
                   onClick={() =>
-                    handleSaveChanges("zipcode", userInputs.companyAddress["zipcode"])
+                    handleSaveChanges(
+                      "zipcode",
+                      userInputs.companyAddress["zipcode"]
+                    )
                   }
                 />
                 <AiOutlineClose
@@ -319,7 +323,10 @@ const Account = ({ initialUser }) => {
                 <AiOutlineCheck
                   className="cursor-pointer"
                   onClick={() =>
-                    handleSaveChanges("state", userInputs.companyAddress["state"])
+                    handleSaveChanges(
+                      "state",
+                      userInputs.companyAddress["state"]
+                    )
                   }
                 />
                 <AiOutlineClose
@@ -406,8 +413,7 @@ const Account = ({ initialUser }) => {
             {deleting ? (
               <div className="flex flex-col gap-2">
                 <p className="text-sm">
-                  Confirm `<strong>{userInputs.email}</strong>` to
-                  delete
+                  Confirm `<strong>{userInputs.email}</strong>` to delete
                 </p>
                 <input
                   className="px-1 border bg-white text-black"

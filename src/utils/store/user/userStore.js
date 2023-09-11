@@ -36,8 +36,8 @@ const useUserStore = create((set, get) => ({
       user: initialUser,
       userInputs: {
         ...initialUser,
-        address: {
-          ...initialUser.address,
+        companyAddress: {
+          ...initialUser.companyAddress,
         },
       },
     });
@@ -77,9 +77,9 @@ const useUserStore = create((set, get) => ({
       set((state) => ({
         userInputs: {
           ...state.userInputs,
-          address: {
-            ...state.userInputs.address,
-            [field]: user.address[field],
+          companyAddress: {
+            ...state.userInputs.companyAddress,
+            [field]: user.companyAddress[field],
           },
         },
         editing: {
@@ -117,8 +117,8 @@ const useUserStore = create((set, get) => ({
       set((state) => ({
         userInputs: {
           ...state.userInputs,
-          address: {
-            ...state.userInputs.address,
+          companyAddress: {
+            ...state.userInputs.companyAddress,
             [field]: value,
           },
         },
@@ -171,7 +171,7 @@ const useUserStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/editBusinessUserProfile`,
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/editClientUserProfile`,
         {
           method: "POST",
           headers: {

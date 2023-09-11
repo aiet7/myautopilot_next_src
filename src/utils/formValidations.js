@@ -37,21 +37,17 @@ export const validateField = (field, value) => {
       return "Password should be at least 8 characters.";
   }
 
-  if (field === "businessPhone") {
+  if (field === "phoneNumber") {
     if (isInputEmpty(value)) return "A phone number is required.";
     if (!isPhoneInputValid(value)) return "Invalid phone number format.";
   }
 
-  if (
-    field === "businessEmail" &&
-    !isInputEmpty(value) &&
-    !isEmailInputValid(value)
-  ) {
+  if (field === "email" && !isInputEmpty(value) && !isEmailInputValid(value)) {
     return "Invalid email format.";
   }
 
   if (
-    ["firstName", "lastName", "businessName"].includes(field) &&
+    ["firstName", "lastName", "companyName"].includes(field) &&
     !isInputEmpty(value) &&
     !isNameInputValid(value)
   ) {
@@ -76,7 +72,7 @@ export const validateField = (field, value) => {
 
 export const isInputEmpty = (input) => {
   if (typeof input !== "string") {
-    return true; 
+    return true;
   }
   return input.trim() === "";
 };
@@ -87,7 +83,7 @@ export const isEmailInputValid = (emailInput) => {
 };
 
 export const isNameInputValid = (nameInput) => {
-  const nameRegex = /^[a-zA-Z\s]+$/;
+  const nameRegex = /^[a-zA-Z0-9\s]+$/;
   return nameRegex.test(nameInput);
 };
 

@@ -219,27 +219,49 @@ const useFormsStore = create((set, get) => ({
     set((state) => ({
       ticket: {
         ...state.ticket,
-        currentTicketTitle: title,
-        currentTicketDescription: description,
-        currentTicketSummary: summary,
+        currentTicketTitle: title || "",
+        currentTicketDescription: description || "",
+        currentTicketSummary: summary || "",
         currentTicketCategory: category,
         currentTicketSubCategory: subcategory,
         currentTicketPriority: priorityLevel,
-        currentTicketName: fullName,
-        currentTicketEmailId: email,
-        currentTicketPhoneNumber: phone,
+        currentTicketName: fullName || "",
+        currentTicketEmailId: email || "",
+        currentTicketPhoneNumber: phone || "",
 
         onBoarding: {
           ...state.ticket.onBoarding,
-          currentTicketNewFirstName: newEmployeeFirstName,
-          currentTicketNewLastName: newEmployeeLastName,
+          currentTicketNewFirstName: newEmployeeFirstName || "",
+          currentTicketNewLastName: newEmployeeLastName || "",
           currentTicketEmailOwner: userStore.user.email,
-          currentTicketNewPhoneNumber: phone,
-          currentTicketNewEmailId: email,
+          currentTicketNewPhoneNumber: phone || "",
+          currentTicketNewEmailId: email || "",
         },
       },
     }));
     handleAddForm("ticketForm");
+    if (
+      category === "TRAINING_OR_ONBOARDING" &&
+      subcategory === "NEW_EMPLOYEE_ONBOARDING"
+    ) {
+      set({
+        ticketStatus: {
+          ticketCreated: "pending",
+          ticketAssigned: "pending",
+          ticketClosed: "pending",
+          userCreatedInActiveDirectory: "pending",
+          userEmailCreated: "pending",
+        },
+      });
+    } else {
+      set({
+        ticketStatus: {
+          ticketCreated: "pending",
+          ticketAssigned: "pending",
+          ticketClosed: "pending",
+        },
+      });
+    }
   },
 
   handleAddContactProcess: (message) => {
@@ -663,7 +685,6 @@ const useFormsStore = create((set, get) => ({
     } = get().ticket.onBoarding;
     const { handleRemoveForm, handleAddAssistantMessage } =
       useConversationStore.getState();
-
     if (isConfirmed) {
       set((state) => ({
         loading: {
@@ -695,9 +716,20 @@ const useFormsStore = create((set, get) => ({
         if (ticketResponse.status === 200) {
           const ticket = await ticketResponse.json();
           const {
+            ticketCreated,
+            ticketAssigned,
+            ticketClosed,
             ticketDetails: { id },
           } = ticket;
-
+          set((state) => ({
+            ...state,
+            ticketStatus: {
+              ...state.ticketStatus,
+              ticketCreated: ticketCreated && "done",
+              ticketAssigned: ticketAssigned ? "done" : "pending",
+              ticketClosed: ticketClosed ? "done" : "waiting",
+            },
+          }));
           if (
             currentTicketCategory === "TRAINING_OR_ONBOARDING" &&
             currentTicketSubCategory === "NEW_EMPLOYEE_ONBOARDING"
@@ -719,7 +751,23 @@ const useFormsStore = create((set, get) => ({
               }
             );
             if (ticketOnboardingResponse.status === 200) {
-              console.log("ticket onboarding created");
+              const ticketOnBoarding = await ticketOnboardingResponse.json();
+              const {
+                userCreatedInActiveDirectory,
+                userEmailCreated,
+                ticketClosed,
+              } = ticketOnBoarding;
+              set((state) => ({
+                ...state,
+                ticketStatus: {
+                  ...state.ticketStatus,
+                  userCreatedInActiveDirectory: userCreatedInActiveDirectory
+                    ? "done"
+                    : "pending",
+                  userEmailCreated: userEmailCreated ? "done" : "pending",
+                  ticketClosed: ticketClosed ? "done" : "pending",
+                },
+              }));
             }
           }
           const aiContent = `Ticket Created!\n\nID: ${id}\n\nTitle: ${currentTicketTitle}\n\nDescription: ${currentTicketDescription}\n\nSummary: ${currentTicketSummary}\n\nCategory: ${currentTicketCategory}\n\nSubcategory: ${currentTicketSubCategory}\n\nPriority: ${currentTicketPriority}\n\nName: ${currentTicketName}\n\nEmail: ${currentTicketEmailId}\n\nPhone: ${currentTicketPhoneNumber}.`;
@@ -748,6 +796,16 @@ const useFormsStore = create((set, get) => ({
       console.log("ticket cancelled");
       handleAddAssistantMessage(aiContent, "ticketForm");
       handleRemoveForm(formId);
+      set((state) => ({
+        ...state,
+        ticketStatus: {
+          ticketCreated: undefined,
+          ticketAssigned: undefined,
+          ticketClosed: undefined,
+          userCreatedInActiveDirectory: undefined,
+          userEmailCreated: undefined,
+        },
+      }));
     }
   },
   handleTaskConfirmation: async (isConfirmed, formId) => {
