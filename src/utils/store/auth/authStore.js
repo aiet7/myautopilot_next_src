@@ -12,9 +12,10 @@ const useAuthStore = create((set, get) => ({
   password: "",
   firstName: "",
   lastName: "",
-  businessName: "",
   phoneNumber: "",
-  address: {
+  companyName: "",
+  companyId: null,
+  companyAddress: {
     street: "",
     city: "",
     zipcode: "",
@@ -29,10 +30,13 @@ const useAuthStore = create((set, get) => ({
   setPassword: (password) => set({ password }),
   setFirstName: (firstName) => set({ firstName }),
   setLastName: (lastName) => set({ lastName }),
-  setBusinessName: (businessName) => set({ businessName }),
+  setCompanyId: (companyId) => set({ companyId }),
+  setCompanyName: (companyName) => set({ companyName }),
   setPhoneNumber: (phoneNumber) => set({ phoneNumber }),
-  setAddress: (field, value) =>
-    set((prevState) => ({ address: { ...prevState.address, [field]: value } })),
+  setCompanyAddress: (field, value) =>
+    set((prevState) => ({
+      companyAddress: { ...prevState.companyAddress, [field]: value },
+    })),
   setErrorMessage: (errorMessage) => set({ errorMessage }),
   setIsLoading: (isLoading) => set({ isLoading }),
   setShowLoginForm: (isShown) => set({ showLoginForm: isShown }),
@@ -188,28 +192,19 @@ const useAuthStore = create((set, get) => ({
       set({ errorMessage: "A password is required." });
       return;
     }
-    const user = {
-      businessEmail: email,
-      password: password,
-    };
+    const encodedClientUser = encodeURIComponent(email);
+    const encodedClientPassword = encodeURIComponent(password);
 
     try {
       const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(user),
-        }
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/signin?emailId=${encodedClientUser}&password=${encodedClientPassword}`
       );
-      set({ errorMessage: "" });
       if (response.ok) {
-        set({ loading: true, showLoginForm: false });
+        set({ loading: true, showLoginForm: false, errorMessage: "" });
         const user = await response.json();
         navigator(`/dashboard/${user.id}`);
         Cookie.set("session_token", user.id, { expires: 7 });
+        Cookie.set("client_id", user.id, { expires: 7 });
       } else {
         set({ errorMessage: "Invalid username or password." });
       }
@@ -227,16 +222,27 @@ const useAuthStore = create((set, get) => ({
       return;
     }
 
+    const encodedClientUser = encodeURIComponent(email);
+
     try {
       const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/getUserByEmail?email=${email}`
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/signup?emailId=${encodedClientUser}`
       );
-      const user = await response.json();
+      const text = await response.text();
       set({ errorMessage: "" });
-      if (user.message === "No Users") {
-        set({ showSignupForm: true });
-      } else {
+      if (text === "Email already exists. Please sign in.") {
         set({ errorMessage: "Account exists." });
+      } else {
+        const user = JSON.parse(text);
+        set({
+          showSignupForm: true,
+          firstName: user.firstName !== null && user.firstName,
+          lastName: user.lastName !== null && user.lastName,
+          companyName: user.companyName !== null && user.companyName,
+          companyId: user.companyId !== null && user.companyId,
+          companyAddress: user.companyAddress !== null && user.companyAddress,
+          phoneNumber: user.phoneNumber !== null && user.phoneNumber,
+        });
       }
     } catch (e) {
       console.log(e);
@@ -247,19 +253,22 @@ const useAuthStore = create((set, get) => ({
     const {
       firstName,
       lastName,
-      businessName,
+      companyName,
+      companyId,
       email,
       phoneNumber,
-      address,
+      companyAddress,
       password,
     } = get();
+
     const user = {
+      companyId: companyId,
       firstName: firstName,
       lastName: lastName,
-      businessName: businessName,
-      businessEmail: email,
-      businessPhone: phoneNumber,
-      address: address,
+      companyName: companyName,
+      email: email,
+      phoneNumber: phoneNumber,
+      companyAddress: companyAddress,
       password: password,
     };
 
@@ -271,7 +280,7 @@ const useAuthStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateUser`,
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/createAccount`,
         {
           method: "POST",
           headers: {
@@ -280,6 +289,7 @@ const useAuthStore = create((set, get) => ({
           body: JSON.stringify(user),
         }
       );
+
       set({ errorMessage: "" });
       if (response.ok) {
         navigator("/auth/login");
@@ -295,10 +305,30 @@ const useAuthStore = create((set, get) => ({
 
   handleShowSignup: (navigator) => {
     navigator("/auth/signup");
+    set({ errorMessage: "", showSignupForm: false });
   },
 
   handleShowLogin: (navigator) => {
     navigator("/auth/login");
+    set({ errorMessage: "", showSignupForm: false });
+  },
+
+  clearCredentials: () => {
+    set({
+      email: "",
+      password: "",
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
+      companyName: "",
+      companyId: null,
+      companyAddress: {
+        street: "",
+        city: "",
+        zipcode: "",
+        state: "",
+      },
+    });
   },
 }));
 

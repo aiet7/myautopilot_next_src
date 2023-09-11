@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 
 import { AiOutlineUser, AiOutlineRobot } from "react-icons/ai";
-import { BsFillSendFill } from "react-icons/bs";
 import { HiOutlineArrowSmallDown } from "react-icons/hi2";
 import { FaSpinner } from "react-icons/fa";
 
@@ -11,13 +10,11 @@ import Switch from "../../Dashboard/Interaction/Forms/Switch.js";
 import DocumentForm from "../Document/DocumentForm.js";
 
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore.js";
-import useAgentsStore from "@/utils/store/agents/agentsStore.js";
 import useUiStore from "@/utils/store/ui/uiStore.js";
 import useFormsStore from "@/utils/store/interaction/forms/formsStore.js";
 import useInteractionStore from "@/utils/store/interaction/interactionsStore.js";
 import useRefStore from "@/utils/store/interaction/ref/refStore.js";
 
-import { Tooltip as ReactTooltip } from "react-tooltip";
 import useDocumentStore from "@/utils/store/assistant/sections/document/documentStore.js";
 
 const Interaction = ({}) => {
@@ -138,7 +135,7 @@ const Interaction = ({}) => {
               }}
               value={userInput}
               placeholder="Describe Your Issue..."
-              className="dark:bg-black bg-white border outline-blue-500 w-full p-4 pr-16 resize-none no-scrollbar"
+              className="dark:bg-black bg-white border outline-blue-500 w-full p-4 pr-32 resize-none no-scrollbar"
               style={{
                 height: textAreaHeight,
                 maxHeight: "200px",
@@ -146,22 +143,17 @@ const Interaction = ({}) => {
             />
 
             <div className="flex items-center gap-3 absolute right-6 pr-2 flex items-center bottom-0 top-0">
-              <BsFillSendFill
-                data-tooltip-id="Send Message"
+              <button
                 size={25}
                 onClick={() => handleCreateTicketMessage(userInput)}
-                className={`outline-none ${
+                className={`p-2 ${
                   userInput !== ""
-                    ? "dark:text-white dark:hover:text-blue-500 hover:text-blue-500 text-black cursor-pointer"
-                    : "dark:text-gray-500 text-gray-300 select-none"
+                    ? "dark:text-white dark:hover:text-blue-500  border bg-blue-800 text-white cursor-pointer"
+                    : "dark:text-gray-400 dark:border-white/30  text-gray-400 select-none border cursor-default"
                 } `}
-              />
-              <ReactTooltip
-                place="top"
-                content="Send Message"
-                id="Send Message"
-                className="z-[99]"
-              />
+              >
+                Open Ticket
+              </button>
             </div>
           </div>
         </div>

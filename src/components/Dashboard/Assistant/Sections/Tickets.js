@@ -1,20 +1,17 @@
 "use client";
 
 import useTicketsStore from "@/utils/store/assistant/sections/tickets/ticketsStore";
-import { useEffect } from "react";
+
+import { MdOutlineArrowDropUp, MdOutlineArrowDropDown } from "react-icons/md";
 
 const Tickets = () => {
   const {
     tickets,
-    initializeTickets,
     activeTicketButton,
+    showTicketIndex,
     setActiveTicketButton,
+    setShowTicketIndex,
   } = useTicketsStore();
-
-  useEffect(() => {
-    initializeTickets();
-  }, []);
-  console.log(tickets);
 
   return (
     <div className="flex-grow flex flex-col gap-4 overflow-hidden">
@@ -37,8 +34,51 @@ const Tickets = () => {
           Completed
         </button>
       </div>
-      <div className="flex-grow overflow-y-auto scrollbar-thin"></div>
-      <div className="flex flex-grow flex-col gap-4"></div>
+      <div className="flex-grow overflow-y-auto scrollbar-thin">
+        <div className="flex flex-grow flex-col gap-4">
+          {tickets
+            .filter(
+              (ticket) =>
+                (activeTicketButton === "In Progress" && !ticket.closed) ||
+                (activeTicketButton === "Complete" && ticket.closed)
+            )
+            .map((ticket, index) => {
+              const { id, description, category, ticketId, timeStamp } = ticket;
+              return (
+                <div
+                  key={index}
+                  className="dark:bg-white/30 dark:text-white dark:border-white/20 flex flex-col justify-between gap-3 border rounded-md text-black bg-white p-2"
+                >
+                  <div className="flex justify-between">
+                    <p className="break-words whitespace-pre-wrap">
+                      #{ticketId}
+                    </p>
+                  </div>
+                  <p className="break-words whitespace-pre-wrap">{category}</p>
+                  <p>{new Date(timeStamp).toLocaleString()}</p>
+                  {showTicketIndex === index && (
+                    <div className="dark:bg-white/10 bg-black/5 p-2 rounded-md cursor-pointer">
+                      <pre className="whitespace-pre-wrap">{description}</pre>
+                    </div>
+                  )}
+                  {showTicketIndex === index ? (
+                    <MdOutlineArrowDropUp
+                      size={30}
+                      className="self-center cursor-pointer"
+                      onClick={() => setShowTicketIndex(null)}
+                    />
+                  ) : (
+                    <MdOutlineArrowDropDown
+                      size={30}
+                      className="self-center cursor-pointer"
+                      onClick={() => setShowTicketIndex(index)}
+                    />
+                  )}
+                </div>
+              );
+            })}
+        </div>
+      </div>
     </div>
   );
 };

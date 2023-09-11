@@ -1,47 +1,30 @@
 export const validateInput = (user) => {
-  console.log(user)
   if (isInputEmpty(user.password)) return "A password is required.";
+  if (isInputEmpty(user.phoneNumber)) return "A phone number is required.";
+  if (isInputEmpty(user.email)) return "An email is required.";
+  if (isInputEmpty(user.firstName)) return "First name is required.";
+  if (isInputEmpty(user.lastName)) return "Last name is required.";
+  if (isInputEmpty(user.companyName)) return "Business name is required.";
+  if (isInputEmpty(user.companyAddress.street))
+    return "Street name is required.";
+  if (isInputEmpty(user.companyAddress.city)) return "City name is required.";
+  if (isInputEmpty(user.companyAddress.zipcode)) return "Zip code is required.";
+  if (isInputEmpty(user.companyAddress.state)) return "State name is required.";
+
   if (!isPasswordValid(user.password))
     return "Password should be at least 8 characters.";
-
-  if (isInputEmpty(user.businessPhone)) return "A phone number is required.";
-  if (!isPhoneInputValid(user.businessPhone))
+  if (!isPhoneInputValid(user.phoneNumber))
     return "Invalid phone number format.";
-
-  if (
-    !isInputEmpty(user.businessEmail) &&
-    !isEmailInputValid(user.businessEmail)
-  )
-    return "Invalid email format.";
-
-  if (!isInputEmpty(user.firstName) && !isNameInputValid(user.firstName))
-    return "First name is invalid.";
-
-  if (!isInputEmpty(user.lastName) && !isNameInputValid(user.lastName))
-    return "Last name is invalid.";
-
-  if (!isInputEmpty(user.businessName) && !isNameInputValid(user.businessName))
-    return "Business name is invalid.";
-
-  if (
-    !isInputEmpty(user.address.street) &&
-    !isStreetNameValid(user.address.street)
-  )
+  if (!isEmailInputValid(user.email)) return "Invalid email format.";
+  if (!isNameInputValid(user.firstName)) return "First name is invalid.";
+  if (!isNameInputValid(user.lastName)) return "Last name is invalid.";
+  if (!isNameInputValid(user.companyName)) return "Business name is invalid.";
+  if (!isStreetNameValid(user.companyAddress.street))
     return "Street name is invalid.";
-
-  if (!isInputEmpty(user.address.city) && !isCityNameValid(user.address.city))
+  if (!isCityNameValid(user.companyAddress.city))
     return "City name is invalid.";
-
-  if (
-    !isInputEmpty(user.address.zipcode) &&
-    !isZipCodeValid(user.address.zipcode)
-  )
-    return "Invalid zip code.";
-
-  if (
-    !isInputEmpty(user.address.state) &&
-    !isStateNameValid(user.address.state)
-  )
+  if (!isZipCodeValid(user.companyAddress.zipcode)) return "Invalid zip code.";
+  if (!isStateNameValid(user.companyAddress.state))
     return "State name is invalid.";
 
   return null;
@@ -92,7 +75,9 @@ export const validateField = (field, value) => {
 };
 
 export const isInputEmpty = (input) => {
-  console.log(input)
+  if (typeof input !== "string") {
+    return true; 
+  }
   return input.trim() === "";
 };
 

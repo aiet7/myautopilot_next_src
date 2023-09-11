@@ -20,10 +20,12 @@ import useUiStore from "@/utils/store/ui/uiStore.js";
 import useLocalStorageStore from "@/utils/store/localstorage/localStorageStore.js";
 import useInitializeAppStore from "@/utils/store/init/initializeAppStore.js";
 import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
+import useTicketsStore from "@/utils/store/assistant/sections/tickets/ticketsStore.js";
 
-const DashboardPage = ({ initialUser, initialAgents }) => {
+const DashboardPage = ({ initialUser, initialTickets, initialAgents }) => {
   const { initializeApp } = useInitializeAppStore();
   const { initializeUser } = useUserStore();
+  const { initializeTickets } = useTicketsStore();
   const { initializeAgents } = useAgentsStore();
 
   const { activeAssistantButton } = useAssistantStore();
@@ -32,13 +34,14 @@ const DashboardPage = ({ initialUser, initialAgents }) => {
 
   const { height, activeTab, openSettings, setHeight, handleToggleSettings } =
     useUiStore();
-    
+
   useEffect(() => {
     initializeApp();
   }, [activeTab, initialAgents]);
 
   useEffect(() => {
     initializeUser(initialUser);
+    initializeTickets(initialTickets);
     initializeAgents(initialAgents);
   }, [initialUser, initialAgents]);
 
@@ -107,22 +110,20 @@ export const getServerSideProps = async (context) => {
     req: { cookies },
   } = context;
 
-  // const googleSessionToken = cookies["Secure-next.session-token-g"];
-  // const microsoftSessionToken = cookies["microsoft_session_token"];
-  // const regularSessionToken = cookies["session_token"];
+  const regularSessionToken = cookies["session_token"];
 
-  // if (!googleSessionToken && !microsoftSessionToken && !regularSessionToken) {
-  //   return {
-  //     redirect: {
-  //       destination: "/auth/login",
-  //       permanent: false,
-  //     },
-  //   };
-  // }
+  if (!regularSessionToken) {
+    return {
+      redirect: {
+        destination: "/auth/login",
+        permanent: false,
+      },
+    };
+  }
 
-  const userId = params.id;
+  const clientId = params.id;
 
-  const response = await handleServerPropsData(userId);
+  const response = await handleServerPropsData(clientId);
 
   return {
     props: { ...response },

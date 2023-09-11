@@ -10,6 +10,7 @@ import { handleSendGraphMail } from "@/utils/api/microsoft";
 import useTasksStore from "../../assistant/sections/tasks/taskStore";
 import useTokenStore from "../token/tokenStore";
 import Cookies from "js-cookie";
+import useTicketsStore from "../../assistant/sections/tickets/ticketsStore";
 
 const useFormsStore = create((set, get) => ({
   isFormOpen: {},
@@ -197,6 +198,7 @@ const useFormsStore = create((set, get) => ({
     }));
   },
   handleCreateTicketProcess: (email, msg, fullName, phone) => {
+    const userStore = useUserStore.getState();
     const { handleAddForm } = useConversationStore.getState();
     const {
       title,
@@ -205,13 +207,10 @@ const useFormsStore = create((set, get) => ({
       category,
       subcategory,
       priorityLevel,
-      name,
-      emailID,
-      phoneNumber,
     } = msg;
     let newEmployeeFirstName;
     let newEmployeeLastName;
-    
+
     if (fullName) {
       const names = fullName?.split(" ");
       newEmployeeFirstName = names[0];
@@ -226,14 +225,15 @@ const useFormsStore = create((set, get) => ({
         currentTicketCategory: category,
         currentTicketSubCategory: subcategory,
         currentTicketPriority: priorityLevel,
-        currentTicketName: name,
-        currentTicketEmailId: emailID,
-        currentTicketPhoneNumber: phoneNumber,
+        currentTicketName: fullName,
+        currentTicketEmailId: email,
+        currentTicketPhoneNumber: phone,
+
         onBoarding: {
           ...state.ticket.onBoarding,
           currentTicketNewFirstName: newEmployeeFirstName,
           currentTicketNewLastName: newEmployeeLastName,
-          currentTicketEmailOwner: emailID,
+          currentTicketEmailOwner: userStore.user.email,
           currentTicketNewPhoneNumber: phone,
           currentTicketNewEmailId: email,
         },
@@ -641,6 +641,7 @@ const useFormsStore = create((set, get) => ({
   },
   handleTicketConfirmation: async (isConfirmed, formId) => {
     const userStore = useUserStore.getState();
+    const { addTicket } = useTicketsStore.getState();
     const {
       currentTicketTitle,
       currentTicketDescription,
@@ -696,7 +697,6 @@ const useFormsStore = create((set, get) => ({
           const {
             ticketDetails: { id },
           } = ticket;
-          console.log("ticket created");
 
           if (
             currentTicketCategory === "TRAINING_OR_ONBOARDING" &&
@@ -724,6 +724,13 @@ const useFormsStore = create((set, get) => ({
           }
           const aiContent = `Ticket Created!\n\nID: ${id}\n\nTitle: ${currentTicketTitle}\n\nDescription: ${currentTicketDescription}\n\nSummary: ${currentTicketSummary}\n\nCategory: ${currentTicketCategory}\n\nSubcategory: ${currentTicketSubCategory}\n\nPriority: ${currentTicketPriority}\n\nName: ${currentTicketName}\n\nEmail: ${currentTicketEmailId}\n\nPhone: ${currentTicketPhoneNumber}.`;
           handleAddAssistantMessage(aiContent, "ticketForm");
+          addTicket({
+            ticketId: id,
+            description: currentTicketDescription,
+            category: currentTicketCategory,
+            closed: false,
+            timeStamp: Date.now(),
+          });
         }
       } catch (e) {
         console.log(e);

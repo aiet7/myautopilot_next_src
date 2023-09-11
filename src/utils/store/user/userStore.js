@@ -4,8 +4,8 @@ import useCookiesStore from "../cookies/cookiesStore";
 import { googleLogout } from "@react-oauth/google";
 import { validateField } from "../../../utils/formValidations";
 
-import { useRouter } from "next/navigation";
 import useAuthStore from "../auth/authStore";
+import useConversationStore from "../interaction/conversations/conversationsStore";
 
 const useUserStore = create((set, get) => ({
   user: null,
@@ -225,9 +225,12 @@ const useUserStore = create((set, get) => ({
 
     const { clearStorage } = useLocalStorageStore.getState();
     const { clearCookies } = useCookiesStore.getState();
+    const { clearCredentials } = useAuthStore.getState();
+    const { clearInteraction } = useConversationStore.getState();
     clearStorage();
     clearCookies();
-    googleLogout();
+    clearCredentials();
+    clearInteraction();
     navigate("/auth/login");
     setShowLoginForm(false);
     setShowSignupForm(false);

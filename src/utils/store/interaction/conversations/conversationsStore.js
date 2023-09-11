@@ -378,7 +378,6 @@ const useConversationStore = create((set, get) => ({
       formType ? `-${formType}` : ""
     }`;
 
-
     set((state) => {
       const newMessage = {
         id: messageId,
@@ -411,6 +410,10 @@ const useConversationStore = create((set, get) => ({
         messages: state.messages.filter((msg) => msg.id !== formId),
       };
     });
+  },
+
+  clearInteraction: () => {
+    set({ messages: [] });
   },
 
   // handleAddUserMessage: async (message) => {

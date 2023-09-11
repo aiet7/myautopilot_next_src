@@ -1,18 +1,20 @@
-export const handleServerPropsData = async (userId) => {
-  const [initialUser, initialAgents] = await Promise.all([
-    handeGetUser(userId),
+export const handleServerPropsData = async (clientId) => {
+  const [initialUser, initialTickets, initialAgents] = await Promise.all([
+    handeGetUser(clientId),
+    handleGetTickets(clientId),
     handleGetAgents(),
   ]);
 
   return {
     initialUser,
+    initialTickets,
     initialAgents,
   };
 };
 
-export const handeGetUser = async (userId) => {
+export const handeGetUser = async (clientId) => {
   const response = await fetch(
-    `https://etech7-wf-etech7-db-service.azuremicroservices.io/getUserById?userId=${userId}`
+    `https://etech7-wf-etech7-db-service.azuremicroservices.io/getClientById?id=${clientId}`
   );
   return await response.json();
 };
@@ -67,9 +69,9 @@ export const handleGetNotes = async (conversationId) => {
   return await response.json();
 };
 
-export const handleGetTickets = async (userId) => {
+export const handleGetTickets = async (clientId) => {
   const response = await fetch(
-    `https://etech7-wf-etech7-db-service.azuremicroservices.io/getSupportTickets?userId=${userId}`
+    `https://etech7-wf-etech7-db-service.azuremicroservices.io/getSupportTickets?userId=${clientId}`
   );
 
   return await response.json();
