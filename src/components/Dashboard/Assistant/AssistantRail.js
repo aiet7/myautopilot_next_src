@@ -17,14 +17,12 @@ import { Tooltip as ReactTooltip } from "react-tooltip";
 import { IoTicketSharp } from "react-icons/io5";
 
 const AssistantRail = ({}) => {
-  const {  openAssistant } = useUiStore();
+  const { openAssistant } = useUiStore();
   const {
     activeAssistantButton,
     handleUIAssistantTabChange,
     handleAssistantTabChange,
   } = useAssistantStore();
-
-
 
   return (
     <div
@@ -50,20 +48,20 @@ const AssistantRail = ({}) => {
         className="z-[99]"
       />
       <BsFiletypeDoc
-        data-tooltip-id="Document"
+        data-tooltip-id="Documents"
         className={`${
-          activeAssistantButton === "Document" && "text-blue-800"
+          activeAssistantButton === "Documents" && "text-blue-800"
         } cursor-pointer outline-none`}
         size={20}
         onClick={() => {
-          handleAssistantTabChange("Document");
-          handleUIAssistantTabChange("Document");
+          handleAssistantTabChange("Documents");
+          handleUIAssistantTabChange("Documents");
         }}
       />
       <ReactTooltip
         place="left"
-        content="Document"
-        id="Document"
+        content="Documents"
+        id="Documents"
         className="z-[99]"
       />
       <SiOpenai
@@ -85,17 +83,17 @@ const AssistantRail = ({}) => {
       />
       <div className="dark:border-white/20 border-black/10 border w-full" />
       <MdScreenShare
-        data-tooltip-id="Screen Share"
+        data-tooltip-id="Remote Access"
         className={`${
-          activeAssistantButton === "Screen Share" && "text-blue-800"
+          activeAssistantButton === "Remote Access" && "text-blue-800"
         } cursor-pointer outline-none`}
         size={20}
-        onClick={() => handleAssistantTabChange("Screen Share")}
+        onClick={() => handleAssistantTabChange("Remote Access")}
       />
       <ReactTooltip
         place="left"
-        content="Screen Share"
-        id="Screen Share"
+        content="Remote Access"
+        id="Remote Access"
         className="z-[99]"
       />
       <MdPassword

@@ -143,7 +143,7 @@ const Interaction = ({}) => {
               }
             }}
             value={userInput}
-            placeholder="Interact With Our IT Agent..."
+            placeholder="Interact With Our IT Engineer..."
             className="dark:bg-black bg-white border outline-blue-500 w-full p-4 pr-32 resize-none no-scrollbar"
             style={{
               height: textAreaHeight,

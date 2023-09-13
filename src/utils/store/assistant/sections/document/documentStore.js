@@ -33,18 +33,7 @@ const useDocumentStore = create((set, get) => ({
       guide:
         "The Internet Policy sets forth rules for appropriate use of the company's internet facilities and services. This encompasses the browsing of websites, downloads, and social media access. The policy's main goal is to ensure that employees use the internet in a way that does not compromise the company's IT infrastructure, reputation, or expose it to unnecessary risks.",
     },
-    {
-      title: "Tax Accounting Cyber Security",
-      fields: [
-        { inputField: "companyName", label: "Company Name" },
-        { inputField: "employeeName", label: "Employee Name" },
-        { inputField: "date", label: "Date" },
-        { inputField: "employeeTitle", label: "Employee Title" },
-        { inputField: "ownerTitle", label: "Owner Title" },
-      ],
-      guide:
-        "This policy focuses on the protection of financial data from potential cyber threats. Given that tax accounting involves handling sensitive financial data, this policy establishes protocols to protect such information from cyberattacks, unauthorized access, and data breaches. This policy is crucial for financial integrity, trustworthiness, and regulatory compliance.",
-    },
+    
   ],
   inputValues: {},
   currentDocIndex: 0,
@@ -58,6 +47,7 @@ const useDocumentStore = create((set, get) => ({
       },
     }));
   },
+
 
 
 

@@ -38,12 +38,12 @@ const WelcomePage = () => {
           <div className="relative w-full max-w-2xl p-8 bg-white bg-opacity-5 ">
             <div className="absolute inset-0 z-0 flex justify-center items-center">
               <Image
-                src="/myautopilot_logo.png"
-                width={500}
-                height={500}
+                src="/etech7_logo.webp"
+                width={750}
+                height={750}
                 quality={100}
-                alt="Circuit board in the shape of a human brain"
-                className="opacity-5"
+                alt="Etech7_Logo"
+                className="opacity-10"
               />
             </div>
             <div className="relative z-10 flex flex-col gap-4">
@@ -56,13 +56,13 @@ const WelcomePage = () => {
               <div className="flex justify-center items-center gap-8">
                 <button
                   onClick={handleShowLogin}
-                  className="w-[120px] bg-red-500 text-white py-3 rounded-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50"
+                  className="w-[120px] bg-[#00AEEE] text-white py-3 rounded-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50"
                 >
                   Login
                 </button>
                 <button
                   onClick={handleShowSigmup}
-                  className="w-[120px]  bg-red-500 text-white py-3 rounded-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50"
+                  className="w-[120px]  bg-[#00AEEE] text-white py-3 rounded-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50"
                 >
                   Signup
                 </button>

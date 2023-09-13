@@ -1,12 +1,15 @@
 import { create } from "zustand";
 import useAgentsStore from "../agents/agentsStore";
 
+const isBrowser = typeof window !== 'undefined';
+const initialWidth = isBrowser ? window.innerWidth : 1024; 
+
 const useUiStore = create((set, get) => ({
   height: null,
   activeTab: null,
   hoverTab: null,
   openHistory: false,
-  openAssistant: false,
+  openAssistant: initialWidth > 1024 ? true : false,
   openRooms: false,
   openDocs: false,
   openSettings: false,

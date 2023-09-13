@@ -62,7 +62,7 @@ const Signup = () => {
             <Image
               priority
               src="/etech7_logo_auth.webp"
-              alt="Circuit board in the shape of a human brain"
+              alt="Etech7_Signup_Logo"
               width={50}
               height={50}
             />
@@ -264,11 +264,11 @@ const Signup = () => {
                 </button>
               </>
             )}
-            <p className="w-full">
+            <p className="w-full text-black">
               Already have an account?{" "}
               <span
                 onClick={() => handleShowLogin(router.push)}
-                className="text-[#00AEEE] cursor-pointer"
+                className="text-[#00AEEE]  cursor-pointer"
               >
                 Login
               </span>

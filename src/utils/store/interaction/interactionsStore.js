@@ -164,9 +164,18 @@ const useInteractionStore = create((set, get) => ({
       });
 
       try {
-        const encodedMessage = encodeURIComponent(trimQuotes(message));
         const response = await fetch(
-          `https://etech7-wf-etech7-support-service.azuremicroservices.io/ticketCategorize?text=${encodedMessage}&userId=${userStore.user.id}`
+          "https://etech7-wf-etech7-support-service.azuremicroservices.io/ticketCategorize",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              text: message,
+              userId: userStore.user.id,
+            }),
+          }
         );
 
         if (response.status === 200) {

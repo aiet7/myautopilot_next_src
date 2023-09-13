@@ -1,8 +1,11 @@
 import useDocumentStore from "@/utils/store/assistant/sections/document/documentStore";
 import useUiStore from "@/utils/store/ui/uiStore";
+import useUserStore from "@/utils/store/user/userStore";
 import { AiOutlineArrowDown } from "react-icons/ai";
+import { useEffect } from "react";
 
 const DocumentForm = () => {
+  const { user } = useUserStore();
   const { openAssistant, handleAssistantMenu } = useUiStore();
   const {
     blobLink,
@@ -12,6 +15,15 @@ const DocumentForm = () => {
     setInputValues,
     handleSubmitDoc,
   } = useDocumentStore();
+
+  useEffect(() => {
+    if (user) {
+      setInputValues("companyName", user.companyName || "");
+      setInputValues("name", `${user.firstName} ${user.lastName}` || "");
+      setInputValues("email", user.email || "");
+      setInputValues("date", new Date().toISOString().split("T")[0]);
+    }
+  }, [user, currentDocIndex]);
   return (
     <div
       onClick={() => {
@@ -80,8 +92,6 @@ const DocumentForm = () => {
               </a>
             )}
           </div>
-
-          
         </div>
       </div>
     </div>

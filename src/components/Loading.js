@@ -7,7 +7,7 @@ const Loading = () => {
         {"Welcome back, pilot!".split("").map((char, index) => (
           <span
             key={index}
-            className="wave-animation font-bold lg:text-4xl"
+            className="wave-animation font-bold text-black lg:text-4xl"
             style={{ animationDelay: `${index * 0.1}s` }}
           >
             {char}

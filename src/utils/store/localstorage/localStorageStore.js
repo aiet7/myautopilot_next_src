@@ -7,6 +7,7 @@ const useLocalStorageStore = create((set, get) => ({
   getStorage: () => {
     const lastTab = localStorage.getItem("lastTab");
     const lastAssistantTab = localStorage.getItem("lastAssistantTab");
+    const lastUIAssistantTab = localStorage.getItem("lastUIAssistantTab");
     const lastConversationIndicesString = localStorage.getItem(
       "lastConversationIndices"
     );
@@ -18,6 +19,7 @@ const useLocalStorageStore = create((set, get) => ({
     useUiStore.setState({ activeTab: lastTab || "iTAgent" });
     useAssistantStore.setState({
       activeAssistantButton: lastAssistantTab || "Tickets",
+      activeUIAssistantTab: lastUIAssistantTab || "Tickets",
     });
     useConversationStore.setState({
       currentConversationIndices: lastConversationIndices || {},
@@ -26,11 +28,14 @@ const useLocalStorageStore = create((set, get) => ({
 
   saveStorage: () => {
     const { activeTab } = useUiStore.getState();
-    const { activeAssistantButton } = useAssistantStore.getState();
+    const { activeAssistantButton, activeUIAssistantTab } =
+      useAssistantStore.getState();
     const { currentConversationIndices } = useConversationStore.getState();
 
     localStorage.setItem("lastTab", activeTab);
     localStorage.setItem("lastAssistantTab", activeAssistantButton);
+    localStorage.setItem("lastUIAssistantTab", activeUIAssistantTab);
+
     localStorage.setItem(
       "lastConversationIndices",
       JSON.stringify(currentConversationIndices)
@@ -40,6 +45,7 @@ const useLocalStorageStore = create((set, get) => ({
   clearStorage: () => {
     localStorage.removeItem("lastTab");
     localStorage.removeItem("lastAssistantTab");
+    localStorage.removeItem("lastUIAssistantTab");
     localStorage.removeItem("lastConversationIndices");
   },
 }));

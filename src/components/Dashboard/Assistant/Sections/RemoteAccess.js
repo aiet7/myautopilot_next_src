@@ -1,9 +1,9 @@
 "use client";
 
-const ScreenShare = () => {
+const RemoteAccess = () => {
   return (
     <div className="flex-grow flex flex-col gap-4 overflow-hidden">
-      <h3 className="text-left text-lg">Screen Share</h3>
+      <h3 className="text-left text-lg">Remote Access</h3>
       <button className="bg-blue-800 text-white py-2">
         <a
           className="break-words"
@@ -11,11 +11,11 @@ const ScreenShare = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Screen Share Portal
+          Remote Access Portal
         </a>
       </button>
     </div>
   );
 };
 
-export default ScreenShare;
+export default RemoteAccess;

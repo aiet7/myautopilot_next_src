@@ -2,7 +2,6 @@
 
 import { ThemeProvider } from "next-themes";
 
-
 import TabNavRail from "../../components/Dashboard/TabNavRail.js";
 import SettingsRail from "../../components/Dashboard/SettingsRail.js";
 import AssistantRail from "@/components/Dashboard/Assistant/AssistantRail.js";
@@ -40,7 +39,7 @@ const DashboardPage = ({
   const { initializeConversations, currentConversationIndices } =
     useConversationStore();
 
-  const { activeUIAssistantTab } = useAssistantStore();
+  const { activeAssistantButton, activeUIAssistantTab } = useAssistantStore();
 
   const { saveStorage, getStorage } = useLocalStorageStore();
 
@@ -82,7 +81,12 @@ const DashboardPage = ({
     return () => {
       window.removeEventListener("beforeunload", saveStorage);
     };
-  }, [saveStorage, activeUIAssistantTab, currentConversationIndices]);
+  }, [
+    saveStorage,
+    activeAssistantButton,
+    activeUIAssistantTab,
+    currentConversationIndices,
+  ]);
 
   return (
     <ThemeProvider attribute="class">
@@ -94,13 +98,12 @@ const DashboardPage = ({
         >
           <div className="flex flex-col h-full w-full lg:flex-row-reverse">
             <div className="flex flex-col h-full w-full overflow-hidden">
-              
               {activeTab !== "settings" && <SettingsRail />}
               {activeTab === "iTAgent" && (
                 <div className="flex flex-1 relative overflow-hidden">
                   {activeUIAssistantTab === "Engineer" && <History />}
 
-                  {activeUIAssistantTab === "Document" ? (
+                  {activeUIAssistantTab === "Documents" ? (
                     <DocumentForm />
                   ) : (
                     <Interaction />

@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image.js";
 
 import useUiStore from "@/utils/store/ui/uiStore.js";
 import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
@@ -6,7 +7,6 @@ import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
 import { AiOutlineClose } from "react-icons/ai";
 import AssistantRail from "./AssistantRail.js";
 import Tickets from "./Sections/Tickets.js";
-import ScreenShare from "./Sections/ScreenShare.js";
 import Passwords from "./Sections/Passwords.js";
 import Billing from "./Sections/Billing.js";
 import Reports from "./Sections/Reports.js";
@@ -15,6 +15,7 @@ import Quotes from "./Sections/Quotes.js";
 import Projects from "./Sections/Projects.js";
 import Progress from "./Progress.js";
 import Engineer from "./Sections/Engineer.js";
+import RemoteAccess from "./Sections/RemoteAccess.js";
 
 const Assistant = ({}) => {
   const { openAssistant, handleAssistantMenu } = useUiStore();
@@ -35,11 +36,18 @@ const Assistant = ({}) => {
             className="absolute cursor-pointer top-[27px] self-end"
           />
         )}
-
+        <Image
+          src="/etech7_logo.webp"
+          width={100}
+          height={100}
+          quality={100}
+          alt="Etech7_Logo"
+          className="pb-4"
+        />
         {activeAssistantButton === "Tickets" && <Tickets />}
-        {activeAssistantButton === "Document" && <Documents />}
+        {activeAssistantButton === "Documents" && <Documents />}
         {activeAssistantButton === "Engineer" && <Engineer />}
-        {activeAssistantButton === "Screen Share" && <ScreenShare />}
+        {activeAssistantButton === "Remote Access" && <RemoteAccess />}
         {activeAssistantButton === "Passwords" && <Passwords />}
         {activeAssistantButton === "Billing" && <Billing />}
         {activeAssistantButton === "Quotes" && <Quotes />}

@@ -1,10 +1,12 @@
 "use client";
 
 import useTicketsStore from "@/utils/store/assistant/sections/tickets/ticketsStore";
+import useUserStore from "@/utils/store/user/userStore";
 
 import { MdOutlineArrowDropUp, MdOutlineArrowDropDown } from "react-icons/md";
 
 const Tickets = () => {
+  const { user } = useUserStore();
   const {
     tickets,
     activeTicketButton,
@@ -43,23 +45,50 @@ const Tickets = () => {
                 (activeTicketButton === "Complete" && ticket.closed)
             )
             .map((ticket, index) => {
-              const { id, description, category, ticketId, timeStamp } = ticket;
+              const {
+                id,
+                description,
+                summary,
+                category,
+                subcategory,
+                ticketId,
+                timeStamp,
+              } = ticket;
               return (
                 <div
                   key={index}
-                  className="dark:bg-white/30 dark:text-white dark:border-white/20 flex flex-col justify-between gap-3 border rounded-md text-black bg-white p-2"
+                  className="dark:bg-white/30 dark:text-white dark:border-white/20 text-sm flex flex-col justify-between gap-3 border rounded-md text-black bg-white p-2"
                 >
-                  <div className="flex justify-between">
-                    <p className="break-words whitespace-pre-wrap">
-                      #{ticketId}
-                    </p>
-                  </div>
-                  <p className="break-words whitespace-pre-wrap">{category}</p>
-                  <p>{new Date(timeStamp).toLocaleString()}</p>
+                  <p className="break-words whitespace-pre-wrap">
+                    <span className="font-bold">Ticket ID:</span> #{ticketId}
+                  </p>
+
+                  <p className="break-words whitespace-pre-wrap">
+                    <span className="font-bold">Category:</span> {category}
+                  </p>
+                  <p className="break-words whitespace-pre-wrap">
+                    <span className="font-bold">Subcategory:</span>{" "}
+                    {subcategory}
+                  </p>
+
+                  <p className="break-words whitespace-pre-wrap">
+                    <span className="font-bold">Ticket Creator:</span>{" "}
+                    {user.firstName + " " + user.lastName}
+                  </p>
+                  <p>
+                    <span className="font-bold">Date Created:</span>{" "}
+                    {new Date(timeStamp).toLocaleString()}
+                  </p>
                   {showTicketIndex === index && (
-                    <div className="dark:bg-white/10 bg-black/5 p-2 rounded-md cursor-pointer">
-                      <pre className="whitespace-pre-wrap">{description}</pre>
-                    </div>
+                    <>
+                      <p className="break-words whitespace-pre-wrap">
+                        <span className="font-bold">Description:</span>{" "}
+                        {description}
+                      </p>
+                      <p className="break-words whitespace-pre-wrap">
+                        <span className="font-bold">Summary:</span> {summary}
+                      </p>
+                    </>
                   )}
                   {showTicketIndex === index ? (
                     <MdOutlineArrowDropUp

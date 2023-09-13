@@ -187,7 +187,6 @@ const useAuthStore = create((set, get) => ({
   },
 
   handleLoginCredentialsAuth: async (navigator) => {
-    
     const { email, password } = get();
     if (isInputEmpty(password)) {
       set({ errorMessage: "A password is required." });
@@ -234,15 +233,15 @@ const useAuthStore = create((set, get) => ({
       if (text === "Email already exists. Please sign in.") {
         set({ errorMessage: "Account exists." });
       } else {
-        const user = JSON.parse(text);
+        const parsedUser = JSON.parse(text);
+        const user = Array.isArray(parsedUser) ? parsedUser[0] : parsedUser;
         set({
           showSignupForm: true,
-          firstName: user.firstName !== null && user.firstName,
-          lastName: user.lastName !== null && user.lastName,
-          companyName: user.companyName !== null && user.companyName,
-          companyId: user.companyId !== null && user.companyId,
-          companyAddress: user.companyAddress !== null && user.companyAddress,
-          phoneNumber: user.phoneNumber !== null && user.phoneNumber,
+          firstName: user.firstName || "",
+          lastName: user.lastName || "",
+          companyName: user.companyName || user.company?.name || "",
+          companyId: user.companyId || user.company?.id || "",
+          phoneNumber: user.phoneNumber || user.defaultPhoneNbr || "",
         });
       }
     } catch (e) {
