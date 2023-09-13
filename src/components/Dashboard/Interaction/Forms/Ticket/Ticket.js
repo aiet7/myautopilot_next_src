@@ -9,6 +9,7 @@ import { useEffect } from "react";
 const TicketForm = ({ itemId }) => {
   const {
     loading,
+    formError,
     ticket,
     filteredSubCategories,
     setTicket,
@@ -28,6 +29,7 @@ const TicketForm = ({ itemId }) => {
       <div className="flex flex-col gap-2">
         <div>
           <span className="font-bold">Ticket Name</span>
+          <p className="text-xs text-red-500">{formError}</p>
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
             value={ticket.currentTicketTitle || ""}

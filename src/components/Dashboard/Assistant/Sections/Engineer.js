@@ -19,7 +19,7 @@ const Engineer = () => {
 
   return (
     <div className="flex-grow flex flex-col gap-4 overflow-hidden">
-      <h3 className="text-left text-lg">Prompt Engineer</h3>
+      <h3 className="text-left text-lg">IT Engineer</h3>
       <div className="flex-grow overflow-y-auto scrollbar-thin">
         <div className="flex flex-grow flex-col gap-4 ">
           <div className="w-full flex flex-col items-center rounded gap-1">
@@ -34,7 +34,7 @@ const Engineer = () => {
                 }
               }}
               className="w-full p-2 scrollbar-thin min-h-[100px] max-h-[200px]"
-              placeholder="A well-crafted prompt can make all the difference.  Provide us any topic!"
+              placeholder="A well-crafted prompt can make all the difference.  Provide us any IT topic!"
             />
 
             <div className="bg-[#10a37f] w-full flex items-center justify-center p-2 ">

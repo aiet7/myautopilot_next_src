@@ -6,7 +6,7 @@ import { FaSpinner } from "react-icons/fa";
 const Progress = () => {
   const { ticketStatus } = useFormsStore();
   return (
-    <div className={`${ticketStatus.ticketCreated && "border"} py-4 px-2 rounded `}>
+    <div className="py-4 px-2 rounded">
       {ticketStatus.ticketCreated && (
         <div className="flex flex-grow flex-col gap-4">
           {PROCESS_NAMES.filter(

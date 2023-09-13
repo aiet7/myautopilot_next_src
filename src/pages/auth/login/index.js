@@ -53,10 +53,10 @@ const Login = () => {
           <form className="w-[300px]  flex flex-col items-center gap-4">
             <Image
               priority
-              src="/myautopilot_logo.png"
+              src="/etech7_logo_auth.webp"
               alt="Circuit board in the shape of a human brain"
-              width={90}
-              height={90}
+              width={50}
+              height={50}
             />
             <h1 className="text-xl font-bold text-black text-center">
               Welcome back
@@ -91,18 +91,20 @@ const Login = () => {
             <button
               onClick={() => handleLoginCredentialsAuth(router.push)}
               type="button"
-              className="w-full  py-2 bg-green-700 text-white font-bold rounded-sm"
+              className="w-full  py-2 bg-[#00AEEE] text-white font-bold rounded-sm"
             >
               Continue
             </button>
 
-            <button
-              onClick={() => handleShowSignup(router.push)}
-              type="button"
-              className="w-full text-blue-500 text-sm flex items-center justify-start"
-            >
-              Do not have an account?
-            </button>
+            <p className="w-full ">
+              Do not have an account?{" "}
+              <span
+                onClick={() => handleShowSignup(router.push)}
+                className="text-[#00AEEE] cursor-pointer"
+              >
+                Sign up
+              </span>
+            </p>
           </form>
         </div>
       )}

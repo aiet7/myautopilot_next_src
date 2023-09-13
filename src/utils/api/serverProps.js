@@ -1,14 +1,24 @@
 export const handleServerPropsData = async (clientId) => {
-  const [initialUser, initialTickets, initialAgents] = await Promise.all([
-    handeGetUser(clientId),
-    handleGetTickets(clientId),
-    handleGetAgents(),
-  ]);
+  const [initialUser, initialTickets, initialAgents, initialConversations] =
+    await Promise.all([
+      handeGetUser(clientId),
+      handleGetTickets(clientId),
+      handleGetAgents(),
+      handleGetConversations(clientId),
+    ]);
+
+  const initialMessages = await Promise.all(
+    initialConversations.map((conversation) =>
+      handleGetMessages(conversation.id)
+    )
+  );
 
   return {
     initialUser,
     initialTickets,
     initialAgents,
+    initialConversations,
+    initialMessages,
   };
 };
 

@@ -70,6 +70,22 @@ export const validateField = (field, value) => {
   return null;
 };
 
+export const validateTicketForm = (ticket) => {
+  const properties = Object.values(ticket).filter(
+    (item) => typeof item !== "object"
+  );
+
+  if (
+    ticket.currentTicketCategory === "TRAINING_OR_ONBOARDING" &&
+    ticket.currentTicketSubCategory === "NEW_EMPLOYEE_ONBOARDING"
+  ) {
+    const onBoardingProperties = Object.values(ticket.onBoarding);
+    properties.push(...onBoardingProperties);
+  }
+
+  return !properties.some(isInputEmpty);
+};
+
 export const isInputEmpty = (input) => {
   if (typeof input !== "string") {
     return true;

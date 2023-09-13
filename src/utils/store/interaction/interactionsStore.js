@@ -51,7 +51,6 @@ const useInteractionStore = create((set, get) => ({
         /-ai(-emailForm|-contactForm|-ticketForm|-eventForm|-taskForm)?$/,
         ""
       );
-      console.log(cleanedMessageId);
       const response = await fetch(
         `https://etech7-wf-etech7-db-service.azuremicroservices.io/updateFeedback?messageId=${cleanedMessageId}&feedback=${feedback}`
       );
@@ -174,8 +173,8 @@ const useInteractionStore = create((set, get) => ({
           const responseBody = await response.json();
           messageIdRef.current = Date.now();
           handleCreateTicketProcess(
-            responseBody.emailID,
             JSON.parse(responseBody.msg),
+            responseBody.emailID,
             responseBody.personName,
             responseBody.phoneNumber
           );
@@ -183,6 +182,55 @@ const useInteractionStore = create((set, get) => ({
           set({
             isServerError: true,
           });
+        }
+      } catch (e) {
+        console.log(e);
+      } finally {
+        set({
+          isWaiting: false,
+        });
+      }
+    }
+  },
+
+  handleSendMessage: async (message) => {
+    const { inputRef, messageIdRef } = useRefStore.getState();
+    const userStore = useUserStore.getState();
+    const {
+      handleIfConversationExists,
+      handleAddJarvisUserMessage,
+      handleAddJarvisAssistantMessage,
+    } = useConversationStore.getState();
+
+    let currentConversation = await handleIfConversationExists();
+    if (message.trim() !== "") {
+      inputRef.current.focus();
+      handleAddJarvisUserMessage(message);
+      set({
+        isWaiting: true,
+        isServerError: false,
+        userInput: "",
+      });
+      try {
+        const response = await fetch(
+          `https://etech7-wf-etech7-clu-service.azuremicroservices.io/jarvisITAgentFacade`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              text: message,
+              conversationId: currentConversation.id,
+              userId: userStore.user.id,
+            }),
+          }
+        );
+
+        if (response.status === 200) {
+          const responseBody = await response.json();
+          messageIdRef.current = responseBody.id;
+          handleAddJarvisAssistantMessage(responseBody.message, null);
         }
       } catch (e) {
         console.log(e);
@@ -232,7 +280,6 @@ const useInteractionStore = create((set, get) => ({
 
         if (response.status === 200) {
           const responseBody = await response.json();
-          console.log(responseBody);
           messageIdRef.current = responseBody.id;
           useFormsStore.setState((prevState) => ({
             ...prevState,

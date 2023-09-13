@@ -1,7 +1,6 @@
 import { create } from "zustand";
 
 const useDocumentStore = create((set, get) => ({
-  showDocForm: null,
   tempDocs: [
     {
       title: "Data Protection",
@@ -48,7 +47,7 @@ const useDocumentStore = create((set, get) => ({
     },
   ],
   inputValues: {},
-  currentDocIndex: null,
+  currentDocIndex: 0,
   blobLink: null,
 
   setInputValues: (field, value) => {
@@ -60,12 +59,10 @@ const useDocumentStore = create((set, get) => ({
     }));
   },
 
-  handleDocDeselect: () => {
-    set({ showDocForm: null, currentDocIndex: null, inputValues: {} });
-  },
+
 
   handleDocSelected: (index) => {
-    set({ showDocForm: index, currentDocIndex: index, inputValues: {} });
+    set({ currentDocIndex: index, inputValues: {} });
   },
 
   handleSubmitDoc: async (policyTitle, data) => {

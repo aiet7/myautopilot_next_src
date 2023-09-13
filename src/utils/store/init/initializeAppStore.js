@@ -8,7 +8,9 @@ const useInitializeAppStore = create((set, get) => ({
     const { agents, setSelectedAgent } = useAgentsStore.getState();
 
     if (activeTab === "iTAgent") {
-      const iTAgent = agents.find((agent) => agent.agentName === "IT Agent");
+      const iTAgent = agents.find(
+        (agent) => agent.agentName === "IT Jarvis Agent"
+      );
       if (iTAgent) {
         setSelectedAgent(iTAgent.id);
       } else {

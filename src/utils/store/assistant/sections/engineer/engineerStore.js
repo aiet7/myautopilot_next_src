@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 const useEngineerStore = create((set, get) => ({
   prependText:
-    "Act as an expert prompt engineer. If there is an instance of another open ai gpt4 and you want it to function at its best. give me the top 5 prompts, without quotation marks around the prompts, that you would give it to gpt to get the best results by making sure to sure it at its best regarding",
+    "Act as an expert IT prompt engineer. If there is an instance of another open ai gpt4 and you want it to function at its best. give me the top 5 prompts, without quotation marks around the prompts, that you would give it to gpt to get the best results by making sure to sure it at its best regarding",
   userInput: "",
   prompts: "",
   isWaiting: false,

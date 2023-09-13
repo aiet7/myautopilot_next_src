@@ -13,8 +13,8 @@ import Reports from "./Sections/Reports.js";
 import Documents from "./Sections/Documents.js";
 import Quotes from "./Sections/Quotes.js";
 import Projects from "./Sections/Projects.js";
-import ITGPT from "./Sections/ITGPT.js";
 import Progress from "./Progress.js";
+import Engineer from "./Sections/Engineer.js";
 
 const Assistant = ({}) => {
   const { openAssistant, handleAssistantMenu } = useUiStore();
@@ -35,18 +35,19 @@ const Assistant = ({}) => {
             className="absolute cursor-pointer top-[27px] self-end"
           />
         )}
+
         {activeAssistantButton === "Tickets" && <Tickets />}
+        {activeAssistantButton === "Document" && <Documents />}
+        {activeAssistantButton === "Engineer" && <Engineer />}
         {activeAssistantButton === "Screen Share" && <ScreenShare />}
         {activeAssistantButton === "Passwords" && <Passwords />}
         {activeAssistantButton === "Billing" && <Billing />}
-        {activeAssistantButton === "Reports" && <Reports />}
-        {activeAssistantButton === "Document" && <Documents />}
         {activeAssistantButton === "Quotes" && <Quotes />}
+        {activeAssistantButton === "Reports" && <Reports />}
         {activeAssistantButton === "Projects" && <Projects />}
-        {activeAssistantButton === "IT GPT" && <ITGPT />}
+
         <Progress />
       </div>
-      
     </div>
   );
 };

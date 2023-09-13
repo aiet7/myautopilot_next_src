@@ -4,10 +4,10 @@ import useUiStore from "../ui/uiStore";
 
 const useAssistantStore = create((set, get) => ({
   promptAssistantInput: "",
-  activeAssistantButton: "Engineer",
+  activeUIAssistantTab: "Tickets",
+  activeAssistantButton: "Tickets",
 
   handlePromptAssistantInput: (prompt) => {
-    const { handleToggleAssistant } = useUiStore.getState();
     set({
       promptAssistantInput: "",
     });
@@ -16,15 +16,23 @@ const useAssistantStore = create((set, get) => ({
         promptAssistantInput: prompt,
       });
       useInteractionStore.setState({ userInput: prompt });
-      handleToggleAssistant(false);
     }, 0);
   },
 
-  handleAssistantTabChange: (tab, openMenu) => {
+  handleUIAssistantTabChange: (tab) => {
     const { openAssistant, handleAssistantMenu } = useUiStore.getState();
-    if (!openAssistant && openMenu) {
+    if (!openAssistant) {
       handleAssistantMenu();
     }
+    set({ activeUIAssistantTab: tab });
+  },
+
+  handleAssistantTabChange: (tab) => {
+    const { openAssistant, handleAssistantMenu } = useUiStore.getState();
+    if (!openAssistant) {
+      handleAssistantMenu();
+    }
+
     set({ activeAssistantButton: tab });
   },
 }));

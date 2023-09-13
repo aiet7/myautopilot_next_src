@@ -3,13 +3,7 @@
 import useDocumentStore from "@/utils/store/assistant/sections/document/documentStore";
 
 const Documents = () => {
-  const {
-    tempDocs,
-    showDocForm,
-    handleDocSelected,
-    handleDocDeselect,
-    currentDocIndex,
-  } = useDocumentStore();
+  const { tempDocs, handleDocSelected, currentDocIndex } = useDocumentStore();
 
   return (
     <div className="flex-grow flex flex-col gap-4 overflow-hidden">
@@ -34,18 +28,6 @@ const Documents = () => {
             </div>
           );
         })}
-        <button
-          onClick={handleDocDeselect}
-          className={`w-full px-4 py-2 ${
-            showDocForm === currentDocIndex &&
-            showDocForm !== null &&
-            currentDocIndex !== null
-              ? "bg-blue-800 text-white cursor-pointer"
-              : "dark:text-gray-600 dark:border-white/20 text-gray-200 border cursor-default"
-          }`}
-        >
-          Switch View
-        </button>
       </div>
     </div>
   );

@@ -61,10 +61,10 @@ const Signup = () => {
           <form className="w-[300px] flex flex-col items-center gap-4">
             <Image
               priority
-              src="/myautopilot_logo.png"
+              src="/etech7_logo_auth.webp"
               alt="Circuit board in the shape of a human brain"
-              width={90}
-              height={90}
+              width={50}
+              height={50}
             />
             <h1 className="text-xl font-bold text-black text-center">
               Create your account
@@ -92,7 +92,7 @@ const Signup = () => {
                 <button
                   onClick={handleSignupEmailCheck}
                   type="button"
-                  className="w-full py-2 bg-green-700 text-white font-bold rounded-sm"
+                  className="w-full py-2 bg-[#00AEEE] text-white font-bold rounded-sm"
                 >
                   Continue
                 </button>
@@ -258,19 +258,21 @@ const Signup = () => {
                 <button
                   onClick={() => handleSignupCredentialsAuth(router.push)}
                   type="button"
-                  className="w-full  py-2 bg-green-700 text-white font-bold rounded-sm"
+                  className="w-full  py-2 bg-[#00AEEE] text-white font-bold rounded-sm"
                 >
                   Continue
                 </button>
               </>
             )}
-            <button
-              onClick={() => handleShowLogin(router.push)}
-              type="button"
-              className="w-full text-blue-500 text-sm flex items-center justify-start"
-            >
-              Already have an account?
-            </button>
+            <p className="w-full">
+              Already have an account?{" "}
+              <span
+                onClick={() => handleShowLogin(router.push)}
+                className="text-[#00AEEE] cursor-pointer"
+              >
+                Login
+              </span>
+            </p>
           </form>
         </div>
       )}

@@ -11,7 +11,6 @@ const DocumentForm = () => {
     inputValues,
     setInputValues,
     handleSubmitDoc,
-    handleDocDeselect,
   } = useDocumentStore();
   return (
     <div

@@ -187,6 +187,7 @@ const useAuthStore = create((set, get) => ({
   },
 
   handleLoginCredentialsAuth: async (navigator) => {
+    
     const { email, password } = get();
     if (isInputEmpty(password)) {
       set({ errorMessage: "A password is required." });

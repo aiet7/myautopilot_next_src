@@ -11,11 +11,13 @@ import useTasksStore from "../../assistant/sections/tasks/taskStore";
 import useTokenStore from "../token/tokenStore";
 import Cookies from "js-cookie";
 import useTicketsStore from "../../assistant/sections/tickets/ticketsStore";
+import { validateTicketForm } from "@/utils/formValidations";
 
 const useFormsStore = create((set, get) => ({
   isFormOpen: {},
   isServerError: false,
   previousResponseBodyForForms: {},
+  formError: "",
   loading: {
     contactForm: false,
     emailForm: false,
@@ -197,7 +199,7 @@ const useFormsStore = create((set, get) => ({
       },
     }));
   },
-  handleCreateTicketProcess: (email, msg, fullName, phone) => {
+  handleCreateTicketProcess: (msg, email, fullName, phone) => {
     const userStore = useUserStore.getState();
     const { handleAddForm } = useConversationStore.getState();
     const {
@@ -225,15 +227,16 @@ const useFormsStore = create((set, get) => ({
         currentTicketCategory: category,
         currentTicketSubCategory: subcategory,
         currentTicketPriority: priorityLevel,
-        currentTicketName: fullName || "",
-        currentTicketEmailId: email || "",
-        currentTicketPhoneNumber: phone || "",
+        currentTicketName:
+          userStore.user.firstName + " " + userStore.user.lastName || "",
+        currentTicketEmailId: userStore.user.email || "",
+        currentTicketPhoneNumber: userStore.user.phoneNumber,
 
         onBoarding: {
           ...state.ticket.onBoarding,
           currentTicketNewFirstName: newEmployeeFirstName || "",
           currentTicketNewLastName: newEmployeeLastName || "",
-          currentTicketEmailOwner: userStore.user.email,
+          currentTicketEmailOwner: userStore.user.email || "",
           currentTicketNewPhoneNumber: phone || "",
           currentTicketNewEmailId: email || "",
         },
@@ -661,7 +664,10 @@ const useFormsStore = create((set, get) => ({
       handleRemoveForm(formId);
     }
   },
+
   handleTicketConfirmation: async (isConfirmed, formId) => {
+    const { ticket } = get();
+
     const userStore = useUserStore.getState();
     const { addTicket } = useTicketsStore.getState();
     const {
@@ -685,13 +691,19 @@ const useFormsStore = create((set, get) => ({
     } = get().ticket.onBoarding;
     const { handleRemoveForm, handleAddAssistantMessage } =
       useConversationStore.getState();
+
     if (isConfirmed) {
+      if (!validateTicketForm(ticket)) {
+        set({ formError: "Form inputs can not be empty." });
+        return;
+      }
       set((state) => ({
         loading: {
           ...state.loading,
           ticketForm: true,
         },
       }));
+
       try {
         const ticketResponse = await fetch(
           `https://etech7-wf-etech7-support-service.azuremicroservices.io/createTicket`,
@@ -788,12 +800,12 @@ const useFormsStore = create((set, get) => ({
             ...state.loading,
             ticketForm: false,
           },
+          formError: "",
         }));
         handleRemoveForm(formId);
       }
     } else {
       const aiContent = "Ticket Creation Cancelled.";
-      console.log("ticket cancelled");
       handleAddAssistantMessage(aiContent, "ticketForm");
       handleRemoveForm(formId);
       set((state) => ({
@@ -805,9 +817,11 @@ const useFormsStore = create((set, get) => ({
           userCreatedInActiveDirectory: undefined,
           userEmailCreated: undefined,
         },
+        formError: "",
       }));
     }
   },
+
   handleTaskConfirmation: async (isConfirmed, formId) => {
     const userStore = useUserStore.getState();
     const { currentTaskName } = get().task;
