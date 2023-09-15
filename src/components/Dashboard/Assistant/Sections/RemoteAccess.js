@@ -1,6 +1,8 @@
 "use client";
 
 const RemoteAccess = () => {
+
+  
   return (
     <div className="flex-grow flex flex-col gap-4 overflow-hidden">
       <h3 className="text-left text-lg">Remote Access</h3>
@@ -11,7 +13,7 @@ const RemoteAccess = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Remote Access Portal
+          Remote Access
         </a>
       </button>
     </div>
