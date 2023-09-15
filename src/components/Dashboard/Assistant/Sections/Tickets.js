@@ -25,7 +25,7 @@ const Tickets = () => {
             activeTicketButton === "In Progress" && "bg-blue-800 text-white"
           } w-full rounded p-2`}
         >
-          In Progress
+          Opened
         </button>
         <button
           onClick={() => setActiveTicketButton("Complete")}
@@ -33,7 +33,7 @@ const Tickets = () => {
             activeTicketButton === "Complete" && "bg-blue-800 text-white"
           } w-full rounded p-2`}
         >
-          Completed
+          Closed
         </button>
       </div>
       <div className="flex-grow overflow-y-auto scrollbar-thin">

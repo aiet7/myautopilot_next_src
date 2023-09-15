@@ -55,7 +55,7 @@ const useFormsStore = create((set, get) => ({
       currentTicketNewEmailId: "",
       currentTicketEmailOwner: "",
       currentTicketNewPhoneNumber: "",
-      currentTicketLicenseId: "",
+      currentTicketLicenseId: "E3",
     },
   },
   ticketStatus: {

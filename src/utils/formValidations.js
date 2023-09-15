@@ -109,7 +109,7 @@ export const isPhoneInputValid = (phoneInput) => {
 };
 
 export const isStreetNameValid = (streetName) => {
-  const streetRegex = /^[a-zA-Z0-9\s]+$/;
+  const streetRegex = /^[\w\s\p{P}]+$/u;
   return streetRegex.test(streetName);
 };
 

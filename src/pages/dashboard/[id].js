@@ -116,7 +116,7 @@ const DashboardPage = ({
 
               {activeTab === "settings" && (
                 <div className="overflow-auto h-full w-full no-scrollbar">
-                  <Account initialUser={initialUser} />
+                  <Account />
                 </div>
               )}
             </div>

@@ -7,7 +7,7 @@ const RemoteAccess = () => {
       <button className="bg-blue-800 text-white py-2">
         <a
           className="break-words"
-          href="https://rmm.etech7.com:8040/"
+          href="https://rmm.etech7.com:8040/Login?Reason=0"
           target="_blank"
           rel="noopener noreferrer"
         >

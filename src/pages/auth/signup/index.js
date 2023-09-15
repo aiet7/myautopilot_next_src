@@ -19,12 +19,12 @@ const Signup = () => {
     firstName,
     lastName,
     companyId,
-    companyName,
     phoneNumber,
     companyAddress,
     loading,
     errorMessage,
     showSignupForm,
+    companies,
     setEmail,
     setPassword,
     setFirstName,
@@ -100,6 +100,59 @@ const Signup = () => {
             )}
             {showSignupForm && (
               <>
+                <select
+                  onChange={(e) => {
+                    const selectedCompany = companies.find(
+                      (c) => c.companyName === e.target.value
+                    );
+                    if (selectedCompany) {
+                      setFirstName(selectedCompany.firstName || "");
+                      setLastName(selectedCompany.lastName || "");
+                      setCompanyName(
+                        selectedCompany.companyName ||
+                          selectedCompany.company?.name ||
+                          ""
+                      );
+                      setCompanyId(
+                        selectedCompany.companyId ||
+                          selectedCompany.company?.id ||
+                          ""
+                      );
+                      setPhoneNumber(
+                        selectedCompany.phoneNumber ||
+                          selectedCompany.defaultPhoneNbr ||
+                          ""
+                      );
+                      setCompanyAddress(
+                        "street",
+                        selectedCompany.companyAddress?.street || ""
+                      );
+                      setCompanyAddress(
+                        "city",
+                        selectedCompany.companyAddress?.city || ""
+                      );
+                      setCompanyAddress(
+                        "state",
+                        selectedCompany.companyAddress?.state || ""
+                      );
+                      setCompanyAddress(
+                        "zipcode",
+                        selectedCompany.companyAddress?.zipcode || ""
+                      );
+                    }
+                  }}
+                >
+                  {Array.isArray(companies) &&
+                    companies.map((company) => (
+                      <option
+                        key={company.companyId}
+                        value={company.companyName}
+                      >
+                        {company.companyName}
+                      </option>
+                    ))}
+                </select>
+
                 <div className="flex gap-2">
                   <input
                     value={firstName || ""}
@@ -142,7 +195,7 @@ const Signup = () => {
                   placeholder="Company Id"
                   className="w-full p-2 border border-gray-300 bg-white text-black"
                 />
-                <input
+                {/* <input
                   value={companyName || ""}
                   onChange={(e) => setCompanyName(e.target.value)}
                   onKeyDown={(e) => {
@@ -154,7 +207,7 @@ const Signup = () => {
                   type="text"
                   placeholder="Company name"
                   className="w-full p-2 border border-gray-300 bg-white text-black"
-                />
+                /> */}
                 <div className="flex gap-2">
                   <input
                     value={companyAddress.street || ""}

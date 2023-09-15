@@ -25,6 +25,7 @@ const useAuthStore = create((set, get) => ({
   showLoginForm: false,
   showSignupForm: false,
   loading: false,
+  companies: [],
 
   setEmail: (email) => set({ email }),
   setPassword: (password) => set({ password }),
@@ -37,6 +38,7 @@ const useAuthStore = create((set, get) => ({
     set((prevState) => ({
       companyAddress: { ...prevState.companyAddress, [field]: value },
     })),
+  setCompanies: (companies) => set({ companies }),
   setErrorMessage: (errorMessage) => set({ errorMessage }),
   setIsLoading: (isLoading) => set({ isLoading }),
   setShowLoginForm: (isShown) => set({ showLoginForm: isShown }),
@@ -192,12 +194,20 @@ const useAuthStore = create((set, get) => ({
       set({ errorMessage: "A password is required." });
       return;
     }
-    const encodedClientUser = encodeURIComponent(email);
-    const encodedClientPassword = encodeURIComponent(password);
 
     try {
       const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/signin?emailId=${encodedClientUser}&password=${encodedClientPassword}`
+        "https://etech7-wf-etech7-db-service.azuremicroservices.io/signin",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            emailId: email,
+            password: password,
+          }),
+        }
       );
       if (response.ok) {
         set({ loading: true, showLoginForm: false, errorMessage: "" });
@@ -234,15 +244,29 @@ const useAuthStore = create((set, get) => ({
         set({ errorMessage: "Account exists." });
       } else {
         const parsedUser = JSON.parse(text);
-        const user = Array.isArray(parsedUser) ? parsedUser[0] : parsedUser;
-        set({
-          showSignupForm: true,
-          firstName: user.firstName || "",
-          lastName: user.lastName || "",
-          companyName: user.companyName || user.company?.name || "",
-          companyId: user.companyId || user.company?.id || "",
-          phoneNumber: user.phoneNumber || user.defaultPhoneNbr || "",
-        });
+        if (Array.isArray(parsedUser)) {
+          const defaultCompany = parsedUser[0];
+          set({
+            showSignupForm: true,
+            companies: parsedUser,
+            firstName: defaultCompany.firstName || "",
+            lastName: defaultCompany.lastName || "",
+            companyName:
+              defaultCompany.companyName || defaultCompany.company?.name || "",
+            companyId:
+              defaultCompany.companyId || defaultCompany.company?.id || "",
+            phoneNumber:
+              defaultCompany.phoneNumber ||
+              defaultCompany.defaultPhoneNbr ||
+              "",
+            companyAddress: {
+              street: defaultCompany.companyAddress?.street || "",
+              city: defaultCompany.companyAddress?.city || "",
+              state: defaultCompany.companyAddress?.state || "",
+              zipcode: defaultCompany.companyAddress?.zipcode || "",
+            },
+          });
+        }
       }
     } catch (e) {
       console.log(e);
@@ -310,7 +334,7 @@ const useAuthStore = create((set, get) => ({
 
   handleShowLogin: (navigator) => {
     navigator("/auth/login");
-    set({ errorMessage: "", showSignupForm: false });
+    set({ errorMessage: "", showSignupForm: false, companies: [] });
   },
 
   clearCredentials: () => {

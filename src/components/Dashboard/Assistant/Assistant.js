@@ -43,6 +43,7 @@ const Assistant = ({}) => {
           quality={100}
           alt="Etech7_Logo"
           className="pb-4"
+          priority
         />
         {activeAssistantButton === "Tickets" && <Tickets />}
         {activeAssistantButton === "Documents" && <Documents />}

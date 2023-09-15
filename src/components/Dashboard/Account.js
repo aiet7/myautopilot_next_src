@@ -7,7 +7,7 @@ import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
 
 import useUserStore from "@/utils/store/user/userStore";
 
-const Account = ({ initialUser }) => {
+const Account = ({}) => {
   const router = useRouter();
   const {
     userInputs,
@@ -19,10 +19,10 @@ const Account = ({ initialUser }) => {
     passwordError,
     setDeleting,
     setConfirmationEmail,
-    setPasswordError,
-    setUserPasswords,
     handleStartEdit,
     handleEditOnChange,
+    handlePasswordChange,
+    handleResetPassword,
     handleSaveChanges,
     handleCancelEdit,
     handleDeleteUser,
@@ -360,10 +360,9 @@ const Account = ({ initialUser }) => {
                       className="px-1 w-40 border bg-white text-black "
                       type="password"
                       value={userPasswords.oldPassword}
-                      onChange={(e) => {
-                        handlePasswordChange("oldPassword", e.target.value);
-                        setPasswordError(false);
-                      }}
+                      onChange={(e) =>
+                        handlePasswordChange("oldPassword", e.target.value)
+                      }
                       placeholder="Old password"
                     />
                     <input
@@ -377,18 +376,8 @@ const Account = ({ initialUser }) => {
                     />
                   </div>
                   <AiOutlineCheck
+                    onClick={handleResetPassword}
                     className="cursor-pointer"
-                    onClick={() => {
-                      if (initialUser.password === userPasswords.oldPassword) {
-                        handleSaveChanges(
-                          "password",
-                          userPasswords.newPassword
-                        );
-                        setUserPasswords({ oldPassword: "", newPassword: "" });
-                      } else {
-                        setPasswordError(true);
-                      }
-                    }}
                   />
                   <AiOutlineClose
                     className="cursor-pointer"

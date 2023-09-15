@@ -110,6 +110,39 @@ const useUserStore = create((set, get) => ({
     }));
   },
 
+  handleResetPassword: async () => {
+    const { editing, userInputs, userPasswords } = get();
+
+    try {
+      const response = await fetch(
+        "https://etech7-wf-etech7-db-service.azuremicroservices.io/resetPassword",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            emailId: userInputs.email,
+            password: userPasswords.oldPassword,
+            newPassword: userPasswords.newPassword,
+          }),
+        }
+      );
+      if (!response.ok) {
+        set({ passwordError: true });
+      } else {
+        console.log("Password Changed!");
+        set({
+          passwordError: false,
+          userPasswords: { oldPassword: "", newPassword: "" },
+          editing: { ...editing, password: false },
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
   handleEditOnChange: (field, value) => {
     const { addressFields } = get();
 
@@ -135,31 +168,40 @@ const useUserStore = create((set, get) => ({
 
   handleSaveChanges: async (field, input) => {
     const { userInputs, addressFields } = get();
+
     const validationError = validateField(field, input);
     if (validationError) {
       set({ errorMessage: validationError });
       return;
     }
 
-    let updatedUser;
+    let updatedData = {
+      email: userInputs.email,
+    };
 
     if (addressFields.includes(field)) {
-      const updatedInputs = {
-        ...userInputs,
-        address: {
-          ...userInputs.address,
-          [field]: input,
-        },
-      };
-      set({ userInputs: updatedInputs });
-      updatedUser = updatedInputs;
-    } else {
-      const updatedInputs = {
-        ...userInputs,
+      updatedData.address = {
+        ...userInputs.address,
         [field]: input,
       };
-      set({ userInputs: updatedInputs });
-      updatedUser = updatedInputs;
+    } else {
+      updatedData[field] = input;
+    }
+
+    if (addressFields.includes(field)) {
+      set((state) => ({
+        userInputs: {
+          ...state.userInputs,
+          address: updatedData.address,
+        },
+      }));
+    } else {
+      set((state) => ({
+        userInputs: {
+          ...state.userInputs,
+          [field]: input,
+        },
+      }));
     }
 
     set((state) => ({
@@ -177,7 +219,7 @@ const useUserStore = create((set, get) => ({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(updatedUser),
+          body: JSON.stringify(updatedData),
         }
       );
 
