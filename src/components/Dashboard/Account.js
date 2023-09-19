@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { AiFillEdit } from "react-icons/ai";
 import { IoMdFingerPrint } from "react-icons/io";
 import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
@@ -8,24 +7,18 @@ import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
 import useUserStore from "@/utils/store/user/userStore";
 
 const Account = ({}) => {
-  const router = useRouter();
   const {
     userInputs,
     editing,
-    deleting,
     errorMessage,
-    confirmationEmail,
     userPasswords,
     passwordError,
-    setDeleting,
-    setConfirmationEmail,
     handleStartEdit,
     handleEditOnChange,
     handlePasswordChange,
     handleResetPassword,
     handleSaveChanges,
     handleCancelEdit,
-    handleDeleteUser,
   } = useUserStore();
 
   return (
@@ -396,44 +389,6 @@ const Account = ({}) => {
             </div>
           </div>
         )}
-        <div className="flex flex-col w-full border border-red-500 rounded-md p-5 gap-6">
-          <div className="flex items-center justify-between h-[100px]">
-            <p className="w-18">Delete This Account</p>
-            {deleting ? (
-              <div className="flex flex-col gap-2">
-                <p className="text-sm">
-                  Confirm `<strong>{userInputs.email}</strong>` to delete
-                </p>
-                <input
-                  className="px-1 border bg-white text-black"
-                  value={confirmationEmail}
-                  onChange={(e) => setConfirmationEmail(e.target.value)}
-                ></input>
-                <div className="flex gap-2 items-center">
-                  <button
-                    onClick={() => handleDeleteUser(router.push)}
-                    className="dark:border-white/20 hover:bg-red-500 hover:text-white border rounded-md px-1"
-                  >
-                    Delete
-                  </button>
-                  <button
-                    onClick={() => setDeleting(false)}
-                    className="dark:border-white/20  border rounded-md px-1"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <button
-                onClick={() => setDeleting(true)}
-                className="dark:border-white/20 hover:bg-red-500 hover:text-white border px-4 py-2 rounded-md text-red-500"
-              >
-                Delete This Account
-              </button>
-            )}
-          </div>
-        </div>
       </div>
     </div>
   );

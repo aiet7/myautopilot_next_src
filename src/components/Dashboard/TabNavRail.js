@@ -2,15 +2,17 @@
 
 import { useRouter } from "next/navigation";
 
-import { AiOutlinePoweroff, AiOutlineMenu } from "react-icons/ai";
-import { FiSettings } from "react-icons/fi";
+import {
+  AiOutlineHome,
+  AiOutlinePoweroff,
+  AiOutlineMenu,
+} from "react-icons/ai";
 import {
   MdOutlineAccountCircle,
   MdOutlineDarkMode,
   MdOutlineLightMode,
 } from "react-icons/md";
 
-import { TbWorldWww } from "react-icons/tb";
 
 import { useTheme } from "next-themes";
 
@@ -21,7 +23,7 @@ import { Tooltip as ReactTooltip } from "react-tooltip";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 
 const TabNavRail = ({}) => {
-  const { handleLogout } = useUserStore();
+  const { user, handleLogout } = useUserStore();
 
   const { activeUIAssistantTab } = useAssistantStore();
 
@@ -40,8 +42,9 @@ const TabNavRail = ({}) => {
   const handleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
+
   return (
-    <div className="dark:lg:border-white/10 dark:bg-[#373737] bg-[#eaf1fb] flex items-center justify-evenly py-3 px-2 gap-4 lg:relative lg:flex-col lg:justify-start lg:border-r">
+    <div className="dark:lg:border-white/10 dark:bg-[#373737] bg-[#eaf1fb] flex items-center justify-evenly p-3 gap-4 lg:relative lg:flex-col lg:justify-start lg:border-r">
       {activeUIAssistantTab === "Engineer" && (
         <>
           <AiOutlineMenu
@@ -63,42 +66,32 @@ const TabNavRail = ({}) => {
         onClick={() => handleTabChange("iTAgent")}
         className="relative flex flex-col gap-2 items-center cursor-pointer"
       >
-        <TbWorldWww
-          size={20}
+        <AiOutlineHome
+          size={22}
           className={`${activeTab === "iTAgent" && "text-blue-600"}`}
         />
-        <span className="text-xs text-center">IT Agent</span>
       </div>
 
       <div
         onClick={() => handleToggleSettings(true)}
-        className="flex flex-col items-center cursor-pointer lg:absolute lg:bottom-0 lg:py-3"
+        className="flex flex-col items-center cursor-pointer  lg:absolute lg:bottom-0 lg:py-3"
       >
-        <FiSettings
-          size={20}
-          className={`${activeTab === "settings" && "text-blue-600"}`}
-        />
-        <span className="text-xs">Settings</span>
+        <div className="w-7 h-7 bg-blue-800 rounded-full flex justify-center items-center text-white">
+          {user?.firstName[0]}
+        </div>
         {openSettings && (
-          <div className="dark:bg-black dark:border-white/40 dark:border bg-white border border-black/10 absolute z-[99] bottom-[68px] right-0 w-[150px] lg:bottom-0 lg:left-[51px] lg:w-[351px]">
+          <div className="dark:bg-black dark:border-white/40 dark:border rounded-lg bg-white border border-black/10 absolute z-[99] bottom-[52px] right-0 w-[350px] lg:bottom-0 lg:left-[37px] lg:w-[351px]">
             <div className="flex flex-col">
               <div
-                onClick={() => handleLogout(router.push)}
-                className="dark:border-white/40 dark:hover:bg-white/20 hover:bg-black/10 border-b border-black/10 w-full text-lg flex items-center gap-3 px-6 py-3"
-              >
-                <AiOutlinePoweroff />
-                <span>Log out</span>
-              </div>
-              <div
                 onClick={() => handleTabChange("settings")}
-                className="dark:border-white/40 dark:hover:bg-white/20 hover:bg-black/10 border-b border-black/10 w-full text-lg flex items-center gap-3 px-6 py-3"
+                className="dark:hover:bg-white/20 hover:bg-black/10 rounded-tl-lg rounded-tr-lg w-full text-lg flex items-center gap-3 px-6 py-3"
               >
                 <MdOutlineAccountCircle />
                 <span>Account</span>
               </div>
               <div
                 onClick={handleTheme}
-                className="dark:hover:bg-white/20 hover:bg-black/10 w-full text-lg flex items-center gap-3 px-6 py-3"
+                className="dark:hover:bg-white/20 hover:bg-black/10  w-full text-lg flex items-center gap-3 px-6 py-3"
               >
                 {theme === "light" ? (
                   <MdOutlineDarkMode />
@@ -106,6 +99,17 @@ const TabNavRail = ({}) => {
                   <MdOutlineLightMode />
                 )}
                 <span>{theme === "light" ? "Dark" : "Light"}</span>
+              </div>
+              <div
+                onClick={() => handleLogout(router.push)}
+                className="dark:hover:bg-white/20 hover:bg-black/10  w-full text-lg flex items-center gap-3 px-6 py-3"
+              >
+                <AiOutlinePoweroff />
+                <span>Log out</span>
+              </div>
+              <div className="dark:border-white/40 font-bold border-t border-black/10 w-full text-lg flex flex-col items-start gap-3 px-6 py-3">
+                <span>{user?.firstName + " " + user?.lastName}</span>
+                <span>{user?.companyName}</span>
               </div>
             </div>
           </div>

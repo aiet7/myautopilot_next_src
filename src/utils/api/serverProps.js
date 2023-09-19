@@ -86,3 +86,18 @@ export const handleGetTickets = async (clientId) => {
 
   return await response.json();
 };
+
+
+export const handleGetReports = async () => {
+  const response = await fetch(
+    "https://etech7-wf-etech7-support-service.azuremicroservices.io/getReports"
+  );
+  return await response.json();
+};
+
+export const handleGetProjects = async () => {
+  const response = await fetch(
+    "https://etech7-wf-etech7-support-service.azuremicroservices.io/getProjects"
+  );
+  return await response.json();
+};

@@ -2,7 +2,9 @@ import { create } from "zustand";
 
 const useTicketsStore = create((set, get) => ({
   tickets: [],
-  activeTicketButton: "In Progress",
+  ticketStatus: {},
+  ticketStatusLoading: {},
+  activeTicketButton: "Opened",
   showTicketIndex: null,
 
   initializeTickets: (initialTickets) => {
@@ -34,6 +36,34 @@ const useTicketsStore = create((set, get) => ({
         const test = await ticketResponse.json();
         console.log(test);
         handleUpdateTicketClosed(ticketId);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleGetTicketStatus: async (ticketId) => {
+    try {
+      set((state) => ({
+        ...state,
+        ticketStatusLoading: { ...state.ticketStatusLoading, [ticketId]: true },
+      }));
+      const ticketStatusResponse = await fetch(
+        `https://etech7-wf-etech7-support-service.azuremicroservices.io/getTicketsById?ticketId=${ticketId}`
+      );
+      if (ticketStatusResponse.status === 200) {
+        const ticketStatus = await ticketStatusResponse.text();
+        set((state) => ({
+          ...state,
+          ticketStatus: {
+            ...state.ticketStatus,
+            [ticketId]: ticketStatus,
+          },
+          ticketStatusLoading: {
+            ...state.ticketStatusLoading,
+            [ticketId]: false,
+          },
+        }));
       }
     } catch (e) {
       console.log(e);

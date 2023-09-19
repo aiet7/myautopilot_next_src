@@ -38,11 +38,9 @@ const DashboardPage = ({
   const { initializeAgents } = useAgentsStore();
   const { initializeConversations, currentConversationIndices } =
     useConversationStore();
-
   const { activeAssistantButton, activeUIAssistantTab } = useAssistantStore();
 
   const { saveStorage, getStorage } = useLocalStorageStore();
-
   const { height, activeTab, openSettings, setHeight, handleToggleSettings } =
     useUiStore();
 
@@ -55,7 +53,13 @@ const DashboardPage = ({
     initializeTickets(initialTickets);
     initializeAgents(initialAgents);
     initializeConversations(initialConversations, initialMessages);
-  }, [initialUser, initialAgents, initialConversations, initialMessages]);
+  }, [
+    initialUser,
+    initialAgents,
+    initialConversations,
+    initialMessages,
+    initialTickets,
+  ]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {

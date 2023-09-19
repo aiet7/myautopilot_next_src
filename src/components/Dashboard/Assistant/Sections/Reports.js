@@ -1,5 +1,8 @@
 "use client";
 
+import useReportsStore from "@/utils/store/assistant/sections/reports/reportsStore";
+import { useEffect } from "react";
+
 const Reports = () => {
   return (
     <div className="flex-grow flex flex-col gap-4 overflow-hidden">

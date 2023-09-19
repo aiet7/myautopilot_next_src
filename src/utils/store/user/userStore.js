@@ -180,36 +180,13 @@ const useUserStore = create((set, get) => ({
     };
 
     if (addressFields.includes(field)) {
-      updatedData.address = {
-        ...userInputs.address,
+      updatedData.companyAddress = {
+        ...userInputs.companyAddress,
         [field]: input,
       };
     } else {
       updatedData[field] = input;
     }
-
-    if (addressFields.includes(field)) {
-      set((state) => ({
-        userInputs: {
-          ...state.userInputs,
-          address: updatedData.address,
-        },
-      }));
-    } else {
-      set((state) => ({
-        userInputs: {
-          ...state.userInputs,
-          [field]: input,
-        },
-      }));
-    }
-
-    set((state) => ({
-      editing: {
-        ...state.editing,
-        [field]: false,
-      },
-    }));
 
     try {
       const response = await fetch(
@@ -224,7 +201,24 @@ const useUserStore = create((set, get) => ({
       );
 
       if (!response.ok) {
-        console.log("Error saving.");
+        console.log("Error Saving");
+      } else {
+        set((state) => ({
+          user: {
+            ...state.user,
+            ...updatedData,
+          },
+          editing: {
+            ...state.editing,
+            [field]: false,
+          },
+          userInputs: {
+            ...state.userInputs,
+            ...(addressFields.includes(field)
+              ? { companyAddress: updatedData.companyAddress }
+              : { [field]: updatedData[field] }),
+          },
+        }));
       }
     } catch (e) {
       console.log(e);

@@ -2,6 +2,7 @@
 
 import useTicketsStore from "@/utils/store/assistant/sections/tickets/ticketsStore";
 import useUserStore from "@/utils/store/user/userStore";
+import { FaSpinner } from "react-icons/fa";
 
 import { MdOutlineArrowDropUp, MdOutlineArrowDropDown } from "react-icons/md";
 
@@ -9,10 +10,13 @@ const Tickets = () => {
   const { user } = useUserStore();
   const {
     tickets,
+    ticketStatus,
+    ticketStatusLoading,
     activeTicketButton,
     showTicketIndex,
     setActiveTicketButton,
     setShowTicketIndex,
+    handleGetTicketStatus,
   } = useTicketsStore();
 
   return (
@@ -20,17 +24,17 @@ const Tickets = () => {
       <h3 className="text-left text-lg">Tickets</h3>
       <div className="dark:border-white/20 flex  items-center border rounded">
         <button
-          onClick={() => setActiveTicketButton("In Progress")}
+          onClick={() => setActiveTicketButton("Opened")}
           className={`${
-            activeTicketButton === "In Progress" && "bg-blue-800 text-white"
+            activeTicketButton === "Opened" && "bg-blue-800 text-white"
           } w-full rounded p-2`}
         >
           Opened
         </button>
         <button
-          onClick={() => setActiveTicketButton("Complete")}
+          onClick={() => setActiveTicketButton("Closed")}
           className={`${
-            activeTicketButton === "Complete" && "bg-blue-800 text-white"
+            activeTicketButton === "Closed" && "bg-blue-800 text-white"
           } w-full rounded p-2`}
         >
           Closed
@@ -41,8 +45,8 @@ const Tickets = () => {
           {tickets
             .filter(
               (ticket) =>
-                (activeTicketButton === "In Progress" && !ticket.closed) ||
-                (activeTicketButton === "Complete" && ticket.closed)
+                (activeTicketButton === "Opened" && !ticket.closed) ||
+                (activeTicketButton === "Closed" && ticket.closed)
             )
             .map((ticket, index) => {
               const {
@@ -59,6 +63,23 @@ const Tickets = () => {
                   key={index}
                   className="dark:bg-white/30 dark:text-white dark:border-white/20 text-sm flex flex-col justify-between gap-3 border rounded-md text-black bg-white p-2"
                 >
+                  <div
+                    onClick={() => handleGetTicketStatus(ticketId)}
+                    className="cursor-pointer flex justify-center items-center gap-2 bg-blue-800 text-white py-2"
+                  >
+                    <span >
+                      {ticketStatus[ticketId]
+                        ? "Refresh Status"
+                        : "See Ticket Status"}
+                    </span>
+                    {ticketStatusLoading[ticketId] && <FaSpinner size={20} className="animate-spin text-white"/>}
+                  </div>
+                  {ticketStatus[ticketId] && (
+                    <p className="break-words whitespace-pre-wrap">
+                      <span className="font-bold">STATUS:</span>{" "}
+                      {ticketStatus[ticketId]}
+                    </p>
+                  )}
                   <p className="break-words whitespace-pre-wrap">
                     <span className="font-bold">Ticket ID:</span> #{ticketId}
                   </p>
