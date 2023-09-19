@@ -33,7 +33,6 @@ const useDocumentStore = create((set, get) => ({
       guide:
         "The Internet Policy sets forth rules for appropriate use of the company's internet facilities and services. This encompasses the browsing of websites, downloads, and social media access. The policy's main goal is to ensure that employees use the internet in a way that does not compromise the company's IT infrastructure, reputation, or expose it to unnecessary risks.",
     },
-    
   ],
   inputValues: {},
   currentDocIndex: 0,
@@ -48,10 +47,10 @@ const useDocumentStore = create((set, get) => ({
     }));
   },
 
-
-
-
   handleDocSelected: (index) => {
+    const { currentDocIndex } = get();
+    if (currentDocIndex === index) return;
+
     set({ currentDocIndex: index, inputValues: {} });
   },
 

@@ -50,7 +50,7 @@ const Login = () => {
           className="bg-gradient-to-b from-white via-white to-gray-400 h-full flex justify-center items-center"
           style={{ height: `calc(${height}px - 1px)` }}
         >
-          <form className="w-[300px]  flex flex-col items-center gap-4">
+          <form className="w-[300px] flex flex-col items-center gap-4">
             <Image
               priority
               src="/etech7_logo_auth.webp"

@@ -29,7 +29,7 @@ const Tickets = () => {
             activeTicketButton === "Opened" && "bg-blue-800 text-white"
           } w-full rounded p-2`}
         >
-          Opened
+          Open
         </button>
         <button
           onClick={() => setActiveTicketButton("Closed")}
@@ -37,7 +37,7 @@ const Tickets = () => {
             activeTicketButton === "Closed" && "bg-blue-800 text-white"
           } w-full rounded p-2`}
         >
-          Closed
+          Close
         </button>
       </div>
       <div className="flex-grow overflow-y-auto scrollbar-thin">

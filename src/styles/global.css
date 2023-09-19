@@ -243,19 +243,34 @@ body {
   }
 }
 
-@keyframes wave {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+
+.loading-dots span {
+  opacity: 0;
+  animation: fadeInOut 3s infinite;
 }
 
-.wave-animation {
-  display: inline-block;
-  animation: wave 1.5s ease-in-out infinite;
+.loading-dots span:nth-child(1) {
+  animation-delay: 1s;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: 2s;
+}
+
+.loading-dots span:nth-child(3) {
+  animation-delay: 3s;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 :root {

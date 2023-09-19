@@ -50,6 +50,16 @@ const Interaction = ({}) => {
     }
   }, [userInput, activeUIAssistantTab]);
 
+  useEffect(() => {
+    handleScrollToBottom(true);
+  }, [conversationHistories, currentConversationIndices, selectedAgent]);
+
+  useEffect(() => {
+    if (activeUIAssistantTab === "Engineer") {
+      handleScrollToBottom(false);
+    }
+  }, [activeUIAssistantTab]);
+
   const messagesToRender =
     activeUIAssistantTab === "Engineer"
       ? conversationHistories?.[selectedAgent]?.[
@@ -82,7 +92,7 @@ const Interaction = ({}) => {
           <HiOutlineArrowSmallDown className="m-1" size={18} />
         </button>
       )}
-      
+
       <div
         className="flex-grow overflow-auto scrollbar-thin"
         ref={chatContainerRef}

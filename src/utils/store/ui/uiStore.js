@@ -8,7 +8,7 @@ const useUiStore = create((set, get) => ({
   height: null,
   activeTab: null,
   hoverTab: null,
-  openHistory: false,
+  openHistory: initialWidth > 1024 ? true : false,
   openAssistant: initialWidth > 1024 ? true : false,
   openRooms: false,
   openDocs: false,

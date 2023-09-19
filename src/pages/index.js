@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import useUiStore from "@/utils/store/ui/uiStore.js";
 
 const WelcomePage = () => {
-  const [height, setHeight] = useState(null);
+  const { height, setHeight } = useUiStore();
+
   const router = useRouter();
 
   const handleShowLogin = () => {
