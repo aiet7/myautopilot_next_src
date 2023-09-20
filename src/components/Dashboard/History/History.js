@@ -41,7 +41,7 @@ const History = ({}) => {
       className={`absolute z-10 top-0 bottom-0 left-0  
       ${
         openHistory ? "translate-x-0 w-[350px]" : "-translate-x-full w-[350px] "
-      }  dark:bg-[#111111] bg-[#f6f8fc] p-4 flex flex-col transition-transform duration-300 ease-in-out transform `}
+      }  dark:bg-[#111111] bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease`}
     >
       <button
         onClick={() =>
@@ -51,7 +51,7 @@ const History = ({}) => {
               : 0
           )
         }
-        className="w-full p-4 bg-blue-800 text-white"
+        className="hover:bg-blue-500 w-full p-4 bg-blue-800 text-white"
       >
         + New Chat
       </button>

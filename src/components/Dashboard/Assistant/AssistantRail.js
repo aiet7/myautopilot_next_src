@@ -4,7 +4,7 @@ import { SiOpenai } from "react-icons/si";
 import { HiDocumentReport } from "react-icons/hi";
 import { BsFiletypeDoc } from "react-icons/bs";
 import { FaMoneyBillAlt } from "react-icons/fa";
-import { AiFillProject } from "react-icons/ai";
+import { AiFillProject, AiFillTool } from "react-icons/ai";
 import {
   MdScreenShare,
   MdPassword,
@@ -28,14 +28,14 @@ const AssistantRail = ({}) => {
     <div
       className={` ${
         openAssistant && window.innerWidth > 1024 ? "translate-x-[-350px]" : ""
-      } dark:lg:border-white/10 dark:bg-[#373737]  bg-[#eaf1fb] px-3 py-7 flex flex-col gap-7 items-center transition-all duration-300 ease-in-out transform`}
+      } dark:lg:border-white/10 dark:bg-[#373737]  bg-[#eaf1fb] px-1 py-7 flex flex-col gap-4 items-center transition-all duration-300 ease`}
     >
       <IoTicketSharp
         data-tooltip-id="Tickets"
         className={`${
           activeAssistantButton === "Tickets" && "text-blue-800"
-        } cursor-pointer outline-none`}
-        size={20}
+        } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
+        size={35}
         onClick={() => {
           handleAssistantTabChange("Tickets");
           handleUIAssistantTabChange("Tickets");
@@ -51,8 +51,8 @@ const AssistantRail = ({}) => {
         data-tooltip-id="Documents"
         className={`${
           activeAssistantButton === "Documents" && "text-blue-800"
-        } cursor-pointer outline-none`}
-        size={20}
+        } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
+        size={35}
         onClick={() => {
           handleAssistantTabChange("Documents");
           handleUIAssistantTabChange("Documents");
@@ -68,8 +68,8 @@ const AssistantRail = ({}) => {
         data-tooltip-id="Engineer"
         className={`${
           activeAssistantButton === "Engineer" && "text-blue-800"
-        } cursor-pointer outline-none`}
-        size={20}
+        } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
+        size={35}
         onClick={() => {
           handleAssistantTabChange("Engineer");
           handleUIAssistantTabChange("Engineer");
@@ -86,8 +86,8 @@ const AssistantRail = ({}) => {
         data-tooltip-id="Remote Access"
         className={`${
           activeAssistantButton === "Remote Access" && "text-blue-800"
-        } cursor-pointer outline-none`}
-        size={20}
+        } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
+        size={35}
         onClick={() => handleAssistantTabChange("Remote Access")}
       />
       <ReactTooltip
@@ -100,8 +100,8 @@ const AssistantRail = ({}) => {
         data-tooltip-id="Passwords"
         className={`${
           activeAssistantButton === "Passwords" && "text-blue-800"
-        } cursor-pointer outline-none`}
-        size={20}
+        } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
+        size={35}
         onClick={() => handleAssistantTabChange("Passwords")}
       />
       <ReactTooltip
@@ -114,8 +114,8 @@ const AssistantRail = ({}) => {
         data-tooltip-id="Billing"
         className={`${
           activeAssistantButton === "Billing" && "text-blue-800"
-        } cursor-pointer outline-none`}
-        size={20}
+        } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
+        size={35}
         onClick={() => handleAssistantTabChange("Billing")}
       />
       <ReactTooltip
@@ -128,8 +128,8 @@ const AssistantRail = ({}) => {
         data-tooltip-id="Quotes"
         className={`${
           activeAssistantButton === "Quotes" && "text-blue-800"
-        } cursor-pointer outline-none`}
-        size={20}
+        } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
+        size={35}
         onClick={() => handleAssistantTabChange("Quotes")}
       />
       <ReactTooltip
@@ -142,8 +142,8 @@ const AssistantRail = ({}) => {
         data-tooltip-id="Reports"
         className={`${
           activeAssistantButton === "Reports" && "text-blue-800"
-        } cursor-pointer outline-none`}
-        size={20}
+        } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
+        size={35}
         onClick={() => handleAssistantTabChange("Reports")}
       />
       <ReactTooltip
@@ -156,14 +156,28 @@ const AssistantRail = ({}) => {
         data-tooltip-id="Projects"
         className={`${
           activeAssistantButton === "Projects" && "text-blue-800"
-        } cursor-pointer outline-none`}
-        size={20}
+        } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
+        size={35}
         onClick={() => handleAssistantTabChange("Projects")}
       />
       <ReactTooltip
         place="left"
         content="Projects"
         id="Projects"
+        className="z-[99]"
+      />
+      <AiFillTool
+        data-tooltip-id="Tools"
+        className={`${
+          activeAssistantButton === "Tools" && "text-blue-800"
+        } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
+        size={35}
+        onClick={() => handleAssistantTabChange("Tools")}
+      />
+      <ReactTooltip
+        place="left"
+        content="Tools"
+        id="Tools"
         className="z-[99]"
       />
     </div>

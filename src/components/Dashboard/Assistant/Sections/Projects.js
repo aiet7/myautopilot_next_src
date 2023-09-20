@@ -6,23 +6,23 @@ import { useEffect } from "react";
 import { MdOutlineArrowDropUp, MdOutlineArrowDropDown } from "react-icons/md";
 
 const Projects = () => {
-  const {
-    projects,
-    showProjectIndex,
-    setShowProjectIndex,
-    initializeProjects,
-  } = useProjectsStore();
+  // const {
+  //   projects,
+  //   showProjectIndex,
+  //   setShowProjectIndex,
+  //   initializeProjects,
+  // } = useProjectsStore();
 
-  useEffect(() => {
-    initializeProjects();
-  }, []);
+  // useEffect(() => {
+  //   initializeProjects();
+  // }, []);
 
 
   return (
     <div className="flex-grow flex flex-col gap-4 overflow-hidden">
       <h3 className="text-left text-lg">Projects</h3>
       <div className="flex-grow overflow-y-auto scrollbar-thin">
-        <div className="flex flex-grow flex-col gap-4">
+        {/* <div className="flex flex-grow flex-col gap-4">
           {projects.map((project, index) => {
             const {
               agreement,
@@ -93,7 +93,7 @@ const Projects = () => {
               </div>
             );
           })}
-        </div>
+        </div> */}
       </div>
     </div>
   );

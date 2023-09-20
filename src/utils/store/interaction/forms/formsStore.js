@@ -667,7 +667,6 @@ const useFormsStore = create((set, get) => ({
 
   handleTicketConfirmation: async (isConfirmed, formId) => {
     const { ticket } = get();
-
     const userStore = useUserStore.getState();
     const { addTicket } = useTicketsStore.getState();
     const {

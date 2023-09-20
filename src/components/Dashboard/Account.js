@@ -22,7 +22,7 @@ const Account = ({}) => {
   } = useUserStore();
 
   return (
-    <div className="relative overflow-y-auto px-4 py-2 w-full flex items-center justify-center">
+    <div className="dark:bg-black bg-white relative overflow-y-auto px-4 py-2 w-full flex items-center justify-center transition-all duration-300 ease">
       <div className="flex flex-col h-full items-center gap-2 max-w-[800px]">
         <div className="flex flex-col items-center pt-2 text-center">
           <h1 className="text-xl">Personal Info</h1>

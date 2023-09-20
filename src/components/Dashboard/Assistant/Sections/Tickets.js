@@ -37,7 +37,7 @@ const Tickets = () => {
             activeTicketButton === "Closed" && "bg-blue-800 text-white"
           } w-full rounded p-2`}
         >
-          Close
+          Closed
         </button>
       </div>
       <div className="flex-grow overflow-y-auto scrollbar-thin">
@@ -65,7 +65,7 @@ const Tickets = () => {
                 >
                   <div
                     onClick={() => handleGetTicketStatus(ticketId)}
-                    className="cursor-pointer flex justify-center items-center gap-2 bg-blue-800 text-white py-2"
+                    className="hover:bg-blue-500 cursor-pointer flex justify-center items-center gap-2 bg-blue-800 text-white py-2"
                   >
                     <span >
                       {ticketStatus[ticketId]

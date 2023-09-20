@@ -71,7 +71,7 @@ const DocumentForm = () => {
               onClick={() =>
                 handleSubmitDoc(tempDocs[currentDocIndex]?.title, inputValues)
               }
-              className="w-[100px] bg-blue-800 text-white px-4 py-2"
+              className="hover:bg-blue-500 w-[100px] bg-blue-800 text-white px-4 py-2"
             >
               Submit
             </button>
@@ -82,7 +82,7 @@ const DocumentForm = () => {
                 download={`${tempDocs[currentDocIndex]?.title}_Etech7.docx`}
                 className="flex items-center "
               >
-                <span className="bg-blue-800 text-white px-4 py-2">
+                <span className="hover:bg-blue-500 bg-blue-800 text-white px-4 py-2">
                   Download
                 </span>
                 <AiOutlineArrowDown

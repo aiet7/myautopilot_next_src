@@ -40,7 +40,7 @@ const useAuthStore = create((set, get) => ({
     })),
   setCompanies: (companies) => set({ companies }),
   setErrorMessage: (errorMessage) => set({ errorMessage }),
-  setIsLoading: (isLoading) => set({ isLoading }),
+  setIsLoading: (loading) => set({ loading: loading }),
   setShowLoginForm: (isShown) => set({ showLoginForm: isShown }),
   setShowSignupForm: (isShown) => set({ showSignupForm: isShown }),
 
@@ -210,7 +210,7 @@ const useAuthStore = create((set, get) => ({
         }
       );
       if (response.ok) {
-        set({ loading: true, showLoginForm: false, errorMessage: "" });
+        set({ showLoginForm: false, errorMessage: "" });
         const user = await response.json();
         navigator(`/dashboard/${user.id}`);
         Cookie.set("session_token", user.id, { expires: 7 });
@@ -220,8 +220,6 @@ const useAuthStore = create((set, get) => ({
       }
     } catch (e) {
       console.log(e);
-    } finally {
-      set({ loading: false });
     }
   },
 
@@ -323,7 +321,7 @@ const useAuthStore = create((set, get) => ({
     } catch (e) {
       console.log(e);
     } finally {
-      set({ loading: false, showSignupForm: false });
+      set({ showSignupForm: false });
     }
   },
 

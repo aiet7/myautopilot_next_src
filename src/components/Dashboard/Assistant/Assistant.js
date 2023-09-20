@@ -16,6 +16,7 @@ import Projects from "./Sections/Projects.js";
 import Progress from "./Progress.js";
 import Engineer from "./Sections/Engineer.js";
 import RemoteAccess from "./Sections/RemoteAccess.js";
+import Tools from "./Sections/Tools.js";
 
 const Assistant = ({}) => {
   const { openAssistant, handleAssistantMenu } = useUiStore();
@@ -25,7 +26,7 @@ const Assistant = ({}) => {
     <div
       className={`absolute z-10 top-0 bottom-0 right-0 ${
         openAssistant ? "translate-x-0 w-[350px]" : "translate-x-full w-[350px]"
-      }  dark:bg-[#111111] bg-[#f6f8fc] flex transition-all duration-300 ease-in-out transform `}
+      }  dark:bg-[#111111] bg-[#f6f8fc] flex transition-all duration-300 ease`}
     >
       {window.innerWidth < 1024 && <AssistantRail />}
       <div className="flex flex-col px-4 py-6 w-full overflow-hidden">
@@ -54,6 +55,7 @@ const Assistant = ({}) => {
         {activeAssistantButton === "Quotes" && <Quotes />}
         {activeAssistantButton === "Reports" && <Reports />}
         {activeAssistantButton === "Projects" && <Projects />}
+        {activeAssistantButton === "Tools" && <Tools />}
 
         <Progress />
       </div>

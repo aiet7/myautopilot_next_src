@@ -4,8 +4,6 @@ import Image from "next/image";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-import Loading from "../../../components/Loading.js";
-
 import { UsaStates } from "usa-states";
 import useAuthStore from "@/utils/store/auth/authStore.js";
 import useUiStore from "@/utils/store/ui/uiStore.js";
@@ -21,7 +19,6 @@ const Signup = () => {
     companyId,
     phoneNumber,
     companyAddress,
-    loading,
     errorMessage,
     showSignupForm,
     companies,
@@ -52,7 +49,6 @@ const Signup = () => {
 
   return (
     <>
-      {loading ? <Loading /> : null}
       {height && (
         <div
           className="relative z-[99]  bg-gradient-to-b from-white via-white to-gray-400 h-full flex justify-center items-center"
@@ -92,7 +88,7 @@ const Signup = () => {
                 <button
                   onClick={handleSignupEmailCheck}
                   type="button"
-                  className="w-full py-2 bg-[#00AEEE] text-white font-bold rounded-sm"
+                  className="hover:bg-blue-500 w-full py-2 bg-[#00AEEE] text-white font-bold rounded-sm"
                 >
                   Continue
                 </button>
@@ -195,19 +191,7 @@ const Signup = () => {
                   placeholder="Company Id"
                   className="w-full p-2 border border-gray-300 bg-white text-black"
                 />
-                {/* <input
-                  value={companyName || ""}
-                  onChange={(e) => setCompanyName(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleSignupCredentialsAuth(router.push);
-                    }
-                  }}
-                  type="text"
-                  placeholder="Company name"
-                  className="w-full p-2 border border-gray-300 bg-white text-black"
-                /> */}
+                
                 <div className="flex gap-2">
                   <input
                     value={companyAddress.street || ""}
@@ -311,7 +295,7 @@ const Signup = () => {
                 <button
                   onClick={() => handleSignupCredentialsAuth(router.push)}
                   type="button"
-                  className="w-full  py-2 bg-[#00AEEE] text-white font-bold rounded-sm"
+                  className="hover:bg-blue-500 w-full  py-2 bg-[#00AEEE] text-white font-bold rounded-sm"
                 >
                   Continue
                 </button>

@@ -131,7 +131,7 @@ const TicketForm = ({ itemId }) => {
       </div>
       <div className="flex items-center gap-4 py-2">
         <button
-          className="border border-white/30 bg-blue-800 px-3 py-1 text-white"
+          className="hover:bg-blue-500 border border-white/30 bg-blue-800 px-3 py-1 text-white"
           disabled={loading.ticketForm}
           onClick={() => {
             handleTicketConfirmation(true, itemId);
@@ -140,7 +140,7 @@ const TicketForm = ({ itemId }) => {
           {loading.ticketForm ? "Creating..." : "Create Ticket"}
         </button>
         <button
-          className="dark:text-white dark:border-white/30 border border-blue-800 px-3 py-1 text-blue-800"
+          className="dark:text-white dark:border-white/30  border border-blue-800 px-3 py-1 text-blue-800"
           onClick={() => {
             handleTicketConfirmation(false, itemId);
           }}

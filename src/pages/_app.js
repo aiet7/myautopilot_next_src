@@ -2,23 +2,23 @@
 
 import "../styles/global.css";
 import Head from "next/head";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import Loading from "../components/Loading.js";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Router from "next/router";
+import useAuthStore from "@/utils/store/auth/authStore";
 
 function MyApp({ Component, pageProps }) {
-  const [loading, setLoading] = useState(false);
+  const { loading, setIsLoading } = useAuthStore();
 
   useEffect(() => {
     const start = (url) => {
       if (url.includes("/dashboard/")) {
-        setLoading(true);
+        setIsLoading(true);
       }
     };
-    const end = () => setLoading(false);
+    const end = () => setIsLoading(false);
 
     Router.events.on("routeChangeStart", start);
     Router.events.on("routeChangeComplete", end);
@@ -38,9 +38,7 @@ function MyApp({ Component, pageProps }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/etech7_favicon.ico" />
       </Head>
-      <GoogleOAuthProvider clientId="245064440141-lv1lq73kmfrhpdtjto3jre7cgb0nl4cn.apps.googleusercontent.com">
-        {loading ? <Loading /> : <Component  {...pageProps} />}
-      </GoogleOAuthProvider>
+      {loading ? <Loading /> : <Component {...pageProps} />}
     </>
   );
 }

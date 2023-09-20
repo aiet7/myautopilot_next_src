@@ -44,7 +44,7 @@ const MarkedAssistant = ({ markdown }) => {
   renderer.listitem = (text) => {
     return `<li class="${
       activeAssistantButton === "Engineer" &&
-      "dark:bg-white/20 bg-black/5 px-2 py-1 rounded-md list-item cursor-pointer"
+      "dark:bg-white/20 dark:hover:bg-white/40 hover:bg-black/20 bg-black/5 px-2 py-1 rounded-md list-item cursor-pointer"
     }">${text}</li>`;
   };
 

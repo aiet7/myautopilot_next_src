@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-import Loading from "../../../components/Loading.js";
 
 import Cookie from "js-cookie";
 import useAuthStore from "@/utils/store/auth/authStore.js";
@@ -14,7 +13,6 @@ const Login = () => {
   const router = useRouter();
   const { height, setHeight } = useUiStore();
   const {
-    loading,
     errorMessage,
     setEmail,
     setPassword,
@@ -44,7 +42,6 @@ const Login = () => {
 
   return (
     <>
-      {loading ? <Loading /> : null}
       {height && (
         <div
           className="bg-gradient-to-b from-white via-white to-gray-400 h-full flex justify-center items-center"
@@ -91,7 +88,7 @@ const Login = () => {
             <button
               onClick={() => handleLoginCredentialsAuth(router.push)}
               type="button"
-              className="w-full  py-2 bg-[#00AEEE] text-white font-bold rounded-sm"
+              className="hover:bg-blue-500 w-full  py-2 bg-[#00AEEE] text-white font-bold rounded-sm"
             >
               Continue
             </button>

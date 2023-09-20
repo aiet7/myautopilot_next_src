@@ -82,7 +82,7 @@ const Interaction = ({}) => {
           activeUIAssistantTab === "Engineer" &&
           "lg:opacity-100 opacity-5 xl:ml-[350px]") ||
         (openAssistant && "lg:opacity-100 opacity-5 xl:mr-[350px]")
-      } dark:bg-black transition-all duration-300 ease-in-out bg-white`}
+      } dark:bg-black transition-all duration-300 ease bg-white`}
     >
       {!isAtBottom && isOverflowed && (
         <button
@@ -199,7 +199,7 @@ const Interaction = ({}) => {
               onClick={() => handleCreateTicketMessage(userInput)}
               className={`p-2 ${
                 userInput !== ""
-                  ? "dark:text-white dark:hover:text-blue-500  border bg-blue-800 text-white cursor-pointer"
+                  ? "dark:text-white dark:hover:text-white hover:bg-blue-500   border bg-blue-800 text-white cursor-pointer"
                   : "dark:text-gray-400 dark:border-white/30  text-gray-400 select-none border cursor-default"
               } `}
             >
