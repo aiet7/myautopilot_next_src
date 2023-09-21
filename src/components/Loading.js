@@ -7,8 +7,8 @@ const Loading = () => {
         priority
         src="/etech7_logo.webp"
         alt="Etech7_Login_Logo"
-        width={400}
-        height={400}
+        width={300}
+        height={300}
       />
       <div className="flex items-end text-4xl loading-dots text-black">
         <h2 className="">Logging in</h2>

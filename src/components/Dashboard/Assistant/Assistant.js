@@ -41,7 +41,6 @@ const Assistant = ({}) => {
           src="/etech7_logo.webp"
           width={100}
           height={100}
-          quality={100}
           alt="Etech7_Logo"
           className="pb-4"
           priority

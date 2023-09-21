@@ -8,6 +8,7 @@ import useUserStore from "@/utils/store/user/userStore";
 
 const Account = ({}) => {
   const {
+    user,
     userInputs,
     editing,
     errorMessage,
@@ -26,11 +27,11 @@ const Account = ({}) => {
       <div className="flex flex-col h-full items-center gap-2 max-w-[800px]">
         <div className="flex flex-col items-center pt-2 text-center">
           <h1 className="text-xl">Personal Info</h1>
-          <h2>Info about you and your preferences across MyAutoPilot</h2>
+          <h2>Info about you and your preferences</h2>
         </div>
         <div className="flex items-center">
           <div className="flex flex-col gap-2">
-            <p className="text-3xl">Your profile info in MyAutoPilot</p>
+            <p className="text-3xl">Your profile info in {user?.companyName}</p>
             <p>
               Personal info and options to manage it. You can make some of this
               info, like your contact details, visible to others so they can

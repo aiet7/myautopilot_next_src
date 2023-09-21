@@ -52,7 +52,11 @@ const Interaction = ({}) => {
 
   useEffect(() => {
     handleScrollToBottom(true);
-  }, [conversationHistories, currentConversationIndices, selectedAgent]);
+  }, [conversationHistories]);
+
+  useEffect(() => {
+    handleScrollToBottom(false);
+  }, [currentConversationIndices]);
 
   useEffect(() => {
     if (activeUIAssistantTab === "Engineer") {

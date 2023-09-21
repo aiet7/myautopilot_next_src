@@ -786,7 +786,9 @@ const useFormsStore = create((set, get) => ({
           addTicket({
             ticketId: id,
             description: currentTicketDescription,
+            summary: currentTicketSummary,
             category: currentTicketCategory,
+            subcategory: currentTicketSubCategory,
             closed: false,
             timeStamp: Date.now(),
           });

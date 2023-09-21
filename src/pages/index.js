@@ -34,20 +34,19 @@ const WelcomePage = () => {
     <>
       {height && (
         <div
-          className="h-full flex items-center justify-center bg-gradient-to-b from-white to-gray-100"
+          className="flex items-center justify-center bg-gradient-to-b from-white via-white to-gray-400"
           style={{ height: `calc(${height}px - 1px)` }}
         >
-          <div className="flex flex-col gap-4 w-full max-w-2xl p-8 bg-white bg-opacity-5">
+          <div className="flex flex-col items-center gap-4 w-full">
             <Image
               priority
               src="/etech7_logo.webp"
-              width={750}
-              height={750}
-              quality={100}
+              width={300}
+              height={300}
               alt="Etech7_Logo"
             />
 
-            <h1 className="text-4xl text-center">Client Portal</h1>
+            <h1 className="text-3xl text-center">Client Portal</h1>
             <div className="flex justify-center items-center gap-8">
               <button
                 onClick={handleShowLogin}
@@ -57,7 +56,7 @@ const WelcomePage = () => {
               </button>
               <button
                 onClick={handleShowSigmup}
-                className="hover:bg-blue-500 w-[120px]  bg-[#00AEEE] text-white py-3 rounded-sm"
+                className="hover:bg-blue-500 w-[120px] bg-[#00AEEE] text-white py-3 rounded-sm"
               >
                 Signup
               </button>
