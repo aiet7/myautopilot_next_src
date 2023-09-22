@@ -30,15 +30,20 @@ const Account = ({}) => {
           <h2>Info about you and your preferences</h2>
         </div>
         <div className="flex items-center">
-          <div className="flex flex-col gap-2">
-            <p className="text-3xl">Your profile info in {user?.companyName}</p>
+          <div className="flex flex-col gap-8 py-8">
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col">
+                <p className="text-2xl">Your profile info at</p>
+                <p className="text-5xl font-bold">{user?.companyName}</p>
+              </div>
+              <IoMdFingerPrint size={75} />
+            </div>
             <p>
               Personal info and options to manage it. You can make some of this
               info, like your contact details, visible to others so they can
               reach you easily. You can also see a summary of your profiles.
             </p>
           </div>
-          <IoMdFingerPrint size={200} />
         </div>
         <div className="flex flex-col w-full border dark:border-white/40 rounded-md p-5 gap-6">
           <p className="text-red-500 text-sm text-center">{errorMessage}</p>

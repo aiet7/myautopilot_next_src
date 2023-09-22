@@ -76,7 +76,7 @@ const TabNavRail = ({}) => {
         onClick={() => handleToggleSettings(true)}
         className="flex flex-col items-center cursor-pointer  lg:absolute lg:bottom-0 lg:py-3"
       >
-        <div className="w-7 h-7 bg-blue-800 rounded-full flex justify-center items-center text-white">
+        <div className="w-7 h-7 bg-blue-800 text-sm flex justify-center items-center text-white">
           {user?.firstName[0]}
         </div>
         {openSettings && (

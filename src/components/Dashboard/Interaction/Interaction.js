@@ -2,10 +2,10 @@
 
 import { useEffect } from "react";
 
-import { AiOutlineUser, AiOutlineRobot } from "react-icons/ai";
 import { BsFillSendFill } from "react-icons/bs";
 import { HiOutlineArrowSmallDown } from "react-icons/hi2";
 import { FaSpinner } from "react-icons/fa";
+import { SiOpenai } from "react-icons/si";
 
 import Switch from "../../Dashboard/Interaction/Forms/Switch.js";
 
@@ -17,8 +17,11 @@ import useRefStore from "@/utils/store/interaction/ref/refStore.js";
 
 import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
 import useAgentsStore from "@/utils/store/agents/agentsStore.js";
+import useUserStore from "@/utils/store/user/userStore.js";
 
 const Interaction = ({}) => {
+  const { user } = useUserStore();
+
   const { selectedAgent } = useAgentsStore();
   const { openHistory, openAssistant, handleHistoryMenu, handleAssistantMenu } =
     useUiStore();
@@ -116,9 +119,21 @@ const Interaction = ({}) => {
               <div className="flex items-start max-w-[600px] mx-auto gap-4">
                 <span>
                   {item.role === "user" ? (
-                    <AiOutlineUser size={20} />
+                    <div className="w-7 h-7 text-sm bg-blue-800  flex justify-center items-center text-white">
+                      {user?.firstName[0]}
+                    </div>
                   ) : (
-                    <AiOutlineRobot size={20} />
+                    <>
+                      {activeUIAssistantTab === "Engineer" ? (
+                        <div className="w-7 h-7 text-sm bg-[#ab68ff]  flex justify-center items-center text-white">
+                          <SiOpenai />
+                        </div>
+                      ) : (
+                        <div className="w-7 h-7 text-sm bg-[#00AEEE]  flex justify-center items-center text-white">
+                          E7
+                        </div>
+                      )}
+                    </>
                   )}
                 </span>
 
