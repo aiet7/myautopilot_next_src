@@ -2,43 +2,73 @@ import { create } from "zustand";
 import useUiStore from "../ui/uiStore";
 import useAssistantStore from "../assistant/assistantStore";
 import useConversationStore from "../interaction/conversations/conversationsStore";
+import useDocConversationsStore from "../interaction/conversations/docConversationsStore";
+import { handleGetDocument } from "@/utils/idb/db";
+import useDocGuideStore from "../assistant/sections/docGuide/docGuideStore";
 
 const useLocalStorageStore = create((set, get) => ({
-  getStorage: () => {
+  getStorage: async () => {
+    const { documentConversationHistories } =
+      useDocConversationsStore.getState();
+    const { handleGetPdfDetails } = useDocGuideStore.getState();
+
     const lastTab = localStorage.getItem("lastTab");
     const lastAssistantTab = localStorage.getItem("lastAssistantTab");
     const lastUIAssistantTab = localStorage.getItem("lastUIAssistantTab");
-    const lastConversationIndicesString = localStorage.getItem(
-      "lastConversationIndices"
-    );
+    const lastConversationIndex = localStorage.getItem("lastConversationIndex");
+    const lastDocumentIndex = localStorage.getItem("lastDocumentIndex");
 
-    const lastConversationIndices = lastConversationIndicesString
-      ? JSON.parse(lastConversationIndicesString)
+    const parsedLastConversationIndex = lastConversationIndex
+      ? parseInt(lastConversationIndex, 10)
+      : null;
+
+    const parsedLastDocumentIndex = lastDocumentIndex
+      ? parseInt(lastDocumentIndex, 10)
       : null;
 
     useUiStore.setState({ activeTab: lastTab || "iTAgent" });
     useAssistantStore.setState({
-      activeAssistantButton: lastAssistantTab || "Tickets",
+      activeAssistantTab: lastAssistantTab || "Tickets",
       activeUIAssistantTab: lastUIAssistantTab || "Tickets",
     });
     useConversationStore.setState({
-      currentConversationIndices: lastConversationIndices || {},
+      currentConversationIndex: parsedLastConversationIndex,
     });
+    useDocConversationsStore.setState({
+      currentDocumentConversationIndex: parsedLastDocumentIndex,
+    });
+
+    if (parsedLastDocumentIndex !== null) {
+      if (documentConversationHistories[parsedLastDocumentIndex]?.id) {
+        const file = await handleGetDocument(
+          documentConversationHistories[parsedLastDocumentIndex]?.id
+        );
+        if (file) {
+          await handleGetPdfDetails(file);
+        }
+      }
+    }
   },
 
   saveStorage: () => {
     const { activeTab } = useUiStore.getState();
-    const { activeAssistantButton, activeUIAssistantTab } =
+    const { activeAssistantTab, activeUIAssistantTab } =
       useAssistantStore.getState();
-    const { currentConversationIndices } = useConversationStore.getState();
+    const { currentConversationIndex } = useConversationStore.getState();
+    const { currentDocumentConversationIndex } =
+      useDocConversationsStore.getState();
 
     localStorage.setItem("lastTab", activeTab);
-    localStorage.setItem("lastAssistantTab", activeAssistantButton);
+    localStorage.setItem("lastAssistantTab", activeAssistantTab);
     localStorage.setItem("lastUIAssistantTab", activeUIAssistantTab);
 
     localStorage.setItem(
-      "lastConversationIndices",
-      JSON.stringify(currentConversationIndices)
+      "lastConversationIndex",
+      JSON.stringify(currentConversationIndex)
+    );
+    localStorage.setItem(
+      "lastDocumentIndex",
+      JSON.stringify(currentDocumentConversationIndex)
     );
   },
 
@@ -46,7 +76,8 @@ const useLocalStorageStore = create((set, get) => ({
     localStorage.removeItem("lastTab");
     localStorage.removeItem("lastAssistantTab");
     localStorage.removeItem("lastUIAssistantTab");
-    localStorage.removeItem("lastConversationIndices");
+    localStorage.removeItem("lastConversationIndex");
+    localStorage.removeItem("lastDocumentIndex");
   },
 }));
 

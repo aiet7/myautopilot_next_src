@@ -16,19 +16,33 @@ import useInteractionStore from "@/utils/store/interaction/interactionsStore.js"
 import useRefStore from "@/utils/store/interaction/ref/refStore.js";
 
 import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
-import useAgentsStore from "@/utils/store/agents/agentsStore.js";
 import useUserStore from "@/utils/store/user/userStore.js";
+import useDocConversationsStore from "@/utils/store/interaction/conversations/docConversationsStore.js";
+import useTicketConversationsStore from "@/utils/store/interaction/conversations/ticketConversationsStore.js";
+import EngineerGuide from "./Guides/EngineerGuide.js";
+import DocumentGuide from "./Guides/DocumentGuide.js";
+import TicketGuide from "./Guides/TicketGuide.js";
 
 const Interaction = ({}) => {
   const { user } = useUserStore();
 
-  const { selectedAgent } = useAgentsStore();
-  const { openHistory, openAssistant, handleHistoryMenu, handleAssistantMenu } =
-    useUiStore();
-  const { messages, conversationHistories, currentConversationIndices } =
+  const {
+    openDocs,
+    openHistory,
+    openAssistant,
+    handleHistoryMenu,
+    handleAssistantMenu,
+  } = useUiStore();
+
+  const { messages } = useTicketConversationsStore();
+
+  const { conversationHistories, currentConversationIndex } =
     useConversationStore();
 
+  const { documentConversationHistories, currentDocumentConversationIndex } =
+    useDocConversationsStore();
   const { isServerError } = useFormsStore();
+
   const {
     textAreaHeight,
     userInput,
@@ -38,6 +52,7 @@ const Interaction = ({}) => {
     isFeedbackSubmitted,
     handleTextAreaChange,
     handleCreateTicketMessage,
+    handleSendDocumentMessage,
     handleSendMessage,
     handleScrollToBottom,
     handleCheckScroll,
@@ -55,38 +70,51 @@ const Interaction = ({}) => {
 
   useEffect(() => {
     handleScrollToBottom(true);
-  }, [conversationHistories]);
+  }, [conversationHistories, documentConversationHistories]);
 
   useEffect(() => {
     handleScrollToBottom(false);
-  }, [currentConversationIndices]);
+  }, [currentConversationIndex, currentDocumentConversationIndex]);
 
   useEffect(() => {
-    if (activeUIAssistantTab === "Engineer") {
+    if (
+      activeUIAssistantTab === "Engineer" ||
+      activeUIAssistantTab === "DocGuide"
+    ) {
       handleScrollToBottom(false);
     }
   }, [activeUIAssistantTab]);
 
-  const messagesToRender =
-    activeUIAssistantTab === "Engineer"
-      ? conversationHistories?.[selectedAgent]?.[
-          currentConversationIndices[selectedAgent]
-        ]?.messages
-      : messages;
+  useEffect(() => {
+    handleScrollToBottom(false);
+  }, [window.innerWidth]);
+
+  const messagesToRender = (() => {
+    switch (activeUIAssistantTab) {
+      case "Engineer":
+        return conversationHistories[currentConversationIndex]?.messages;
+      case "DocGuide":
+        return documentConversationHistories[currentDocumentConversationIndex]
+          ?.messages;
+      case "Tickets":
+        return messages;
+    }
+  })();
 
   return (
     <div
       onClick={() => {
-        if (window.innerWidth < 1024) {
-          openHistory && handleHistoryMenu(false);
+        if (window.innerWidth < 1023) {
+          (openDocs || openHistory) && handleHistoryMenu(false);
           openAssistant && handleAssistantMenu(false);
         }
       }}
       className={`relative flex flex-col h-full w-full ${
-        openHistory && openAssistant && "xl:mr-[350px]"
+        (openDocs || openHistory) && openAssistant && "xl:mr-[350px]"
       }  ${
-        (openHistory &&
-          activeUIAssistantTab === "Engineer" &&
+        ((openDocs || openHistory) &&
+          (activeUIAssistantTab === "Engineer" ||
+            activeUIAssistantTab === "DocGuide") &&
           "lg:opacity-100 opacity-5 xl:ml-[350px]") ||
         (openAssistant && "lg:opacity-100 opacity-5 xl:mr-[350px]")
       } dark:bg-black transition-all duration-300 ease bg-white`}
@@ -105,6 +133,12 @@ const Interaction = ({}) => {
         ref={chatContainerRef}
         onScroll={handleCheckScroll}
       >
+        {messagesToRender === undefined &&
+          activeUIAssistantTab === "Engineer" && <EngineerGuide />}
+        {messagesToRender === undefined &&
+          activeUIAssistantTab === "DocGuide" && <DocumentGuide />}
+        {messagesToRender?.length === 0 &&
+          activeUIAssistantTab === "Tickets" && <TicketGuide />}
         {messagesToRender?.map((item, index, arr) => {
           return (
             <div
@@ -116,7 +150,17 @@ const Interaction = ({}) => {
               }`}
               ref={index === arr.length - 1 ? latestMessageRef : null}
             >
-              <div className="flex items-start max-w-[600px] mx-auto gap-4">
+              <div
+                className={`
+                ${!openHistory && "max-w-[700px]"} 
+                ${!openAssistant && "max-w-[700px]"}
+                ${!openDocs && "max-w-[700px]"}
+                ${
+                  activeUIAssistantTab === "Tickets"
+                    ? "max-w-[700px] 2xl:max-w-[1200px]"
+                    : "2xl:max-w-[700px]"
+                } flex items-start max-w-[450px]  mx-auto gap-4`}
+              >
                 <span>
                   {item.role === "user" ? (
                     <div className="w-7 h-7 text-sm bg-blue-800  flex justify-center items-center text-white">
@@ -160,7 +204,7 @@ const Interaction = ({}) => {
           />
         )}
       </div>
-      {activeUIAssistantTab === "Engineer" ? (
+      {activeUIAssistantTab === "Engineer" && (
         <div className="relative flex items-center px-4 py-2">
           <textarea
             ref={inputRef}
@@ -192,7 +236,9 @@ const Interaction = ({}) => {
             />
           </div>
         </div>
-      ) : (
+      )}
+
+      {activeUIAssistantTab === "Tickets" && (
         <div className="relative flex items-center px-4 py-2">
           <textarea
             ref={inputRef}
@@ -224,6 +270,49 @@ const Interaction = ({}) => {
             >
               Open Ticket
             </button>
+          </div>
+        </div>
+      )}
+
+      {activeUIAssistantTab === "DocGuide" && (
+        <div className="relative flex items-center px-4 py-2">
+          <textarea
+            ref={inputRef}
+            onChange={handleTextAreaChange}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleSendDocumentMessage(userInput);
+              }
+            }}
+            value={userInput}
+            placeholder={
+              documentConversationHistories[currentDocumentConversationIndex]
+                ?.data
+                ? "Ask About Your Document..."
+                : "Add New Document To Upload PDF..."
+            }
+            className="dark:bg-black bg-white border outline-blue-500 w-full p-4 pr-32 resize-none no-scrollbar"
+            style={{
+              height: textAreaHeight,
+              maxHeight: "200px",
+            }}
+            disabled={
+              !documentConversationHistories[currentDocumentConversationIndex]
+                ?.data
+            }
+          />
+
+          <div className="flex items-center gap-3 absolute right-6 pr-2 flex items-center bottom-0 top-0">
+            <BsFillSendFill
+              onClick={() => handleSendDocumentMessage(userInput)}
+              size={25}
+              className={`outline-none ${
+                userInput !== ""
+                  ? "dark:text-white dark:hover:text-blue-500 hover:text-blue-500 text-black cursor-pointer"
+                  : "dark:text-gray-500 text-gray-300 select-none"
+              } `}
+            />
           </div>
         </div>
       )}

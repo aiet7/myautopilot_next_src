@@ -335,6 +335,8 @@ const useAuthStore = create((set, get) => ({
     set({ errorMessage: "", showSignupForm: false, companies: [] });
   },
 
+ 
+
   clearCredentials: () => {
     set({
       email: "",

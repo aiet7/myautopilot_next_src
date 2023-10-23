@@ -23,10 +23,9 @@ const TicketForm = ({ itemId }) => {
     );
     setFilteredSubCategories(filtered);
   }, [ticket.currentTicketCategory, subCategories]);
-
   return (
     <div>
-      <div className="flex flex-col gap-2">
+      <div className="flex  flex-col gap-2">
         <div>
           <span className="font-bold">Ticket Name</span>
           <p className="text-xs text-red-500">{formError}</p>
@@ -50,6 +49,7 @@ const TicketForm = ({ itemId }) => {
         <div>
           <span className="font-bold">Summary</span>
           <input
+            maxLength={100}
             className="h-[50px] border outline-blue-500 w-full px-4"
             value={ticket.currentTicketSummary || ""}
             onChange={(e) => setTicket("currentTicketSummary", e.target.value)}

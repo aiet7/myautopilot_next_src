@@ -12,6 +12,7 @@ import useTokenStore from "../token/tokenStore";
 import Cookies from "js-cookie";
 import useTicketsStore from "../../assistant/sections/tickets/ticketsStore";
 import { validateTicketForm } from "@/utils/formValidations";
+import useTicketConversationsStore from "../conversations/ticketConversationsStore";
 
 const useFormsStore = create((set, get) => ({
   isFormOpen: {},
@@ -201,7 +202,7 @@ const useFormsStore = create((set, get) => ({
   },
   handleCreateTicketProcess: (msg, email, fullName, phone) => {
     const userStore = useUserStore.getState();
-    const { handleAddForm } = useConversationStore.getState();
+    const { handleAddForm } = useTicketConversationsStore.getState();
     const {
       title,
       description,
@@ -689,8 +690,7 @@ const useFormsStore = create((set, get) => ({
       currentTicketLicenseId,
     } = get().ticket.onBoarding;
     const { handleRemoveForm, handleAddAssistantMessage } =
-      useConversationStore.getState();
-
+      useTicketConversationsStore.getState();
     if (isConfirmed) {
       if (!validateTicketForm(ticket)) {
         set({ formError: "Form inputs can not be empty." });
@@ -702,7 +702,6 @@ const useFormsStore = create((set, get) => ({
           ticketForm: true,
         },
       }));
-
       try {
         const ticketResponse = await fetch(
           `https://etech7-wf-etech7-support-service.azuremicroservices.io/createTicket`,

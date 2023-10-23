@@ -243,7 +243,6 @@ body {
   }
 }
 
-
 .loading-dots span {
   opacity: 0;
   animation: fadeInOut 3s infinite;
@@ -302,4 +301,16 @@ pre[class*="language-"] {
 .language-css .token.string,
 .style .token.string {
   background-color: transparent !important;
+}
+
+.fullscreen-mode {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.fullscreen-mode .react-pdf__Document {
+  max-width: 90vw;
+  max-height: 90vh;
 }

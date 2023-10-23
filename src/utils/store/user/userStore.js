@@ -5,7 +5,8 @@ import { googleLogout } from "@react-oauth/google";
 import { validateField } from "../../../utils/formValidations";
 
 import useAuthStore from "../auth/authStore";
-import useConversationStore from "../interaction/conversations/conversationsStore";
+import useTicketConversationsStore from "../interaction/conversations/ticketConversationsStore";
+import useEngineerStore from "../assistant/sections/engineer/engineerStore";
 
 const useUserStore = create((set, get) => ({
   user: null,
@@ -256,17 +257,21 @@ const useUserStore = create((set, get) => ({
     }
   },
 
-  handleLogout: (navigate) => {
+  handleLogout: async (navigate) => {
     const { setShowLoginForm, setShowSignupForm } = useAuthStore.getState();
-
     const { clearStorage } = useLocalStorageStore.getState();
     const { clearCookies } = useCookiesStore.getState();
     const { clearCredentials } = useAuthStore.getState();
-    const { clearInteraction } = useConversationStore.getState();
+    const { clearInteraction } = useTicketConversationsStore.getState();
+    const { clearEngineer } = useEngineerStore.getState();
+
+    set({ user: null });
+
     clearStorage();
     clearCookies();
     clearCredentials();
     clearInteraction();
+    clearEngineer();
     navigate("/auth/login");
     setShowLoginForm(false);
     setShowSignupForm(false);

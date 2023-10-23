@@ -1,19 +1,24 @@
+import useTicketConversationsStore from "@/utils/store/interaction/conversations/ticketConversationsStore";
 import { create } from "zustand";
 
 const useEngineerStore = create((set, get) => ({
   prependText:
-    "Act as an expert IT prompt engineer. If there is an instance of another open ai gpt4 and you want it to function at its best. give me the top 5 prompts, without quotation marks around the prompts, that you would give it to gpt to get the best results by making sure to sure it at its best regarding",
+    "Act as an expert IT prompt engineer. If there is an instance of another open ai gpt4 and you want it to function at its best. ALWAYS give me the top 5 prompts, without quotation marks around the prompts, that you would give it to gpt to get the best results by making sure to sure it at its best regarding ",
   userInput: "",
   prompts: "",
   isWaiting: false,
 
   setUserInput: (input) => set({ userInput: input }),
+
   handleSendPromptGenerator: async () => {
     const { prependText, userInput } = get();
-    const completeMessage = prependText + userInput;
+    const { troubleshootMessage } = useTicketConversationsStore.getState();
+    const completeMessage = prependText + (userInput || troubleshootMessage);
     const encodedCompleteMessage = encodeURIComponent(completeMessage);
-
-    if (userInput.trim() !== "") {
+    if (
+      userInput.trim() !== "" ||
+      (troubleshootMessage && troubleshootMessage.trim() !== "")
+    ) {
       set({ isWaiting: true, userInput: "" });
 
       try {
@@ -31,6 +36,10 @@ const useEngineerStore = create((set, get) => ({
         set({ isWaiting: false });
       }
     }
+  },
+
+  clearEngineer: () => {
+    set({ prompts: "" });
   },
 }));
 

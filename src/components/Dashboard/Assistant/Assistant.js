@@ -7,20 +7,23 @@ import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
 import { AiOutlineClose } from "react-icons/ai";
 import AssistantRail from "./AssistantRail.js";
 import Tickets from "./Sections/Tickets.js";
+import DocGuide from "./Sections/DocGuide.js";
 import Passwords from "./Sections/Passwords.js";
 import Billing from "./Sections/Billing.js";
 import Reports from "./Sections/Reports.js";
-import Documents from "./Sections/Documents.js";
+import Policies from "./Sections/Policies.js";
 import Quotes from "./Sections/Quotes.js";
 import Projects from "./Sections/Projects.js";
 import Progress from "./Progress.js";
 import Engineer from "./Sections/Engineer.js";
 import RemoteAccess from "./Sections/RemoteAccess.js";
 import Tools from "./Sections/Tools.js";
+import useFormsStore from "@/utils/store/interaction/forms/formsStore.js";
 
 const Assistant = ({}) => {
+  const { ticketStatus } = useFormsStore();
   const { openAssistant, handleAssistantMenu } = useUiStore();
-  const { activeAssistantButton } = useAssistantStore();
+  const { activeAssistantTab } = useAssistantStore();
 
   return (
     <div
@@ -28,9 +31,9 @@ const Assistant = ({}) => {
         openAssistant ? "translate-x-0 w-[350px]" : "translate-x-full w-[350px]"
       }  dark:bg-[#111111] bg-[#f6f8fc] flex transition-all duration-300 ease`}
     >
-      {window.innerWidth < 1024 && <AssistantRail />}
+      {window.innerWidth < 1023 && <AssistantRail />}
       <div className="flex flex-col px-4 py-6 w-full overflow-hidden">
-        {window.innerWidth > 1024 && (
+        {window.innerWidth > 1023 && (
           <AiOutlineClose
             onClick={handleAssistantMenu}
             size={20}
@@ -45,18 +48,19 @@ const Assistant = ({}) => {
           className="pb-4"
           priority
         />
-        {activeAssistantButton === "Tickets" && <Tickets />}
-        {activeAssistantButton === "Documents" && <Documents />}
-        {activeAssistantButton === "Engineer" && <Engineer />}
-        {activeAssistantButton === "Remote Access" && <RemoteAccess />}
-        {activeAssistantButton === "Passwords" && <Passwords />}
-        {activeAssistantButton === "Billing" && <Billing />}
-        {activeAssistantButton === "Quotes" && <Quotes />}
-        {activeAssistantButton === "Reports" && <Reports />}
-        {activeAssistantButton === "Projects" && <Projects />}
-        {activeAssistantButton === "Tools" && <Tools />}
+        {activeAssistantTab === "Tickets" && <Tickets />}
+        {activeAssistantTab === "Engineer" && <Engineer />}
+        {activeAssistantTab === "DocGuide" && <DocGuide />}
+        {activeAssistantTab === "Remote Access" && <RemoteAccess />}
+        {activeAssistantTab === "Passwords" && <Passwords />}
+        {activeAssistantTab === "Billing" && <Billing />}
+        {/* {activeAssistantTab === "Quotes" && <Quotes />}
+        {activeAssistantTab === "Reports" && <Reports />}
+        {activeAssistantTab === "Projects" && <Projects />} */}
+        {activeAssistantTab === "Tools" && <Tools />}
+        {activeAssistantTab === "Policies" && <Policies />}
 
-        <Progress />
+        {ticketStatus.ticketCreated && <Progress />}
       </div>
     </div>
   );

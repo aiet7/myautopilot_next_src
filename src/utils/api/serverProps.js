@@ -1,24 +1,21 @@
 export const handleServerPropsData = async (clientId) => {
-  const [initialUser, initialTickets, initialConversations, initialAgents] =
-    await Promise.all([
-      handleGetUser(clientId),
-      handleGetTickets(clientId),
-      handleGetConversations(clientId),
-      handleGetAgents(),
-    ]);
-
-  const initialMessages = await Promise.all(
-    initialConversations.map((conversation) =>
-      handleGetMessages(conversation.id)
-    )
-  );
+  const [
+    initialUser,
+    initialConversations,
+    initialDocumentConversations,
+    initialAgents,
+  ] = await Promise.all([
+    handleGetUser(clientId),
+    handleGetConversations(clientId),
+    handleGetDocumentConversations(clientId),
+    handleGetAgents(),
+  ]);
 
   return {
     initialUser,
-    initialTickets,
-    initialAgents,
     initialConversations,
-    initialMessages,
+    initialDocumentConversations,
+    initialAgents,
   };
 };
 
@@ -32,6 +29,13 @@ export const handleGetUser = async (clientId) => {
 export const handleGetConversations = async (clientId) => {
   const response = await fetch(
     `https://etech7-wf-etech7-db-service.azuremicroservices.io/getConversations?userId=${clientId}`
+  );
+  return response.json();
+};
+
+export const handleGetDocumentConversations = async (clientId) => {
+  const response = await fetch(
+    `https://etech7-wf-etech7-db-service.azuremicroservices.io/getDocumentConversations?userId=${clientId}`
   );
   return response.json();
 };
@@ -53,6 +57,13 @@ export const handleGetRooms = async (userId) => {
 export const handleGetMessages = async (conversationId) => {
   const response = await fetch(
     `https://etech7-wf-etech7-db-service.azuremicroservices.io/getMessages?conversationId=${conversationId}`
+  );
+  return response.json();
+};
+
+export const handleGetDocumentMessages = async (documentConversationId) => {
+  const response = await fetch(
+    `https://etech7-wf-etech7-db-service.azuremicroservices.io/getDocumentMessages?documentConversationID=${documentConversationId}`
   );
   return response.json();
 };

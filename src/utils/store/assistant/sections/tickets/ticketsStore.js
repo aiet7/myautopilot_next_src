@@ -1,3 +1,5 @@
+import { handleGetTickets } from "@/utils/api/serverProps";
+import useUserStore from "@/utils/store/user/userStore";
 import { create } from "zustand";
 
 const useTicketsStore = create((set, get) => ({
@@ -7,8 +9,15 @@ const useTicketsStore = create((set, get) => ({
   activeTicketButton: "Opened",
   showTicketIndex: null,
 
-  initializeTickets: (initialTickets) => {
-    set({ tickets: initialTickets });
+
+
+  initializeTickets: async () => {
+    const userStore = useUserStore.getState();
+    set({ tickets: [] });
+    if (userStore.user) {
+      const newTickets = await handleGetTickets(userStore.user.id);
+      set({ tickets: newTickets });
+    }
   },
 
   setActiveTicketButton: (button) => set({ activeTicketButton: button }),
@@ -25,22 +34,7 @@ const useTicketsStore = create((set, get) => ({
     }));
   },
 
-  handleCloseTicket: async (ticketId) => {
-    const { handleUpdateTicketClosed } = get();
-    try {
-      const ticketResponse = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/updateStatusToClosed?ticketId=${ticketId}`
-      );
-      if (ticketResponse.status === 200) {
-        console.log("closed");
-        const test = await ticketResponse.json();
-        console.log(test);
-        handleUpdateTicketClosed(ticketId);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  },
+  
 
   handleGetTicketStatus: async (ticketId) => {
     try {
@@ -69,6 +63,8 @@ const useTicketsStore = create((set, get) => ({
       console.log(e);
     }
   },
+
+  
 }));
 
 export default useTicketsStore;

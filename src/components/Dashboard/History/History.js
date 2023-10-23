@@ -9,17 +9,19 @@ import {
 import { IoChatboxOutline } from "react-icons/io5";
 
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
-import useAgentsStore from "@/utils/store/agents/agentsStore";
 import useUiStore from "@/utils/store/ui/uiStore";
+import { useRouter } from "next/router";
 
 const History = ({}) => {
+  const router = useRouter();
+
   const {
     editing,
     deleting,
     tempTitle,
     tempPrompt,
     conversationHistories,
-    currentConversationIndices,
+    currentConversationIndex,
     setDeleting,
     setTempTitle,
     setTempPrompt,
@@ -31,9 +33,6 @@ const History = ({}) => {
     handleEditConversationPrompt,
     handleEditConversationTitle,
   } = useConversationStore();
-
-  const { selectedAgent } = useAgentsStore();
-
   const { openHistory } = useUiStore();
 
   return (
@@ -46,9 +45,7 @@ const History = ({}) => {
       <button
         onClick={() =>
           handleNewConversation(
-            conversationHistories[selectedAgent]
-              ? conversationHistories[selectedAgent].length
-              : 0
+            conversationHistories ? conversationHistories.length : 0
           )
         }
         className="hover:bg-blue-500 w-full p-4 bg-blue-800 text-white"
@@ -56,15 +53,14 @@ const History = ({}) => {
         + New Chat
       </button>
       <div className="overflow-y-auto h-full scrollbar-thin">
-        {conversationHistories[selectedAgent]?.map((conversation, index) => {
-          const { id, userID, conversationName, customPrompt, agentID } =
-            conversation;
+        {conversationHistories.map((conversation, index) => {
+          const { id, userID, conversationName, customPrompt } = conversation;
           return (
             <div key={index} className="flex flex-col items-start my-2">
               <div
-                onClick={() => handleConversationSelected(index, agentID)}
+                onClick={() => handleConversationSelected(index, id)}
                 className={`${`${
-                  currentConversationIndices[selectedAgent] === index &&
+                  currentConversationIndex === index &&
                   "dark:bg-white/40 bg-black/20"
                 }`} dark:text-white dark:hover:bg-white/40 hover:bg-black/20 text-black w-full flex items-center justify-between px-2 h-[50px] cursor-pointer`}
               >
@@ -72,9 +68,12 @@ const History = ({}) => {
                   <div className="w-8">
                     <IoChatboxOutline size={20} />
                   </div>
-                  <div className="w-40 truncate flex">
-                    {currentConversationIndices[selectedAgent] === index &&
-                    editing ? (
+                  <div
+                    className={`${
+                      currentConversationIndex === index ? "w-52" : "w-64"
+                    } truncate flex`}
+                  >
+                    {currentConversationIndex === index && editing ? (
                       <input
                         onClick={(e) => e.stopPropagation()}
                         value={tempTitle}
@@ -88,50 +87,44 @@ const History = ({}) => {
                 </div>
 
                 <div className="w-12">
-                  {currentConversationIndices[selectedAgent] === index &&
-                    editing && (
-                      <div className="flex items-center gap-2">
-                        <AiOutlineCheck
-                          size={20}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleSaveConversationTitle(
-                              id,
-                              userID,
-                              selectedAgent
-                            );
-                          }}
-                        />
-                        <AiOutlineClose
-                          size={20}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCancelEditConversationTitle();
-                          }}
-                        />
-                      </div>
-                    )}
-                  {currentConversationIndices[selectedAgent] === index &&
-                    deleting && (
-                      <div className="flex items-center gap-2">
-                        <AiOutlineCheck
-                          size={20}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteConversation(id);
-                            setDeleting(false);
-                          }}
-                        />
-                        <AiOutlineClose
-                          size={20}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setDeleting(false);
-                          }}
-                        />
-                      </div>
-                    )}
-                  {currentConversationIndices[selectedAgent] === index &&
+                  {currentConversationIndex === index && editing && (
+                    <div className="flex items-center gap-2">
+                      <AiOutlineCheck
+                        size={20}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSaveConversationTitle(id, userID);
+                        }}
+                      />
+                      <AiOutlineClose
+                        size={20}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCancelEditConversationTitle();
+                        }}
+                      />
+                    </div>
+                  )}
+                  {currentConversationIndex === index && deleting && (
+                    <div className="flex items-center gap-2">
+                      <AiOutlineCheck
+                        size={20}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteConversation(id);
+                          setDeleting(false);
+                        }}
+                      />
+                      <AiOutlineClose
+                        size={20}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setDeleting(false);
+                        }}
+                      />
+                    </div>
+                  )}
+                  {currentConversationIndex === index &&
                     !editing &&
                     !deleting && (
                       <div className="flex items-center gap-2">
@@ -139,8 +132,8 @@ const History = ({}) => {
                           size={20}
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleEditConversationTitle(selectedAgent);
-                            handleEditConversationPrompt(selectedAgent);
+                            handleEditConversationTitle();
+                            handleEditConversationPrompt();
                           }}
                         />
                         <AiFillDelete
@@ -154,17 +147,16 @@ const History = ({}) => {
                     )}
                 </div>
               </div>
-              {currentConversationIndices[selectedAgent] === index &&
-                editing && (
-                  <div className="w-full">
-                    <textarea
-                      placeholder={`Fine-tune your conversation.\nEx. Act as a Front End expert or speak like Albert Einstein would.`}
-                      value={tempPrompt || customPrompt || ""}
-                      className="dark:bg-white/10 w-full bg-black/5 p-2 rounded-bl-md rounded-br-md scrollbar-thin min-h-[100px] max-h-[200px]"
-                      onChange={(e) => setTempPrompt(e.target.value)}
-                    />
-                  </div>
-                )}
+              {currentConversationIndex === index && editing && (
+                <div className="w-full">
+                  <textarea
+                    placeholder={`Fine-tune your conversation.\nEx. Act as a Front End expert or speak like Albert Einstein would.`}
+                    value={tempPrompt || customPrompt || ""}
+                    className="dark:bg-white/10 w-full bg-black/5 p-2 rounded-bl-md rounded-br-md scrollbar-thin min-h-[100px] max-h-[200px]"
+                    onChange={(e) => setTempPrompt(e.target.value)}
+                  />
+                </div>
+              )}
             </div>
           );
         })}

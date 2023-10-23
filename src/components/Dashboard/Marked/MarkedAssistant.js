@@ -7,11 +7,11 @@ import useRefStore from "@/utils/store/marked/ref/refStore.js";
 const MarkedAssistant = ({ markdown }) => {
   
   const { listRef } = useRefStore();
-  const { activeAssistantButton, handlePromptAssistantInput } =
+  const { activeAssistantTab, handlePromptAssistantInput } =
     useAssistantStore();
 
   useEffect(() => {
-    if (listRef.current && activeAssistantButton === "Engineer") {
+    if (listRef.current && activeAssistantTab === "Engineer") {
       listRef.current.querySelectorAll(".list-item").forEach((element) => {
         element.addEventListener("click", (event) => {
           event.preventDefault();
@@ -32,18 +32,18 @@ const MarkedAssistant = ({ markdown }) => {
     if (ordered) {
       return `<ol start="${start}" class="flex flex-col gap-4 
       ${
-        activeAssistantButton !== "Engineer" && "list-decimal px-4"
+        activeAssistantTab !== "Engineer" && "list-decimal px-4"
       }">${body}</ol>`;
     } else {
       return `<ul class="flex flex-col gap-4
-      ${activeAssistantButton !== "Engineer" && "list-disc px-4"}
+      ${activeAssistantTab !== "Engineer" && "list-disc px-4"}
       ">${body}</ul>`;
     }
   };
 
   renderer.listitem = (text) => {
     return `<li class="${
-      activeAssistantButton === "Engineer" &&
+      activeAssistantTab === "Engineer" &&
       "dark:bg-white/20 dark:hover:bg-white/40 hover:bg-black/20 bg-black/5 px-2 py-1 rounded-md list-item cursor-pointer"
     }">${text}</li>`;
   };

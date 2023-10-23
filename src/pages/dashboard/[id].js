@@ -2,64 +2,64 @@
 
 import { ThemeProvider } from "next-themes";
 
-import TabNavRail from "../../components/Dashboard/TabNavRail.js";
-import SettingsRail from "../../components/Dashboard/SettingsRail.js";
-import AssistantRail from "@/components/Dashboard/Assistant/AssistantRail.js";
-import Interaction from "../../components/Dashboard/Interaction/Interaction.js";
-import History from "@/components/Dashboard/History/History.js";
-import Assistant from "../../components/Dashboard/Assistant/Assistant.js";
-
-import Account from "../../components/Dashboard/Account.js";
-
 import { useEffect } from "react";
 
-import { handleServerPropsData } from "../../utils/api/serverProps.js";
+import { handleServerPropsData } from "@/utils/api/serverProps.js";
+
+import TabNavRail from "@/components/Dashboard/TabNavRail.js";
+import SettingsRail from "@/components/Dashboard/SettingsRail.js";
+import AssistantRail from "@/components/Dashboard/Assistant/AssistantRail.js";
+import Interaction from "@/components/Dashboard/Interaction/Interaction.js";
+import History from "@/components/Dashboard/History/History.js";
+import Assistant from "@/components/Dashboard/Assistant/Assistant.js";
+import Documents from "@/components/Dashboard/Document/Documents.js";
+
+import Nav from "@/components/Dashboard/Admin/Nav.js";
+import Control from "@/components/Dashboard/Admin/Control/Control.js";
+
+import Account from "@/components/Dashboard/Account.js";
 
 import useUserStore from "@/utils/store/user/userStore.js";
-import useAgentsStore from "@/utils/store/agents/agentsStore.js";
 import useUiStore from "@/utils/store/ui/uiStore.js";
 import useLocalStorageStore from "@/utils/store/localstorage/localStorageStore.js";
 import useInitializeAppStore from "@/utils/store/init/initializeAppStore.js";
 import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
-import useTicketsStore from "@/utils/store/assistant/sections/tickets/ticketsStore.js";
-import DocumentForm from "@/components/Dashboard/Document/DocumentForm.js";
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore.js";
+import useDocConversationsStore from "@/utils/store/interaction/conversations/docConversationsStore.js";
 
 const DashboardPage = ({
   initialUser,
-  initialTickets,
-  initialAgents,
   initialConversations,
-  initialMessages,
+  initialDocumentConversations,
+  initialAgents,
 }) => {
   const { initializeApp } = useInitializeAppStore();
   const { initializeUser } = useUserStore();
-  const { initializeTickets } = useTicketsStore();
-  const { initializeAgents } = useAgentsStore();
-  const { initializeConversations, currentConversationIndices } =
-    useConversationStore();
-  const { activeAssistantButton, activeUIAssistantTab } = useAssistantStore();
+  const {
+    initializeConversations,
+    initializeMessages,
+    currentConversationIndex,
+  } = useConversationStore();
+  const {
+    initializeDocumentConversations,
+    initializeDocumentMessages,
+    currentDocumentConversationIndex,
+  } = useDocConversationsStore();
+  const { activeAssistantTab, activeUIAssistantTab } = useAssistantStore();
 
   const { saveStorage, getStorage } = useLocalStorageStore();
   const { height, activeTab, openSettings, setHeight, handleToggleSettings } =
     useUiStore();
 
   useEffect(() => {
-    initializeApp();
+    initializeApp(initialAgents);
   }, [activeTab, initialAgents]);
 
   useEffect(() => {
     initializeUser(initialUser);
-    initializeTickets(initialTickets);
-    initializeAgents(initialAgents);
-    initializeConversations(initialConversations, initialMessages);
-  }, [
-    initialUser,
-    initialAgents,
-    initialConversations,
-    initialMessages,
-    initialTickets,
-  ]);
+    initializeConversations(initialConversations);
+    initializeDocumentConversations(initialDocumentConversations);
+  }, [initialUser, initialConversations, initialDocumentConversations]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -75,6 +75,8 @@ const DashboardPage = ({
 
   useEffect(() => {
     getStorage();
+    initializeMessages();
+    initializeDocumentMessages();
   }, [getStorage]);
 
   useEffect(() => {
@@ -87,9 +89,10 @@ const DashboardPage = ({
     };
   }, [
     saveStorage,
-    activeAssistantButton,
+    activeAssistantTab,
     activeUIAssistantTab,
-    currentConversationIndices,
+    currentConversationIndex,
+    currentDocumentConversationIndex,
   ]);
 
   return (
@@ -103,20 +106,24 @@ const DashboardPage = ({
           <div className="flex flex-col h-full w-full lg:flex-row-reverse">
             <div className="flex flex-col h-full w-full overflow-hidden">
               {activeTab !== "settings" && <SettingsRail />}
+
               {activeTab === "iTAgent" && (
                 <div className="flex flex-1 relative overflow-hidden">
                   {activeUIAssistantTab === "Engineer" && <History />}
+                  {activeUIAssistantTab === "DocGuide" && <Documents />}
 
-                  {activeUIAssistantTab === "Documents" ? (
-                    <DocumentForm />
-                  ) : (
-                    <Interaction />
-                  )}
-
-                  {window.innerWidth > 1024 && <AssistantRail />}
+                  <Interaction />
+                  {window.innerWidth > 1023 && <AssistantRail />}
                   <Assistant />
                 </div>
               )}
+
+              {/* {activeTab === "admin" && (
+                <div className="flex flex-1 relative overflow-hidden">
+                  <Nav />
+                  <Control />
+                </div>
+              )} */}
 
               {activeTab === "settings" && (
                 <div className="overflow-auto h-full w-full no-scrollbar">

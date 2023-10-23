@@ -11,7 +11,7 @@ import { HiOutlineArrowSmallDown } from "react-icons/hi2";
 import { FaSpinner } from "react-icons/fa";
 import useTeamsStore from "@/utils/store/teams/teamsStore.js";
 import useUiStore from "@/utils/store/ui/uiStore.js";
-import useRefStore from "@/utils/store/teams/refStore.js";
+import useRefStore from "@/utils/store/teams/ref/refStore.js";
 
 import { Tooltip as ReactTooltip } from "react-tooltip";
 
@@ -56,7 +56,7 @@ const Discussion = () => {
   return (
     <div
       onClick={() => {
-        if (window.innerWidth < 1024) {
+        if (window.innerWidth < 1023) {
           openRooms && handleHistoryMenu(false);
         }
       }}

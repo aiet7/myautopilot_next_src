@@ -1,15 +1,15 @@
 import { create } from "zustand";
-import useAgentsStore from "../../agents/agentsStore";
 import useUserStore from "../../user/userStore";
-import useUiStore from "../../ui/uiStore";
 import useFormsStore from "../forms/formsStore";
 import useRefStore from "../ref/refStore";
+import useInitializeAppStore from "../../init/initializeAppStore";
+import { handleGetMessages } from "@/utils/api/serverProps";
+import useTicketConversationsStore from "./ticketConversationsStore";
 
 const useConversationStore = create((set, get) => ({
-  messages: [],
+  conversationHistories: [],
+  currentConversationIndex: 0,
 
-  conversationHistories: {},
-  currentConversationIndices: {},
   editing: false,
   deleting: false,
   tempTitle: "",
@@ -20,101 +20,75 @@ const useConversationStore = create((set, get) => ({
   setDeleting: (isDeleting) =>
     set((state) => ({ ...state, deleting: isDeleting })),
 
-  initializeConversations: (initialConversations, initialMessages) => {
-    const updatedConversationHistories = initialConversations.reduce(
-      (acc, conversation, index) => {
-        const agentID = conversation.agentID;
+  initializeConversations: (initialConversations) => {
+    set({ conversationHistories: initialConversations });
+  },
 
-        if (!acc[agentID]) acc[agentID] = [];
-        acc[agentID].push({
-          ...conversation,
+  initializeMessages: async (passedConvoId = null) => {
+    const { conversationHistories } = get();
 
-          messages:
-            initialMessages[index]
-              ?.flatMap((message) => [
-                {
-                  id: message.id + "-user",
-                  content: message.userContent,
-                  role: "user",
-                  timeStamp: message.timeStamp,
-                },
-                {
-                  id: message.id + "-ai",
-                  content: message.aiContent,
-                  role: "assistant",
-                  timeStamp: message.timeStamp,
-                },
-              ])
-              .sort((a, b) => new Date(a.timeStamp) - new Date(b.timeStamp)) ||
-            [],
-        });
-        return acc;
-      },
-      {}
+    const savedConversationIndex = localStorage.getItem(
+      "lastConversationIndex"
     );
-    set({ conversationHistories: updatedConversationHistories });
-  },
+    const parsedSavedConversationIndex = savedConversationIndex
+      ? parseInt(savedConversationIndex, 10)
+      : null;
 
-  handleUpdateEditedResponse: async (messageId, content) => {
-    const agentsStore = useAgentsStore.getState();
-    const currentAgent = agentsStore.selectedAgent;
-    const { currentConversationIndices } = get();
-    const cleanedMessageId = messageId.slice(0, -3);
-    try {
-      const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/updateAIMessage`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: cleanedMessageId,
-            aiText: content,
-          }),
-        }
+    const convoId =
+      passedConvoId ||
+      (parsedSavedConversationIndex !== null
+        ? conversationHistories[parsedSavedConversationIndex]?.id
+        : null);
+
+    if (!convoId) return;
+
+    const messages = await handleGetMessages(convoId);
+
+    set((state) => {
+      const updatedHistories = [...state.conversationHistories];
+      const conversationToUpdateIndex = updatedHistories.findIndex(
+        (convo) => convo.id === convoId
       );
-      if (response.status === 200) {
-        const editedMessageResponse = await response.json();
-        set((state) => {
-          const updatedHistories = { ...state.conversationHistories };
-          const currentConversation =
-            updatedHistories[currentAgent][
-              currentConversationIndices[currentAgent]
-            ];
-          const messageIndex = currentConversation.messages.findIndex(
-            (message) => message.id === messageId
-          );
 
-          if (messageIndex !== 1) {
-            currentConversation.messages[messageIndex].content =
-              editedMessageResponse.aiContent;
-          }
+      if (conversationToUpdateIndex > -1) {
+        const updatedMessages = messages
+          .flatMap((message) => [
+            {
+              id: message.id + "-user",
+              content: message.userContent,
+              role: "user",
+              timeStamp: message.timeStamp,
+            },
+            {
+              id: message.id + "-ai",
+              content: message.aiContent,
+              role: "assistant",
+              timeStamp: message.timeStamp,
+            },
+          ])
+          .sort((a, b) => new Date(a.timeStamp) - new Date(b.timeStamp));
 
-          return {
-            conversationHistories: updatedHistories,
-          };
-        });
+        updatedHistories[conversationToUpdateIndex] = {
+          ...updatedHistories[conversationToUpdateIndex],
+          messages: updatedMessages,
+        };
       }
-    } catch (e) {
-      console.log(e);
-    }
+      return { conversationHistories: updatedHistories };
+    });
   },
+
   handleSaveConversationTitle: async (id, userID) => {
-    const agentsStore = useAgentsStore.getState();
-    const currentAgent = agentsStore.selectedAgent;
+    const { selectedAgent } = useInitializeAppStore.getState();
 
     const {
       conversationHistories,
-      currentConversationIndices,
+      currentConversationIndex,
       tempTitle,
       tempPrompt,
     } = get();
 
     const currentConversation = {
-      ...conversationHistories[currentAgent][
-        currentConversationIndices[currentAgent]
-      ],
+      ...conversationHistories[currentConversationIndex],
     };
 
     currentConversation.conversationName = tempTitle;
@@ -131,7 +105,7 @@ const useConversationStore = create((set, get) => ({
           body: JSON.stringify({
             id: id,
             userID: userID,
-            agentID: currentAgent,
+            agentID: selectedAgent,
             conversationName: currentConversation.conversationName,
             customPrompt: currentConversation.customPrompt,
             timeStamp: Date.now(),
@@ -142,15 +116,9 @@ const useConversationStore = create((set, get) => ({
 
       if (response.status === 200) {
         set((state) => {
-          const newConversationHistories = { ...state.conversationHistories };
-          const updatedConversationHistory = [
-            ...newConversationHistories[currentAgent],
-          ];
-
-          updatedConversationHistory[currentConversationIndices[currentAgent]] =
+          const newConversationHistories = [...state.conversationHistories];
+          newConversationHistories[currentConversationIndex] =
             currentConversation;
-
-          newConversationHistories[currentAgent] = updatedConversationHistory;
 
           return {
             ...state,
@@ -165,27 +133,17 @@ const useConversationStore = create((set, get) => ({
       console.log(e);
     }
   },
-  handleEditConversationTitle: () => {
-    const agentsStore = useAgentsStore.getState();
-    const currentAgent = agentsStore.selectedAgent;
-    const { conversationHistories, currentConversationIndices } = get();
 
+  handleEditConversationTitle: () => {
+    const { conversationHistories, currentConversationIndex } = get();
     const title =
-      conversationHistories[currentAgent][
-        currentConversationIndices[currentAgent]
-      ].conversationName;
+      conversationHistories[currentConversationIndex].conversationName;
     set({ tempTitle: title, editing: true });
   },
 
   handleEditConversationPrompt: () => {
-    const agentsStore = useAgentsStore.getState();
-    const currentAgent = agentsStore.selectedAgent;
-    const { conversationHistories, currentConversationIndices } = get();
-
-    const prompt =
-      conversationHistories[currentAgent][
-        currentConversationIndices[currentAgent]
-      ].customPrompt;
+    const { conversationHistories, currentConversationIndex } = get();
+    const prompt = conversationHistories[currentConversationIndex].customPrompt;
     set({ tempPrompt: prompt, editing: true });
   },
 
@@ -194,49 +152,32 @@ const useConversationStore = create((set, get) => ({
   },
 
   handleGetConversationId: () => {
-    const agentsStore = useAgentsStore.getState();
-    const currentAgent = agentsStore.selectedAgent;
+    const { selectedAgent } = useInitializeAppStore.getState();
     const { conversationHistories, currentConversationIndices } = get();
     const { previousResponseBodyForForms } = useFormsStore.getState();
 
     const conversationId =
-      conversationHistories[currentAgent]?.[
-        currentConversationIndices[currentAgent]
+      conversationHistories[selectedAgent]?.[
+        currentConversationIndices[selectedAgent]
       ]?.id;
 
     return previousResponseBodyForForms[conversationId];
   },
 
   handleIfConversationExists: async () => {
-    const agentsStore = useAgentsStore.getState();
-    const currentAgent = agentsStore.selectedAgent;
-
     const {
       conversationHistories,
-      currentConversationIndices,
+      currentConversationIndex,
       handleNewConversation,
     } = get();
 
-    let currentConversation;
-    if (!(currentAgent in conversationHistories)) {
-      set((state) => ({
-        ...state,
-        conversationHistories: {
-          ...state.conversationHistories,
-          [currentAgent]: [],
-        },
-      }));
-      currentConversation = null;
-    } else {
-      currentConversation =
-        conversationHistories[currentAgent][
-          currentConversationIndices[currentAgent]
-        ];
-    }
+    const { troubleshootContinue } = useTicketConversationsStore.getState();
 
-    if (!currentConversation) {
+    let currentConversation = conversationHistories[currentConversationIndex];
+
+    if (!currentConversation || troubleshootContinue) {
       const newConversation = await handleNewConversation(
-        conversationHistories[currentAgent]?.length || 0
+        conversationHistories.length
       );
       return newConversation;
     }
@@ -246,13 +187,13 @@ const useConversationStore = create((set, get) => ({
 
   handleNewConversation: async (index) => {
     const userStore = useUserStore.getState();
-    const agentsStore = useAgentsStore.getState();
-    const currentAgent = agentsStore.selectedAgent;
+
+    const { selectedAgent } = useInitializeAppStore.getState();
 
     const newConversation = {
       userID: userStore.user.id,
       conversationName: `Chat ${index + 1}`,
-      agentID: currentAgent,
+      agentID: selectedAgent,
     };
 
     try {
@@ -270,18 +211,11 @@ const useConversationStore = create((set, get) => ({
         const addedConversation = await response.json();
 
         set((state) => ({
-          ...state,
-          conversationHistories: {
+          conversationHistories: [
             ...state.conversationHistories,
-            [currentAgent]: [
-              ...(state.conversationHistories[currentAgent] || []),
-              addedConversation,
-            ],
-          },
-          currentConversationIndices: {
-            ...state.currentConversationIndices,
-            [currentAgent]: index,
-          },
+            addedConversation,
+          ],
+          currentConversationIndex: state.conversationHistories.length,
         }));
         return addedConversation;
       }
@@ -291,41 +225,27 @@ const useConversationStore = create((set, get) => ({
   },
 
   handleDeleteConversation: async (conversationId) => {
-    const agentsStore = useAgentsStore.getState();
-    const currentAgent = agentsStore.selectedAgent;
     const { conversationHistories } = get();
 
-    const conversationToDelete = conversationHistories[
-      agentsStore.selectedAgent
-    ].find((conversation) => conversation.id === conversationId);
+    const conversationToDelete = conversationHistories.find(
+      (conversation) => conversation.id === conversationId
+    );
 
     if (conversationToDelete) {
       try {
         const response = await fetch(
           `https://etech7-wf-etech7-db-service.azuremicroservices.io/deleteConversation?conversationId=${conversationToDelete.id}`
         );
+
         if (response.ok) {
-          const updatedHistories = conversationHistories[currentAgent].filter(
+          const updatedHistories = conversationHistories.filter(
             (conversation) => conversation.id !== conversationId
           );
 
-          set((state) => ({
-            ...state,
-            conversationHistories: {
-              ...state.conversationHistories,
-              [currentAgent]: updatedHistories,
-            },
-            currentConversationIndices:
-              updatedHistories.length > 0
-                ? {
-                    ...state.currentConversationIndices,
-                    [currentAgent]:
-                      state.currentConversationIndices[currentAgent] > 0
-                        ? state.currentConversationIndices[currentAgent] - 1
-                        : 0,
-                  }
-                : state.currentConversationIndices,
-          }));
+          set({
+            conversationHistories: updatedHistories,
+            currentConversationIndex: null,
+          });
         }
       } catch (e) {
         console.log(e);
@@ -333,217 +253,50 @@ const useConversationStore = create((set, get) => ({
     }
   },
 
-  handleConversationSelected: (index, agentID) => {
-    const { hoverTab, setActiveTab, setHoverTab } = useUiStore.getState();
-    set((state) => {
-      const updatedConversationIndices = {
-        ...state.currentConversationIndices,
-        [agentID]: index,
-      };
-      return {
-        ...state,
-        currentConversationIndices: updatedConversationIndices,
-      };
-    });
-    if (hoverTab === "general") {
-      setActiveTab("general");
-    }
-    setHoverTab(null);
-  },
-
-  handleAddUserMessage: async (message) => {
-    set((state) => {
-      const newUserMessage = {
-        id: Date.now() + "-user",
-        content: message,
-        role: "user",
-        timeStamp: new Date().toISOString(),
-      };
-
-      return { ...state, messages: [...state.messages, newUserMessage] };
-    });
-  },
-  handleAddAssistantMessage: (message, formType) => {
-    const { messageIdRef } = useRefStore.getState();
-    const messageId = `${messageIdRef.current}-ai${
-      formType ? `-${formType}` : ""
-    }`;
-
-    set((state) => {
-      const newMessage = {
-        id: messageId,
-        content: message,
-        role: "assistant",
-        timeStamp: new Date().toISOString(),
-      };
-      return { ...state, messages: [...state.messages, newMessage] };
-    });
-  },
-  handleAddForm: (formType) => {
-    const formId = Date.now();
-
-    set((state) => {
-      const newForm = {
-        id: formId,
-        type: "form",
-        formType,
-      };
-      return { ...state, messages: [...state.messages, newForm] };
-    });
-
-    return formId;
-  },
-
-  handleRemoveForm: (formId) => {
-    set((state) => {
-      return {
-        ...state,
-        messages: state.messages.filter((msg) => msg.id !== formId),
-      };
-    });
-  },
-
-  clearInteraction: () => {
-    set({ messages: [] });
+  handleConversationSelected: async (index, convoId) => {
+    const { initializeMessages } = get();
+    await initializeMessages(convoId);
+    set({ currentConversationIndex: index });
   },
 
   handleAddJarvisUserMessage: async (message) => {
-    const agentsStore = useAgentsStore.getState();
-    const currentAgent = agentsStore.selectedAgent;
-    const { currentConversationIndices } = get();
-
     set((state) => {
-      const newConversations = { ...state.conversationHistories };
-      const currentAgentConversations = newConversations[currentAgent];
+      const newConversations = [...state.conversationHistories];
 
-      if (
-        !currentAgentConversations[currentConversationIndices[currentAgent]]
-          .messages
-      ) {
-        currentAgentConversations[
-          currentConversationIndices[currentAgent]
-        ].messages = [];
+      if (!newConversations[state.currentConversationIndex].messages) {
+        newConversations[state.currentConversationIndex].messages = [];
       }
 
-      currentAgentConversations[
-        currentConversationIndices[currentAgent]
-      ].messages.push({
+      newConversations[state.currentConversationIndex].messages.push({
         id: Date.now() + "-user",
         content: message,
         role: "user",
         timeStamp: new Date().toISOString(),
       });
-      return { ...state, conversationHistories: newConversations };
+
+      return { conversationHistories: newConversations };
     });
   },
 
   handleAddJarvisAssistantMessage: (message, formType) => {
     const { messageIdRef } = useRefStore.getState();
 
-    const agentsStore = useAgentsStore.getState();
-    const currentAgent = agentsStore.selectedAgent;
-
-    const { currentConversationIndices } = get();
-    const currentConversationIndex = currentConversationIndices[currentAgent];
-
     set((state) => {
-      const newConversations = { ...state.conversationHistories };
-      const currentMessages =
-        newConversations[currentAgent]?.[currentConversationIndex]?.messages ||
-        [];
-
+      const newConversations = [...state.conversationHistories];
       const messageId = `${messageIdRef.current}-ai${
         formType ? `-${formType}` : ""
       }`;
 
-      currentMessages.push({
+      newConversations[state.currentConversationIndex].messages.push({
         id: messageId,
         content: message,
         role: "assistant",
         timeStamp: new Date().toISOString(),
       });
 
-      if (!newConversations[currentAgent]) {
-        newConversations[currentAgent] = [];
-      }
-      if (!newConversations[currentAgent][currentConversationIndex]) {
-        newConversations[currentAgent][currentConversationIndex] = {
-          messages: [],
-        };
-      }
-      newConversations[currentAgent][currentConversationIndex].messages =
-        currentMessages;
-
-      return { ...state, conversationHistories: newConversations };
+      return { conversationHistories: newConversations };
     });
   },
-
-  // handleAddForm: (formType) => {
-  //   const agentsStore = useAgentsStore.getState();
-  //   const currentAgent = agentsStore.selectedAgent;
-  //   const { conversationHistories, currentConversationIndices } = get();
-  //   const currentConversationIndex = currentConversationIndices[currentAgent];
-
-  //   const formId = Date.now();
-  //   const currentAgentConversations = conversationHistories[currentAgent];
-  //   const selectedConversation =
-  //     currentAgentConversations?.[currentConversationIndex];
-
-  //   const conversationId = selectedConversation?.id;
-
-  //   set((state) => {
-  //     const newConversations = {
-  //       ...state.conversationHistories,
-  //       [currentAgent]: [...(state.conversationHistories[currentAgent] || [])],
-  //     };
-  //     const currentMessages =
-  //       newConversations[currentAgent][currentConversationIndex]?.messages ||
-  //       [];
-
-  //     currentMessages.push({
-  //       id: formId,
-  //       type: "form",
-  //       formType,
-  //       conversationId,
-  //     });
-
-  //     if (!newConversations[currentAgent][currentConversationIndex]) {
-  //       newConversations[currentAgent][currentConversationIndex] = {
-  //         messages: [],
-  //       };
-  //     }
-
-  //     newConversations[currentAgent][currentConversationIndex].messages =
-  //       currentMessages;
-
-  //     return { ...state, conversationHistories: newConversations };
-  //   });
-  //   return conversationId;
-  // },
-
-  // handleRemoveForm: (formId) => {
-  //   const agentsStore = useAgentsStore.getState();
-  //   const currentAgent = agentsStore.selectedAgent;
-
-  //   const { currentConversationIndices } = get();
-  //   const currentConversationIndex = currentConversationIndices[currentAgent];
-
-  //   set((state) => {
-  //     const newConversations = { ...state.conversationHistories };
-
-  //     if (
-  //       newConversations[currentAgent] &&
-  //       newConversations[currentAgent][currentConversationIndex]
-  //     ) {
-  //       const currentMessages =
-  //         newConversations[currentAgent][currentConversationIndex].messages;
-  //       newConversations[currentAgent][currentConversationIndex].messages =
-  //         currentMessages.filter((msg) => msg.id !== formId);
-  //     }
-
-  //     return { ...state, conversationHistories: newConversations };
-  //   });
-  // },
 }));
 
 export default useConversationStore;

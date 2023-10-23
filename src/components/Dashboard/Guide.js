@@ -7,7 +7,7 @@ const Guide = ({}) => {
   return (
     <div
       onClick={() => {
-        if (window.innerWidth < 1024) {
+        if (window.innerWidth < 1023) {
           openHistory && handleHistoryMenu(false);
         }
       }}

@@ -5,7 +5,13 @@ import useUiStore from "../ui/uiStore";
 const useAssistantStore = create((set, get) => ({
   promptAssistantInput: "",
   activeUIAssistantTab: "Tickets",
-  activeAssistantButton: "Tickets",
+  activeAssistantTab: "Tickets",
+  showProgress: true,
+
+  handleShowProgress: () => {
+    const { showProgress } = get();
+    set({ showProgress: !showProgress });
+  },
 
   handlePromptAssistantInput: (prompt) => {
     set({
@@ -33,7 +39,7 @@ const useAssistantStore = create((set, get) => ({
       handleAssistantMenu();
     }
 
-    set({ activeAssistantButton: tab });
+    set({ activeAssistantTab: tab });
   },
 }));
 

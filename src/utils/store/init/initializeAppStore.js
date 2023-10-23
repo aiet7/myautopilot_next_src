@@ -1,14 +1,16 @@
 import { create } from "zustand";
-import useAgentsStore from "../agents/agentsStore";
 import useUiStore from "../ui/uiStore";
 
 const useInitializeAppStore = create((set, get) => ({
-  initializeApp: () => {
+  selectedAgent: null,
+  setSelectedAgent: (id) => set({ selectedAgent: id }),
+
+  initializeApp: (initialAgents) => {
     const { activeTab } = useUiStore.getState();
-    const { agents, setSelectedAgent } = useAgentsStore.getState();
+    const { setSelectedAgent } = get();
 
     if (activeTab === "iTAgent") {
-      const iTAgent = agents.find(
+      const iTAgent = initialAgents.find(
         (agent) => agent.agentName === "IT Jarvis Agent"
       );
       if (iTAgent) {

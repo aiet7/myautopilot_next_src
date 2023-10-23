@@ -1,7 +1,9 @@
 "use client";
 
+import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import useTicketsStore from "@/utils/store/assistant/sections/tickets/ticketsStore";
 import useUserStore from "@/utils/store/user/userStore";
+import { useEffect } from "react";
 import { FaSpinner } from "react-icons/fa";
 
 import { MdOutlineArrowDropUp, MdOutlineArrowDropDown } from "react-icons/md";
@@ -17,7 +19,12 @@ const Tickets = () => {
     setActiveTicketButton,
     setShowTicketIndex,
     handleGetTicketStatus,
+    initializeTickets,
   } = useTicketsStore();
+ 
+  useEffect(() => {
+    initializeTickets();
+  }, [user]);
 
   return (
     <div className="flex-grow flex flex-col gap-4 overflow-hidden">
@@ -67,12 +74,17 @@ const Tickets = () => {
                     onClick={() => handleGetTicketStatus(ticketId)}
                     className="hover:bg-blue-500 cursor-pointer flex justify-center items-center gap-2 bg-blue-800 text-white py-2"
                   >
-                    <span >
+                    <span>
                       {ticketStatus[ticketId]
                         ? "Refresh Status"
                         : "See Ticket Status"}
                     </span>
-                    {ticketStatusLoading[ticketId] && <FaSpinner size={20} className="animate-spin text-white"/>}
+                    {ticketStatusLoading[ticketId] && (
+                      <FaSpinner
+                        size={20}
+                        className="animate-spin text-white"
+                      />
+                    )}
                   </div>
                   {ticketStatus[ticketId] && (
                     <p className="break-words whitespace-pre-wrap">
@@ -94,7 +106,7 @@ const Tickets = () => {
 
                   <p className="break-words whitespace-pre-wrap">
                     <span className="font-bold">Ticket Creator:</span>{" "}
-                    {user.firstName + " " + user.lastName}
+                    {user?.firstName + " " + user?.lastName}
                   </p>
                   <p>
                     <span className="font-bold">Date Created:</span>{" "}

@@ -4,38 +4,17 @@ import { encode } from "html-entities";
 
 import Prism from "prismjs";
 import "../../../utils/marked/languages";
-import useConversationStore from "../../../utils/store/interaction/conversations/conversationsStore.js";
 import useRefStore from "@/utils/store/marked/ref/refStore";
-import useMarkedStore from "@/utils/store/marked/markedStore";
 
-import { BiEdit, BiNotepad } from "react-icons/bi";
-import { BsLayoutSplit } from "react-icons/bs";
-import { GiSettingsKnobs } from "react-icons/gi";
 import { FiThumbsUp, FiThumbsDown } from "react-icons/fi";
 import useInteractionStore from "@/utils/store/interaction/interactionsStore";
-import useNotesStore from "@/utils/store/assistant/sections/notes/notesStore";
+import useAssistantStore from "@/utils/store/assistant/assistantStore";
 
 const MarkedInteraction = ({ id, markdown }) => {
-  const { handleUpdateEditedResponse } = useConversationStore();
+  const { activeUIAssistantTab } = useAssistantStore();
   const { feedback, handleSubmitFeedback } = useInteractionStore();
-  const { handleAddNote } = useNotesStore();
-  const { copyRef, textAreaRef } = useRefStore();
-  const {
-    content,
-    isEditing,
-    editingMessageId,
-    setContent,
-    setIsEditing,
-    handleEdit,
-  } = useMarkedStore();
-
-  useEffect(() => {
-    if (textAreaRef.current) {
-      textAreaRef.current.style.height = "auto";
-      textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
-    }
-  }, [isEditing]);
-
+  const { copyRef } = useRefStore();
+  
   useEffect(() => {
     if (copyRef.current) {
       copyRef.current.querySelectorAll(".copy-code").forEach((element) => {
@@ -76,6 +55,7 @@ const MarkedInteraction = ({ id, markdown }) => {
     }
   }, [markdown]);
 
+
   const renderer = new marked.Renderer();
 
   renderer.code = (code, language) => {
@@ -91,7 +71,7 @@ const MarkedInteraction = ({ id, markdown }) => {
       language
     );
 
-    return `<pre class="rounded-md my-2"><div class="dark:bg-white/30 bg-black/60 rounded-tl-md rounded-tr-md flex justify-between items-center px-4 py-2 text-white"><p>${language}</p><p class="copy-code cursor-pointer" data-code="${codeToCopy}">Copy Code</p></div><div class="bg-black/80 rounded-br-md rounded-bl-md overflow-y-auto  p-4 scrollbar-thin"><code class="language-${language} text-sm">${highlightedCode}</code></div></pre>`;
+    return `<pre class=" rounded-md my-2"><div class="dark:bg-white/30 bg-black/60 rounded-tl-md rounded-tr-md flex justify-between items-center px-4 py-2 text-white"><p>${language}</p><p class="copy-code cursor-pointer" data-code="${codeToCopy}">Copy Code</p></div><div class="bg-black/80 rounded-br-md rounded-bl-md overflow-y-auto p-4 scrollbar-thin"><code class="language-${language} text-sm">${highlightedCode}</code></div></pre>`;
   };
 
   renderer.list = (body, ordered, start) => {
@@ -101,10 +81,6 @@ const MarkedInteraction = ({ id, markdown }) => {
       return `<ul class="flex flex-col gap-2 list-disc pl-4">${body}</ul>`;
     }
   };
-
-  // renderer.listitem = (text) => {
-  //   return `<li class="hover:bg-black/20 cursor-pointer rounded">${text}</li>`;
-  // };
 
   renderer.link = (href, title, text) => {
     return `<a class="dark:text-purple-400 text-purple-800" href="${href}" title="${title}" target="_blank" rel="noopener">${text}</a>`;
@@ -128,69 +104,39 @@ const MarkedInteraction = ({ id, markdown }) => {
 
   marked.setOptions({ renderer, gfm: true });
 
-  if (isEditing && editingMessageId === id) {
-    return (
-      <div className="flex flex-col items-start gap-2 w-full">
-        <textarea
-          ref={textAreaRef}
-          className="p-2 w-full block scrollbar-thin"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => {
-              handleUpdateEditedResponse(id, content);
-              setIsEditing(false);
-            }}
-            className="bg-blue-800 text-white px-2 py-1 rounded"
-          >
-            Save
-          </button>
-          <button
-            className="bg-blue-800 text-white px-2 py-1 rounded"
-            onClick={() => setIsEditing(false)}
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
-    );
-  } else {
-    return (
-      <div ref={copyRef}>
-        <div
-          className="flex flex-col gap-2"
-          dangerouslySetInnerHTML={{
-            __html: marked(markdown, { headerIds: false, mangle: false }),
-          }}
-        />
-        {id.endsWith("-ai") ? (
-          <div className="dark:text-blue-500 flex items-center justify-between pt-2 text-blue-800 max-w-[450px]">
-            <div className="flex items-center gap-2">
-              <FiThumbsUp
-                data-tooltip-id="Positive Feedback"
-                onClick={() => handleSubmitFeedback(id, false)}
-                className={`${
-                  feedback[id] === false ? "text-green-200" : ""
-                } dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none`}
-                size={30}
-              />
+  return (
+    <div ref={copyRef}>
+      <div
+        className="flex flex-col gap-2"
+        dangerouslySetInnerHTML={{
+          __html: marked(markdown, { headerIds: false, mangle: false }),
+        }}
+      />
+      {id.endsWith("-ai") && activeUIAssistantTab === "Engineer" ? (
+        <div className="dark:text-blue-500 flex items-center justify-between pt-2 text-blue-800 max-w-[450px]">
+          <div className="flex items-center gap-2">
+            <FiThumbsUp
+              data-tooltip-id="Positive Feedback"
+              onClick={() => handleSubmitFeedback(id, false)}
+              className={`${
+                feedback[id] === false ? "text-green-200" : ""
+              } dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none`}
+              size={30}
+            />
 
-              <FiThumbsDown
-                data-tooltip-id="Negative Feedback"
-                onClick={() => handleSubmitFeedback(id, true)}
-                className={`${
-                  feedback[id] === true ? "text-red-200" : ""
-                } dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none`}
-                size={30}
-              />
-            </div>
+            <FiThumbsDown
+              data-tooltip-id="Negative Feedback"
+              onClick={() => handleSubmitFeedback(id, true)}
+              className={`${
+                feedback[id] === true ? "text-red-200" : ""
+              } dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none`}
+              size={30}
+            />
           </div>
-        ) : null}
-      </div>
-    );
-  }
+        </div>
+      ) : null}
+    </div>
+  );
 };
 
 export default MarkedInteraction;

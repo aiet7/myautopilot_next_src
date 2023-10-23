@@ -9,6 +9,7 @@ import {
   MdScreenShare,
   MdPassword,
   MdOutlineRequestQuote,
+  MdPolicy,
 } from "react-icons/md";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
@@ -19,21 +20,21 @@ import { IoTicketSharp } from "react-icons/io5";
 const AssistantRail = ({}) => {
   const { openAssistant } = useUiStore();
   const {
-    activeAssistantButton,
+    activeAssistantTab,
     handleUIAssistantTabChange,
     handleAssistantTabChange,
   } = useAssistantStore();
 
   return (
     <div
-      className={` ${
-        openAssistant && window.innerWidth > 1024 ? "translate-x-[-350px]" : ""
-      } dark:lg:border-white/10 dark:bg-[#373737]  bg-[#eaf1fb] px-1 py-7 flex flex-col gap-4 items-center transition-all duration-300 ease`}
+      className={`${
+        openAssistant && window.innerWidth > 1023 ? "translate-x-[-350px]" : ""
+      }  dark:lg:border-white/10 dark:bg-[#373737] bg-[#eaf1fb] px-1 py-7 flex flex-col gap-4 items-center transition-all duration-300 ease`}
     >
       <IoTicketSharp
         data-tooltip-id="Tickets"
         className={`${
-          activeAssistantButton === "Tickets" && "text-blue-800"
+          activeAssistantTab === "Tickets" && "text-blue-800"
         } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
         size={35}
         onClick={() => {
@@ -48,14 +49,14 @@ const AssistantRail = ({}) => {
         className="z-[99]"
       />
       <BsFiletypeDoc
-        data-tooltip-id="Documents"
+        data-tooltip-id="DocGuide"
         className={`${
-          activeAssistantButton === "Documents" && "text-blue-800"
+          activeAssistantTab === "DocGuide" && "text-blue-800"
         } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
         size={35}
         onClick={() => {
-          handleAssistantTabChange("Documents");
-          handleUIAssistantTabChange("Documents");
+          handleAssistantTabChange("DocGuide");
+          handleUIAssistantTabChange("DocGuide");
         }}
       />
       <ReactTooltip
@@ -67,7 +68,7 @@ const AssistantRail = ({}) => {
       <SiOpenai
         data-tooltip-id="Engineer"
         className={`${
-          activeAssistantButton === "Engineer" && "text-blue-800"
+          activeAssistantTab === "Engineer" && "text-blue-800"
         } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
         size={35}
         onClick={() => {
@@ -82,10 +83,11 @@ const AssistantRail = ({}) => {
         className="z-[99]"
       />
       <div className="dark:border-white/20 border-black/10 border w-full" />
+
       <MdScreenShare
         data-tooltip-id="Remote Access"
         className={`${
-          activeAssistantButton === "Remote Access" && "text-blue-800"
+          activeAssistantTab === "Remote Access" && "text-blue-800"
         } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
         size={35}
         onClick={() => handleAssistantTabChange("Remote Access")}
@@ -99,7 +101,7 @@ const AssistantRail = ({}) => {
       <MdPassword
         data-tooltip-id="Passwords"
         className={`${
-          activeAssistantButton === "Passwords" && "text-blue-800"
+          activeAssistantTab === "Passwords" && "text-blue-800"
         } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
         size={35}
         onClick={() => handleAssistantTabChange("Passwords")}
@@ -113,7 +115,7 @@ const AssistantRail = ({}) => {
       <FaMoneyBillAlt
         data-tooltip-id="Billing"
         className={`${
-          activeAssistantButton === "Billing" && "text-blue-800"
+          activeAssistantTab === "Billing" && "text-blue-800"
         } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
         size={35}
         onClick={() => handleAssistantTabChange("Billing")}
@@ -124,10 +126,10 @@ const AssistantRail = ({}) => {
         id="Billing"
         className="z-[99]"
       />
-      <MdOutlineRequestQuote
+      {/* <MdOutlineRequestQuote
         data-tooltip-id="Quotes"
         className={`${
-          activeAssistantButton === "Quotes" && "text-blue-800"
+          activeAssistantTab === "Quotes" && "text-blue-800"
         } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
         size={35}
         onClick={() => handleAssistantTabChange("Quotes")}
@@ -141,7 +143,7 @@ const AssistantRail = ({}) => {
       <HiDocumentReport
         data-tooltip-id="Reports"
         className={`${
-          activeAssistantButton === "Reports" && "text-blue-800"
+          activeAssistantTab === "Reports" && "text-blue-800"
         } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
         size={35}
         onClick={() => handleAssistantTabChange("Reports")}
@@ -155,7 +157,7 @@ const AssistantRail = ({}) => {
       <AiFillProject
         data-tooltip-id="Projects"
         className={`${
-          activeAssistantButton === "Projects" && "text-blue-800"
+          activeAssistantTab === "Projects" && "text-blue-800"
         } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
         size={35}
         onClick={() => handleAssistantTabChange("Projects")}
@@ -165,11 +167,11 @@ const AssistantRail = ({}) => {
         content="Projects"
         id="Projects"
         className="z-[99]"
-      />
+      /> */}
       <AiFillTool
         data-tooltip-id="Tools"
         className={`${
-          activeAssistantButton === "Tools" && "text-blue-800"
+          activeAssistantTab === "Tools" && "text-blue-800"
         } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
         size={35}
         onClick={() => handleAssistantTabChange("Tools")}
@@ -178,6 +180,20 @@ const AssistantRail = ({}) => {
         place="left"
         content="Tools"
         id="Tools"
+        className="z-[99]"
+      />
+      <MdPolicy
+        data-tooltip-id="Policies"
+        className={`${
+          activeAssistantTab === "Policies" && "text-blue-800"
+        } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
+        size={35}
+        onClick={() => handleAssistantTabChange("Policies")}
+      />
+      <ReactTooltip
+        place="left"
+        content="Policies"
+        id="Policies"
         className="z-[99]"
       />
     </div>

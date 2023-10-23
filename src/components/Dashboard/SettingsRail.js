@@ -1,4 +1,3 @@
-import useAgentsStore from "@/utils/store/agents/agentsStore";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import { AiOutlineMenu } from "react-icons/ai";
@@ -9,10 +8,11 @@ import { Tooltip as ReactTooltip } from "react-tooltip";
 
 const SettingsRail = ({}) => {
   const { activeUIAssistantTab } = useAssistantStore();
-  const { selectedAgent } = useAgentsStore();
   const {
     activeTab,
     openHistory,
+    openDocs,
+    openAdmin,
     openAssistant,
     handleHistoryMenu,
     handleAssistantMenu,
@@ -21,10 +21,16 @@ const SettingsRail = ({}) => {
   return (
     <div
       className={`dark:bg-[#111111] bg-[#f6f8fc] flex items-center ${
-        activeUIAssistantTab === "Engineer" ? "justify-between" : "justify-end"
+        activeTab === "admin" ||
+        activeUIAssistantTab === "Engineer" ||
+        activeUIAssistantTab === "DocGuide"
+          ? "justify-between"
+          : "justify-end"
       } px-4 py-2 lg:hidden`}
     >
-      {activeUIAssistantTab === "Engineer" && (
+      {(activeTab === "admin" ||
+        activeUIAssistantTab === "Engineer" ||
+        activeUIAssistantTab === "DocGuide") && (
         <>
           <AiOutlineMenu
             data-tooltip-id="Mobile History Menu"
@@ -34,14 +40,18 @@ const SettingsRail = ({}) => {
           />
           <ReactTooltip
             place="left"
-            content={openHistory ? "Hide History Menu" : "Open History Menu"}
+            content={
+              openHistory || openDocs || openAdmin
+                ? "Hide History Menu"
+                : "Open History Menu"
+            }
             id="Mobile History Menu"
             className="z-[99]"
           />
         </>
       )}
 
-      {selectedAgent && activeTab === "iTAgent" ? (
+      {activeTab === "iTAgent" ? (
         <>
           <BiBrain
             data-tooltip-id="Mobile Assistant Menu"

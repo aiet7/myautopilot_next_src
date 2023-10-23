@@ -4,7 +4,7 @@ import useUserStore from "../user/userStore";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import useUiStore from "../ui/uiStore";
-import useRefStore from "./refStore";
+import useRefStore from "./ref/refStore";
 
 const useTeamsStore = create((set, get) => ({
   userInput: "",
