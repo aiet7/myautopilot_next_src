@@ -286,6 +286,16 @@ body {
   }
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield; 
+}
+
 :not(pre) > code[class*="language-"],
 pre[class*="language-"] {
   background-color: transparent !important;

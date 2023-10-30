@@ -40,14 +40,7 @@ const Assistant = ({}) => {
             className="absolute cursor-pointer top-[27px] self-end"
           />
         )}
-        <Image
-          src="/etech7_logo.webp"
-          width={100}
-          height={100}
-          alt="Etech7_Logo"
-          className="pb-4"
-          priority
-        />
+        
         {activeAssistantTab === "Tickets" && <Tickets />}
         {activeAssistantTab === "Engineer" && <Engineer />}
         {activeAssistantTab === "DocGuide" && <DocGuide />}

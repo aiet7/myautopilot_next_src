@@ -13,8 +13,6 @@ import {
   MdOutlineLightMode,
 } from "react-icons/md";
 
-import { VscOrganization } from "react-icons/vsc";
-
 import { RiAdminLine } from "react-icons/ri";
 
 import { useTheme } from "next-themes";
@@ -87,22 +85,32 @@ const TabNavRail = ({}) => {
           className="z-[99]"
         />
       </div>
-      {/* <div
-        onClick={() => handleTabChange("admin")}
-        className="relative flex flex-col gap-2 items-center cursor-pointer"
-      >
-        <RiAdminLine
-          data-tooltip-id="Admin"
-          size={22}
-          className={`${activeTab === "admin" && "text-blue-600"} outline-none`}
-        />
-        <ReactTooltip
-          place="right"
-          content="Admin"
-          id="Admin"
-          className="z-[99]"
-        />
-      </div> */}
+      {[
+        "tim@etech7.com",
+        "ariel@etech7.com",
+        "eisanov@etech7.com",
+        "mkandinov@etech7.com",
+        "agogia@etech7.com",
+      ].includes(user?.email) && (
+        <div
+          onClick={() => handleTabChange("admin")}
+          className="relative flex flex-col gap-2 items-center cursor-pointer"
+        >
+          <RiAdminLine
+            data-tooltip-id="Admin"
+            size={22}
+            className={`${
+              activeTab === "admin" && "text-blue-600"
+            } outline-none`}
+          />
+          <ReactTooltip
+            place="right"
+            content="Admin"
+            id="Admin"
+            className="z-[99]"
+          />
+        </div>
+      )}
 
       <div
         onClick={() => handleToggleSettings(true)}
@@ -114,13 +122,6 @@ const TabNavRail = ({}) => {
         {openSettings && (
           <div className="dark:bg-black dark:border-white/40 dark:border rounded-lg bg-white border border-black/10 absolute z-[99] bottom-[52px] right-0 w-[350px] lg:bottom-0 lg:left-[37px] lg:w-[351px]">
             <div className="flex flex-col">
-              {/* <div
-                onClick={() => handleTabChange("organization")}
-                className="dark:hover:bg-white/20 hover:bg-black/10 rounded-tl-lg rounded-tr-lg w-full text-lg flex items-center gap-3 px-6 py-3"
-              >
-                <VscOrganization />
-                <span>Organization</span>
-              </div> */}
               <div
                 onClick={() => handleTabChange("settings")}
                 className="dark:hover:bg-white/20 hover:bg-black/10 rounded-tl-lg rounded-tr-lg w-full text-lg flex items-center gap-3 px-6 py-3"

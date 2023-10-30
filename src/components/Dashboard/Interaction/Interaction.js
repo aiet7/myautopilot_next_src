@@ -290,7 +290,7 @@ const Interaction = ({}) => {
               documentConversationHistories[currentDocumentConversationIndex]
                 ?.data
                 ? "Ask About Your Document..."
-                : "Add New Document To Upload PDF..."
+                : "Add New Document To Upload..."
             }
             className="dark:bg-black bg-white border outline-blue-500 w-full p-4 pr-32 resize-none no-scrollbar"
             style={{

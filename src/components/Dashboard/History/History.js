@@ -13,7 +13,6 @@ import useUiStore from "@/utils/store/ui/uiStore";
 import { useRouter } from "next/router";
 
 const History = ({}) => {
-  const router = useRouter();
 
   const {
     editing,
@@ -48,7 +47,7 @@ const History = ({}) => {
             conversationHistories ? conversationHistories.length : 0
           )
         }
-        className="hover:bg-blue-500 w-full p-4 bg-blue-800 text-white"
+        className="hover:bg-blue-500 w-full p-4 bg-blue-800 text-white "
       >
         + New Chat
       </button>
@@ -56,7 +55,7 @@ const History = ({}) => {
         {conversationHistories.map((conversation, index) => {
           const { id, userID, conversationName, customPrompt } = conversation;
           return (
-            <div key={index} className="flex flex-col items-start my-2">
+            <div key={index} className="flex flex-col items-start my-2 ">
               <div
                 onClick={() => handleConversationSelected(index, id)}
                 className={`${`${

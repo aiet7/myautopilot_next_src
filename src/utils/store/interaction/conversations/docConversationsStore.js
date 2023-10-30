@@ -146,6 +146,8 @@ const useDocConversationsStore = create((set, get) => ({
     set({ tempTitle: "", tempPrompt: "", editing: false });
   },
 
+  
+
   handleUploadDocument: async (file) => {
     if (file.type !== "application/pdf") {
       alert("File Not Supported");

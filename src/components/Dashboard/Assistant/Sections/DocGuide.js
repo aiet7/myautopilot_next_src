@@ -1,9 +1,14 @@
 import useRefStore from "@/utils/store/assistant/ref/refStore";
 import useDocGuideStore from "@/utils/store/assistant/sections/docGuide/docGuideStore";
 import useDocConversationsStore from "@/utils/store/interaction/conversations/docConversationsStore";
-import { Document, Page } from "react-pdf";
+import dynamic from "next/dynamic";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
+
+const DynamicDocument = dynamic(() =>
+  import("react-pdf").then((mod) => mod.Document)
+);
+const DynamicPage = dynamic(() => import("react-pdf").then((mod) => mod.Page));
 
 const DocGuide = ({}) => {
   const { currentDocumentConversationIndex } = useDocConversationsStore();
@@ -13,6 +18,8 @@ const DocGuide = ({}) => {
     wordCount,
     pdfUrl,
     currentPage,
+    handlePageChange,
+    handlePageBlur,
     handleNextPage,
     handlePreviousPage,
     handleToggleFullScreen,
@@ -21,24 +28,35 @@ const DocGuide = ({}) => {
   const { docRef } = useRefStore();
 
   return (
-    <div className="flex-grow flex flex-col gap-4 overflow-hidden">
-      <h3 className="text-left text-lg">Document Guide</h3>
+    <div className="flex-grow flex flex-col gap-8 overflow-hidden">
+      <h3 className="dark:border-white/40 text-lg border-b">Document Guide</h3>
       <div className="flex flex-col">
-        <div className="flex gap-2 ">
+        <div className="flex gap-2">
           <p className="font-bold">Word Count: </p>
           <p>{currentDocumentConversationIndex !== null ? wordCount : 0}</p>
         </div>
-        <div className="flex gap-2">
-          <p className="font-bold">Page Count: </p>
-          <p>{currentDocumentConversationIndex !== null ? pageCount : 0}</p>
-        </div>
+
         <div className="flex gap-2">
           <p className="font-bold">Current Page: </p>
-          <p>
-            {currentDocumentConversationIndex !== null && pdfUrl
-              ? currentPage
-              : 0}
-          </p>
+
+          <>
+            {currentDocumentConversationIndex !== null && pdfUrl ? (
+              <>
+                <input
+                  min="1"
+                  max={pageCount}
+                  value={currentPage}
+                  type="number"
+                  className="w-10 text-center no-scrollbar"
+                  onChange={(e) => handlePageChange(e.target.value)}
+                  onBlur={handlePageBlur}
+                />
+                <p>/{pageCount}</p>
+              </>
+            ) : (
+              <p>0</p>
+            )}
+          </>
         </div>
       </div>
       <div className="flex items-center gap-2">
@@ -82,9 +100,9 @@ const DocGuide = ({}) => {
           className="cursor-pointer"
         >
           {pdfUrl && currentDocumentConversationIndex !== null ? (
-            <Document file={pdfUrl}>
-              <Page pageNumber={currentPage} />
-            </Document>
+            <DynamicDocument file={pdfUrl}>
+              <DynamicPage pageNumber={currentPage} />
+            </DynamicDocument>
           ) : (
             <p>No PDF uploaded yet.</p>
           )}

@@ -7,7 +7,7 @@ const Workspace = () => {
 
   return (
     <>
-      <div className="flex flex-col px-6 gap-2 overflow-auto scrollbar-thin lg:flex-row">
+      <div className="flex flex-col px-4 gap-2 overflow-auto scrollbar-thin lg:flex-row">
         <div className="border">
           <div className="flex flex-col">
             <div className="dark:bg-white/60 px-4 h-44   flex justify-center items-center border-b lg:w-80">

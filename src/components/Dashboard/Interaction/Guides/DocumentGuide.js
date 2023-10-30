@@ -26,7 +26,17 @@ const DocumentGuide = () => {
           </p>
         </div>
 
-        <label className="dark:hover:bg-white/20 hover:bg-black/20 dark:text-white/40 border text-center p-20 rounded-2xl cursor-pointer text-3xl text-black/40">
+        <label
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={async (e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file) {
+              await handleUploadDocument(file);
+            }
+          }}
+          className="dark:hover:bg-white/20 hover:bg-black/20 dark:text-white/40 border text-center p-20 rounded-2xl cursor-pointer text-3xl text-black/40"
+        >
           <input
             className="hidden"
             key={Date.now()}

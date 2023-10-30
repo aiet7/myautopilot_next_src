@@ -18,7 +18,7 @@ const Integrations = () => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="dark:border-b-white/20 border-b px-6 py-4">
+      <div className="dark:border-b-white/20 border-b p-4">
         <h1 className="text-2xl">Integration Center</h1>
       </div>
       <div className="flex flex-col py-6 w-full overflow-hidden">

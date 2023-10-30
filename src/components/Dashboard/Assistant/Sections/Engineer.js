@@ -18,8 +18,8 @@ const Engineer = () => {
   } = useEngineerStore();
 
   return (
-    <div className="flex-grow flex flex-col gap-4 overflow-hidden">
-      <h3 className="text-left text-lg">IT Engineer</h3>
+    <div className="flex-grow flex flex-col gap-8 overflow-hidden">
+      <h3 className="dark:border-white/40 text-lg border-b">IT Engineer</h3>
       <div className="flex-grow overflow-y-auto scrollbar-thin">
         <div className="flex flex-grow flex-col gap-4 ">
           <div className="w-full flex flex-col items-center rounded gap-1">

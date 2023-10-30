@@ -7,8 +7,8 @@ import useDocumentStore from "@/utils/store/assistant/sections/policies/policies
 const Policies = () => {
   const { tempDocs, handleSubmitDoc } = useDocumentStore();
   return (
-    <div className="flex-grow flex flex-col gap-4 overflow-hidden">
-      <h3 className="text-left text-lg">Policies</h3>
+    <div className="flex-grow flex flex-col gap-8 overflow-hidden">
+      <h3 className="dark:border-white/40 text-lg border-b">Policies</h3>
       <div className="flex-grow overflow-y-auto scrollbar-thin">
         <div className="flex flex-col flex-grow gap-4">
           {tempDocs.map((doc, index) => {

@@ -6,6 +6,7 @@ import Roles from "./Options/Roles";
 import useAdminStore from "@/utils/store/admin/adminStore";
 import Integrations from "./Options/Integrations/Integrations";
 import Branding from "./Options/Branding";
+import Companies from "./Options/Companies";
 
 const Control = ({}) => {
   const { openAdmin, handleHistoryMenu } = useUiStore();
@@ -26,6 +27,7 @@ const Control = ({}) => {
       {currentOption === "Roles" && <Roles />}
       {currentOption === "Integrations" && <Integrations />}
       {currentOption === "Branding" && <Branding />}
+      {currentOption === "Companies" && <Companies />}
     </div>
   );
 };

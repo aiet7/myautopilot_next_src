@@ -27,9 +27,9 @@ const Tickets = () => {
   }, [user]);
 
   return (
-    <div className="flex-grow flex flex-col gap-4 overflow-hidden">
-      <h3 className="text-left text-lg">Tickets</h3>
-      <div className="dark:border-white/20 flex  items-center border rounded">
+    <div className="flex-grow flex flex-col gap-8 overflow-hidden">
+      <h3 className="dark:border-white/40 text-lg border-b">Tickets</h3>
+      <div className="dark:border-white/20 flex items-center border rounded">
         <button
           onClick={() => setActiveTicketButton("Opened")}
           className={`${

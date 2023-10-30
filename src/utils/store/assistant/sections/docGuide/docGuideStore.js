@@ -1,7 +1,4 @@
 import { create } from "zustand";
-import { pdfjs } from "react-pdf";
-
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 const useDocGuideStore = create((set, get) => ({
   pageCount: 0,
@@ -10,7 +7,6 @@ const useDocGuideStore = create((set, get) => ({
   currentPage: 1,
 
   handleGetPdfDetails: (file) => {
-    const pdfUrl = URL.createObjectURL(file);
     const reader = new FileReader();
     reader.readAsArrayBuffer(file);
 
@@ -18,25 +14,20 @@ const useDocGuideStore = create((set, get) => ({
       reader.onload = async () => {
         try {
           const pdfData = new Uint8Array(reader.result);
-          const pdfDoc = await pdfjs.getDocument({ data: pdfData }).promise;
 
-          const numPages = pdfDoc.numPages;
-          let wordCount = 0;
+          const { pdfHandler } = await import("@/utils/pdfHandler");
 
-          for (let i = 1; i <= numPages; i++) {
-            const page = await pdfDoc.getPage(i);
-            const content = await page.getTextContent();
-            const text = content.items.map((item) => item.str).join(" ");
-            wordCount += text.split(/\s+/).length;
-          }
+          const { pageCount, wordCount } = await pdfHandler(pdfData);
+
+          const pdfUrl = URL.createObjectURL(file);
 
           set({
-            pageCount: numPages,
+            pageCount: pageCount,
             wordCount: wordCount,
             pdfUrl: pdfUrl,
             currentPage: 1,
           });
-          resolve({ pageCount: numPages, wordCount: wordCount });
+          resolve({ pageCount, wordCount });
         } catch (error) {
           reject(error);
         }
@@ -56,6 +47,19 @@ const useDocGuideStore = create((set, get) => ({
     const { currentPage } = get();
     if (currentPage > 1) {
       set({ currentPage: currentPage - 1 });
+    }
+  },
+
+  handlePageChange: (value) => {
+    set({ currentPage: parseInt(value, 10) || "" });
+  },
+
+  handlePageBlur: () => {
+    const { currentPage, pageCount } = get();
+    if (currentPage > pageCount) {
+      set({ currentPage: pageCount });
+    } else if (currentPage < 1 || isNaN(currentPage)) {
+      set({ currentPage: 1 });
     }
   },
 

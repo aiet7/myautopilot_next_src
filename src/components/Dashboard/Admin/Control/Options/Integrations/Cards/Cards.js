@@ -25,7 +25,7 @@ const Cards = () => {
 
   return (
     <>
-      <div className="flex gap-2 px-6">
+      <div className="flex gap-2 px-4 py-2">
         <button
           onClick={() => setSelectedCategory(null)}
           className={`px-4 py-2 rounded ${
@@ -50,7 +50,7 @@ const Cards = () => {
           </button>
         ))}
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2  xl:grid-cols-3 gap-4 py-7 px-6 overflow-auto scrollbar-thin">
+      <div className="grid grid-cols-1 lg:grid-cols-2  xl:grid-cols-3 gap-4 py-7 px-4 overflow-auto scrollbar-thin">
         {filteredCards.map((card, index) => {
           const { value, view } = card;
           return (
@@ -59,11 +59,7 @@ const Cards = () => {
               className="dark:hover:bg-white/70 dark:bg-white/60 dark:shadow-white/20 hover:bg-black/5 flex items-center justify-center border shadow-lg rounded w-full h-60  cursor-pointer"
               onClick={() => handleIntegrationsCard(view)}
             >
-              {card.type === "image" ? (
-                <Image src={value} alt="Card Image" width={300} height={300} />
-              ) : (
-                <h2 className="text-3xl font-bold">{value}</h2>
-              )}
+              <Image src={value} alt="Card Image" width={300} height={300} />
             </div>
           );
         })}

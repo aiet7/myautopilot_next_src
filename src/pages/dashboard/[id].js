@@ -34,7 +34,7 @@ const DashboardPage = ({
   initialAgents,
 }) => {
   const { initializeApp } = useInitializeAppStore();
-  const { initializeUser } = useUserStore();
+  const { initializeUser, user } = useUserStore();
   const {
     initializeConversations,
     initializeMessages,
@@ -118,12 +118,19 @@ const DashboardPage = ({
                 </div>
               )}
 
-              {/* {activeTab === "admin" && (
-                <div className="flex flex-1 relative overflow-hidden">
-                  <Nav />
-                  <Control />
-                </div>
-              )} */}
+              {[
+                "tim@etech7.com",
+                "ariel@etech7.com",
+                "eisanov@etech7.com",
+                "mkandinov@etech7.com",
+                "agogia@etech7.com",
+              ].includes(user?.email) &&
+                activeTab === "admin" && (
+                  <div className="flex flex-1 relative overflow-hidden">
+                    <Nav />
+                    <Control />
+                  </div>
+                )}
 
               {activeTab === "settings" && (
                 <div className="overflow-auto h-full w-full no-scrollbar">
