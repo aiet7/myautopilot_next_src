@@ -4,6 +4,27 @@ import useDocConversationsStore from "@/utils/store/interaction/conversations/do
 import dynamic from "next/dynamic";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
+import { pdfjs } from "react-pdf";
+
+export const pdfHandler = async (pdfData) => {
+  const pdfDoc = await pdfjs.getDocument({ data: pdfData }).promise;
+
+  const numPages = pdfDoc.numPages;
+  let wordCount = 0;
+
+  for (let i = 1; i <= numPages; i++) {
+    const page = await pdfDoc.getPage(i);
+    const content = await page.getTextContent();
+    const text = content.items.map((item) => item.str).join(" ");
+    wordCount += text.split(/\s+/).length;
+  }
+
+  return {
+    pageCount: numPages,
+    wordCount: wordCount,
+  };
+};
+
 
 const DynamicDocument = dynamic(() =>
   import("react-pdf").then((mod) => mod.Document)

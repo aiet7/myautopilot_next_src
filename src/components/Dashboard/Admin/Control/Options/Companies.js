@@ -63,35 +63,39 @@ const Companies = () => {
             />
           </div>
         </div>
-        <div className="p-4 flex flex-col flex-grow text-sm overflow-auto scrollbar-thin">
-          <div className="dark:text-white/50 dark:border-b-white/20  grid grid-cols-8 border-b px-2 pb-4 font-bold text-black/50">
-            <p></p>
-            <p className="truncate">Company Name</p>
-            <p className="truncate">Company Owner</p>
-            <p className="truncate">Create Date</p>
-            <p className="truncate">Phone Number</p>
-            <p className="truncate">City</p>
-            <p className="truncate">Country/Region</p>
-            <p className="truncate">Industry</p>
-          </div>
-          {filteredCompanies.map((company, index) => {
-            return (
-              <div
-                key={index}
-                className="dark:border-b-white/20 grid grid-cols-8 p-2 border-b"
-              >
-                <input type="checkbox" />
-                <p className="truncate">{company.name}</p>
-                <p className="truncate">{company.owner}</p>
-                <p className="truncate"> {company.createdDate}</p>
-                <p className="truncate">{company.phoneNumber}</p>
-
-                <p className="truncate">{company.city}</p>
-                <p className="truncate">{company.country}</p>
-                <p className="truncate">{company.industry}</p>
-              </div>
-            );
-          })}
+        <div className="px-4 pb-4 block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
+          <table className="min-w-full text-black/50 table-fixed ">
+            <thead className="sticky top-0 bg-white">
+              <tr className="text-left">
+                <th className="p-2 "></th>
+                <th className="p-2 truncate">Company Name</th>
+                <th className="p-2 truncate">Company Owner</th>
+                <th className="p-2 truncate">Create Date</th>
+                <th className="p-2 truncate">Phone Number</th>
+                <th className="p-2 truncate">City</th>
+                <th className="p-2 truncate">Country/Region</th>
+                <th className="p-2 truncate">Industry</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredCompanies.map((company, index) => {
+                return (
+                  <tr key={index} className="dark:border-b-white/20 border-b">
+                    <td className="p-2">
+                      <input type="checkbox" />
+                    </td>
+                    <td className="p-2 truncate">{company.name}</td>
+                    <td className="p-2 truncate">{company.owner}</td>
+                    <td className="p-2 truncate">{company.createdDate}</td>
+                    <td className="p-2 truncate">{company.phoneNumber}</td>
+                    <td className="p-2 truncate">{company.city}</td>
+                    <td className="p-2 truncate">{company.country}</td>
+                    <td className="p-2 truncate">{company.industry}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

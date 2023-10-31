@@ -12,7 +12,7 @@ const Manage = () => {
           <div className="flex flex-col">
             <div className="dark:bg-white/60 px-4 h-44 flex justify-center items-center border-b lg:w-80">
               <Image
-                src="/logo-Connectwise.png"
+                src="/images/logo-Connectwise.png"
                 alt="Card Image"
                 width={250}
                 height={250}

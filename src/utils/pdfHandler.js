@@ -1,5 +1,5 @@
 import { pdfjs } from "react-pdf";
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+pdfjs.GlobalWorkerOptions.workerSrc = "/scripts/pdf.worker.min.js";
 
 export const pdfHandler = async (pdfData) => {
   const pdfDoc = await pdfjs.getDocument({ data: pdfData }).promise;

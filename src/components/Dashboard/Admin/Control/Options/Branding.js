@@ -28,7 +28,7 @@ const Branding = () => {
                 <div className="border h-44 flex items-center justify-center md:w-72 lg:w-96">
                   <Image
                     alt="Your Logo"
-                    src="/etech7_logo.webp"
+                    src="/images/etech7_logo.webp"
                     width={150}
                     height={150}
                   />

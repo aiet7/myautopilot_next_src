@@ -49,7 +49,7 @@ const Login = () => {
           <form className="w-[300px] flex flex-col items-center gap-4">
             <Image
               priority
-              src="/etech7_logo_auth.webp"
+              src="/images/etech7_logo_auth.webp"
               alt="Etech7_Login_Logo"
               width={50}
               height={50}

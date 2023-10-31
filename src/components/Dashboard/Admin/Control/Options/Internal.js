@@ -44,33 +44,38 @@ const Internal = ({}) => {
           </div>
         </div>
 
-        <div className="p-4 flex flex-col overflow-auto scrollbar-thin flex-grow text-sm">
-          <div className="dark:text-white/50 dark:border-b-white/20  grid grid-cols-4 border-b px-2 pb-4 font-bold text-black/50">
-            <p></p>
-            <p>Name</p>
-            <p>Role(s)</p>
-            <p>Display Name</p>
-          </div>
-          {filteredPeople.map((person, index) => {
-            return (
-              <div
-                key={index}
-                className="dark:border-b-white/20 grid grid-cols-4 p-2 border-b "
-              >
-                <div className="flex gap-2">
-                  <button className="hover:underline text-blue-500">
-                    Edit
-                  </button>
-                  <button className="hover:underline text-blue-500">
-                    Delete
-                  </button>
-                </div>
-                <p className="truncate">{person.name}</p>
-                <p className="truncate">{person.role}</p>
-                <p className="truncate">{person.displayName}</p>
-              </div>
-            );
-          })}
+        <div className="px-4 pb-4 block overflow-auto scrollbar-thin text-sm max-h-full max-w-full">
+          <table className="min-w-full text-black/50 table-fixed ">
+            <thead className="sticky top-0 bg-white">
+              <tr className="text-left">
+                <th className="p-2 "></th>
+                <th className="p-2 ">Name</th>
+                <th className="p-2">Role(s)</th>
+                <th className="p-2">Display Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredPeople.map((person, index) => {
+                return (
+                  <tr key={index} className="dark:border-b-white/20 border-b">
+                    <td className="p-2">
+                      <div className="flex gap-2">
+                        <button className="hover:underline text-blue-500">
+                          Edit
+                        </button>
+                        <button className="hover:underline text-blue-500">
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                    <td className="p-2 truncate">{person.name}</td>
+                    <td className="p-2 truncate">{person.role}</td>
+                    <td className="p-2 truncate">{person.displayName}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

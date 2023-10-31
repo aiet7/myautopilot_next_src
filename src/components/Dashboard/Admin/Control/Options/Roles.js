@@ -51,34 +51,40 @@ const Roles = ({}) => {
             />
           </div>
         </div>
-        <div className="p-4 flex flex-col overflow-auto scrollbar-thin flex-grow text-sm">
-          <div className="dark:text-white/50 dark:border-b-white/20  grid grid-cols-3 border-b px-2 pb-4 font-bold text-black/50">
-            <p></p>
-            <p>Name</p>
-            <p>Summary</p>
-          </div>
-          {filteredRoles.map((role, index) => {
-            return (
-              <div
-                key={index}
-                className="dark:border-b-white/20 grid grid-cols-3 p-2 border-b "
-              >
-                <div className="flex  items-start gap-2 ">
-                  <button className="hover:underline text-blue-500">
-                    Edit
-                  </button>
-                  <button className="hover:underline text-blue-500">
-                    Clone
-                  </button>
-                  <button className="hover:underline text-blue-500">
-                    Delete
-                  </button>
-                </div>
-                <p className="truncate">{role.name}</p>
-                <p className="truncate">{role.summary}</p>
-              </div>
-            );
-          })}
+
+        <div className="px-4 pb-4 block overflow-auto scrollbar-thin text-sm max-h-full max-w-full">
+          <table className="min-w-full text-black/50 table-fixed">
+            <thead className="sticky top-0 bg-white">
+              <tr className="text-left">
+                <th className="p-2 "></th>
+                <th className="p-2">Name</th>
+                <th className="p-2"> Summary</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredRoles.map((role, index) => {
+                return (
+                  <tr key={index} className="dark:border-b-white/20 border-b">
+                    <td className="p-2">
+                      <div className="flex gap-2">
+                        <button className="hover:underline text-blue-500">
+                          Edit
+                        </button>
+                        <button className="hover:underline text-blue-500">
+                          Clone
+                        </button>
+                        <button className="hover:underline text-blue-500">
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                    <td className="p-2 truncate">{role.name}</td>
+                    <td className="p-2 truncate">{role.summary}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

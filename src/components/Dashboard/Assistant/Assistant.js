@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image.js";
 
 import useUiStore from "@/utils/store/ui/uiStore.js";
 import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
@@ -10,10 +9,8 @@ import Tickets from "./Sections/Tickets.js";
 import DocGuide from "./Sections/DocGuide.js";
 import Passwords from "./Sections/Passwords.js";
 import Billing from "./Sections/Billing.js";
-import Reports from "./Sections/Reports.js";
 import Policies from "./Sections/Policies.js";
-import Quotes from "./Sections/Quotes.js";
-import Projects from "./Sections/Projects.js";
+
 import Progress from "./Progress.js";
 import Engineer from "./Sections/Engineer.js";
 import RemoteAccess from "./Sections/RemoteAccess.js";
@@ -40,16 +37,14 @@ const Assistant = ({}) => {
             className="absolute cursor-pointer top-[27px] self-end"
           />
         )}
-        
+
         {activeAssistantTab === "Tickets" && <Tickets />}
         {activeAssistantTab === "Engineer" && <Engineer />}
         {activeAssistantTab === "DocGuide" && <DocGuide />}
         {activeAssistantTab === "Remote Access" && <RemoteAccess />}
         {activeAssistantTab === "Passwords" && <Passwords />}
         {activeAssistantTab === "Billing" && <Billing />}
-        {/* {activeAssistantTab === "Quotes" && <Quotes />}
-        {activeAssistantTab === "Reports" && <Reports />}
-        {activeAssistantTab === "Projects" && <Projects />} */}
+
         {activeAssistantTab === "Tools" && <Tools />}
         {activeAssistantTab === "Policies" && <Policies />}
 

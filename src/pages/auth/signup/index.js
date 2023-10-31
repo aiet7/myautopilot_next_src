@@ -57,7 +57,7 @@ const Signup = () => {
           <form className="w-[300px] flex flex-col items-center gap-4">
             <Image
               priority
-              src="/etech7_logo_auth.webp"
+              src="/images/etech7_logo_auth.webp"
               alt="Etech7_Signup_Logo"
               width={50}
               height={50}
@@ -191,7 +191,7 @@ const Signup = () => {
                   placeholder="Company Id"
                   className="w-full p-2 border border-gray-300 bg-white text-black"
                 />
-                
+
                 <div className="flex gap-2">
                   <input
                     value={companyAddress.street || ""}

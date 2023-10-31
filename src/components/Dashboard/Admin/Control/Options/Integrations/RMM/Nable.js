@@ -16,8 +16,8 @@ const Nable = () => {
               <Image
                 src={
                   activeIntegrationsCard === "nablermm"
-                    ? "/logo-Nablermm.png"
-                    : "/logo-NCentral.png"
+                    ? "/images/logo-Nablermm.png"
+                    : "/images/logo-NCentral.png"
                 }
                 alt="Card Image"
                 width={250}

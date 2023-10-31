@@ -12,7 +12,7 @@ const Automate = () => {
           <div className="flex flex-col">
             <div className="dark:bg-white/60 px-4 h-44 flex justify-center items-center border-b lg:w-80">
               <Image
-                src="/logo-Automate.png"
+                src="/images/logo-Automate.png"
                 alt="Card Image"
                 width={250}
                 height={250}
