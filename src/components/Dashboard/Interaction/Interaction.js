@@ -42,7 +42,7 @@ const Interaction = ({}) => {
   const { documentConversationHistories, currentDocumentConversationIndex } =
     useDocConversationsStore();
   const { isServerError } = useFormsStore();
-
+  
   const {
     textAreaHeight,
     userInput,
@@ -155,11 +155,12 @@ const Interaction = ({}) => {
                 ${!openHistory && "max-w-[700px]"} 
                 ${!openAssistant && "max-w-[700px]"}
                 ${!openDocs && "max-w-[700px]"}
+                
                 ${
                   activeUIAssistantTab === "Tickets"
-                    ? "max-w-[700px] 2xl:max-w-[1200px]"
-                    : "2xl:max-w-[700px]"
-                } flex items-start max-w-[450px]  mx-auto gap-4`}
+                    ? "max-w-[1400px]"
+                    : "max-w-[450px] 2xl:max-w-[700px]"
+                } flex items-start gap-4 mx-auto`}
               >
                 <span>
                   {item.role === "user" ? (

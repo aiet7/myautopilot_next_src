@@ -31,6 +31,7 @@ const Branding = () => {
                     src="/images/etech7_logo.webp"
                     width={150}
                     height={150}
+                    priority={true}
                   />
                 </div>
               </div>

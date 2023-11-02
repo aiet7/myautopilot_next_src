@@ -56,7 +56,7 @@ const Signup = () => {
         >
           <form className="w-[300px] flex flex-col items-center gap-4">
             <Image
-              priority
+              priority={true}
               src="/images/etech7_logo_auth.webp"
               alt="Etech7_Signup_Logo"
               width={50}

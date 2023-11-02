@@ -27,7 +27,7 @@ const Internal = ({}) => {
       </div>
       <div className="dark:shadow-white/40 dark:border-white/20 overflow-hidden flex flex-col lg:dark:shadow-white/40 lg:border lg:shadow lg:my-12 lg:mx-4">
         <div className="flex flex-col gap-2 p-4">
-          <p className="dark:text-white/60 text-sm text-black/40">
+          <p className="dark:text-white/70 text-sm text-black/50">
             Users, passwords, and roles stored within this application
           </p>
           <div className="flex items-center gap-2">
@@ -44,22 +44,28 @@ const Internal = ({}) => {
           </div>
         </div>
 
-        <div className="px-4 pb-4 block overflow-auto scrollbar-thin text-sm max-h-full max-w-full">
-          <table className="min-w-full text-black/50 table-fixed ">
-            <thead className="sticky top-0 bg-white">
-              <tr className="text-left">
-                <th className="p-2 "></th>
-                <th className="p-2 ">Name</th>
-                <th className="p-2">Role(s)</th>
-                <th className="p-2">Display Name</th>
+        <div className="px-4 pb-4 block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
+          <table className="dark:text-white/70 text-black/50 min-w-full table-fixed border-separate border-spacing-0 text-left">
+            <thead className="dark:bg-gray-700 sticky top-0 bg-[#F5F8FA]">
+              <tr className="">
+                <th className="p-2 w-[44px] h-[44px] border"></th>
+                <th className="p-2 truncate border-t border-b border-r">
+                  Name
+                </th>
+                <th className="p-2 truncate border-t border-b border-r">
+                  Role(s)
+                </th>
+                <th className="p-2 truncate border-t border-b border-r">
+                  Display Name
+                </th>
               </tr>
             </thead>
             <tbody>
               {filteredPeople.map((person, index) => {
                 return (
-                  <tr key={index} className="dark:border-b-white/20 border-b">
-                    <td className="p-2">
-                      <div className="flex gap-2">
+                  <tr key={index} className="">
+                    <td className="p-2 border-r border-l border-b">
+                      <div className="flex items-center justify-center gap-2">
                         <button className="hover:underline text-blue-500">
                           Edit
                         </button>
@@ -68,9 +74,9 @@ const Internal = ({}) => {
                         </button>
                       </div>
                     </td>
-                    <td className="p-2 truncate">{person.name}</td>
-                    <td className="p-2 truncate">{person.role}</td>
-                    <td className="p-2 truncate">{person.displayName}</td>
+                    <td className="p-2 truncate border-r border-b">{person.name}</td>
+                    <td className="p-2 truncate border-r border-b">{person.role}</td>
+                    <td className="p-2 truncate border-r border-b">{person.displayName}</td>
                   </tr>
                 );
               })}

@@ -4,27 +4,8 @@ import useDocConversationsStore from "@/utils/store/interaction/conversations/do
 import dynamic from "next/dynamic";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
-import { pdfjs } from "react-pdf";
 
-export const pdfHandler = async (pdfData) => {
-  const pdfDoc = await pdfjs.getDocument({ data: pdfData }).promise;
-
-  const numPages = pdfDoc.numPages;
-  let wordCount = 0;
-
-  for (let i = 1; i <= numPages; i++) {
-    const page = await pdfDoc.getPage(i);
-    const content = await page.getTextContent();
-    const text = content.items.map((item) => item.str).join(" ");
-    wordCount += text.split(/\s+/).length;
-  }
-
-  return {
-    pageCount: numPages,
-    wordCount: wordCount,
-  };
-};
-
+import { MdConstruction } from "react-icons/md";
 
 const DynamicDocument = dynamic(() =>
   import("react-pdf").then((mod) => mod.Document)
@@ -51,7 +32,12 @@ const DocGuide = ({}) => {
   return (
     <div className="flex-grow flex flex-col gap-8 overflow-hidden">
       <h3 className="dark:border-white/40 text-lg border-b">Document Guide</h3>
-      <div className="flex flex-col">
+      <div className="dark:text-white/20 flex flex-col items-center text-black/20">
+        <MdConstruction size={50} />
+        <p className="text-2xl">Currently Under Maintenance</p>
+      </div>
+
+      {/* <div className="flex flex-col">
         <div className="flex gap-2">
           <p className="font-bold">Word Count: </p>
           <p>{currentDocumentConversationIndex !== null ? wordCount : 0}</p>
@@ -128,7 +114,7 @@ const DocGuide = ({}) => {
             <p>No PDF uploaded yet.</p>
           )}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -59,7 +59,13 @@ const Cards = () => {
               className="dark:hover:bg-white/70 dark:bg-white/60 dark:shadow-white/20 hover:bg-black/5 flex items-center justify-center border shadow-lg rounded w-full h-60  cursor-pointer"
               onClick={() => handleIntegrationsCard(view)}
             >
-              <Image src={value} alt="Card Image" width={300} height={300} />
+              <Image
+                src={value}
+                alt="Card Image"
+                width={300}
+                height={300}
+                priority={true}
+              />
             </div>
           );
         })}

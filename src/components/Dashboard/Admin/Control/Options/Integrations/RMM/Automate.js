@@ -16,6 +16,7 @@ const Automate = () => {
                 alt="Card Image"
                 width={250}
                 height={250}
+                priority={true}
               />
             </div>
             <div className="flex flex-col">
@@ -29,16 +30,14 @@ const Automate = () => {
                 API Settings
               </button>
               <div className="flex flex-col  p-4">
-                
-                  <h2 className="text-2xl">Help Topics</h2>
-                  <a
-                    target="_blank"
-                    href="https://docs.connectwise.com/ConnectWise_Automate_Documentation"
-                    className="hover:underline text-sm text-blue-800"
-                  >
-                    ConnectWise Automate Documentation
-                  </a>
-                
+                <h2 className="text-2xl">Help Topics</h2>
+                <a
+                  target="_blank"
+                  href="https://docs.connectwise.com/ConnectWise_Automate_Documentation"
+                  className="hover:underline text-sm text-blue-800"
+                >
+                  ConnectWise Automate Documentation
+                </a>
               </div>
             </div>
           </div>

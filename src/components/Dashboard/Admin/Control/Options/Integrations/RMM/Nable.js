@@ -22,6 +22,7 @@ const Nable = () => {
                 alt="Card Image"
                 width={250}
                 height={250}
+                priority={true}
               />
             </div>
             <div className="flex flex-col">

@@ -4,8 +4,9 @@ const Loading = () => {
   return (
     <div className="bg-white absolute top-0 left-0 right-0 bottom-0 w-full h-full flex flex-col  items-center justify-center gap-4">
       <Image
-        priority
-        src="/etech7_logo.webp"
+      
+        priority={true}
+        src="/images/etech7_logo.webp"
         alt="Etech7_Login_Logo"
         width={300}
         height={300}

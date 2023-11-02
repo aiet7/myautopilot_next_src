@@ -39,7 +39,7 @@ const WelcomePage = () => {
         >
           <div className="flex flex-col items-center gap-4 w-full">
             <Image
-              priority
+              priority={true}
               src="/images/etech7_logo.webp"
               width={300}
               height={300}

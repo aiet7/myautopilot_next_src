@@ -41,13 +41,13 @@ const Companies = () => {
   }, [search]);
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full h-full flex flex-col ">
       <div className="dark:border-b-white/20 border-b p-4">
         <h1 className="text-2xl">Companies</h1>
       </div>
       <div className="dark:shadow-white/40 dark:border-white/20 overflow-hidden flex flex-col lg:dark:shadow-white/40 lg:border lg:shadow lg:my-12 lg:mx-4">
         <div className="flex flex-col gap-2 p-4">
-          <p className="dark:text-white/60 text-sm text-black/40">
+          <p className="dark:text-white/70 text-sm text-black/50">
             All companies currently under MSP
           </p>
           <div className="flex items-center gap-2">
@@ -64,33 +64,61 @@ const Companies = () => {
           </div>
         </div>
         <div className="px-4 pb-4 block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
-          <table className="min-w-full text-black/50 table-fixed ">
-            <thead className="sticky top-0 bg-white">
-              <tr className="text-left">
-                <th className="p-2 "></th>
-                <th className="p-2 truncate">Company Name</th>
-                <th className="p-2 truncate">Company Owner</th>
-                <th className="p-2 truncate">Create Date</th>
-                <th className="p-2 truncate">Phone Number</th>
-                <th className="p-2 truncate">City</th>
-                <th className="p-2 truncate">Country/Region</th>
-                <th className="p-2 truncate">Industry</th>
+          <table className="dark:text-white/70 text-black/50 min-w-full table-fixed border-separate border-spacing-0 text-left">
+            <thead className="dark:bg-gray-700 sticky top-0 bg-[#F5F8FA]">
+              <tr className="">
+                <th className="p-2 w-[44px] h-[44px] border"></th>
+                <th className="p-2  truncate border-t border-b border-r">
+                  Company Name
+                </th>
+                <th className="p-2  truncate border-t border-b border-r">
+                  Company Owner
+                </th>
+                <th className="p-2 truncate border-t border-b border-r">
+                  Create Date
+                </th>
+                <th className="p-2  truncate border-t border-b border-r">
+                  Phone Number
+                </th>
+                <th className="p-2  truncate border-t border-b border-r">
+                  City
+                </th>
+                <th className="p-2  truncate border-t border-b border-r">
+                  Country/Region
+                </th>
+                <th className="p-2  truncate border-t border-b border-r">
+                  Industry
+                </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="">
               {filteredCompanies.map((company, index) => {
                 return (
-                  <tr key={index} className="dark:border-b-white/20 border-b">
-                    <td className="p-2">
+                  <tr key={index} className="">
+                    <td className="p-2 border-r border-l border-b text-center">
                       <input type="checkbox" />
                     </td>
-                    <td className="p-2 truncate">{company.name}</td>
-                    <td className="p-2 truncate">{company.owner}</td>
-                    <td className="p-2 truncate">{company.createdDate}</td>
-                    <td className="p-2 truncate">{company.phoneNumber}</td>
-                    <td className="p-2 truncate">{company.city}</td>
-                    <td className="p-2 truncate">{company.country}</td>
-                    <td className="p-2 truncate">{company.industry}</td>
+                    <td className="p-2 truncate border-r border-b">
+                      {company.name}
+                    </td>
+                    <td className="p-2 truncate border-r border-b">
+                      {company.owner}
+                    </td>
+                    <td className="p-2 truncate border-r border-b">
+                      {company.createdDate}
+                    </td>
+                    <td className="p-2 truncate border-r border-b">
+                      {company.phoneNumber}
+                    </td>
+                    <td className="p-2 truncate border-r border-b">
+                      {company.city}
+                    </td>
+                    <td className="p-2 truncate border-r border-b">
+                      {company.country}
+                    </td>
+                    <td className="p-2 truncate border-r border-b">
+                      {company.industry}
+                    </td>
                   </tr>
                 );
               })}
