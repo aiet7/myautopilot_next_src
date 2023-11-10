@@ -10,6 +10,9 @@ import {
 const useAuthStore = create((set, get) => ({
   email: "",
   password: "",
+  verifyPassword: "",
+  verificationCode: "",
+
   firstName: "",
   lastName: "",
   phoneNumber: "",
@@ -29,6 +32,9 @@ const useAuthStore = create((set, get) => ({
 
   setEmail: (email) => set({ email }),
   setPassword: (password) => set({ password }),
+  setVerifyPassword: (verifyPassword) => set({ verifyPassword }),
+  setVerificationCode: (verificationCode) => set({ verificationCode }),
+
   setFirstName: (firstName) => set({ firstName }),
   setLastName: (lastName) => set({ lastName }),
   setCompanyId: (companyId) => set({ companyId }),
@@ -325,17 +331,101 @@ const useAuthStore = create((set, get) => ({
     }
   },
 
+  handleForgotPasswordEmailCheck: async (navigator) => {
+    const { email } = get();
+    if (isInputEmpty(email) || !isEmailInputValid(email)) {
+      set({ errorMessage: "A valid email is required." });
+      return;
+    }
+    const encodedClientUser = encodeURIComponent(email);
+
+    try {
+      const response = await fetch(
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/forgotPassword?email=${encodedClientUser}`
+      );
+      set({ errorMessage: "" });
+
+      if (response.ok) {
+        navigator("/auth/login/forgot/verification");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleForgotPasswordVerifyCode: async (navigator) => {
+    const { email, verificationCode } = get();
+    if (isInputEmpty(email)) {
+      set({ errorMessage: "A valid email is required." });
+      return;
+    }
+    const encodedClientUser = encodeURIComponent(email);
+    const encodedVerificationCode = encodeURIComponent(verificationCode);
+
+    try {
+      const response = await fetch(
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateResetToken?email=${encodedClientUser}&token=${encodedVerificationCode}`
+      );
+      set({ errorMessage: "" });
+      if (response.ok) {
+        navigator("/auth/login/forgot/verification/createpassword");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleCreateNewPassword: async (navigator) => {
+    const { email, verificationCode, password, verifyPassword } = get();
+    if (isInputEmpty(password) || isInputEmpty(verifyPassword)) {
+      set({ errorMessage: "A valid email is required." });
+      return;
+    }
+
+    if (password !== verifyPassword) {
+      set({ errorMessage: "Passwords do not match." });
+      return;
+    }
+
+    const encodedVerificationCode = encodeURIComponent(verificationCode);
+
+    try {
+      const response = await fetch(
+        `https://etech7-wf-etech7-db-service.azuremicroservices.io/changePassword?token=${encodedVerificationCode}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            emailId: email,
+            password: password,
+          }),
+        }
+      );
+      set({ errorMessage: "" });
+      if (response.ok) {
+        navigator("/auth/login");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
   handleShowSignup: (navigator) => {
     navigator("/auth/signup");
     set({ errorMessage: "", showSignupForm: false });
+  },
+
+  handleShowForgotPassword: (navigator) => {
+    navigator("/auth/login/forgot");
+    set({ errorMessage: "", showSignupForm: false, companies: [] });
   },
 
   handleShowLogin: (navigator) => {
     navigator("/auth/login");
     set({ errorMessage: "", showSignupForm: false, companies: [] });
   },
-
- 
 
   clearCredentials: () => {
     set({

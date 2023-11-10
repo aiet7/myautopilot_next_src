@@ -1,23 +1,22 @@
 "use client";
 
 import Image from "next/image";
+
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-
 import Cookie from "js-cookie";
 import useAuthStore from "@/utils/store/auth/authStore.js";
+
 import useUiStore from "@/utils/store/ui/uiStore.js";
 
-const Login = () => {
+const Verification = () => {
   const router = useRouter();
+
   const { height, setHeight } = useUiStore();
   const {
     errorMessage,
-    setEmail,
-    setPassword,
-    handleLoginCredentialsAuth,
-    handleShowSignup,
-    handleShowForgotPassword
+    setVerificationCode,
+    handleForgotPasswordVerifyCode,
   } = useAuthStore();
 
   useEffect(() => {
@@ -56,58 +55,32 @@ const Login = () => {
               height={50}
             />
             <h1 className="text-xl font-bold text-black text-center">
-              Welcome back
+              Verification Code
             </h1>
             <p className="text-red-500 text-sm">{errorMessage}</p>
-
             <input
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setVerificationCode(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
-                  handleLoginCredentialsAuth(router.push);
+                  handleForgotPasswordVerifyCode(router.push);
                 }
               }}
-              type="email"
-              placeholder="Enter your email"
+              type="text"
+              placeholder="Enter your verification code"
               className="w-full p-2 border border-gray-300 bg-white text-black"
             />
-
-            <input
-              onChange={(e) => setPassword(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  handleLoginCredentialsAuth(router.push);
-                }
-              }}
-              type="password"
-              placeholder="Enter your password"
-              className="w-full p-2 border border-gray-300  bg-white text-black"
-            />
             <button
-              onClick={() => handleLoginCredentialsAuth(router.push)}
+              onClick={() => handleForgotPasswordVerifyCode(router.push)}
               type="button"
               className="hover:bg-blue-500 w-full  py-2 bg-[#00AEEE] text-white font-bold rounded-sm"
             >
-              Continue
+              Verify
             </button>
             <div className="flex flex-col w-full">
               <p className="w-full text-black">
-                Do not have an account?{" "}
-                <span
-                  onClick={() => handleShowSignup(router.push)}
-                  className="text-[#00AEEE]  cursor-pointer"
-                >
-                  Sign up
-                </span>
-              </p>
-              <p className="w-full text-black">
-                <span
-                  onClick={() => handleShowForgotPassword(router.push)}
-                  className="text-[#00AEEE]  cursor-pointer"
-                >
-                  Forgot password?
+                <span className="text-[#00AEEE] cursor-pointer">
+                  Resend code
                 </span>
               </p>
             </div>
@@ -118,4 +91,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Verification;

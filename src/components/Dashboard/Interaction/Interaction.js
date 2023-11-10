@@ -42,7 +42,7 @@ const Interaction = ({}) => {
   const { documentConversationHistories, currentDocumentConversationIndex } =
     useDocConversationsStore();
   const { isServerError } = useFormsStore();
-  
+
   const {
     textAreaHeight,
     userInput,
@@ -152,10 +152,26 @@ const Interaction = ({}) => {
             >
               <div
                 className={`
-                ${!openHistory && "max-w-[700px]"} 
-                ${!openAssistant && "max-w-[700px]"}
-                ${!openDocs && "max-w-[700px]"}
-                
+                ${
+                  !openHistory &&
+                  activeUIAssistantTab !== "Tickets" &&
+                  "max-w-[700px]"
+                } 
+                ${
+                  !openAssistant &&
+                  activeUIAssistantTab !== "Tickets" &&
+                  "max-w-[700px]"
+                }
+                ${
+                  !openDocs &&
+                  activeUIAssistantTab !== "Tickets" &&
+                  "max-w-[700px]"
+                }
+                ${
+                  !openAssistant &&
+                  activeUIAssistantTab === "Tickets" &&
+                  "max-w-[1400px]"
+                }
                 ${
                   activeUIAssistantTab === "Tickets"
                     ? "max-w-[1400px]"
