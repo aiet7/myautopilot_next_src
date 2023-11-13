@@ -68,7 +68,10 @@ const TabNavRail = ({}) => {
       )}
 
       <div
-        onClick={() => handleTabChange("iTAgent")}
+        onClick={() => {
+          handleTabChange("iTAgent");
+          router.push(`/dashboard/${user?.id}`);
+        }}
         className="relative flex flex-col gap-2 items-center cursor-pointer"
       >
         <AiOutlineHome
@@ -93,7 +96,10 @@ const TabNavRail = ({}) => {
         "agogia@etech7.com",
       ].includes(user?.email) && (
         <div
-          onClick={() => handleTabChange("admin")}
+          onClick={() => {
+            handleTabChange("admin");
+            router.push(`/dashboard/${user?.id}/admin`);
+          }}
           className="relative flex flex-col gap-2 items-center cursor-pointer"
         >
           <RiAdminLine

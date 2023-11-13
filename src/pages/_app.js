@@ -6,15 +6,16 @@ import Head from "next/head";
 import Loading from "../components/Loading.js";
 
 import { useEffect } from "react";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 import useAuthStore from "@/utils/store/auth/authStore";
 
 function MyApp({ Component, pageProps }) {
   const { loading, setIsLoading } = useAuthStore();
+  const router = useRouter();
 
   useEffect(() => {
     const start = (url) => {
-      if (url.includes("/dashboard/")) {
+      if (router.pathname === "/auth/login" && url.includes("/dashboard/")) {
         setIsLoading(true);
       }
     };
@@ -29,7 +30,7 @@ function MyApp({ Component, pageProps }) {
       Router.events.off("routeChangeComplete", end);
       Router.events.off("routeChangeError", end);
     };
-  }, []);
+  }, [router.pathname]);
 
   return (
     <>

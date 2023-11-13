@@ -14,9 +14,6 @@ import History from "@/components/Dashboard/History/History.js";
 import Assistant from "@/components/Dashboard/Assistant/Assistant.js";
 import Documents from "@/components/Dashboard/Document/Documents.js";
 
-import Nav from "@/components/Dashboard/Admin/Nav.js";
-import Control from "@/components/Dashboard/Admin/Control/Control.js";
-
 import Account from "@/components/Dashboard/Account.js";
 
 import useUserStore from "@/utils/store/user/userStore.js";
@@ -34,7 +31,7 @@ const DashboardPage = ({
   initialAgents,
 }) => {
   const { initializeApp } = useInitializeAppStore();
-  const { initializeUser, user } = useUserStore();
+  const { initializeUser } = useUserStore();
   const {
     initializeConversations,
     initializeMessages,
@@ -117,20 +114,6 @@ const DashboardPage = ({
                   <Assistant />
                 </div>
               )}
-
-              {[
-                "tim@etech7.com",
-                "ariel@etech7.com",
-                "eisanov@etech7.com",
-                "mkandinov@etech7.com",
-                "agogia@etech7.com",
-              ].includes(user?.email) &&
-                activeTab === "admin" && (
-                  <div className="flex flex-1 relative overflow-hidden">
-                    <Nav />
-                    <Control />
-                  </div>
-                )}
 
               {activeTab === "settings" && (
                 <div className="overflow-auto h-full w-full no-scrollbar">
