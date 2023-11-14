@@ -69,8 +69,7 @@ const TabNavRail = ({}) => {
 
       <div
         onClick={() => {
-          handleTabChange("iTAgent");
-          router.push(`/dashboard/${user?.id}`);
+          handleTabChange("iTAgent", router.push);
         }}
         className="relative flex flex-col gap-2 items-center cursor-pointer"
       >
@@ -97,8 +96,7 @@ const TabNavRail = ({}) => {
       ].includes(user?.email) && (
         <div
           onClick={() => {
-            handleTabChange("admin");
-            router.push(`/dashboard/${user?.id}/admin`);
+            handleTabChange("admin", router.push);
           }}
           className="relative flex flex-col gap-2 items-center cursor-pointer"
         >

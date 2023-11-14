@@ -1,13 +1,14 @@
 "use client";
 import useUiStore from "@/utils/store/ui/uiStore";
-
+import { useRouter } from "next/router";
 import { BsGearWideConnected } from "react-icons/bs";
 import { GiOrganigram } from "react-icons/gi";
 import { FaUserCog } from "react-icons/fa";
-import { MdOutlineBrandingWatermark,MdBusinessCenter } from "react-icons/md";
+import { MdOutlineBrandingWatermark, MdBusinessCenter } from "react-icons/md";
 import useAdminStore from "@/utils/store/admin/adminStore";
 
 const Nav = ({}) => {
+  const router = useRouter();
   const { openAdmin } = useUiStore();
   const { options, currentOption, handleOptionSelected } = useAdminStore();
 
@@ -41,7 +42,7 @@ const Nav = ({}) => {
           return (
             <div key={index} className="flex flex-col items-start my-2">
               <div
-                onClick={() => handleOptionSelected(option)}
+                onClick={() => handleOptionSelected(option, router.push)}
                 className={`${`${
                   currentOption === option && "dark:bg-white/40 bg-black/20"
                 }`} dark:text-white dark:hover:bg-white/40 hover:bg-black/20  text-black w-full flex items-center justify-between px-2 h-[50px] cursor-pointer`}

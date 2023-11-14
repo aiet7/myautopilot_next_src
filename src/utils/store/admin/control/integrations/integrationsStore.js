@@ -78,7 +78,65 @@ const useIntegrationsStore = create((set, get) => ({
   setFilteredCards: (filtered) =>
     set((state) => ({ ...state, filteredCards: filtered })),
 
-  handleIntegrationsCard: (view) => {
+  handleIntegrationsCard: (view, navigator) => {
+    const userStore = useUserStore.getState();
+    switch (view) {
+      case "automate":
+        navigator(
+          `/dashboard/${userStore.user.id}/admin/integrations/automate`
+        );
+        break;
+      case "connectwise":
+        navigator(
+          `/dashboard/${userStore.user.id}/admin/integrations/connectwise`
+        );
+        break;
+      case "office365":
+        navigator(
+          `/dashboard/${userStore.user.id}/admin/integrations/office365`
+        );
+        break;
+      case "googlews":
+        navigator(
+          `/dashboard/${userStore.user.id}/admin/integrations/googlews`
+        );
+        break;
+      case "nablermm":
+        navigator(
+          `/dashboard/${userStore.user.id}/admin/integrations/nablermm`
+        );
+        break;
+      case "ncentral":
+        navigator(
+          `/dashboard/${userStore.user.id}/admin/integrations/ncentral`
+        );
+        break;
+      case "continuum":
+        navigator(
+          `/dashboard/${userStore.user.id}/admin/integrations/continuum`
+        );
+        break;
+      case "aem":
+        navigator(`/dashboard/${userStore.user.id}/admin/integrations/aem`);
+        break;
+      case "autotask":
+        navigator(
+          `/dashboard/${userStore.user.id}/admin/integrations/autotask`
+        );
+        break;
+      case "screenconnect":
+        navigator(
+          `/dashboard/${userStore.user.id}/admin/integrations/screenconnect`
+        );
+        break;
+      case "openai":
+        navigator(`/dashboard/${userStore.user.id}/admin/integrations/openai`);
+        break;
+      default:
+        navigator(`/dashboard/${userStore.user.id}/admin/integrations`);
+        break;
+    }
+
     set({ activeIntegrationsCard: view });
   },
 }));
