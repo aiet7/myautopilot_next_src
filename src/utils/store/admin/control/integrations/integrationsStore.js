@@ -72,6 +72,12 @@ const useIntegrationsStore = create((set, get) => ({
       category: "AI",
       view: "openai",
     },
+    {
+      type: "image",
+      value: "/images/logo-EmailConnecter.png",
+      category: "EMAIL",
+      view: "emailconnecter",
+    },
   ],
   filteredCards: [],
   setSelectedCategory: (category) => set({ selectedCategory: category }),
@@ -131,6 +137,11 @@ const useIntegrationsStore = create((set, get) => ({
         break;
       case "openai":
         navigator(`/dashboard/${userStore.user.id}/admin/integrations/openai`);
+        break;
+      case "emailconnecter":
+        navigator(
+          `/dashboard/${userStore.user.id}/admin/integrations/emailconnecter`
+        );
         break;
       default:
         navigator(`/dashboard/${userStore.user.id}/admin/integrations`);

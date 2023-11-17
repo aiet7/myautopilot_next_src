@@ -28,6 +28,7 @@ const useAuthStore = create((set, get) => ({
   showLoginForm: false,
   showSignupForm: false,
   loading: false,
+  smallLoading: false,
   companies: [],
 
   setEmail: (email) => set({ email }),
@@ -47,6 +48,7 @@ const useAuthStore = create((set, get) => ({
   setCompanies: (companies) => set({ companies }),
   setErrorMessage: (errorMessage) => set({ errorMessage }),
   setIsLoading: (loading) => set({ loading: loading }),
+  setIsSmallLoading: (smallLoading) => set({smallLoading: smallLoading}),
   setShowLoginForm: (isShown) => set({ showLoginForm: isShown }),
   setShowSignupForm: (isShown) => set({ showSignupForm: isShown }),
 

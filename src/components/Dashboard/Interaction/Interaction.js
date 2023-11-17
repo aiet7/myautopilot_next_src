@@ -221,118 +221,120 @@ const Interaction = ({}) => {
           />
         )}
       </div>
-      {activeUIAssistantTab === "Engineer" && (
-        <div className="relative flex items-center px-4 py-2">
-          <textarea
-            ref={inputRef}
-            onChange={handleTextAreaChange}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                handleSendMessage(userInput);
-              }
-            }}
-            value={userInput}
-            placeholder="Interact With Our IT Engineer..."
-            className="dark:bg-black bg-white border outline-blue-500 w-full p-4 pr-32 resize-none no-scrollbar"
-            style={{
-              height: textAreaHeight,
-              maxHeight: "200px",
-            }}
-          />
-
-          <div className="flex items-center gap-3 absolute right-6 pr-2 flex items-center bottom-0 top-0">
-            <BsFillSendFill
-              onClick={() => handleSendMessage(userInput)}
-              size={25}
-              className={`outline-none ${
-                userInput !== ""
-                  ? "dark:text-white dark:hover:text-blue-500 hover:text-blue-500 text-black cursor-pointer"
-                  : "dark:text-gray-500 text-gray-300 select-none"
-              } `}
+      <div className="max-w-[700px] mx-auto w-full ">
+        {activeUIAssistantTab === "Engineer" && (
+          <div className="relative flex items-center px-4 py-2 ">
+            <textarea
+              ref={inputRef}
+              onChange={handleTextAreaChange}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleSendMessage(userInput);
+                }
+              }}
+              value={userInput}
+              placeholder="Interact With Our IT Engineer..."
+              className="dark:border-white/30 dark:shadow-white/30 dark:bg-black border-black/10 shadow-xl shadow-black/30  outline-none bg-white border w-full p-4 pr-32 resize-none no-scrollbar"
+              style={{
+                height: textAreaHeight,
+                maxHeight: "200px",
+              }}
             />
+
+            <div className="flex items-center gap-3 absolute right-6 pr-2 flex items-center bottom-0 top-0">
+              <BsFillSendFill
+                onClick={() => handleSendMessage(userInput)}
+                size={25}
+                className={`outline-none ${
+                  userInput !== ""
+                    ? "dark:text-white dark:hover:text-blue-500 hover:text-blue-500 text-black cursor-pointer"
+                    : "dark:text-gray-500 text-gray-300 select-none"
+                } `}
+              />
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {activeUIAssistantTab === "Tickets" && (
-        <div className="relative flex items-center px-4 py-2">
-          <textarea
-            ref={inputRef}
-            onChange={handleTextAreaChange}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                handleCreateTicketMessage(userInput);
-              }
-            }}
-            value={userInput}
-            placeholder="Describe Your Issue..."
-            className="dark:bg-black bg-white border outline-blue-500 w-full p-4 pr-32 resize-none no-scrollbar"
-            style={{
-              height: textAreaHeight,
-              maxHeight: "200px",
-            }}
-          />
-
-          <div className="flex items-center gap-3 absolute right-6 pr-2 flex items-center bottom-0 top-0">
-            <button
-              size={25}
-              onClick={() => handleCreateTicketMessage(userInput)}
-              className={`p-2 ${
-                userInput !== ""
-                  ? "dark:text-white dark:hover:text-white hover:bg-blue-500   border bg-blue-800 text-white cursor-pointer"
-                  : "dark:text-gray-400 dark:border-white/30  text-gray-400 select-none border cursor-default"
-              } `}
-            >
-              Open Ticket
-            </button>
-          </div>
-        </div>
-      )}
-
-      {activeUIAssistantTab === "DocGuide" && (
-        <div className="relative flex items-center px-4 py-2">
-          <textarea
-            ref={inputRef}
-            onChange={handleTextAreaChange}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                handleSendDocumentMessage(userInput);
-              }
-            }}
-            value={userInput}
-            placeholder={
-              documentConversationHistories[currentDocumentConversationIndex]
-                ?.data
-                ? "Ask About Your Document..."
-                : "Add New Document To Upload..."
-            }
-            className="dark:bg-black bg-white border outline-blue-500 w-full p-4 pr-32 resize-none no-scrollbar"
-            style={{
-              height: textAreaHeight,
-              maxHeight: "200px",
-            }}
-            disabled={
-              !documentConversationHistories[currentDocumentConversationIndex]
-                ?.data
-            }
-          />
-
-          <div className="flex items-center gap-3 absolute right-6 pr-2 flex items-center bottom-0 top-0">
-            <BsFillSendFill
-              onClick={() => handleSendDocumentMessage(userInput)}
-              size={25}
-              className={`outline-none ${
-                userInput !== ""
-                  ? "dark:text-white dark:hover:text-blue-500 hover:text-blue-500 text-black cursor-pointer"
-                  : "dark:text-gray-500 text-gray-300 select-none"
-              } `}
+        {activeUIAssistantTab === "Tickets" && (
+          <div className="relative flex items-center px-4 py-2">
+            <textarea
+              ref={inputRef}
+              onChange={handleTextAreaChange}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleCreateTicketMessage(userInput);
+                }
+              }}
+              value={userInput}
+              placeholder="Describe Your Issue..."
+              className="dark:border-white/30 dark:shadow-white/30 dark:bg-black border-black/10 shadow-xl shadow-black/30  outline-none bg-white border w-full p-4 pr-32 resize-none no-scrollbar"
+              style={{
+                height: textAreaHeight,
+                maxHeight: "200px",
+              }}
             />
+
+            <div className="flex items-center gap-3 absolute right-6 pr-2 flex items-center bottom-0 top-0">
+              <button
+                size={25}
+                onClick={() => handleCreateTicketMessage(userInput)}
+                className={`p-2 ${
+                  userInput !== ""
+                    ? "dark:text-white dark:hover:text-white hover:bg-blue-500   border bg-blue-800 text-white cursor-pointer"
+                    : "dark:text-gray-400 dark:border-white/30  text-gray-400 select-none border cursor-default"
+                } `}
+              >
+                Open Ticket
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {activeUIAssistantTab === "DocGuide" && (
+          <div className="relative flex items-center px-4 py-2">
+            <textarea
+              ref={inputRef}
+              onChange={handleTextAreaChange}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleSendDocumentMessage(userInput);
+                }
+              }}
+              value={userInput}
+              placeholder={
+                documentConversationHistories[currentDocumentConversationIndex]
+                  ?.data
+                  ? "Ask About Your Document..."
+                  : "Add New Document To Upload..."
+              }
+              className="dark:border-white/30 dark:shadow-white/30 dark:bg-black border-black/10 shadow-xl shadow-black/30  outline-none bg-white border w-full p-4 pr-32 resize-none no-scrollbar"
+              style={{
+                height: textAreaHeight,
+                maxHeight: "200px",
+              }}
+              disabled={
+                !documentConversationHistories[currentDocumentConversationIndex]
+                  ?.data
+              }
+            />
+
+            <div className="flex items-center gap-3 absolute right-6 pr-2 flex items-center bottom-0 top-0">
+              <BsFillSendFill
+                onClick={() => handleSendDocumentMessage(userInput)}
+                size={25}
+                className={`outline-none ${
+                  userInput !== ""
+                    ? "dark:text-white dark:hover:text-blue-500 hover:text-blue-500 text-black cursor-pointer"
+                    : "dark:text-gray-500 text-gray-300 select-none"
+                } `}
+              />
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

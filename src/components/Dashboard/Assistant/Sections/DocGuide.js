@@ -34,7 +34,7 @@ const DocGuide = ({}) => {
       <h3 className="dark:border-white/40 text-lg border-b">Document Guide</h3>
       <div className="dark:text-white/20 flex flex-col items-center text-black/20">
         <MdConstruction size={50} />
-        <p className="text-2xl">Currently Under Maintenance</p>
+        <p className="text-2xl text-center">Currently Under Maintenance</p>
       </div>
 
       {/* <div className="flex flex-col">

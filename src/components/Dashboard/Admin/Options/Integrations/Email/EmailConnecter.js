@@ -1,15 +1,15 @@
 "use client";
-
 import useIntegrationsStore from "@/utils/store/admin/control/integrations/integrationsStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import Image from "next/image";
 
 import { useRouter } from "next/router";
 
-const Openai = () => {
+const EmailConnecter = () => {
   const router = useRouter();
   const { handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
+
   return (
     <div
       onClick={() => {
@@ -23,14 +23,14 @@ const Openai = () => {
     >
       <div className="w-full h-full flex flex-col">
         <div className="dark:border-b-white/20 border-b p-4">
-          <h1 className="text-2xl">Openai LLM Integration</h1>
+          <h1 className="text-2xl">Email Connecter Integration</h1>
         </div>
         <div className="flex flex-col  gap-2 overflow-auto scrollbar-thin lg:flex-row lg:my-12 lg:mx-4">
           <div className="border">
             <div className="flex flex-col">
               <div className="dark:bg-white/60 px-4 h-44 flex justify-center items-center border-b lg:w-80">
                 <Image
-                  src="/images/logo-openai.png"
+                  src="/images/logo-EmailConnecter.png"
                   alt="Card Image"
                   width={250}
                   height={250}
@@ -51,10 +51,10 @@ const Openai = () => {
                   <h2 className="text-2xl">Help Topics</h2>
                   <a
                     target="_blank"
-                    href="https://platform.openai.com/docs/introduction"
+                    href="https://ww1.autotask.net/help/Content/2_Getting_Started/GETTING_STARTED_LANDING.htm"
                     className="hover:underline text-sm text-blue-800"
                   >
-                    Creating a Public Key
+                    Email Connecting Documentation
                   </a>
                 </div>
               </div>
@@ -63,24 +63,32 @@ const Openai = () => {
           <div className="w-full border">
             <div className="flex flex-col">
               <div className="flex flex-col p-4 border-b h-28">
-                <p className="text-xl">Openai Configuration Settings</p>
-                <p>API Setup</p>
-                <p className="text-sm">
-                  You must create a Public Api Key from Openai.
+                <p className="text-xl">
+                  Email Connecter Configuration Settings
                 </p>
+                <p>API Setup</p>
               </div>
               <div className="flex flex-col p-4 gap-6 text-sm">
                 <div className="flex flex-col gap-6 lg:flex-row ">
                   <div className="flex flex-col w-full gap-1">
-                    <p>Public Key</p>
+                    <p>Username</p>
                     <p className="dark:text-white/60 text-black/60">
-                      Your generated Public Key that was created via Openai
+                      The username you use to login to Autotask
+                    </p>
+                    <input className="border p-1" />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-6 lg:flex-row">
+                  <div className="flex flex-col w-full gap-1">
+                    <p>Password</p>
+                    <p className="dark:text-white/60 text-black/60">
+                      The password you use to login to Autoask
                     </p>
                     <input className="border p-1" />
                   </div>
                 </div>
               </div>
-              <div className="p-4 flex justify-end">
+              <div className="p-4 flex  justify-end">
                 <button className="hover:bg-blue-500 bg-blue-800 text-white px-3 py-1">
                   Authenticate
                 </button>
@@ -93,4 +101,4 @@ const Openai = () => {
   );
 };
 
-export default Openai;
+export default EmailConnecter;

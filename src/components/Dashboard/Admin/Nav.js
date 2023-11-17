@@ -5,6 +5,7 @@ import { BsGearWideConnected } from "react-icons/bs";
 import { GiOrganigram } from "react-icons/gi";
 import { FaUserCog } from "react-icons/fa";
 import { MdOutlineBrandingWatermark, MdBusinessCenter } from "react-icons/md";
+import { TiFlowSwitch } from "react-icons/ti";
 import useAdminStore from "@/utils/store/admin/adminStore";
 
 const Nav = ({}) => {
@@ -24,12 +25,13 @@ const Nav = ({}) => {
         return <MdOutlineBrandingWatermark size={20} />;
       case "Companies":
         return <MdBusinessCenter size={20} />;
+      case "Workflows":
+        return <TiFlowSwitch size={20} />;
 
       default:
         return null;
     }
   };
-
   return (
     <div
       className={`absolute z-10 top-0 bottom-0 left-0  

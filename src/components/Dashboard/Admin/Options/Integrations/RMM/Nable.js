@@ -31,7 +31,7 @@ const Nable = () => {
               : "NCentral RMM Integration"}
           </h1>
         </div>
-        <div className="flex flex-col px-4 gap-2 overflow-auto scrollbar-thin lg:flex-row">
+        <div className="flex flex-col  gap-2 overflow-auto scrollbar-thin lg:flex-row lg:my-12 lg:mx-4">
           <div className="border">
             <div className="flex flex-col">
               <div className="dark:bg-white/60 px-4 h-44 flex justify-center items-center border-b lg:w-80">

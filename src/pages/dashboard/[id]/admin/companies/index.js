@@ -11,6 +11,7 @@ const CompaniesPage = () => {
   );
 };
 
+
 CompaniesPage.getLayout = (page) => {
   return <Layout>{page}</Layout>;
 };

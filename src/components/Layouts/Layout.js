@@ -1,4 +1,5 @@
 "use client";
+import { ThemeProvider } from "next-themes";
 
 import useUiStore from "@/utils/store/ui/uiStore";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
@@ -29,7 +30,7 @@ const Layout = ({ children }) => {
   }, []);
 
   return (
-    <>
+    <ThemeProvider attribute="class">
       {height && (
         <div
           onClick={() => openSettings && handleToggleSettings(false)}
@@ -57,7 +58,7 @@ const Layout = ({ children }) => {
           </div>
         </div>
       )}
-    </>
+    </ThemeProvider>
   );
 };
 

@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "postinstall": "npm run build",
-    "start": "next start -p $PORT",
+    "start": "next start -p 3000",
     "lint": "next lint"
   },
   "dependencies": {
@@ -33,6 +33,7 @@
     "react-pdf": "^7.5.0",
     "react-speech-recognition": "^3.10.0",
     "react-tooltip": "^5.21.1",
+    "reactflow": "^11.10.1",
     "sockjs-client": "^1.6.1",
     "url": "^0.11.0",
     "usa-states": "^0.0.6",

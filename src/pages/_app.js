@@ -4,24 +4,31 @@ import "../styles/global.css";
 import Head from "next/head";
 
 import Loading from "../components/Loading.js";
-
-import { ThemeProvider } from "next-themes";
 import { useEffect } from "react";
 import Router, { useRouter } from "next/router";
 import useAuthStore from "@/utils/store/auth/authStore";
+import { FaSpinner } from "react-icons/fa";
 
 function MyApp({ Component, pageProps }) {
-  const { loading, setIsLoading } = useAuthStore();
+  const { loading, smallLoading, setIsLoading, setIsSmallLoading } =
+    useAuthStore();
   const router = useRouter();
   const getLayout = Component.getLayout || ((page) => page);
 
   useEffect(() => {
     const start = (url) => {
+      const isAuthRoute = router.pathname.includes("/auth/");
+      const isTargetAuthRoute = url.includes("/auth/");
       if (router.pathname === "/auth/login" && url.includes("/dashboard/")) {
         setIsLoading(true);
+      } else if (!isAuthRoute && !isTargetAuthRoute) {
+        setIsSmallLoading(true);
       }
     };
-    const end = () => setIsLoading(false);
+    const end = () => {
+      setIsLoading(false);
+      setIsSmallLoading(false);
+    };
 
     Router.events.on("routeChangeStart", start);
     Router.events.on("routeChangeComplete", end);
@@ -43,10 +50,13 @@ function MyApp({ Component, pageProps }) {
       </Head>
       {loading ? (
         <Loading />
+      ) : smallLoading ? (
+        <FaSpinner
+          size={50}
+          className="animate-spin absolute top-0 left-0 right-0 bottom-0 m-auto  text-blue-800"
+        />
       ) : (
-        <ThemeProvider attribute="class">
-          <Component {...pageProps} />
-        </ThemeProvider>
+        <Component {...pageProps} />
       )}
     </>
   );

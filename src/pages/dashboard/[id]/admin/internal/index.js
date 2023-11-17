@@ -11,6 +11,7 @@ const InternalPage = () => {
   );
 };
 
+
 InternalPage.getLayout = (page) => {
   return <Layout>{page}</Layout>;
 };

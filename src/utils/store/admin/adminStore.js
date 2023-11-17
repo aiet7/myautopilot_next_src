@@ -1,7 +1,14 @@
 import { create } from "zustand";
 import useUserStore from "../user/userStore";
 const useAdminStore = create((set, get) => ({
-  options: ["Internal", "Roles", "Integrations", "Branding", "Companies"],
+  options: [
+    "Internal",
+    "Roles",
+    "Integrations",
+    "Branding",
+    "Companies",
+    "Workflows",
+  ],
   currentOption: "Internal",
 
   handleOptionSelected: (option, navigator) => {
@@ -27,6 +34,9 @@ const useAdminStore = create((set, get) => ({
         break;
       case "Companies":
         navigator(`/dashboard/${userStore.user.id}/admin/companies`);
+        break;
+      case "Workflows":
+        navigator(`/dashboard/${userStore.user.id}/admin/workflows`);
         break;
     }
 

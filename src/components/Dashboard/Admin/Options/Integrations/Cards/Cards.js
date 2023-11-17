@@ -53,7 +53,7 @@ const Cards = () => {
             >
               All
             </button>
-            {["PSA", "RMM", "SUITE", "AI"].map((category) => (
+            {["PSA", "RMM", "SUITE", "AI", "EMAIL"].map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
