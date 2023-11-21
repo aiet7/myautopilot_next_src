@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-const useDocGuideStore = create((set, get) => ({
+const useDocumentStore = create((set, get) => ({
   pageCount: 0,
   wordCount: 0,
   pdfUrl: "",
@@ -93,4 +93,4 @@ const useDocGuideStore = create((set, get) => ({
   },
 }));
 
-export default useDocGuideStore;
+export default useDocumentStore;

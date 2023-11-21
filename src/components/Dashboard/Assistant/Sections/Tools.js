@@ -7,7 +7,6 @@ const Tools = () => {
 
   return (
     <div className="flex-grow flex flex-col gap-8 overflow-hidden">
-      <h3 className="dark:border-white/40 text-lg border-b">Tools</h3>
       <div className="flex-grow overflow-y-auto scrollbar-thin">
         <div className="flex flex-grow flex-col gap-8">
           <div className="flex flex-col">
@@ -35,16 +34,6 @@ const Tools = () => {
           })}
         </div>
       </div>
-      {/* <a href={agentLink} target="_blank" rel="noopener noreferrer">
-        <button className="hover:bg-blue-500 bg-blue-800 text-white py-2 w-full">
-          Agent Installer
-        </button>
-      </a>
-      <a href={screenConnectLink} target="_blank" rel="noopener noreferrer">
-        <button className="hover:bg-blue-500 bg-blue-800 text-white py-2 w-full">
-          Screen Connect Installer
-        </button>
-      </a> */}
     </div>
   );
 };

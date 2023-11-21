@@ -1,6 +1,5 @@
 "use client";
 
-import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import useTicketsStore from "@/utils/store/assistant/sections/tickets/ticketsStore";
 import useUserStore from "@/utils/store/user/userStore";
 import { useEffect } from "react";
@@ -28,7 +27,6 @@ const Tickets = () => {
 
   return (
     <div className="flex-grow flex flex-col gap-8 overflow-hidden">
-      <h3 className="dark:border-white/40 text-lg border-b">Tickets</h3>
       <div className="dark:border-white/20 flex items-center border rounded">
         <button
           onClick={() => setActiveTicketButton("Opened")}

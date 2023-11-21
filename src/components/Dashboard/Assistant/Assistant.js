@@ -3,10 +3,9 @@
 import useUiStore from "@/utils/store/ui/uiStore.js";
 import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
 
-import { AiOutlineClose } from "react-icons/ai";
 import AssistantRail from "./AssistantRail.js";
 import Tickets from "./Sections/Tickets.js";
-import DocGuide from "./Sections/DocGuide.js";
+import Document from "./Sections/Document.js";
 import Passwords from "./Sections/Passwords.js";
 import Billing from "./Sections/Billing.js";
 import Policies from "./Sections/Policies.js";
@@ -16,10 +15,11 @@ import Engineer from "./Sections/Engineer.js";
 import RemoteAccess from "./Sections/RemoteAccess.js";
 import Tools from "./Sections/Tools.js";
 import useFormsStore from "@/utils/store/interaction/forms/formsStore.js";
+import AssistantControl from "./AssistantControl.js";
 
 const Assistant = ({}) => {
   const { ticketStatus } = useFormsStore();
-  const { openAssistant, handleAssistantMenu } = useUiStore();
+  const { openAssistant } = useUiStore();
   const { activeAssistantTab } = useAssistantStore();
 
   return (
@@ -29,26 +29,22 @@ const Assistant = ({}) => {
       }  dark:bg-[#111111] bg-[#f6f8fc] flex transition-all duration-300 ease`}
     >
       {window.innerWidth < 1023 && <AssistantRail />}
-      <div className="flex flex-col px-4 py-6 w-full overflow-hidden">
-        {window.innerWidth > 1023 && (
-          <AiOutlineClose
-            onClick={handleAssistantMenu}
-            size={20}
-            className="absolute cursor-pointer top-[27px] self-end"
-          />
-        )}
 
-        {activeAssistantTab === "Tickets" && <Tickets />}
-        {activeAssistantTab === "Engineer" && <Engineer />}
-        {activeAssistantTab === "DocGuide" && <DocGuide />}
-        {activeAssistantTab === "Remote Access" && <RemoteAccess />}
-        {activeAssistantTab === "Passwords" && <Passwords />}
-        {activeAssistantTab === "Billing" && <Billing />}
+      <div className="flex flex-col w-full">
+        <AssistantControl />
+        <div className="flex flex-col overflow-hidden px-4 py-6 ">
+          {activeAssistantTab === "Tickets" && <Tickets />}
+          {activeAssistantTab === "Engineer" && <Engineer />}
+          {activeAssistantTab === "Document" && <Document />}
+          {activeAssistantTab === "Remote Access" && <RemoteAccess />}
+          {activeAssistantTab === "Passwords" && <Passwords />}
+          {activeAssistantTab === "Billing" && <Billing />}
 
-        {activeAssistantTab === "Tools" && <Tools />}
-        {activeAssistantTab === "Policies" && <Policies />}
+          {activeAssistantTab === "Tools" && <Tools />}
+          {activeAssistantTab === "Policies" && <Policies />}
 
-        {ticketStatus.ticketCreated && <Progress />}
+          {ticketStatus.ticketCreated && <Progress />}
+        </div>
       </div>
     </div>
   );

@@ -6,7 +6,7 @@ import {
   handleGetDocument,
   handleDeleteDocument,
 } from "@/utils/idb/db";
-import useDocGuideStore from "../../assistant/sections/docGuide/docGuideStore";
+import useDocGuideStore from "../../assistant/sections/document/documentStore";
 
 const useDocConversationsStore = create((set, get) => ({
   documentConversationHistories: [],

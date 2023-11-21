@@ -1,14 +1,12 @@
 "use client";
 
 import { SiOpenai } from "react-icons/si";
-import { HiDocumentReport } from "react-icons/hi";
 import { BsFiletypeDoc } from "react-icons/bs";
 import { FaMoneyBillAlt } from "react-icons/fa";
-import { AiFillProject, AiFillTool } from "react-icons/ai";
+import { AiFillTool } from "react-icons/ai";
 import {
   MdScreenShare,
   MdPassword,
-  MdOutlineRequestQuote,
   MdPolicy,
 } from "react-icons/md";
 import useUiStore from "@/utils/store/ui/uiStore";
@@ -49,20 +47,20 @@ const AssistantRail = ({}) => {
         className="z-[99]"
       />
       <BsFiletypeDoc
-        data-tooltip-id="DocGuide"
+        data-tooltip-id="Document"
         className={`${
-          activeAssistantTab === "DocGuide" && "text-blue-800"
+          activeAssistantTab === "Document" && "text-blue-800"
         } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
         size={35}
         onClick={() => {
-          handleAssistantTabChange("DocGuide");
-          handleUIAssistantTabChange("DocGuide");
+          handleAssistantTabChange("Document");
+          handleUIAssistantTabChange("Document");
         }}
       />
       <ReactTooltip
         place="left"
-        content="Documents"
-        id="Documents"
+        content="Document"
+        id="Document"
         className="z-[99]"
       />
       <SiOpenai
@@ -82,6 +80,7 @@ const AssistantRail = ({}) => {
         id="Engineer"
         className="z-[99]"
       />
+
       <div className="dark:border-white/20 border-black/10 border w-full" />
 
       <MdScreenShare

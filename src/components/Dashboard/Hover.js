@@ -4,7 +4,7 @@ import Selection from "./Selection";
 import History from "./History/History";
 import useUiStore from "@/utils/store/ui/uiStore";
 import Rooms from "./Teams/Rooms";
-import Documents from "./Document/Documents";
+import Documents from "./Documents/Documents";
 
 const Hover = ({}) => {
   const {

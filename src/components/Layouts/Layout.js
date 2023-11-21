@@ -7,7 +7,7 @@ import { useEffect } from "react";
 
 import SettingsRail from "../Dashboard/SettingsRail";
 import History from "../Dashboard/History/History";
-import Documents from "../Dashboard/Document/Documents";
+import Documents from "../Dashboard/Documents/Documents";
 import Account from "../Dashboard/Account";
 import TabNavRail from "../Dashboard/TabNavRail";
 import Nav from "../Dashboard/Admin/Nav";
@@ -45,7 +45,7 @@ const Layout = ({ children }) => {
                 {activeTab === "iTAgent" &&
                   activeUIAssistantTab === "Engineer" && <History />}
                 {activeTab === "iTAgent" &&
-                  activeUIAssistantTab === "DocGuide" && <Documents />}
+                  activeUIAssistantTab === "Document" && <Documents />}
                 {children}
               </div>
               {activeTab === "settings" && (

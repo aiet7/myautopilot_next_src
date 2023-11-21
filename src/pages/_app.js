@@ -9,6 +9,13 @@ import Router, { useRouter } from "next/router";
 import useAuthStore from "@/utils/store/auth/authStore";
 import { FaSpinner } from "react-icons/fa";
 
+import { Montserrat } from "next/font/google";
+
+const montserrat = Montserrat({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+});
+
 function MyApp({ Component, pageProps }) {
   const { loading, smallLoading, setIsLoading, setIsSmallLoading } =
     useAuthStore();
@@ -56,7 +63,7 @@ function MyApp({ Component, pageProps }) {
           className="animate-spin absolute top-0 left-0 right-0 bottom-0 m-auto  text-blue-800"
         />
       ) : (
-        <Component {...pageProps} />
+        <Component {...pageProps} className={montserrat.className}/>
       )}
     </>
   );

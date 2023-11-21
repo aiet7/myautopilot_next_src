@@ -7,7 +7,6 @@ const Passwords = () => {
 
   return (
     <div className="flex-grow flex flex-col gap-8 overflow-hidden">
-      <h3 className="dark:border-white/40 text-lg border-b">Passwords</h3>
       <div className="flex-grow overflow-y-auto scrollbar-thin">
         <div className="flex flex-grow flex-col gap-8">
           <div className="flex flex-col">

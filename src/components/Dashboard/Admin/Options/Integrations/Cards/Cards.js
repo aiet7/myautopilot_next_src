@@ -17,6 +17,7 @@ const Cards = () => {
     setSelectedCategory,
     setFilteredCards,
     handleIntegrationsCard,
+    handleDescriptionOverlay,
   } = useIntegrationsStore();
 
   useEffect(() => {
@@ -25,7 +26,7 @@ const Cards = () => {
       : cards;
     setFilteredCards(newFilteredCards);
   }, [selectedCategory, cards]);
-
+  
   return (
     <div
       onClick={() => {
@@ -69,11 +70,13 @@ const Cards = () => {
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2  xl:grid-cols-3 gap-4 py-7 px-4 overflow-auto scrollbar-thin">
             {filteredCards.map((card, index) => {
-              const { value, view } = card;
+              const { value, view, description, isHovered } = card;
               return (
                 <div
-                  key={index}
-                  className="dark:hover:bg-white/70 dark:bg-white/60 dark:shadow-white/20 hover:bg-black/5 flex items-center justify-center border shadow-lg rounded w-full h-60  cursor-pointer"
+                  onMouseEnter={() => handleDescriptionOverlay(view, true)}
+                  onMouseLeave={() => handleDescriptionOverlay(view, false)}
+                  key={view}
+                  className="dark:bg-white/60 dark:shadow-white/20 relative flex items-center justify-center border shadow-lg rounded w-full h-60  cursor-pointer"
                   onClick={() => handleIntegrationsCard(view, router.push)}
                 >
                   <Image
@@ -83,6 +86,11 @@ const Cards = () => {
                     height={300}
                     priority={true}
                   />
+                  {isHovered && (
+                    <div className="absolute bg-black/80 inset-0 w-full flex items-center justify-center">
+                      <p className="text-white text-lg px-10">{description}</p>
+                    </div>
+                  )}
                 </div>
               );
             })}

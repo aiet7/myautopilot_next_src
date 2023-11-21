@@ -4,7 +4,7 @@ import useAssistantStore from "../assistant/assistantStore";
 import useConversationStore from "../interaction/conversations/conversationsStore";
 import useDocConversationsStore from "../interaction/conversations/docConversationsStore";
 import { handleGetDocument } from "@/utils/idb/db";
-import useDocGuideStore from "../assistant/sections/docGuide/docGuideStore";
+import useDocGuideStore from "../assistant/sections/document/documentStore";
 
 const useLocalStorageStore = create((set, get) => ({
   getStorage: async () => {

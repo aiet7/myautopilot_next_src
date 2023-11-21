@@ -79,7 +79,7 @@ const Interaction = ({}) => {
   useEffect(() => {
     if (
       activeUIAssistantTab === "Engineer" ||
-      activeUIAssistantTab === "DocGuide"
+      activeUIAssistantTab === "Document"
     ) {
       handleScrollToBottom(false);
     }
@@ -93,7 +93,7 @@ const Interaction = ({}) => {
     switch (activeUIAssistantTab) {
       case "Engineer":
         return conversationHistories[currentConversationIndex]?.messages;
-      case "DocGuide":
+      case "Document":
         return documentConversationHistories[currentDocumentConversationIndex]
           ?.messages;
       case "Tickets":
@@ -114,7 +114,7 @@ const Interaction = ({}) => {
       }  ${
         ((openDocs || openHistory) &&
           (activeUIAssistantTab === "Engineer" ||
-            activeUIAssistantTab === "DocGuide") &&
+            activeUIAssistantTab === "Document") &&
           "lg:opacity-100 opacity-5 xl:ml-[350px]") ||
         (openAssistant && "lg:opacity-100 opacity-5 xl:mr-[350px]")
       } dark:bg-black transition-all duration-300 ease bg-white`}
@@ -136,7 +136,7 @@ const Interaction = ({}) => {
         {messagesToRender === undefined &&
           activeUIAssistantTab === "Engineer" && <EngineerGuide />}
         {messagesToRender === undefined &&
-          activeUIAssistantTab === "DocGuide" && <DocumentGuide />}
+          activeUIAssistantTab === "Document" && <DocumentGuide />}
         {messagesToRender?.length === 0 &&
           activeUIAssistantTab === "Tickets" && <TicketGuide />}
         {messagesToRender?.map((item, index, arr) => {
@@ -292,7 +292,7 @@ const Interaction = ({}) => {
           </div>
         )}
 
-        {activeUIAssistantTab === "DocGuide" && (
+        {activeUIAssistantTab === "Document" && (
           <div className="relative flex items-center px-4 py-2">
             <textarea
               ref={inputRef}
