@@ -25,6 +25,7 @@ const useAuthStore = create((set, get) => ({
     state: "",
   },
   errorMessage: "",
+  resentCodeMessage: "",
   showLoginForm: false,
   showSignupForm: false,
   loading: false,
@@ -48,7 +49,7 @@ const useAuthStore = create((set, get) => ({
   setCompanies: (companies) => set({ companies }),
   setErrorMessage: (errorMessage) => set({ errorMessage }),
   setIsLoading: (loading) => set({ loading: loading }),
-  setIsSmallLoading: (smallLoading) => set({smallLoading: smallLoading}),
+  setIsSmallLoading: (smallLoading) => set({ smallLoading: smallLoading }),
   setShowLoginForm: (isShown) => set({ showLoginForm: isShown }),
   setShowSignupForm: (isShown) => set({ showSignupForm: isShown }),
 
@@ -368,13 +369,19 @@ const useAuthStore = create((set, get) => ({
       const response = await fetch(
         `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateResetToken?email=${encodedClientUser}&token=${encodedVerificationCode}`
       );
-      set({ errorMessage: "" });
+      set({ errorMessage: "", resentCodeMessage: "" });
       if (response.ok) {
         navigator("/auth/login/forgot/verification/createpassword");
       }
     } catch (e) {
       console.log(e);
     }
+  },
+
+  handleResendVerificationCode: async () => {
+    const { handleForgotPasswordEmailCheck } = get();
+    set({ resentCodeMessage: "Verification Code Resent!" });
+    await handleForgotPasswordEmailCheck(null);
   },
 
   handleCreateNewPassword: async (navigator) => {

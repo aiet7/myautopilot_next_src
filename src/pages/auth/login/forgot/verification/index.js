@@ -14,8 +14,10 @@ const Verification = () => {
 
   const { height, setHeight } = useUiStore();
   const {
+    resentCodeMessage,
     errorMessage,
     setVerificationCode,
+    handleResendVerificationCode,
     handleForgotPasswordVerifyCode,
   } = useAuthStore();
 
@@ -79,10 +81,15 @@ const Verification = () => {
             </button>
             <div className="flex flex-col w-full">
               <p className="w-full text-black">
-                <span className="text-[#00AEEE] cursor-pointer">
+                <span
+                  onClick={handleResendVerificationCode}
+                  className="text-[#00AEEE] cursor-pointer"
+                >
                   Resend code
                 </span>
               </p>
+              <p className="text-green-500 text-sm">{resentCodeMessage}</p>
+
             </div>
           </form>
         </div>
