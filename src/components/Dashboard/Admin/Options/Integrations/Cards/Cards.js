@@ -5,13 +5,10 @@ import useIntegrationsStore from "@/utils/store/admin/control/integrations/integ
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
-import useUserStore from "@/utils/store/user/userStore";
 
 const Cards = () => {
   const router = useRouter();
   const { openAdmin, handleHistoryMenu } = useUiStore();
-  const { user } = useUserStore();
 
   const {
     cards,
@@ -20,6 +17,7 @@ const Cards = () => {
     setSelectedCategory,
     setFilteredCards,
     handleDescriptionOverlay,
+    handleIntegrationsCard,
   } = useIntegrationsStore();
 
   useEffect(() => {
@@ -74,31 +72,26 @@ const Cards = () => {
             {filteredCards.map((card, index) => {
               const { value, view, description, isHovered } = card;
               return (
-                <Link
+                <div
                   key={view}
-                  href={`/dashboard/${user.id}/admin/integrations/${view}`}
+                  onClick={() => handleIntegrationsCard(view, router.push)}
+                  onMouseEnter={() => handleDescriptionOverlay(view, true)}
+                  onMouseLeave={() => handleDescriptionOverlay(view, false)}
+                  className="dark:bg-white/60 dark:shadow-white/20 relative flex items-center justify-center border shadow-lg rounded w-full h-60  cursor-pointer"
                 >
-                  <div
-                    onMouseEnter={() => handleDescriptionOverlay(view, true)}
-                    onMouseLeave={() => handleDescriptionOverlay(view, false)}
-                    className="dark:bg-white/60 dark:shadow-white/20 relative flex items-center justify-center border shadow-lg rounded w-full h-60  cursor-pointer"
-                  >
-                    <Image
-                      src={value}
-                      alt="Card Image"
-                      width={300}
-                      height={300}
-                      priority={true}
-                    />
-                    {isHovered && (
-                      <div className="absolute bg-black/80 inset-0 w-full flex items-center justify-center">
-                        <p className="text-white text-lg px-10">
-                          {description}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </Link>
+                  <Image
+                    src={value}
+                    alt="Card Image"
+                    width={300}
+                    height={300}
+                    priority={true}
+                  />
+                  {isHovered && (
+                    <div className="absolute bg-black/80 inset-0 w-full flex items-center justify-center">
+                      <p className="text-white text-lg px-10">{description}</p>
+                    </div>
+                  )}
+                </div>
               );
             })}
           </div>

@@ -1,11 +1,7 @@
 import { create } from "zustand";
 import useUserStore from "../../user/userStore";
 import { handleGetDocumentMessages } from "@/utils/api/serverProps";
-import {
-  handleSaveDocument,
-  handleGetDocument,
-  handleDeleteDocument,
-} from "@/utils/idb/db";
+
 import useDocGuideStore from "../../assistant/sections/document/documentStore";
 
 const useDocConversationsStore = create((set, get) => ({
@@ -154,7 +150,6 @@ const useDocConversationsStore = create((set, get) => ({
 
     const userStore = useUserStore.getState();
     const { handleAddAssistantMessage } = get();
-    const { handleGetPdfDetails } = useDocGuideStore.getState();
     const formData = new FormData();
     formData.append("file", file);
     formData.append("userId", userStore.user.id);
@@ -174,7 +169,6 @@ const useDocConversationsStore = create((set, get) => ({
 
       if (response.ok) {
         const addedDocumentConversation = await response.json();
-        // await handleSaveDocument(addedDocumentConversation.id, file);
 
         set((state) => ({
           documentConversationHistories: [
@@ -187,7 +181,6 @@ const useDocConversationsStore = create((set, get) => ({
         handleAddAssistantMessage(
           `Document <strong>${file.name}</strong> uploaded!  How can I assist you with this document?`
         );
-        // await handleGetPdfDetails(file);
 
         return addedDocumentConversation;
       } else {
@@ -220,7 +213,6 @@ const useDocConversationsStore = create((set, get) => ({
           const updatedDocumentHistories = documentConversationHistories.filter(
             (doc) => doc.id !== documentId
           );
-          // await handleDeleteDocument(documentId);
 
           set({
             documentConversationHistories: updatedDocumentHistories,
@@ -230,18 +222,14 @@ const useDocConversationsStore = create((set, get) => ({
       } catch (e) {
         console.log(e);
       } finally {
-        // handleDeletePdfForConvo();
       }
     }
   },
 
   handleDocumentSelected: async (index, convoId) => {
     const { initializeDocumentMessages } = get();
-    const { handleGetPdfDetails } = useDocGuideStore.getState();
-    // const file = await handleGetDocument(convoId);
 
     await initializeDocumentMessages(convoId);
-    // await handleGetPdfDetails(file);
 
     set({ currentDocumentConversationIndex: index });
   },

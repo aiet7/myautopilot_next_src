@@ -19,24 +19,26 @@ const useAdminStore = create((set, get) => ({
       return;
     }
 
+    const baseUrl = `/dashboard/${userStore.user.id}/admin/`;
+
     switch (option) {
       case "Internal":
-        navigator(`/dashboard/${userStore.user.id}/admin/internal`);
+        navigator(`${baseUrl}internal`, undefined, { shallow: true });
         break;
       case "Roles":
-        navigator(`/dashboard/${userStore.user.id}/admin/roles`);
+        navigator(`${baseUrl}roles`, undefined, { shallow: true });
         break;
       case "Integrations":
-        navigator(`/dashboard/${userStore.user.id}/admin/integrations`);
+        navigator(`${baseUrl}integrations`, undefined, { shallow: true });
         break;
       case "Branding":
-        navigator(`/dashboard/${userStore.user.id}/admin/branding`);
+        navigator(`${baseUrl}branding`, undefined, { shallow: true });
         break;
       case "Companies":
-        navigator(`/dashboard/${userStore.user.id}/admin/companies`);
+        navigator(`${baseUrl}companies`, undefined, { shallow: true });
         break;
       case "Workflows":
-        navigator(`/dashboard/${userStore.user.id}/admin/workflows`);
+        navigator(`${baseUrl}workflows`, undefined, { shallow: true });
         break;
     }
 

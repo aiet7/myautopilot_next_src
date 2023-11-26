@@ -3,14 +3,10 @@ import useUiStore from "../ui/uiStore";
 import useAssistantStore from "../assistant/assistantStore";
 import useConversationStore from "../interaction/conversations/conversationsStore";
 import useDocConversationsStore from "../interaction/conversations/docConversationsStore";
-import { handleGetDocument } from "@/utils/idb/db";
-import useDocGuideStore from "../assistant/sections/document/documentStore";
 
 const useLocalStorageStore = create((set, get) => ({
   getStorage: async () => {
-    const { documentConversationHistories } =
-      useDocConversationsStore.getState();
-    const { handleGetPdfDetails } = useDocGuideStore.getState();
+   
 
     const lastTab = localStorage.getItem("lastTab");
     const lastAssistantTab = localStorage.getItem("lastAssistantTab");
@@ -37,17 +33,6 @@ const useLocalStorageStore = create((set, get) => ({
     useDocConversationsStore.setState({
       currentDocumentConversationIndex: parsedLastDocumentIndex,
     });
-
-    if (parsedLastDocumentIndex !== null) {
-      if (documentConversationHistories[parsedLastDocumentIndex]?.id) {
-        const file = await handleGetDocument(
-          documentConversationHistories[parsedLastDocumentIndex]?.id
-        );
-        if (file) {
-          await handleGetPdfDetails(file);
-        }
-      }
-    }
   },
 
   saveStorage: () => {

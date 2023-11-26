@@ -61,10 +61,14 @@ const useUiStore = create((set, get) => ({
 
     switch (tab) {
       case "iTAgent":
-        navigator(`/dashboard/${userStore.user.id}`);
+        navigator(`/dashboard/${userStore.user.id}`, undefined, {
+          shallow: true,
+        });
         break;
       case "admin":
-        navigator(`/dashboard/${userStore.user.id}/admin/internal`);
+        navigator(`/dashboard/${userStore.user.id}/admin/internal`, undefined, {
+          shallow: true,
+        });
         break;
     }
 

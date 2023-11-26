@@ -129,65 +129,47 @@ const useIntegrationsStore = create((set, get) => ({
 
   handleIntegrationsCard: (view, navigator) => {
     const userStore = useUserStore.getState();
+    const baseUrl = `/dashboard/${userStore.user.id}/admin/integrations/`;
+
     switch (view) {
       case "automate":
-        navigator(
-          `/dashboard/${userStore.user.id}/admin/integrations/automate`
-        );
+        navigator(`${baseUrl}${view}`, undefined, { shallow: true });
         break;
       case "connectwise":
-        navigator(
-          `/dashboard/${userStore.user.id}/admin/integrations/connectwise`
-        );
+        navigator(`${baseUrl}${view}`, undefined, { shallow: true });
         break;
       case "office365":
-        navigator(
-          `/dashboard/${userStore.user.id}/admin/integrations/office365`
-        );
+        navigator(`${baseUrl}${view}`, undefined, { shallow: true });
         break;
       case "googlews":
-        navigator(
-          `/dashboard/${userStore.user.id}/admin/integrations/googlews`
-        );
+        navigator(`${baseUrl}${view}`, undefined, { shallow: true });
         break;
       case "nablermm":
-        navigator(
-          `/dashboard/${userStore.user.id}/admin/integrations/nablermm`
-        );
+        navigator(`${baseUrl}${view}`, undefined, { shallow: true });
         break;
       case "ncentral":
-        navigator(
-          `/dashboard/${userStore.user.id}/admin/integrations/ncentral`
-        );
+        navigator(`${baseUrl}${view}`, undefined, { shallow: true });
         break;
       case "continuum":
-        navigator(
-          `/dashboard/${userStore.user.id}/admin/integrations/continuum`
-        );
+        navigator(`${baseUrl}${view}`, undefined, { shallow: true });
         break;
       case "aem":
-        navigator(`/dashboard/${userStore.user.id}/admin/integrations/aem`);
+        navigator(`${baseUrl}${view}`, undefined, { shallow: true });
         break;
       case "autotask":
-        navigator(
-          `/dashboard/${userStore.user.id}/admin/integrations/autotask`
-        );
+        navigator(`${baseUrl}${view}`, undefined, { shallow: true });
         break;
       case "screenconnect":
-        navigator(
-          `/dashboard/${userStore.user.id}/admin/integrations/screenconnect`
-        );
+        navigator(`${baseUrl}${view}`, undefined, { shallow: true });
         break;
       case "openai":
-        navigator(`/dashboard/${userStore.user.id}/admin/integrations/openai`);
+        navigator(`${baseUrl}${view}`, undefined, { shallow: true });
         break;
       case "emailconnecter":
-        navigator(
-          `/dashboard/${userStore.user.id}/admin/integrations/emailconnecter`
-        );
+        navigator(`${baseUrl}${view}`, undefined, { shallow: true });
         break;
       default:
-        navigator(`/dashboard/${userStore.user.id}/admin/integrations`);
+        navigator(baseUrl, undefined, { shallow: true });
         break;
     }
 
