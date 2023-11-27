@@ -1,12 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
+import dynamic from "next/dynamic";
 
 import { handleServerPropsData } from "@/utils/api/serverProps.js";
-
-import AssistantRail from "@/components/Dashboard/Assistant/AssistantRail.js";
-import Interaction from "@/components/Dashboard/Interaction/Interaction.js";
-import Assistant from "@/components/Dashboard/Assistant/Assistant.js";
 
 import useUserStore from "@/utils/store/user/userStore.js";
 import useUiStore from "@/utils/store/ui/uiStore.js";
@@ -15,7 +12,19 @@ import useInitializeAppStore from "@/utils/store/init/initializeAppStore.js";
 import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore.js";
 import useDocConversationsStore from "@/utils/store/interaction/conversations/docConversationsStore.js";
-import Layout from "@/components/Layouts/Layout";
+
+const Layout = dynamic(() => import("@/components/Layouts/Layout.js"));
+
+const Interaction = dynamic(() =>
+  import("@/components/Dashboard/Interaction/Interaction.js")
+);
+const Assistant = dynamic(() =>
+  import("@/components/Dashboard/Assistant/Assistant.js")
+);
+
+const AssistantRail = dynamic(() =>
+  import("@/components/Dashboard/Assistant/AssistantRail.js")
+);
 
 const DashboardPage = ({
   initialUser,

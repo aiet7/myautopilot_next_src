@@ -9,7 +9,7 @@ import useAuthStore from "@/utils/store/auth/authStore.js";
 
 import useUiStore from "@/utils/store/ui/uiStore.js";
 
-const ForgotPassword = () => {
+const ForgotPasswordPage = () => {
   const router = useRouter();
 
   const { height, setHeight } = useUiStore();
@@ -80,4 +80,4 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword;
+export default ForgotPasswordPage;

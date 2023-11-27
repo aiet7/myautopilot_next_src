@@ -8,7 +8,7 @@ import useAuthStore from "@/utils/store/auth/authStore.js";
 
 import useUiStore from "@/utils/store/ui/uiStore.js";
 
-const Createpassword = () => {
+const CreatepasswordPage = () => {
   const router = useRouter();
 
   const { height, setHeight } = useUiStore();
@@ -96,4 +96,4 @@ const Createpassword = () => {
   );
 };
 
-export default Createpassword;
+export default CreatepasswordPage;

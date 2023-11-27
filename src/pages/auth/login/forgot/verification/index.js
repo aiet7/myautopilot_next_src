@@ -9,7 +9,7 @@ import useAuthStore from "@/utils/store/auth/authStore.js";
 
 import useUiStore from "@/utils/store/ui/uiStore.js";
 
-const Verification = () => {
+const VerificationPage = () => {
   const router = useRouter();
 
   const { height, setHeight } = useUiStore();
@@ -98,4 +98,4 @@ const Verification = () => {
   );
 };
 
-export default Verification;
+export default VerificationPage;

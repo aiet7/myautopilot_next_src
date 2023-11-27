@@ -2,7 +2,7 @@
 import useUiStore from "@/utils/store/ui/uiStore.js";
 import { useEffect } from "react";
 
-const EmployeeSignup = () => {
+const BusinessSignupPage = () => {
   const { height, setHeight } = useUiStore();
 
   useEffect(() => {
@@ -28,4 +28,4 @@ const EmployeeSignup = () => {
   );
 };
 
-export default EmployeeSignup;
+export default BusinessSignupPage;

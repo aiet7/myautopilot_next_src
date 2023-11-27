@@ -8,7 +8,7 @@ import { UsaStates } from "usa-states";
 import useAuthStore from "@/utils/store/auth/authStore.js";
 import useUiStore from "@/utils/store/ui/uiStore.js";
 
-const Signup = () => {
+const SignupPage = () => {
   const usStates = new UsaStates();
   const router = useRouter();
   const { height, setHeight } = useUiStore();
@@ -317,4 +317,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default SignupPage;

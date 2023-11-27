@@ -8,7 +8,7 @@ import Cookie from "js-cookie";
 import useAuthStore from "@/utils/store/auth/authStore.js";
 import useUiStore from "@/utils/store/ui/uiStore.js";
 
-const Login = () => {
+const LoginPage = () => {
   const router = useRouter();
   const { height, setHeight } = useUiStore();
   const {
@@ -17,7 +17,7 @@ const Login = () => {
     setPassword,
     handleLoginCredentialsAuth,
     handleShowSignup,
-    handleShowForgotPassword
+    handleShowForgotPassword,
   } = useAuthStore();
 
   useEffect(() => {
@@ -118,4 +118,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginPage;

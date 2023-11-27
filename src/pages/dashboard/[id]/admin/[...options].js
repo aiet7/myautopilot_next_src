@@ -1,10 +1,9 @@
 "use client";
 
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import dynamic from "next/dynamic";
 
-import Layout from "@/components/Layouts/Layout";
+const Layout = dynamic(() => import("@/components/Layouts/Layout"));
 
 const Branding = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Branding")
@@ -28,9 +27,7 @@ const Workflows = dynamic(() =>
 const OptionPages = () => {
   const router = useRouter();
 
-  const { id, options } = router.query;
-
-  console.log(id);
+  const { options } = router.query;
 
   const renderComponent = () => {
     if (options && options.length > 0) {

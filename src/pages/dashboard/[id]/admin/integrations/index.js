@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 
-import Layout from "@/components/Layouts/Layout";
+const Layout = dynamic(() => import("@/components/Layouts/Layout"));
 
 const Cards = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/Cards/Cards")
