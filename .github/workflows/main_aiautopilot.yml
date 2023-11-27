@@ -53,4 +53,4 @@ jobs:
           app-name: "myautopilot"
           slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_8CB5FC065344413782D2EC03BB33DDA5 }}
-          package: node-app
+          package: .
