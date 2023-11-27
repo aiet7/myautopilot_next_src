@@ -22,6 +22,7 @@ import useUserStore from "@/utils/store/user/userStore";
 
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
+import Link from "next/link";
 
 const TabNavRail = ({}) => {
   const { user, handleLogout } = useUserStore();
@@ -45,7 +46,6 @@ const TabNavRail = ({}) => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
-
   return (
     <div className="dark:lg:border-white/10 dark:bg-[#373737] bg-[#eaf1fb] flex items-center justify-evenly p-3 gap-4 transition-all duration-300 ease lg:relative lg:flex-col lg:justify-start lg:border-r">
       {((activeTab === "iTAgent" &&
@@ -67,27 +67,28 @@ const TabNavRail = ({}) => {
           />
         </>
       )}
-
-      <div
-        onClick={() => {
-          handleTabChange("iTAgent", router.push);
-        }}
-        className="relative flex flex-col gap-2 items-center cursor-pointer"
-      >
-        <AiOutlineHome
-          data-tooltip-id="Home"
-          size={22}
-          className={`${
-            activeTab === "iTAgent" && "text-blue-600"
-          } outline-none`}
-        />
-        <ReactTooltip
-          place="right"
-          content="Home"
-          id="Home"
-          className="z-[99]"
-        />
-      </div>
+      <Link href={`/dashboard/${user?.id}`}>
+        <div
+          onClick={() => {
+            handleTabChange("iTAgent");
+          }}
+          className="relative flex flex-col gap-2 items-center cursor-pointer"
+        >
+          <AiOutlineHome
+            data-tooltip-id="Home"
+            size={22}
+            className={`${
+              activeTab === "iTAgent" && "text-blue-600"
+            } outline-none`}
+          />
+          <ReactTooltip
+            place="right"
+            content="Home"
+            id="Home"
+            className="z-[99]"
+          />
+        </div>
+      </Link>
       {[
         "tim@etech7.com",
         "ariel@etech7.com",
@@ -95,26 +96,28 @@ const TabNavRail = ({}) => {
         "mkandinov@etech7.com",
         "agogia@etech7.com",
       ].includes(user?.email) && (
-        <div
-          onClick={() => {
-            handleTabChange("admin", router.push);
-          }}
-          className="relative flex flex-col gap-2 items-center cursor-pointer"
-        >
-          <RiAdminLine
-            data-tooltip-id="Admin"
-            size={22}
-            className={`${
-              activeTab === "admin" && "text-blue-600"
-            } outline-none`}
-          />
-          <ReactTooltip
-            place="right"
-            content="Admin"
-            id="Admin"
-            className="z-[99]"
-          />
-        </div>
+        <Link href={`/dashboard/${user?.id}/admin/internal`}>
+          <div
+            onClick={() => {
+              handleTabChange("admin");
+            }}
+            className="relative flex flex-col gap-2 items-center cursor-pointer"
+          >
+            <RiAdminLine
+              data-tooltip-id="Admin"
+              size={22}
+              className={`${
+                activeTab === "admin" && "text-blue-600"
+              } outline-none`}
+            />
+            <ReactTooltip
+              place="right"
+              content="Admin"
+              id="Admin"
+              className="z-[99]"
+            />
+          </div>
+        </Link>
       )}
 
       <div
@@ -145,13 +148,15 @@ const TabNavRail = ({}) => {
                 )}
                 <span>{theme === "light" ? "Dark" : "Light"}</span>
               </div>
-              <div
-                onClick={() => handleLogout(router.push)}
-                className="dark:hover:bg-white/20 hover:bg-black/10  w-full text-lg flex items-center gap-3 px-6 py-3"
-              >
-                <AiOutlinePoweroff />
-                <span>Log out</span>
-              </div>
+              <Link href={`/auth/login`}>
+                <div
+                  onClick={handleLogout}
+                  className="dark:hover:bg-white/20 hover:bg-black/10  w-full text-lg flex items-center gap-3 px-6 py-3"
+                >
+                  <AiOutlinePoweroff />
+                  <span>Log out</span>
+                </div>
+              </Link>
               <div className="dark:border-white/40 font-bold border-t border-black/10 w-full text-lg flex flex-col items-start gap-3 px-6 py-3">
                 <span>{user?.firstName + " " + user?.lastName}</span>
                 <span>{user?.companyName}</span>

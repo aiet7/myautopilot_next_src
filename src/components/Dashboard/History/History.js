@@ -10,7 +10,6 @@ import { IoChatboxOutline } from "react-icons/io5";
 
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
 import useUiStore from "@/utils/store/ui/uiStore";
-import { useRouter } from "next/router";
 
 const History = ({}) => {
 

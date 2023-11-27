@@ -4,10 +4,11 @@ import useIntegrationsStore from "@/utils/store/admin/control/integrations/integ
 import useUiStore from "@/utils/store/ui/uiStore";
 import Image from "next/image";
 
-import { useRouter } from "next/router";
+import Link from "next/link";
+import useUserStore from "@/utils/store/user/userStore";
 
 const Automate = () => {
-  const router = useRouter();
+  const { user } = useUserStore();
   const { handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
 
@@ -39,12 +40,14 @@ const Automate = () => {
                 />
               </div>
               <div className="flex flex-col">
-                <button
-                  onClick={() => handleIntegrationsCard("cards", router.push)}
-                  className="dark:text-white dark:hover:bg-white/20 hover:bg-black/5 text-black px-4 py-2 w-full text-left text-sm border-b"
-                >
-                  Integration Center
-                </button>
+                <Link href={`/dashboard/${user?.id}/admin/integrations`}>
+                  <button
+                    onClick={() => handleIntegrationsCard("cards")}
+                    className="dark:text-white dark:hover:bg-white/20 hover:bg-black/5 text-black px-4 py-2 w-full text-left text-sm border-b"
+                  >
+                    Integration Center
+                  </button>
+                </Link>
                 <button className="dark:text-white  bg-blue-500 text-white px-4 py-2 w-full text-sm text-left border-b">
                   API Settings
                 </button>

@@ -51,7 +51,7 @@ const useUiStore = create((set, get) => ({
     }
   },
 
-  handleTabChange: (tab, navigator) => {
+  handleTabChange: (tab) => {
     const userStore = useUserStore.getState();
     const { activeTab } = get();
 
@@ -59,18 +59,18 @@ const useUiStore = create((set, get) => ({
       return;
     }
 
-    switch (tab) {
-      case "iTAgent":
-        navigator(`/dashboard/${userStore.user.id}`, undefined, {
-          shallow: true,
-        });
-        break;
-      case "admin":
-        navigator(`/dashboard/${userStore.user.id}/admin/internal`, undefined, {
-          shallow: true,
-        });
-        break;
-    }
+    // switch (tab) {
+    //   case "iTAgent":
+    //     navigator(`/dashboard/${userStore.user.id}`, undefined, {
+    //       shallow: true,
+    //     });
+    //     break;
+    //   case "admin":
+    //     navigator(`/dashboard/${userStore.user.id}/admin/internal`, undefined, {
+    //       shallow: true,
+    //     });
+    //     break;
+    // }
 
     set({ activeTab: tab });
   },

@@ -3,10 +3,11 @@ import useIntegrationsStore from "@/utils/store/admin/control/integrations/integ
 import useUiStore from "@/utils/store/ui/uiStore";
 import Image from "next/image";
 
-import { useRouter } from "next/router";
+import Link from "next/link";
+import useUserStore from "@/utils/store/user/userStore";
 
 const DattoPSA = () => {
-  const router = useRouter();
+  const { user } = useUserStore();
   const { handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
   return (
@@ -24,7 +25,7 @@ const DattoPSA = () => {
         <div className="dark:border-b-white/20 border-b p-4">
           <h1 className="text-2xl">Datto PSA Integration</h1>
         </div>
-        <div className="flex flex-col  gap-2 overflow-auto scrollbar-thin lg:flex-row lg:my-12 lg:mx-4" >
+        <div className="flex flex-col  gap-2 overflow-auto scrollbar-thin lg:flex-row lg:my-12 lg:mx-4">
           <div className="border">
             <div className="flex flex-col">
               <div className="dark:bg-white/60 px-4 h-44 flex justify-center items-center border-b lg:w-80">
@@ -37,12 +38,14 @@ const DattoPSA = () => {
                 />
               </div>
               <div className="flex flex-col">
-                <button
-                  onClick={() => handleIntegrationsCard("cards", router.push)}
-                  className="dark:text-white dark:hover:bg-white/20 hover:bg-black/5 text-black px-4 py-2 w-full text-left text-sm border-b"
-                >
-                  Integration Center
-                </button>
+                <Link href={`/dashboard/${user?.id}/admin/integrations`}>
+                  <button
+                    onClick={() => handleIntegrationsCard("cards")}
+                    className="dark:text-white dark:hover:bg-white/20 hover:bg-black/5 text-black px-4 py-2 w-full text-left text-sm border-b"
+                  >
+                    Integration Center
+                  </button>
+                </Link>
                 <button className="bg-blue-500 text-white px-4 py-2  w-full text-sm text-left border-b">
                   API Settings
                 </button>

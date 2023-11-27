@@ -257,7 +257,7 @@ const useUserStore = create((set, get) => ({
     }
   },
 
-  handleLogout: async (navigate) => {
+  handleLogout: async () => {
     const { setShowLoginForm, setShowSignupForm } = useAuthStore.getState();
     const { clearStorage } = useLocalStorageStore.getState();
     const { clearCookies } = useCookiesStore.getState();
@@ -272,7 +272,7 @@ const useUserStore = create((set, get) => ({
     clearCredentials();
     clearInteraction();
     clearEngineer();
-    navigate("/auth/login");
+    // navigate("/auth/login");
     setShowLoginForm(false);
     setShowSignupForm(false);
   },

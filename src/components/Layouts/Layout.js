@@ -1,16 +1,18 @@
 "use client";
 import { ThemeProvider } from "next-themes";
+import dynamic from "next/dynamic";
 
 import useUiStore from "@/utils/store/ui/uiStore";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import { useEffect } from "react";
 
 import SettingsRail from "../Dashboard/SettingsRail";
+import Nav from "../Dashboard/Admin/Nav";
 import History from "../Dashboard/History/History";
 import Documents from "../Dashboard/Documents/Documents";
-import Account from "../Dashboard/Account";
 import TabNavRail from "../Dashboard/TabNavRail";
-import Nav from "../Dashboard/Admin/Nav";
+
+const Account = dynamic(() => import("@/components/Dashboard/Account"));
 
 const Layout = ({ children }) => {
   const { height, activeTab, openSettings, setHeight, handleToggleSettings } =

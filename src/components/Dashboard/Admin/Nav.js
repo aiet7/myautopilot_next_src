@@ -1,6 +1,5 @@
 "use client";
 import useUiStore from "@/utils/store/ui/uiStore";
-import { useRouter } from "next/router";
 import { BsGearWideConnected } from "react-icons/bs";
 import { GiOrganigram } from "react-icons/gi";
 import { FaUserCog } from "react-icons/fa";
@@ -8,8 +7,11 @@ import { MdOutlineBrandingWatermark, MdBusinessCenter } from "react-icons/md";
 import { TiFlowSwitch } from "react-icons/ti";
 import useAdminStore from "@/utils/store/admin/adminStore";
 
+import Link from "next/link";
+import useUserStore from "@/utils/store/user/userStore";
+
 const Nav = ({}) => {
-  const router = useRouter();
+  const { user } = useUserStore();
   const { openAdmin } = useUiStore();
   const { options, currentOption, handleOptionSelected } = useAdminStore();
 
@@ -42,24 +44,28 @@ const Nav = ({}) => {
       <div className="overflow-y-auto h-full scrollbar-thin">
         {options.map((option, index) => {
           return (
-            <div
-              onClick={() => handleOptionSelected(option, router.push)}
-              className="flex flex-col items-start my-2"
+            <Link
               key={option}
+              href={`/dashboard/${user?.id}/admin/${option.toLowerCase()}`}
             >
               <div
-                className={`${`${
-                  currentOption === option && "dark:bg-white/40 bg-black/20"
-                }`} dark:text-white dark:hover:bg-white/40 hover:bg-black/20  text-black w-full flex items-center justify-between px-2 h-[50px] cursor-pointer`}
+                onClick={() => handleOptionSelected(option)}
+                className="flex flex-col items-start my-2"
               >
-                <div className="flex items-center">
-                  <div className="w-8">{renderIcon(option)}</div>
-                  <div className="w-64 truncate flex">
-                    <span className="px-1">{option}</span>
+                <div
+                  className={`${`${
+                    currentOption === option && "dark:bg-white/40 bg-black/20"
+                  }`} dark:text-white dark:hover:bg-white/40 hover:bg-black/20  text-black w-full flex items-center justify-between px-2 h-[50px] cursor-pointer`}
+                >
+                  <div className="flex items-center">
+                    <div className="w-8">{renderIcon(option)}</div>
+                    <div className="w-64 truncate flex">
+                      <span className="px-1">{option}</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>
