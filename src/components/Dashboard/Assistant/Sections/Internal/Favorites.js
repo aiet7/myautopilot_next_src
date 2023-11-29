@@ -1,7 +1,7 @@
 "use client";
 
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
-import useFavoritesStore from "@/utils/store/assistant/sections/favorites/favoritesStore";
+import useFavoritesStore from "@/utils/store/assistant/sections/iternal/favorites/favoritesStore";
 import { useEffect } from "react";
 
 import { AiOutlinePlus, AiOutlineDelete } from "react-icons/ai";

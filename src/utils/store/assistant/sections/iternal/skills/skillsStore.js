@@ -1,7 +1,7 @@
 import useAgentsStore from "@/utils/store/agents/agentsStore";
 import { create } from "zustand";
-import { ITSkills } from "../../../../../utils/prompts/ITPromptLibrary.js";
-import { generalSkills } from "../../../../../utils/prompts/generalPromptLibrary.js";
+import { ITSkills } from "../../../../../prompts/ITPromptLibrary.js";
+import { generalSkills } from "../../../../../prompts/generalPromptLibrary.js";
 
 const useSkillsStore = create((set, get) => ({
   handleGetSkills: () => {

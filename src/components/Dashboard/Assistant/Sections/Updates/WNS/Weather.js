@@ -1,7 +1,7 @@
 "use client";
 
 import { convertKelvinToFahrenheit } from "../../../../../../utils/conversions";
-import useUpdatesStore from "@/utils/store/assistant/sections/updates/updatesStore";
+import useUpdatesStore from "@/utils/store/assistant/sections/iternal/updates/updatesStore";
 
 const Weather = ({}) => {
   const { wns, userWeatherInput, setUserWeatherInput, handleWeatherUpdate } =

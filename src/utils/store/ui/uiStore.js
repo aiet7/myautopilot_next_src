@@ -12,6 +12,7 @@ const useUiStore = create((set, get) => ({
   openAssistant: initialWidth > 1023 ? true : false,
   openDocs: initialWidth > 1023 ? true : false,
   openAdmin: initialWidth > 1023 ? true : false,
+  openTickets: initialWidth > 1023 ? true : false,
   openSettings: false,
 
   setActiveTab: (tab) => set({ activeTab: tab }),
@@ -28,7 +29,7 @@ const useUiStore = create((set, get) => ({
   handleToggleSettings: (toggle) => set({ openSettings: toggle }),
 
   handleHistoryMenu: () => {
-    const { openHistory, openDocs, openAdmin } = get();
+    const { openHistory, openDocs, openAdmin, openTickets } = get();
 
     if (openHistory) {
       set({ openHistory: false });
@@ -40,6 +41,9 @@ const useUiStore = create((set, get) => ({
     if (openAdmin) {
       set({ openAdmin: false });
     } else set({ openAdmin: true });
+    if (openTickets) {
+      set({ openTickets: false });
+    } else set({ openTickets: true });
   },
 
   handleAssistantMenu: () => {

@@ -7,10 +7,10 @@ import {
   handleSendGmail,
 } from "@/utils/api/google";
 import { handleSendGraphMail } from "@/utils/api/microsoft";
-import useTasksStore from "../../assistant/sections/tasks/taskStore";
+import useTasksStore from "../../assistant/sections/iternal/tasks/taskStore";
 import useTokenStore from "../token/tokenStore";
 import Cookies from "js-cookie";
-import useTicketsStore from "../../assistant/sections/tickets/ticketsStore";
+import useTicketsStore from "../../assistant/sections/iternal/tickets/ticketsStore";
 import { validateTicketForm } from "@/utils/formValidations";
 import useTicketConversationsStore from "../conversations/ticketConversationsStore";
 
@@ -60,6 +60,7 @@ const useFormsStore = create((set, get) => ({
     },
   },
   ticketStatus: {
+    ticketId: undefined,
     ticketCreated: undefined,
     ticketAssigned: undefined,
     ticketClosed: undefined,
@@ -136,6 +137,20 @@ const useFormsStore = create((set, get) => ({
         [fieldName]: value,
       },
     })),
+
+  handleClearTicketProgress: () => {
+    set((state) => ({
+      ...state,
+      ticketStatus: {
+        id: undefined,
+        ticketCreated: undefined,
+        ticketAssigned: undefined,
+        ticketClosed: undefined,
+        userCreatedInActiveDirectory: undefined,
+        userEmailCreated: undefined,
+      },
+    }));
+  },
 
   handleEmailProcess: (mailEntities) => {
     const { handleAddForm } = useConversationStore.getState();
@@ -735,6 +750,7 @@ const useFormsStore = create((set, get) => ({
             ...state,
             ticketStatus: {
               ...state.ticketStatus,
+              ticketId: id,
               ticketCreated: ticketCreated && "done",
               ticketAssigned: ticketAssigned ? "done" : "pending",
               ticketClosed: ticketClosed ? "done" : "waiting",
@@ -811,6 +827,7 @@ const useFormsStore = create((set, get) => ({
       set((state) => ({
         ...state,
         ticketStatus: {
+          id: undefined,
           ticketCreated: undefined,
           ticketAssigned: undefined,
           ticketClosed: undefined,

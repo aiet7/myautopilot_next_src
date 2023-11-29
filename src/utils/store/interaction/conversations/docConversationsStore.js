@@ -2,7 +2,7 @@ import { create } from "zustand";
 import useUserStore from "../../user/userStore";
 import { handleGetDocumentMessages } from "@/utils/api/serverProps";
 
-import useDocGuideStore from "../../assistant/sections/document/documentStore";
+import useDocGuideStore from "../../assistant/sections/iternal/document/documentStore";
 
 const useDocConversationsStore = create((set, get) => ({
   documentConversationHistories: [],

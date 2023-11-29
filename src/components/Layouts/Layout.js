@@ -11,6 +11,7 @@ import Nav from "../Dashboard/Admin/Nav";
 import History from "../Dashboard/History/History";
 import Documents from "../Dashboard/Documents/Documents";
 import TabNavRail from "../Dashboard/TabNavRail";
+import Tickets from "../Dashboard/Tickets/Tickets";
 
 const Account = dynamic(() => import("@/components/Dashboard/Account"));
 
@@ -48,6 +49,8 @@ const Layout = ({ children }) => {
                   activeUIAssistantTab === "Engineer" && <History />}
                 {activeTab === "iTAgent" &&
                   activeUIAssistantTab === "Document" && <Documents />}
+                {activeTab === "iTAgent" &&
+                  activeUIAssistantTab === "Tickets" && <Tickets />}
                 {children}
               </div>
               {activeTab === "settings" && (

@@ -1,7 +1,7 @@
 import { handleWnsData } from "@/utils/api/wns";
 import { create } from "zustand";
 import useUserStore from "@/utils/store/user/userStore";
-import { generalUpdates } from "../../../../../utils/prompts/generalPromptLibrary";
+import { generalUpdates } from "../../../../../prompts/generalPromptLibrary";
 
 const useUpdatesStore = create((set, get) => ({
   userNewsInput: "",

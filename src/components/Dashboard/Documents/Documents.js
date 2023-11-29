@@ -39,9 +39,9 @@ const Documents = ({}) => {
       className={`absolute z-10 top-0 bottom-0 left-0 
       ${
         openDocs ? "translate-x-0 w-[350px]" : "-translate-x-full w-[350px]"
-      }  dark:bg-[#111111] bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease `}
+      } dark:lg:border-white/10 dark:bg-[#111111] bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease lg:border-r`}
     >
-      <label className="hover:bg-blue-500 cursor-pointer w-full p-4 bg-blue-800 text-white text-center">
+      <label className="hover:bg-blue-500 cursor-pointer w-full px-4 py-5 bg-blue-800 text-white text-center rounded-lg">
         <input
           className="hidden"
           key={Date.now()}
@@ -62,17 +62,17 @@ const Documents = ({}) => {
           "+ Add Document (.pdf)"
         )}
       </label>
-      <div className="overflow-y-auto h-full scrollbar-thin">
+      <div className="overflow-y-auto h-full scrollbar-thin mt-4">
         {documentConversationHistories.map((conversation, index) => {
           const { id, userID, conversationName, customPrompt } = conversation;
           return (
-            <div key={index} className="flex flex-col items-start my-2">
+            <div key={index} className="flex flex-col items-start my-1">
               <div
                 onClick={() => handleDocumentSelected(index, id)}
                 className={`${`${
                   currentDocumentConversationIndex === index &&
                   "dark:bg-white/40 bg-black/20"
-                }`} dark:text-white dark:hover:bg-white/40 hover:bg-black/20 text-black w-full flex items-center justify-between px-2 h-[50px] cursor-pointer`}
+                }`} dark:text-white dark:hover:bg-white/40 hover:bg-black/20 text-black w-full flex items-center justify-between px-4 py-3 cursor-pointer rounded-lg`}
               >
                 <div className="flex items-center">
                   <div className="w-8">
@@ -81,7 +81,7 @@ const Documents = ({}) => {
                   <div
                     className={`${
                       currentDocumentConversationIndex === index
-                        ? "w-52"
+                        ? "w-48"
                         : "w-64"
                     }  truncate flex`}
                   >

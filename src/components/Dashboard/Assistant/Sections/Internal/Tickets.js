@@ -1,6 +1,6 @@
 "use client";
 
-import useTicketsStore from "@/utils/store/assistant/sections/tickets/ticketsStore";
+import useTicketsStore from "@/utils/store/assistant/sections/iternal/tickets/ticketsStore";
 import useUserStore from "@/utils/store/user/userStore";
 import { useEffect } from "react";
 import { FaSpinner } from "react-icons/fa";
@@ -27,7 +27,7 @@ const Tickets = () => {
 
   return (
     <div className="flex-grow flex flex-col gap-8 overflow-hidden">
-      <div className="dark:border-white/20 flex items-center border rounded">
+      {/* <div className="dark:border-white/20 flex items-center border rounded">
         <button
           onClick={() => setActiveTicketButton("Opened")}
           className={`${
@@ -138,7 +138,7 @@ const Tickets = () => {
               );
             })}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

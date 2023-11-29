@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 
 import {
   AiOutlineHome,
@@ -32,6 +31,7 @@ const TabNavRail = ({}) => {
   const {
     openDocs,
     openHistory,
+    openTickets,
     openSettings,
     activeTab,
     handleTabChange,
@@ -40,7 +40,6 @@ const TabNavRail = ({}) => {
   } = useUiStore();
 
   const { theme, setTheme } = useTheme();
-  const router = useRouter();
 
   const handleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
@@ -50,7 +49,8 @@ const TabNavRail = ({}) => {
     <div className="dark:lg:border-white/10 dark:bg-[#373737] bg-[#eaf1fb] flex items-center justify-evenly p-3 gap-4 transition-all duration-300 ease lg:relative lg:flex-col lg:justify-start lg:border-r">
       {((activeTab === "iTAgent" &&
         (activeUIAssistantTab === "Engineer" ||
-          activeUIAssistantTab === "Document")) ||
+          activeUIAssistantTab === "Document" ||
+          activeUIAssistantTab === "Tickets")) ||
         activeTab === "admin") && (
         <>
           <AiOutlineMenu
@@ -61,7 +61,9 @@ const TabNavRail = ({}) => {
           />
           <ReactTooltip
             place="right"
-            content={openHistory || openDocs ? "Hide Menu" : "Show Menu"}
+            content={
+              openHistory || openDocs || openTickets ? "Hide Menu" : "Show Menu"
+            }
             id="History Menu"
             className="z-[99]"
           />
@@ -128,7 +130,7 @@ const TabNavRail = ({}) => {
           {user?.firstName?.[0]}
         </div>
         {openSettings && (
-          <div className="dark:bg-black dark:border-white/40 dark:border rounded-lg bg-white border border-black/10 absolute z-[99] bottom-[52px] right-0 w-[350px] lg:bottom-0 lg:left-[37px] lg:w-[351px]">
+          <div className="dark:bg-black dark:border-white/40 dark:border rounded-lg bg-white border border-black/10 absolute z-[99] bottom-[52px] right-0 w-full lg:bottom-0 lg:left-[37px] lg:w-[351px]">
             <div className="flex flex-col">
               <div
                 onClick={() => handleTabChange("settings")}

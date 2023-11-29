@@ -27,7 +27,7 @@ const AssistantRail = ({}) => {
     <div
       className={`${
         openAssistant && window.innerWidth > 1023 ? "translate-x-[-350px]" : ""
-      }  dark:lg:border-white/10 dark:bg-[#373737] bg-[#eaf1fb] px-1 py-7 flex flex-col gap-4 items-center transition-all duration-300 ease`}
+      }  dark:lg:border-white/10 dark:bg-[#373737] relative border-r border-l bg-[#eaf1fb] px-1 py-7 flex flex-col gap-4 items-center  transition-all duration-300 ease`}
     >
       <IoTicketSharp
         data-tooltip-id="Tickets"

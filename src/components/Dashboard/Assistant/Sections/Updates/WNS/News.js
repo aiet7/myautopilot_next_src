@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import useUpdatesStore from "@/utils/store/assistant/sections/updates/updatesStore";
+import useUpdatesStore from "@/utils/store/assistant/sections/iternal/updates/updatesStore";
 
 const News = ({  }) => {
   const { wns, userNewsInput, setUserNewsInput, handleNewsUpdate } = useUpdatesStore();

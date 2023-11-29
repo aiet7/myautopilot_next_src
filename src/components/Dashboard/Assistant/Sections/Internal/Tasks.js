@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import useTasksStore from "../../../../utils/store/assistant/sections/tasks/taskStore";
+import useTasksStore from "../../../../../utils/store/assistant/sections/iternal/tasks/taskStore";
 import {
   AiOutlineDelete,
   AiOutlinePlus,

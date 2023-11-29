@@ -1,7 +1,7 @@
 "use client";
 
 import useFormsStore from "@/utils/store/interaction/forms/formsStore";
-import { PROCESS_NAMES } from "../../../../utils/tickets/ticketProcess";
+import { PROCESS_NAMES } from "../../../../../utils/tickets/ticketProcess";
 import { AiOutlineCheck, AiOutlineClockCircle } from "react-icons/ai";
 import { FaSpinner } from "react-icons/fa";
 

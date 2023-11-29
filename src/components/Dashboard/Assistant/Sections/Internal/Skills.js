@@ -1,7 +1,7 @@
 "use client";
 
 import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
-import useSkillsStore from "@/utils/store/assistant/sections/skills/skillsStore";
+import useSkillsStore from "@/utils/store/assistant/sections/iternal/skills/skillsStore";
 
 const Skills = ({}) => {
   const { handlePromptAssistantInput } = useAssistantStore();

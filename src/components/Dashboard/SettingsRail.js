@@ -13,6 +13,7 @@ const SettingsRail = ({}) => {
     openHistory,
     openDocs,
     openAdmin,
+    openTickets,
     openAssistant,
     handleHistoryMenu,
     handleAssistantMenu,
@@ -23,14 +24,16 @@ const SettingsRail = ({}) => {
       className={`dark:bg-[#111111] bg-[#f6f8fc] flex items-center ${
         activeTab === "admin" ||
         activeUIAssistantTab === "Engineer" ||
-        activeUIAssistantTab === "Document"
+        activeUIAssistantTab === "Document" ||
+        activeUIAssistantTab === "Tickets"
           ? "justify-between"
           : "justify-end"
       } px-4 py-2 lg:hidden`}
     >
       {(activeTab === "admin" ||
         activeUIAssistantTab === "Engineer" ||
-        activeUIAssistantTab === "Document") && (
+        activeUIAssistantTab === "Document" ||
+        activeUIAssistantTab === "Tickets") && (
         <>
           <AiOutlineMenu
             data-tooltip-id="Mobile History Menu"
@@ -41,7 +44,7 @@ const SettingsRail = ({}) => {
           <ReactTooltip
             place="left"
             content={
-              openHistory || openDocs || openAdmin
+              openHistory || openDocs || openAdmin || openTickets
                 ? "Hide History Menu"
                 : "Open History Menu"
             }

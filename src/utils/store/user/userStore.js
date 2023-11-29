@@ -6,7 +6,7 @@ import { validateField } from "../../../utils/formValidations";
 
 import useAuthStore from "../auth/authStore";
 import useTicketConversationsStore from "../interaction/conversations/ticketConversationsStore";
-import useEngineerStore from "../assistant/sections/engineer/engineerStore";
+import useEngineerStore from "../assistant/sections/iternal/engineer/engineerStore";
 
 const useUserStore = create((set, get) => ({
   user: null,

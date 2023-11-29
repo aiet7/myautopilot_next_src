@@ -1,6 +1,6 @@
 "use client";
 
-import useToolsStore from "@/utils/store/assistant/sections/tools/toolsStore";
+import useToolsStore from "@/utils/store/assistant/sections/external/tools/toolsStore";
 
 const Tools = () => {
   const { tools } = useToolsStore();
