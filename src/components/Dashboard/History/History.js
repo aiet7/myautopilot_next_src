@@ -46,7 +46,7 @@ const History = ({}) => {
             conversationHistories ? conversationHistories.length : 0
           )
         }
-        className="hover:bg-blue-500 w-full px-4 py-5 bg-blue-800 text-white rounded-lg "
+        className="dark:shadow-white/40 hover:bg-blue-500 w-full px-4 py-5 bg-blue-800 text-white rounded-lg shadow-lg"
       >
         + New Chat
       </button>

@@ -14,7 +14,6 @@ import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore.js";
 import useDocConversationsStore from "@/utils/store/interaction/conversations/docConversationsStore.js";
 
-
 const Interaction = dynamic(() =>
   import("@/components/Dashboard/Interaction/Interaction.js")
 );
@@ -51,30 +50,31 @@ const DashboardPage = ({
 
   useEffect(() => {
     initializeApp(initialAgents);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, initialAgents]);
 
   useEffect(() => {
     initializeUser(initialUser);
     initializeConversations(initialConversations);
     initializeDocumentConversations(initialDocumentConversations);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialUser, initialConversations, initialDocumentConversations]);
 
   useEffect(() => {
     getStorage();
     initializeMessages();
     initializeDocumentMessages();
-  }, [getStorage]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     saveStorage();
-
     window.addEventListener("beforeunload", saveStorage);
-
     return () => {
       window.removeEventListener("beforeunload", saveStorage);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    saveStorage,
     activeAssistantTab,
     activeUIAssistantTab,
     currentConversationIndex,

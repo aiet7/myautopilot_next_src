@@ -41,7 +41,7 @@ const Documents = ({}) => {
         openDocs ? "translate-x-0 w-[350px]" : "-translate-x-full w-[350px]"
       } dark:lg:border-white/10 dark:bg-[#111111] bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease lg:border-r`}
     >
-      <label className="hover:bg-blue-500 cursor-pointer w-full px-4 py-5 bg-blue-800 text-white text-center rounded-lg">
+      <label className="dark:shadow-white/40 hover:bg-blue-500 cursor-pointer w-full px-4 py-5 bg-blue-800 text-white text-center rounded-lg shadow-lg">
         <input
           className="hidden"
           key={Date.now()}
