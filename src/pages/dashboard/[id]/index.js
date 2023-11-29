@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
+import Layout from "@/components/Layouts/Layout.js";
 
 import { handleServerPropsData } from "@/utils/api/serverProps.js";
 
@@ -13,7 +14,6 @@ import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore.js";
 import useDocConversationsStore from "@/utils/store/interaction/conversations/docConversationsStore.js";
 
-const Layout = dynamic(() => import("@/components/Layouts/Layout.js"));
 
 const Interaction = dynamic(() =>
   import("@/components/Dashboard/Interaction/Interaction.js")

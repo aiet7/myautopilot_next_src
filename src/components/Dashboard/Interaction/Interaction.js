@@ -27,6 +27,7 @@ const Interaction = ({}) => {
   const { user } = useUserStore();
 
   const {
+    openTickets,
     openDocs,
     openHistory,
     openAssistant,
@@ -105,16 +106,19 @@ const Interaction = ({}) => {
     <div
       onClick={() => {
         if (window.innerWidth < 1023) {
-          (openDocs || openHistory) && handleHistoryMenu(false);
+          (openDocs || openHistory || openTickets) && handleHistoryMenu(false);
           openAssistant && handleAssistantMenu(false);
         }
       }}
       className={`relative flex flex-col h-full w-full ${
-        (openDocs || openHistory) && openAssistant && "xl:mr-[350px]"
+        (openDocs || openHistory || openTickets) &&
+        openAssistant &&
+        "xl:mr-[350px]"
       }  ${
-        ((openDocs || openHistory) &&
+        ((openDocs || openHistory || openTickets) &&
           (activeUIAssistantTab === "Engineer" ||
-            activeUIAssistantTab === "Document") &&
+            activeUIAssistantTab === "Document" ||
+            activeUIAssistantTab === "Tickets") &&
           "lg:opacity-100 opacity-5 xl:ml-[350px]") ||
         (openAssistant && "lg:opacity-100 opacity-5 xl:mr-[350px]")
       } dark:bg-black transition-all duration-300 ease bg-white`}
@@ -152,31 +156,27 @@ const Interaction = ({}) => {
             >
               <div
                 className={`
-                ${
-                  !openHistory &&
-                  activeUIAssistantTab !== "Tickets" &&
-                  "max-w-[700px]"
-                } 
-                ${
-                  !openAssistant &&
-                  activeUIAssistantTab !== "Tickets" &&
-                  "max-w-[700px]"
-                }
-                ${
-                  !openDocs &&
-                  activeUIAssistantTab !== "Tickets" &&
-                  "max-w-[700px]"
-                }
-                ${
-                  !openAssistant &&
-                  activeUIAssistantTab === "Tickets" &&
-                  "max-w-[1400px]"
-                }
-                ${
-                  activeUIAssistantTab === "Tickets"
-                    ? "max-w-[1400px]"
-                    : "max-w-[450px] 2xl:max-w-[700px]"
-                } flex items-start gap-4 mx-auto`}
+                 ${
+                   !openHistory &&
+                   activeUIAssistantTab !== "Tickets" &&
+                   "max-w-[700px]"
+                 } 
+                 ${
+                   !openAssistant &&
+                   activeUIAssistantTab !== "Tickets" &&
+                   "max-w-[700px]"
+                 }
+                 ${
+                   !openDocs &&
+                   activeUIAssistantTab !== "Tickets" &&
+                   "max-w-[700px]"
+                 }
+                
+                 ${
+                   activeUIAssistantTab === "Tickets"
+                     ? "max-w-[1250px]"
+                     : "max-w-[450px] 2xl:max-w-[700px]"
+                 } flex items-start gap-4 mx-auto`}
               >
                 <span>
                   {item.role === "user" ? (

@@ -7,11 +7,11 @@ import useRefStore from "@/utils/store/marked/ref/refStore.js";
 const MarkedAssistant = ({ markdown }) => {
   
   const { listRef } = useRefStore();
-  const { activeAssistantTab, handlePromptAssistantInput } =
+  const { handlePromptAssistantInput } =
     useAssistantStore();
 
   useEffect(() => {
-    if (listRef.current && activeAssistantTab === "Engineer") {
+    if (listRef.current) {
       listRef.current.querySelectorAll(".list-item").forEach((element) => {
         element.addEventListener("click", (event) => {
           event.preventDefault();
@@ -30,22 +30,14 @@ const MarkedAssistant = ({ markdown }) => {
 
   renderer.list = (body, ordered, start) => {
     if (ordered) {
-      return `<ol start="${start}" class="flex flex-col gap-4 
-      ${
-        activeAssistantTab !== "Engineer" && "list-decimal px-4"
-      }">${body}</ol>`;
+      return `<ol start="${start}" class="flex flex-col gap-4">${body}</ol>`;
     } else {
-      return `<ul class="flex flex-col gap-4
-      ${activeAssistantTab !== "Engineer" && "list-disc px-4"}
-      ">${body}</ul>`;
+      return `<ul class="flex flex-col gap-4">${body}</ul>`;
     }
   };
 
   renderer.listitem = (text) => {
-    return `<li class="${
-      activeAssistantTab === "Engineer" &&
-      "dark:bg-white/20 dark:hover:bg-white/40 hover:bg-black/20 bg-black/5 px-2 py-1 rounded-md list-item cursor-pointer"
-    }">${text}</li>`;
+    return `<li class="dark:bg-white/20 dark:hover:bg-white/40 hover:bg-black/20 bg-black/5 px-2 py-1 rounded-md list-item cursor-pointer">${text}</li>`;
   };
 
   marked.setOptions({ renderer, gfm: true });

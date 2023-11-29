@@ -1,6 +1,6 @@
 "use client";
 
-import useReportsStore from "@/utils/store/assistant/sections/reports/reportsStore";
+import useReportsStore from "@/utils/store/assistant/sections/external/reports/reportsStore";
 import { useEffect } from "react";
 
 const Reports = () => {

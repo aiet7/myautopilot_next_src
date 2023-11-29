@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import useUserStore from "../../../user/userStore";
-import { handleGetTasks } from "../../../../api/serverProps";
+import useUserStore from "../../../../user/userStore";
+import { handleGetTasks } from "../../../../../api/serverProps";
 
 const useTasksStore = create((set, get) => ({
   tasks: [],

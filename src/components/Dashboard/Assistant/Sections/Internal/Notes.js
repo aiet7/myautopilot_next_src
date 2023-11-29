@@ -1,9 +1,9 @@
 "use client";
 import useRefStore from "@/utils/store/assistant/ref/refStore";
-import MarkedAssistant from "../../Marked/MarkedAssistant";
+import MarkedAssistant from "../../../Marked/MarkedAssistant";
 
 import useAgentsStore from "@/utils/store/agents/agentsStore";
-import useNotesStore from "@/utils/store/assistant/sections/notes/notesStore";
+import useNotesStore from "@/utils/store/assistant/sections/iternal/notes/notesStore";
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
 import { useEffect } from "react";
 import { AiOutlinePlus, AiOutlineDelete, AiOutlineClose } from "react-icons/ai";

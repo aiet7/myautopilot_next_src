@@ -11,7 +11,7 @@ const useAdminStore = create((set, get) => ({
   ],
   currentOption: "Internal",
 
-  handleOptionSelected: (option, navigator) => {
+  handleOptionSelected: (option) => {
     const userStore = useUserStore.getState();
 
     const { currentOption } = get();
@@ -19,28 +19,28 @@ const useAdminStore = create((set, get) => ({
       return;
     }
 
-    const baseUrl = `/dashboard/${userStore.user.id}/admin/`;
+    // const baseUrl = `/dashboard/${userStore.user.id}/admin/`;
 
-    switch (option) {
-      case "Internal":
-        navigator(`${baseUrl}internal`, undefined, { shallow: true });
-        break;
-      case "Roles":
-        navigator(`${baseUrl}roles`, undefined, { shallow: true });
-        break;
-      case "Integrations":
-        navigator(`${baseUrl}integrations`, undefined, { shallow: true });
-        break;
-      case "Branding":
-        navigator(`${baseUrl}branding`, undefined, { shallow: true });
-        break;
-      case "Companies":
-        navigator(`${baseUrl}companies`, undefined, { shallow: true });
-        break;
-      case "Workflows":
-        navigator(`${baseUrl}workflows`, undefined, { shallow: true });
-        break;
-    }
+    // switch (option) {
+    //   case "Internal":
+    //     navigator(`${baseUrl}internal`, undefined, { shallow: true });
+    //     break;
+    //   case "Roles":
+    //     navigator(`${baseUrl}roles`, undefined, { shallow: true });
+    //     break;
+    //   case "Integrations":
+    //     navigator(`${baseUrl}integrations`, undefined, { shallow: true });
+    //     break;
+    //   case "Branding":
+    //     navigator(`${baseUrl}branding`, undefined, { shallow: true });
+    //     break;
+    //   case "Companies":
+    //     navigator(`${baseUrl}companies`, undefined, { shallow: true });
+    //     break;
+    //   case "Workflows":
+    //     navigator(`${baseUrl}workflows`, undefined, { shallow: true });
+    //     break;
+    // }
 
     set({ currentOption: option });
   },

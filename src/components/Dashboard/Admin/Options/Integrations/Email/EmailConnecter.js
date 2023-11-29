@@ -1,12 +1,13 @@
 "use client";
 import useIntegrationsStore from "@/utils/store/admin/control/integrations/integrationsStore";
 import useUiStore from "@/utils/store/ui/uiStore";
+import useUserStore from "@/utils/store/user/userStore";
 import Image from "next/image";
+import Link from "next/link";
 
-import { useRouter } from "next/router";
 
 const EmailConnecter = () => {
-  const router = useRouter();
+  const { user } = useUserStore();
   const { handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
 
@@ -38,12 +39,14 @@ const EmailConnecter = () => {
                 />
               </div>
               <div className="flex flex-col">
-                <button
-                  onClick={() => handleIntegrationsCard("cards", router.push)}
-                  className="dark:text-white dark:hover:bg-white/20 hover:bg-black/5 text-black px-4 py-2 w-full text-left text-sm border-b"
-                >
-                  Integration Center
-                </button>
+                <Link href={`/dashboard/${user?.id}/admin/integrations`}>
+                  <button
+                    onClick={() => handleIntegrationsCard("cards")}
+                    className="dark:text-white dark:hover:bg-white/20 hover:bg-black/5 text-black px-4 py-2 w-full text-left text-sm border-b"
+                  >
+                    Integration Center
+                  </button>
+                </Link>
                 <button className="bg-blue-500 text-white px-4 py-2  w-full text-sm text-left border-b">
                   API Settings
                 </button>

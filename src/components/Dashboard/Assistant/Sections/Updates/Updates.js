@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import Stocks from "./WNS/Stocks";
 import News from "./WNS/News";
 import Weather from "./WNS/Weather";
-import useUpdatesStore from "@/utils/store/assistant/sections/updates/updatesStore";
+import useUpdatesStore from "@/utils/store/assistant/sections/iternal/updates/updatesStore";
 
 const Updates = ({}) => {
   const {

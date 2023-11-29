@@ -2,7 +2,7 @@
 
 import { AiOutlineDownload } from "react-icons/ai";
 
-import useDocumentStore from "@/utils/store/assistant/sections/policies/policiesStore";
+import useDocumentStore from "@/utils/store/assistant/sections/external/policies/policiesStore";
 
 const Policies = () => {
   const { tempDocs, handleSubmitDoc } = useDocumentStore();

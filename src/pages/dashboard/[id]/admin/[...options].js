@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
+import Layout from "@/components/Layouts/Layout";
 
-const Layout = dynamic(() => import("@/components/Layouts/Layout"));
 
 const Branding = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Branding")

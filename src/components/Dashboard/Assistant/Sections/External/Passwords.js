@@ -1,21 +1,23 @@
 "use client";
-import useRemoteStore from "@/utils/store/assistant/sections/remote/remoteStore";
 
-const RemoteAccess = () => {
-  const { remoteBenefits } = useRemoteStore();
+import usePasswordsStore from "@/utils/store/assistant/sections/external/passwords/passwordsStore";
+
+const Passwords = () => {
+  const { passwordBenefits } = usePasswordsStore();
 
   return (
     <div className="flex-grow flex flex-col gap-8 overflow-hidden">
       <div className="flex-grow overflow-y-auto scrollbar-thin">
         <div className="flex flex-grow flex-col gap-8">
-          <div className="flex flex-col ">
-            <p className="text-2xl">Remote desktop & access software</p>
+          <div className="flex flex-col">
+            <p className="text-2xl">Manage your privileged access securely</p>
             <p className="dark:text-white/60 text-lg text-black/60">
-              Connect to any device, anywhere, anytime.
+              Passportal™ empowers safe, privileged access management across
+              your devices, networks, and applications while helping you create,
+              manage, and automate strong credentials.
             </p>
           </div>
-
-          {remoteBenefits.map((benefit, index) => {
+          {passwordBenefits.map((benefit, index) => {
             const { title, description } = benefit;
             return (
               <div key={index}>
@@ -26,14 +28,13 @@ const RemoteAccess = () => {
               </div>
             );
           })}
-
           <a
-            href="https://rmm.etech7.com:8040/Login?Reason=0"
+            href="https://etech7.mypasswordapp.com"
             target="_blank"
             rel="noopener noreferrer"
           >
             <button className="hover:bg-blue-500 bg-blue-800 text-white py-2 w-full">
-              Remote Access
+              Passwords Portal
             </button>
           </a>
         </div>
@@ -42,4 +43,4 @@ const RemoteAccess = () => {
   );
 };
 
-export default RemoteAccess;
+export default Passwords;

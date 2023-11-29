@@ -1,6 +1,6 @@
 "use client";
 
-import useUpdatesStore from "@/utils/store/assistant/sections/updates/updatesStore";
+import useUpdatesStore from "@/utils/store/assistant/sections/iternal/updates/updatesStore";
 import { MdOutlineArrowDropUp, MdOutlineArrowDropDown } from "react-icons/md";
 
 const Stocks = ({}) => {

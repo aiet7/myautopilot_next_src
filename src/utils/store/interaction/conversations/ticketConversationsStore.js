@@ -2,7 +2,7 @@ import { create } from "zustand";
 import useRefStore from "../ref/refStore";
 import useAssistantStore from "../../assistant/assistantStore";
 import useInteractionStore from "../interactionsStore";
-import useEngineerStore from "../../assistant/sections/engineer/engineerStore";
+import useEngineerStore from "../../assistant/sections/iternal/engineer/engineerStore";
 
 const isBrowser = typeof window !== "undefined";
 const initialWidth = isBrowser ? window.innerWidth : 1023;

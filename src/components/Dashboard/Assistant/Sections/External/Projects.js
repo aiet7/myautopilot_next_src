@@ -1,6 +1,6 @@
 "use client";
 
-import useProjectsStore from "@/utils/store/assistant/sections/projects/projectsStore";
+import useProjectsStore from "@/utils/store/assistant/sections/external/projects/projectsStore";
 import { useEffect } from "react";
 
 import { MdOutlineArrowDropUp, MdOutlineArrowDropDown } from "react-icons/md";
