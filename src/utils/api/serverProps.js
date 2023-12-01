@@ -1,4 +1,4 @@
-export const handleServerPropsData = async (clientId) => {
+export const handleDashServerPropsData = async (clientId) => {
   const [
     initialUser,
     initialConversations,
@@ -108,6 +108,13 @@ export const handleGetReports = async () => {
 export const handleGetProjects = async () => {
   const response = await fetch(
     "https://etech7-wf-etech7-support-service.azuremicroservices.io/getProjects"
+  );
+  return response.json();
+};
+
+export const handleGetMSPs = async (customDomain) => {
+  const response = await fetch(
+    `http://localhost:9019/msp?customDomain=${customDomain}`
   );
   return response.json();
 };

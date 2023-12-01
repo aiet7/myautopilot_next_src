@@ -1,17 +1,11 @@
 import MarkedInteraction from "../../Marked/MarkedInteraction";
-
-import Troubleshoot from "./Ticket/Troubleshoot";
-
-import EmailButtons from "./Email/EmailButtons.js";
-import EmailForm from "./Email/EmailForm.js";
-import ContactForm from "./Contact/ContactForm.js";
-import TicketForm from "./Ticket/TicketForm.js";
-import EventForm from "./Event/EventForm.js";
-import TaskForm from "./Task/TaskForm.js";
+import Troubleshoot from "../Forms/Ticket/Troubleshoot";
+import TicketForm from "../Forms/Ticket/TicketForm.js";
 import useTicketConversationsStore from "@/utils/store/interaction/conversations/ticketConversationsStore";
 import { useEffect } from "react";
 
 const Switch = ({ item, itemId }) => {
+
   const { activeSectionButton, isMobile, setIsMobile, setActiveSectionButton } =
     useTicketConversationsStore();
 
@@ -33,30 +27,30 @@ const Switch = ({ item, itemId }) => {
   switch (item.type) {
     case "form":
       switch (item.formType) {
-        case "emailButtons + emailForm":
-          return (
-            <div className="flex flex-col gap-6">
-              <p>Please select an email address.</p>
-              <EmailButtons />
-              <EmailForm itemId={itemId} />
-            </div>
-          );
+        // case "emailButtons + emailForm":
+        //   return (
+        //     <div className="flex flex-col gap-6">
+        //       <p>Please select an email address.</p>
+        //       <EmailButtons />
+        //       <EmailForm itemId={itemId} />
+        //     </div>
+        //   );
 
-        case "contactForm + emailForm":
-          return (
-            <div className="flex flex-col gap-6">
-              <p>Would you like to add this email to your contacts?.</p>
-              <ContactForm />
-              <EmailForm itemId={itemId} />
-            </div>
-          );
-        case "contactForm":
-          return (
-            <div className="flex flex-col gap-6">
-              <p>Add email to contact.</p>
-              <ContactForm itemId={itemId} />
-            </div>
-          );
+        // case "contactForm + emailForm":
+        //   return (
+        //     <div className="flex flex-col gap-6">
+        //       <p>Would you like to add this email to your contacts?.</p>
+        //       <ContactForm />
+        //       <EmailForm itemId={itemId} />
+        //     </div>
+        //   );
+        // case "contactForm":
+        //   return (
+        //     <div className="flex flex-col gap-6">
+        //       <p>Add email to contact.</p>
+        //       <ContactForm itemId={itemId} />
+        //     </div>
+        //   );
         case "ticketForm":
           return (
             <div className="flex flex-col gap-6">
@@ -110,20 +104,20 @@ const Switch = ({ item, itemId }) => {
               </div>
             </div>
           );
-        case "eventForm":
-          return (
-            <div className="flex flex-col gap-6">
-              <p>Schedule an event.</p>
-              <EventForm itemId={itemId} />
-            </div>
-          );
-        case "taskForm":
-          return (
-            <div className="flex flex-col gap-6">
-              <p>Create a task.</p>
-              <TaskForm itemId={itemId} />
-            </div>
-          );
+        // case "eventForm":
+        //   return (
+        //     <div className="flex flex-col gap-6">
+        //       <p>Schedule an event.</p>
+        //       <EventForm itemId={itemId} />
+        //     </div>
+        //   );
+        // case "taskForm":
+        //   return (
+        //     <div className="flex flex-col gap-6">
+        //       <p>Create a task.</p>
+        //       <TaskForm itemId={itemId} />
+        //     </div>
+        //   );
 
         default:
           return null;

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import Layout from "@/components/Layouts/Layout.js";
 
-import { handleServerPropsData } from "@/utils/api/serverProps.js";
+import { handleDashServerPropsData } from "@/utils/api/serverProps.js";
 
 import useUserStore from "@/utils/store/user/userStore.js";
 import useUiStore from "@/utils/store/ui/uiStore.js";
@@ -50,21 +50,21 @@ const DashboardPage = ({
 
   useEffect(() => {
     initializeApp(initialAgents);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, initialAgents]);
 
   useEffect(() => {
     initializeUser(initialUser);
     initializeConversations(initialConversations);
     initializeDocumentConversations(initialDocumentConversations);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialUser, initialConversations, initialDocumentConversations]);
 
   useEffect(() => {
     getStorage();
     initializeMessages();
     initializeDocumentMessages();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -89,6 +89,7 @@ const DashboardPage = ({
     </>
   );
 };
+
 export const getServerSideProps = async (context) => {
   const {
     params,
@@ -108,7 +109,7 @@ export const getServerSideProps = async (context) => {
 
   const clientId = params.id;
 
-  const response = await handleServerPropsData(clientId);
+  const response = await handleDashServerPropsData(clientId);
 
   return {
     props: { ...response },

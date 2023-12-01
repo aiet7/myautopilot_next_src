@@ -7,9 +7,8 @@ const useTicketsStore = create((set, get) => ({
   ticketStatus: {},
   ticketStatusLoading: {},
   activeTicketButton: "Opened",
-  showTicketIndex: null,
-
-
+  showTicket: null,
+  activeTicketMode: "Default",
 
   initializeTickets: async () => {
     const userStore = useUserStore.getState();
@@ -21,10 +20,18 @@ const useTicketsStore = create((set, get) => ({
   },
 
   setActiveTicketButton: (button) => set({ activeTicketButton: button }),
-  setShowTicketIndex: (index) => set({ showTicketIndex: index }),
 
   addTicket: (ticket) =>
     set((state) => ({ tickets: [...state.tickets, ticket] })),
+
+  handleTicketMode: async (mode, ticketId) => {
+    const { tickets, handleGetTicketStatus } = get();
+    await handleGetTicketStatus(ticketId);
+    const ticket = ticketId
+      ? tickets.find((t) => t.ticketId === ticketId)
+      : null;
+    set({ activeTicketMode: mode, showTicket: ticket });
+  },
 
   handleUpdateTicketClosed: (ticketId) => {
     set((state) => ({
@@ -33,8 +40,6 @@ const useTicketsStore = create((set, get) => ({
       ),
     }));
   },
-
-  
 
   handleGetTicketStatus: async (ticketId) => {
     try {
@@ -63,8 +68,6 @@ const useTicketsStore = create((set, get) => ({
       console.log(e);
     }
   },
-
-  
 }));
 
 export default useTicketsStore;

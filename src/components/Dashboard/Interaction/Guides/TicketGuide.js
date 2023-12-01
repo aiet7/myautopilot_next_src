@@ -12,7 +12,6 @@ const TicketGuide = () => {
         <BsStars size={15} />
         <span>ET 7</span>
       </div>
-      <div className="flex flex-col justify-center flex-grow gap-2"></div>
       <div className="grid grid-cols-2 gap-2 text-sm">
         <div
           onClick={() =>
