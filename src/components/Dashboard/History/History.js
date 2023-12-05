@@ -1,5 +1,5 @@
 "use client";
-
+import { useEffect } from "react";
 import {
   AiFillDelete,
   AiFillEdit,
@@ -10,9 +10,10 @@ import { IoChatboxOutline } from "react-icons/io5";
 
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
 import useUiStore from "@/utils/store/ui/uiStore";
+import useUserStore from "@/utils/store/user/userStore";
 
 const History = ({}) => {
-
+  const { user } = useUserStore();
   const {
     editing,
     deleting,
@@ -30,8 +31,13 @@ const History = ({}) => {
     handleCancelEditConversationTitle,
     handleEditConversationPrompt,
     handleEditConversationTitle,
+    initializeConversations,
   } = useConversationStore();
   const { openHistory } = useUiStore();
+  
+  useEffect(() => {
+    initializeConversations();
+  }, [user]);
 
   return (
     <div

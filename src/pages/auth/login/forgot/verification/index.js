@@ -48,48 +48,41 @@ const VerificationPage = () => {
           className="bg-gradient-to-b from-white via-white to-gray-400 h-full flex justify-center items-center"
           style={{ height: `calc(${height}px - 1px)` }}
         >
-          <form className="w-[300px] flex flex-col items-center gap-4">
-            <Image
-              priority={true}
-              src="/images/etech7_logo_auth.webp"
-              alt="Etech7_Login_Logo"
-              width={50}
-              height={50}
-            />
-            <h1 className="text-xl font-bold text-black text-center">
-              Verification Code
-            </h1>
-            <p className="text-red-500 text-sm">{errorMessage}</p>
-            <input
-              onChange={(e) => setVerificationCode(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  handleForgotPasswordVerifyCode(router.push);
-                }
-              }}
-              type="text"
-              placeholder="Enter your verification code"
-              className="w-full p-2 border border-gray-300 bg-white text-black"
-            />
-            <button
-              onClick={() => handleForgotPasswordVerifyCode(router.push)}
-              type="button"
-              className="hover:bg-blue-500 w-full  py-2 bg-[#00AEEE] text-white font-bold rounded-sm"
-            >
-              Verify
-            </button>
-            <div className="flex flex-col w-full">
-              <p className="w-full text-black">
-                <span
-                  onClick={handleResendVerificationCode}
-                  className="text-[#00AEEE] cursor-pointer"
-                >
-                  Resend code
-                </span>
+          <form className="p-6 w-[450px] flex flex-col gap-10 items-start justify-center lg:shadow-lg  lg:rounded-lg lg:bg-white">
+            <div className="flex flex-col items-start">
+              <h1 className="text-2xl font-bold ">Verification Code</h1>
+              <p className="text-black/60">
+                Please fill out all of the required fields*
               </p>
+              <p className="text-red-500 text-sm">{errorMessage}</p>
+            </div>
+            <div className="flex flex-col gap-4 w-full text-sm">
+              <input
+                onChange={(e) => setVerificationCode(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleForgotPasswordVerifyCode(router.push);
+                  }
+                }}
+                type="text"
+                placeholder="Enter your verification code"
+                className="w-full p-2 border border-gray-300 bg-white text-black"
+              />
+              <button
+                onClick={() => handleForgotPasswordVerifyCode(router.push)}
+                type="button"
+                className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4"
+              >
+                Verify
+              </button>
+              <span
+                onClick={handleResendVerificationCode}
+                className="text-sm text-blue-800 font-semibold"
+              >
+                Resend code
+              </span>
               <p className="text-green-500 text-sm">{resentCodeMessage}</p>
-
             </div>
           </form>
         </div>

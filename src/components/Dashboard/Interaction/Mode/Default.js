@@ -51,6 +51,7 @@ const Default = () => {
         return messages;
     }
   })();
+  
   return (
     <div
       className="flex-grow overflow-auto scrollbar-thin"

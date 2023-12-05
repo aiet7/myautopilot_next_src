@@ -26,7 +26,7 @@ function MyApp({ Component, pageProps }) {
     const start = (url) => {
       const isAuthRoute = router.pathname.includes("/auth/");
       const isTargetAuthRoute = url.includes("/auth/");
-      if (router.pathname === "/auth/login" && url.includes("/dashboard/")) {
+      if (router.pathname === "/auth/login/tech" && url.includes("/dashboard/")) {
         setIsLoading(true);
       } else if (!isAuthRoute && !isTargetAuthRoute) {
         setIsSmallLoading(true);

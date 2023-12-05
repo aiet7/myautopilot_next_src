@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import useUserStore from "../user/userStore";
 
 const isBrowser = typeof window !== "undefined";
 const initialWidth = isBrowser ? window.innerWidth : 1023;
@@ -56,25 +55,11 @@ const useUiStore = create((set, get) => ({
   },
 
   handleTabChange: (tab) => {
-    const userStore = useUserStore.getState();
     const { activeTab } = get();
 
     if (tab === activeTab) {
       return;
     }
-
-    // switch (tab) {
-    //   case "iTAgent":
-    //     navigator(`/dashboard/${userStore.user.id}`, undefined, {
-    //       shallow: true,
-    //     });
-    //     break;
-    //   case "admin":
-    //     navigator(`/dashboard/${userStore.user.id}/admin/internal`, undefined, {
-    //       shallow: true,
-    //     });
-    //     break;
-    // }
 
     set({ activeTab: tab });
   },

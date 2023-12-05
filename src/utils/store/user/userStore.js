@@ -3,7 +3,7 @@ import useLocalStorageStore from "../localstorage/localStorageStore";
 import useCookiesStore from "../cookies/cookiesStore";
 import { googleLogout } from "@react-oauth/google";
 import { validateField } from "../../../utils/formValidations";
-
+import { handleGetUser } from "@/utils/api/serverProps";
 import useAuthStore from "../auth/authStore";
 import useTicketConversationsStore from "../interaction/conversations/ticketConversationsStore";
 import useEngineerStore from "../assistant/sections/iternal/engineer/engineerStore";
@@ -32,16 +32,25 @@ const useUserStore = create((set, get) => ({
     set({ userPasswords: updatedPasswords });
   },
 
-  initializeUser: (initialUser) => {
-    set({
-      user: initialUser,
-      userInputs: {
-        ...initialUser,
-        companyAddress: {
-          ...initialUser.companyAddress,
+  initializeUser: async (id) => {
+    const { getUser, saveUser } = useLocalStorageStore.getState();
+    const storedUser = getUser();
+
+    if (storedUser && storedUser.id === id) {
+      set({ user: storedUser });
+    } else if (id) {
+      const initialUser = await handleGetUser(id);
+      set({
+        user: initialUser,
+        userInputs: {
+          ...initialUser,
+          companyAddress: {
+            ...initialUser.companyAddress,
+          },
         },
-      },
-    });
+      });
+      saveUser(initialUser);
+    }
   },
 
   handleAddFavoriteToUser: (newFavorite) => {
@@ -276,8 +285,6 @@ const useUserStore = create((set, get) => ({
     setShowLoginForm(false);
     setShowSignupForm(false);
   },
-
-  
 }));
 
 export default useUserStore;

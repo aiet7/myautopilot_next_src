@@ -1,5 +1,5 @@
 "use client";
-
+import { useEffect } from "react";
 import useDocConversationsStore from "@/utils/store/interaction/conversations/docConversationsStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import {
@@ -10,8 +10,10 @@ import {
 } from "react-icons/ai";
 import { IoChatboxOutline } from "react-icons/io5";
 import { FaSpinner } from "react-icons/fa";
+import useUserStore from "@/utils/store/user/userStore";
 
 const Documents = ({}) => {
+  const { user } = useUserStore();
   const { openDocs } = useUiStore();
 
   const {
@@ -32,8 +34,13 @@ const Documents = ({}) => {
     handleEditDocumentPrompt,
     handleCancelEditDocumentTitle,
     handleDocumentSelected,
+    initializeDocumentConversations,
   } = useDocConversationsStore();
-  
+
+  useEffect(() => {
+    initializeDocumentConversations();
+  }, [user]);
+
   return (
     <div
       className={`absolute z-10 top-0 bottom-0 left-0 

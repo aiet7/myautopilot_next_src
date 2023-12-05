@@ -1,35 +1,23 @@
 "use client";
-import Image from "next/image";
-
+import Link from "next/link";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Cookie from "js-cookie";
-import useAuthStore from "@/utils/store/auth/authStore.js";
-
 import useUiStore from "@/utils/store/ui/uiStore.js";
 
-const CreatepasswordPage = () => {
+const BusinessLoginPage = () => {
   const router = useRouter();
-
   const { height, setHeight } = useUiStore();
-  const {
-    errorMessage,
-    setPassword,
-    setVerifyPassword,
-    handleCreateNewPassword,
-  } = useAuthStore();
-
   useEffect(() => {
     if (typeof window !== "undefined") {
       setHeight(window.innerHeight);
 
-      let session_token = Cookie.get("session_token");
+      // let session_token = Cookie.get("session_token");
 
-      const client_id = Cookie.get("client_id");
+      // const client_id = Cookie.get("client_id");
 
-      if (session_token && client_id) {
-        router.push(`/dashboard/${client_id}`);
-      }
+      // if (session_token && client_id) {
+      //   router.push(`/dashboard/${client_id}`);
+      // }
 
       const handleResize = () => setHeight(window.innerHeight);
       window.addEventListener("resize", handleResize);
@@ -48,44 +36,52 @@ const CreatepasswordPage = () => {
         >
           <form className="p-6 w-[450px] flex flex-col gap-10 items-start justify-center lg:shadow-lg  lg:rounded-lg lg:bg-white">
             <div className="flex flex-col items-start">
-              <h1 className="text-2xl font-bold ">Create A Password</h1>
+              <h1 className="text-2xl font-bold ">
+                Enter Your Business User Details.
+              </h1>
               <p className="text-black/60">
                 Please fill out all of the required fields*
               </p>
-              <p className="text-red-500 text-sm">{errorMessage}</p>
             </div>
             <div className="flex flex-col gap-4 w-full text-sm">
               <input
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    handleCreateNewPassword(router.push);
-                  }
-                }}
-                type="password"
-                placeholder="Enter New Password"
+                
+                type="email"
+                placeholder="Enter your email"
                 className="w-full p-2 border border-gray-300 bg-white text-black"
               />
+
               <input
-                onChange={(e) => setVerifyPassword(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    handleCreateNewPassword(router.push);
-                  }
-                }}
+            
                 type="password"
-                placeholder="Re-Enter New Password"
-                className="w-full p-2 border border-gray-300 bg-white text-black"
+                placeholder="Enter your password"
+                className="w-full p-2 border border-gray-300  bg-white text-black"
               />
               <button
-                onClick={() => handleCreateNewPassword(router.push)}
+                onClick={() => handleLoginCredentialsAuth(router.push)}
                 type="button"
                 className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4"
               >
                 Continue
               </button>
+              <div className="flex flex-col gap-1">
+                <Link href={"/auth/login/users"}>
+                  <span className="text-sm text-blue-800 font-semibold">
+                    Back to login in
+                  </span>
+                </Link>
+                <Link href={"/auth/signup"}>
+                  <span className="text-sm text-blue-800 font-semibold">
+                    No Account? Sign up
+                  </span>
+                </Link>
+              </div>
+              <span
+                onClick={() => handleShowForgotPassword(router.push)}
+                className="text-sm text-blue-800 font-extrabold cursor-pointer"
+              >
+                Forgot password?
+              </span>
             </div>
           </form>
         </div>
@@ -94,4 +90,4 @@ const CreatepasswordPage = () => {
   );
 };
 
-export default CreatepasswordPage;
+export default BusinessLoginPage;

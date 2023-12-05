@@ -1,23 +1,4 @@
-export const handleDashServerPropsData = async (clientId) => {
-  const [
-    initialUser,
-    initialConversations,
-    initialDocumentConversations,
-    initialAgents,
-  ] = await Promise.all([
-    handleGetUser(clientId),
-    handleGetConversations(clientId),
-    handleGetDocumentConversations(clientId),
-    handleGetAgents(),
-  ]);
 
-  return {
-    initialUser,
-    initialConversations,
-    initialDocumentConversations,
-    initialAgents,
-  };
-};
 
 export const handleGetUser = async (clientId) => {
   const response = await fetch(

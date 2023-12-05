@@ -1,6 +1,9 @@
 import { create } from "zustand";
 import useUserStore from "../../user/userStore";
-import { handleGetDocumentMessages } from "@/utils/api/serverProps";
+import {
+  handleGetDocumentConversations,
+  handleGetDocumentMessages,
+} from "@/utils/api/serverProps";
 
 import useDocGuideStore from "../../assistant/sections/iternal/document/documentStore";
 
@@ -18,10 +21,16 @@ const useDocConversationsStore = create((set, get) => ({
   setDeleting: (isDeleting) =>
     set((state) => ({ ...state, deleting: isDeleting })),
 
-  initializeDocumentConversations: (initialDocumentConversations) => {
-    set({
-      documentConversationHistories: initialDocumentConversations,
-    });
+  initializeDocumentConversations: async () => {
+    const userStore = useUserStore.getState();
+    set({ documentConversationHistories: [] });
+
+    if (userStore.user) {
+      const initialDocumentConversations = await handleGetDocumentConversations(
+        userStore.user.id
+      );
+      set({ documentConversationHistories: initialDocumentConversations });
+    }
   },
 
   initializeDocumentMessages: async (passedConvoId = null) => {
@@ -143,6 +152,7 @@ const useDocConversationsStore = create((set, get) => ({
   },
 
   handleUploadDocument: async (file) => {
+    console.log(file);
     if (file.type !== "application/pdf") {
       alert("File Not Supported");
       return;

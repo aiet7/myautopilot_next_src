@@ -3,7 +3,10 @@ import useUserStore from "../../user/userStore";
 import useFormsStore from "../forms/formsStore";
 import useRefStore from "../ref/refStore";
 import useInitializeAppStore from "../../init/initializeAppStore";
-import { handleGetMessages } from "@/utils/api/serverProps";
+import {
+  handleGetConversations,
+  handleGetMessages,
+} from "@/utils/api/serverProps";
 import useTicketConversationsStore from "./ticketConversationsStore";
 
 const useConversationStore = create((set, get) => ({
@@ -20,8 +23,16 @@ const useConversationStore = create((set, get) => ({
   setDeleting: (isDeleting) =>
     set((state) => ({ ...state, deleting: isDeleting })),
 
-  initializeConversations: (initialConversations) => {
-    set({ conversationHistories: initialConversations });
+  initializeConversations: async () => {
+    const userStore = useUserStore.getState();
+    set({ conversationHistories: [] });
+
+    if (userStore.user) {
+      const initialConversations = await handleGetConversations(
+        userStore.user.id
+      );
+      set({ conversationHistories: initialConversations });
+    }
   },
 
   initializeMessages: async (passedConvoId = null) => {
@@ -77,7 +88,7 @@ const useConversationStore = create((set, get) => ({
     });
   },
 
-   handleSaveConversationTitle: async (id, userID) => {
+  handleSaveConversationTitle: async (id, userID) => {
     const { selectedAgent } = useInitializeAppStore.getState();
 
     const {
