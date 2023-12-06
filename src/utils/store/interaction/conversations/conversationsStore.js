@@ -3,7 +3,10 @@ import useUserStore from "../../user/userStore";
 import useFormsStore from "../forms/formsStore";
 import useRefStore from "../ref/refStore";
 import useInitializeAppStore from "../../init/initializeAppStore";
-import { handleGetMessages } from "@/utils/api/serverProps";
+import {
+  handleGetConversations,
+  handleGetMessages,
+} from "@/utils/api/serverProps";
 import useTicketConversationsStore from "./ticketConversationsStore";
 
 const useConversationStore = create((set, get) => ({
@@ -20,28 +23,37 @@ const useConversationStore = create((set, get) => ({
   setDeleting: (isDeleting) =>
     set((state) => ({ ...state, deleting: isDeleting })),
 
-  initializeConversations: (initialConversations) => {
-    set({ conversationHistories: initialConversations });
+  initializeConversations: async () => {
+    const userStore = useUserStore.getState();
+    set({ conversationHistories: [] });
+
+    if (userStore.user) {
+      const initialConversations = await handleGetConversations(
+        userStore.user.id
+      );
+      set({ conversationHistories: initialConversations });
+    }
   },
 
-  initializeMessages: async (passedConvoId = null) => {
+  initializeMessages: async (
+    passedConvoId = null,
+    passedConvoHistory = null
+  ) => {
     const { conversationHistories } = get();
 
-    const savedConversationIndex = localStorage.getItem(
-      "lastConversationIndex"
-    );
-    const parsedSavedConversationIndex = savedConversationIndex
-      ? parseInt(savedConversationIndex, 10)
-      : null;
+    const savedConvoOnInitialLoad = passedConvoHistory || conversationHistories;
+
+    const savedConversationIndex = localStorage.getItem("lastConvoIndex");
+    const parsedSavedConversationIndex = JSON.parse(savedConversationIndex);
 
     const convoId =
       passedConvoId ||
-      (parsedSavedConversationIndex !== null
-        ? conversationHistories[parsedSavedConversationIndex]?.id
+      (parsedSavedConversationIndex?.currentConversationIndex !== null
+        ? savedConvoOnInitialLoad[
+            parsedSavedConversationIndex?.currentConversationIndex
+          ]?.id
         : null);
-
     if (!convoId) return;
-
     const messages = await handleGetMessages(convoId);
 
     set((state) => {
@@ -77,7 +89,7 @@ const useConversationStore = create((set, get) => ({
     });
   },
 
-   handleSaveConversationTitle: async (id, userID) => {
+  handleSaveConversationTitle: async (id, userID) => {
     const { selectedAgent } = useInitializeAppStore.getState();
 
     const {
@@ -255,7 +267,7 @@ const useConversationStore = create((set, get) => ({
 
   handleConversationSelected: async (index, convoId) => {
     const { initializeMessages } = get();
-    await initializeMessages(convoId);
+    await initializeMessages(convoId, null);
     set({ currentConversationIndex: index });
   },
 

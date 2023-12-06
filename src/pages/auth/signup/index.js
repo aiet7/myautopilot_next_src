@@ -1,39 +1,40 @@
 "use client";
 
-import Image from "next/image";
+import Link from "next/link";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import { UsaStates } from "usa-states";
 import useAuthStore from "@/utils/store/auth/authStore.js";
 import useUiStore from "@/utils/store/ui/uiStore.js";
+import { FaNetworkWired, FaBusinessTime, FaRegUser } from "react-icons/fa";
 
 const SignupPage = () => {
-  const usStates = new UsaStates();
+  // const usStates = new UsaStates();
   const router = useRouter();
   const { height, setHeight } = useUiStore();
 
-  const {
-    firstName,
-    lastName,
-    companyId,
-    phoneNumber,
-    companyAddress,
-    errorMessage,
-    showSignupForm,
-    companies,
-    setEmail,
-    setPassword,
-    setFirstName,
-    setLastName,
-    setCompanyId,
-    setCompanyName,
-    setPhoneNumber,
-    setCompanyAddress,
-    handleSignupEmailCheck,
-    handleSignupCredentialsAuth,
-    handleShowLogin,
-  } = useAuthStore();
+  // const {
+  //   firstName,
+  //   lastName,
+  //   companyId,
+  //   phoneNumber,
+  //   companyAddress,
+  //   errorMessage,
+  //   showSignupForm,
+  //   companies,
+  //   setEmail,
+  //   setPassword,
+  //   setFirstName,
+  //   setLastName,
+  //   setCompanyId,
+  //   setCompanyName,
+  //   setPhoneNumber,
+  //   setCompanyAddress,
+  //   handleSignupEmailCheck,
+  //   handleSignupCredentialsAuth,
+  //   handleShowLogin,
+  // } = useAuthStore();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -54,7 +55,64 @@ const SignupPage = () => {
           className="relative z-[99]  bg-gradient-to-b from-white via-white to-gray-400 h-full flex justify-center items-center"
           style={{ height: `calc(${height}px - 1px)` }}
         >
-          <form className="w-[300px] flex flex-col items-center gap-4">
+          <div className="flex flex-col gap-6 p-4">
+            <h1 className="text-4xl font-bold text-left lg:text-center">
+              Sign up
+            </h1>
+            <div className="flex flex-col gap-6  items-center justify-center lg:flex-row">
+              <Link href={"/auth/signup/msp"}>
+                <div className="hover:shadow-blue-500  flex flex-col  justify-center items-center w-full shadow-xl rounded-lg  cursor-pointer lg:w-[275px]">
+                  <h2 className="flex items-center justify-center text-2xl font-bold  bg-black/5 rounded-tr-lg rounded-tl-lg w-full p-3 lg:h-[100px]">
+                    MSP
+                  </h2>
+                  <p className="text-lg text-black/60 py-2 px-4 h-[100px] lg:h-[175px]">
+                    Ideal for IT service providers offering managed services.
+                    Get tailored solutions to manage your clients IT
+                    infrastructure efficiently.
+                  </p>
+                  <div className="p-2 h-full">
+                    <FaNetworkWired size={25} />
+                  </div>
+                </div>
+              </Link>
+              <Link href={"/auth/signup/business"}>
+                <div className="hover:shadow-blue-500 flex flex-col  justify-center items-center w-full shadow-xl rounded-lg  cursor-pointer lg:w-[275px]">
+                  <h2 className="flex items-center justify-center text-2xl font-bold  bg-black/5 rounded-tr-lg rounded-tl-lg w-full p-3 lg:h-[100px]">
+                    Businesses
+                  </h2>
+                  <p className="text-lg text-black/60 py-2 px-4 h-[100px] lg:h-[175px]">
+                    Perfect for businesses of all sizes seeking robust IT
+                    solutions. Enhance your operational efficiency and
+                    streamline workflows.
+                  </p>
+                  <div className="flex p-2">
+                    <FaBusinessTime size={25} />
+                  </div>
+                </div>
+              </Link>
+              <Link href={"/auth/signup/personal"}>
+                <div className="hover:shadow-blue-500 flex flex-col justify-center items-center w-full shadow-xl rounded-lg cursor-pointer lg:w-[275px] ">
+                  <h2 className="flex items-center justify-center text-2xl font-bold  bg-black/5 rounded-tr-lg rounded-tl-lg w-full p-3 lg:h-[100px]">
+                    Personal
+                  </h2>
+                  <p className=" text-lg text-black/60 py-2 px-4 h-[100px] lg:h-[175px]">
+                    Designed for individuals and freelancers needing reliable
+                    and efficient IT tools for personal projects or home use.
+                  </p>
+                  <div className="p-2">
+                    <FaRegUser size={25} />
+                  </div>
+                </div>
+              </Link>
+            </div>
+            <Link href={"/auth/login"}>
+              <span className="text-sm text-blue-800 font-semibold">
+                Have an account? Login in
+              </span>
+            </Link>
+          </div>
+
+          {/* <form className="w-[300px] flex flex-col items-center gap-4">
             <Image
               priority={true}
               src="/images/etech7_logo_auth.webp"
@@ -310,7 +368,7 @@ const SignupPage = () => {
                 Login
               </span>
             </p>
-          </form>
+          </form> */}
         </div>
       )}
     </>

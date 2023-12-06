@@ -1,5 +1,5 @@
 "use client";
-
+import { useEffect } from "react";
 import {
   AiFillDelete,
   AiFillEdit,
@@ -10,9 +10,11 @@ import { IoChatboxOutline } from "react-icons/io5";
 
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
 import useUiStore from "@/utils/store/ui/uiStore";
+import useUserStore from "@/utils/store/user/userStore";
+import useAssistantStore from "@/utils/store/assistant/assistantStore";
 
 const History = ({}) => {
-
+  const { user } = useUserStore();
   const {
     editing,
     deleting,
@@ -30,8 +32,22 @@ const History = ({}) => {
     handleCancelEditConversationTitle,
     handleEditConversationPrompt,
     handleEditConversationTitle,
+    initializeConversations,
+    initializeMessages,
   } = useConversationStore();
+
   const { openHistory } = useUiStore();
+  const { activeUIAssistantTab } = useAssistantStore();
+
+  useEffect(() => {
+    const handleConvosAndMessages = async () => {
+      if (activeUIAssistantTab === "Engineer") {
+        await initializeConversations();
+        await initializeMessages(null, conversationHistories);
+      }
+    };
+    handleConvosAndMessages();
+  }, [user, activeUIAssistantTab]);
 
   return (
     <div
@@ -46,7 +62,7 @@ const History = ({}) => {
             conversationHistories ? conversationHistories.length : 0
           )
         }
-        className="hover:bg-blue-500 w-full px-4 py-5 bg-blue-800 text-white rounded-lg "
+        className="dark:shadow-white/40 hover:bg-blue-500 w-full px-4 py-5 bg-blue-800 text-white rounded-lg shadow-lg"
       >
         + New Chat
       </button>

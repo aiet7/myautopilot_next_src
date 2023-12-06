@@ -30,7 +30,6 @@
     "react-icons": "^4.8.0",
     "react-microsoft-login": "^2.0.1",
     "react-speech-recognition": "^3.10.0",
-    "react-tooltip": "^5.21.1",
     "reactflow": "^11.10.1",
     "sockjs-client": "^1.6.1",
     "url": "^0.11.0",

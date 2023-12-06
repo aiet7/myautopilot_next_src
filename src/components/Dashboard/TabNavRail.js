@@ -1,6 +1,5 @@
 "use client";
 
-
 import {
   AiOutlineHome,
   AiOutlinePoweroff,
@@ -19,7 +18,6 @@ import { useTheme } from "next-themes";
 import useUiStore from "@/utils/store/ui/uiStore.js";
 import useUserStore from "@/utils/store/user/userStore";
 
-import { Tooltip as ReactTooltip } from "react-tooltip";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import Link from "next/link";
 
@@ -29,9 +27,6 @@ const TabNavRail = ({}) => {
   const { activeUIAssistantTab } = useAssistantStore();
 
   const {
-    openDocs,
-    openHistory,
-    openTickets,
     openSettings,
     activeTab,
     handleTabChange,
@@ -46,7 +41,7 @@ const TabNavRail = ({}) => {
   };
 
   return (
-    <div className="dark:lg:border-white/10 dark:bg-[#373737] bg-[#eaf1fb] flex items-center justify-evenly p-3 gap-4 transition-all duration-300 ease lg:relative lg:flex-col lg:justify-start lg:border-r">
+    <div className="dark:lg:border-white/10 dark:bg-[#373737]  bg-[#eaf1fb] flex items-center justify-evenly p-3 gap-4 transition-all duration-300 ease lg:relative lg:flex-col lg:justify-start lg:border-r">
       {((activeTab === "iTAgent" &&
         (activeUIAssistantTab === "Engineer" ||
           activeUIAssistantTab === "Document" ||
@@ -59,14 +54,14 @@ const TabNavRail = ({}) => {
             size={20}
             className="hidden cursor-pointer outline-none lg:flex"
           />
-          <ReactTooltip
+          {/* <Tooltip
             place="right"
             content={
               openHistory || openDocs || openTickets ? "Hide Menu" : "Show Menu"
             }
             id="History Menu"
             className="z-[99]"
-          />
+          /> */}
         </>
       )}
       <Link href={`/dashboard/${user?.id}`}>
@@ -83,12 +78,12 @@ const TabNavRail = ({}) => {
               activeTab === "iTAgent" && "text-blue-600"
             } outline-none`}
           />
-          <ReactTooltip
+          {/* <Tooltip
             place="right"
             content="Home"
             id="Home"
             className="z-[99]"
-          />
+          /> */}
         </div>
       </Link>
       {[
@@ -112,12 +107,12 @@ const TabNavRail = ({}) => {
                 activeTab === "admin" && "text-blue-600"
               } outline-none`}
             />
-            <ReactTooltip
+            {/* <Tooltip
               place="right"
               content="Admin"
               id="Admin"
               className="z-[99]"
-            />
+            /> */}
           </div>
         </Link>
       )}

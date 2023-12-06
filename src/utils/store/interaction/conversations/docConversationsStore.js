@@ -1,6 +1,9 @@
 import { create } from "zustand";
 import useUserStore from "../../user/userStore";
-import { handleGetDocumentMessages } from "@/utils/api/serverProps";
+import {
+  handleGetDocumentConversations,
+  handleGetDocumentMessages,
+} from "@/utils/api/serverProps";
 
 import useDocGuideStore from "../../assistant/sections/iternal/document/documentStore";
 
@@ -18,28 +21,39 @@ const useDocConversationsStore = create((set, get) => ({
   setDeleting: (isDeleting) =>
     set((state) => ({ ...state, deleting: isDeleting })),
 
-  initializeDocumentConversations: (initialDocumentConversations) => {
-    set({
-      documentConversationHistories: initialDocumentConversations,
-    });
+  initializeDocumentConversations: async () => {
+    const userStore = useUserStore.getState();
+    set({ documentConversationHistories: [] });
+
+    if (userStore.user) {
+      const initialDocumentConversations = await handleGetDocumentConversations(
+        userStore.user.id
+      );
+      set({ documentConversationHistories: initialDocumentConversations });
+    }
   },
 
-  initializeDocumentMessages: async (passedConvoId = null) => {
-    const savedDocumentConversationIndex =
-      localStorage.getItem("lastDocumentIndex");
-    const parsedSavedDocumentConversationIndex = savedDocumentConversationIndex
-      ? parseInt(savedDocumentConversationIndex, 10)
-      : null;
+  initializeDocumentMessages: async (
+    passedConvoId = null,
+    passedConvoHistory = null
+  ) => {
     const { documentConversationHistories } = get();
 
-    const convoId =
-      passedConvoId ||
-      (parsedSavedDocumentConversationIndex !== null
-        ? documentConversationHistories[parsedSavedDocumentConversationIndex]
-            ?.id
-        : null);
+    const savedConvoOnInitialLoad = passedConvoHistory || documentConversationHistories;
 
-    if (!convoId) return;
+    const savedConversationIndex = localStorage.getItem("lastConvoIndex");
+
+    const parsedSavedConversationIndex = JSON.parse(savedConversationIndex);
+
+    const convoId =
+    passedConvoId ||
+    (parsedSavedConversationIndex?.currentDocumentConversationIndex !== null
+      ? savedConvoOnInitialLoad[
+          parsedSavedConversationIndex?.currentDocumentConversationIndex
+        ]?.id
+      : null);
+
+  if (!convoId) return;
 
     const documentMessages = await handleGetDocumentMessages(convoId);
 
@@ -229,7 +243,7 @@ const useDocConversationsStore = create((set, get) => ({
   handleDocumentSelected: async (index, convoId) => {
     const { initializeDocumentMessages } = get();
 
-    await initializeDocumentMessages(convoId);
+    await initializeDocumentMessages(convoId, null);
 
     set({ currentDocumentConversationIndex: index });
   },

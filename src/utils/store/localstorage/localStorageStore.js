@@ -1,41 +1,46 @@
 import { create } from "zustand";
 import useUiStore from "../ui/uiStore";
+import useUserStore from "../user/userStore";
 import useAssistantStore from "../assistant/assistantStore";
 import useConversationStore from "../interaction/conversations/conversationsStore";
 import useDocConversationsStore from "../interaction/conversations/docConversationsStore";
 
 const useLocalStorageStore = create((set, get) => ({
-  getStorage: async () => {
-   
+  getStorage: (navigator) => {
+    const lastActiveDirectory =
+      localStorage.getItem("lastActiveDirectory") || "{}";
+    const lastUI = localStorage.getItem("lastUI") || "{}";
+    const lastConvoIndex = localStorage.getItem("lastConvoIndex") || "{}";
 
-    const lastTab = localStorage.getItem("lastTab");
-    const lastAssistantTab = localStorage.getItem("lastAssistantTab");
-    const lastUIAssistantTab = localStorage.getItem("lastUIAssistantTab");
-    const lastConversationIndex = localStorage.getItem("lastConversationIndex");
-    const lastDocumentIndex = localStorage.getItem("lastDocumentIndex");
+    const parsedLastActiveDirectory = JSON.parse(lastActiveDirectory);
+    const parsedLastConvoIndex = JSON.parse(lastConvoIndex);
+    const parsedLastUI = JSON.parse(lastUI);
 
-    const parsedLastConversationIndex = lastConversationIndex
-      ? parseInt(lastConversationIndex, 10)
-      : null;
+    const isOnAdminRoute = navigator.includes("/admin");
 
-    const parsedLastDocumentIndex = lastDocumentIndex
-      ? parseInt(lastDocumentIndex, 10)
-      : null;
+    useUserStore.setState({ user: parsedLastActiveDirectory });
 
-    useUiStore.setState({ activeTab: lastTab || "iTAgent" });
-    useAssistantStore.setState({
-      activeAssistantTab: lastAssistantTab || "Tickets",
-      activeUIAssistantTab: lastUIAssistantTab || "Tickets",
+    useUiStore.setState({
+      activeTab:
+        parsedLastUI.activeTab || (isOnAdminRoute ? "admin" : "iTAgent"),
     });
+
+    useAssistantStore.setState({
+      activeAssistantTab: parsedLastUI.activeAssistantTab || "Tickets",
+      activeUIAssistantTab: parsedLastUI.activeUIAssistantTab || "Tickets",
+    });
+
     useConversationStore.setState({
-      currentConversationIndex: parsedLastConversationIndex,
+      currentConversationIndex: parsedLastConvoIndex.currentConversationIndex,
     });
     useDocConversationsStore.setState({
-      currentDocumentConversationIndex: parsedLastDocumentIndex,
+      currentDocumentConversationIndex:
+        parsedLastConvoIndex.currentDocumentConversationIndex,
     });
   },
 
-  saveStorage: () => {
+  setStorage: () => {
+    const { user } = useUserStore.getState();
     const { activeTab } = useUiStore.getState();
     const { activeAssistantTab, activeUIAssistantTab } =
       useAssistantStore.getState();
@@ -43,26 +48,42 @@ const useLocalStorageStore = create((set, get) => ({
     const { currentDocumentConversationIndex } =
       useDocConversationsStore.getState();
 
-    localStorage.setItem("lastTab", activeTab);
-    localStorage.setItem("lastAssistantTab", activeAssistantTab);
-    localStorage.setItem("lastUIAssistantTab", activeUIAssistantTab);
-
+    localStorage.setItem("lastActiveDirectory", JSON.stringify(user));
     localStorage.setItem(
-      "lastConversationIndex",
-      JSON.stringify(currentConversationIndex)
+      "lastUI",
+      JSON.stringify({
+        activeTab,
+        activeAssistantTab,
+        activeUIAssistantTab,
+      })
     );
     localStorage.setItem(
-      "lastDocumentIndex",
-      JSON.stringify(currentDocumentConversationIndex)
+      "lastConvoIndex",
+      JSON.stringify({
+        currentConversationIndex,
+        currentDocumentConversationIndex,
+      })
     );
   },
 
   clearStorage: () => {
-    localStorage.removeItem("lastTab");
-    localStorage.removeItem("lastAssistantTab");
-    localStorage.removeItem("lastUIAssistantTab");
-    localStorage.removeItem("lastConversationIndex");
-    localStorage.removeItem("lastDocumentIndex");
+    localStorage.removeItem("lastActiveDirectory");
+    localStorage.removeItem("lastUI");
+    localStorage.removeItem("lastConvoIndex");
+  },
+
+  saveUser: (user) => {
+    const { password, ...userWithoutPassword } = user;
+    localStorage.setItem(
+      "lastActiveDirectory",
+      JSON.stringify(userWithoutPassword)
+    );
+    useUserStore.setState({ user: userWithoutPassword });
+  },
+
+  getUser: () => {
+    const userString = localStorage.getItem("lastActiveDirectory");
+    return userString ? JSON.parse(userString) : null;
   },
 }));
 

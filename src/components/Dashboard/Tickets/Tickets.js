@@ -2,9 +2,8 @@
 import { useEffect } from "react";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useUserStore from "@/utils/store/user/userStore";
-import useTicketsStore from "@/utils/store/assistant/sections/iternal/tickets/ticketsStore";
+import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
 import { FiRefreshCcw } from "react-icons/fi";
-import { MdOutlineArrowDropUp, MdOutlineArrowDropDown } from "react-icons/md";
 
 const Tickets = ({}) => {
   const { openTickets } = useUiStore();
@@ -14,9 +13,8 @@ const Tickets = ({}) => {
     ticketStatus,
     ticketStatusLoading,
     activeTicketButton,
-    showTicketIndex,
     setActiveTicketButton,
-    setShowTicketIndex,
+    handleTicketMode,
     handleGetTicketStatus,
     initializeTickets,
   } = useTicketsStore();
@@ -72,19 +70,12 @@ const Tickets = ({}) => {
               (activeTicketButton === "Closed" && ticket.closed)
           )
           .map((ticket, index) => {
-            const {
-              id,
-              description,
-              summary,
-              category,
-              subcategory,
-              ticketId,
-              timeStamp,
-            } = ticket;
+            const { id, category, ticketId } = ticket;
             return (
               <div
+                onClick={() => handleTicketMode("Support", ticketId)}
                 key={index}
-                className="dark:bg-white/30 dark:text-white dark:border-white/20 text-sm flex flex-col justify-between gap-1 border rounded-md text-black bg-white p-2 mb-2"
+                className="dark:bg-white/30 dark:text-white dark:border-white/20 cursor-pointer text-sm flex flex-col justify-between gap-1 border rounded-md text-black bg-white px-2 py-3 mb-2"
               >
                 <div className="flex justify-between items-center">
                   <p className="break-words whitespace-pre-wrap">
@@ -96,7 +87,10 @@ const Tickets = ({}) => {
                     className={`${
                       ticketStatusLoading[ticketId] && "animate-spin"
                     } cursor-pointer`}
-                    onClick={() => handleGetTicketStatus(ticketId)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleGetTicketStatus(ticketId);
+                    }}
                   />
                 </div>
 
@@ -107,43 +101,6 @@ const Tickets = ({}) => {
                 <p className="break-words whitespace-pre-wrap">
                   <span className="font-bold">Category:</span> {category}
                 </p>
-
-                {showTicketIndex === index && (
-                  <>
-                    <p className="break-words whitespace-pre-wrap">
-                      <span className="font-bold">Ticket Creator:</span>{" "}
-                      {user?.firstName + " " + user?.lastName}
-                    </p>
-                    <p>
-                      <span className="font-bold">Date Created:</span>{" "}
-                      {new Date(timeStamp).toLocaleString()}
-                    </p>
-                    <p className="break-words whitespace-pre-wrap">
-                      <span className="font-bold">Subcategory:</span>{" "}
-                      {subcategory}
-                    </p>
-                    <p className="break-words whitespace-pre-wrap">
-                      <span className="font-bold">Description:</span>{" "}
-                      {description}
-                    </p>
-                    <p className="break-words whitespace-pre-wrap">
-                      <span className="font-bold">Summary:</span> {summary}
-                    </p>
-                  </>
-                )}
-                {showTicketIndex === index ? (
-                  <MdOutlineArrowDropUp
-                    size={25}
-                    className="self-center cursor-pointer"
-                    onClick={() => setShowTicketIndex(null)}
-                  />
-                ) : (
-                  <MdOutlineArrowDropDown
-                    size={25}
-                    className="self-center cursor-pointer"
-                    onClick={() => setShowTicketIndex(index)}
-                  />
-                )}
               </div>
             );
           })}

@@ -1,5 +1,5 @@
 "use client";
-
+import { useEffect } from "react";
 import useDocConversationsStore from "@/utils/store/interaction/conversations/docConversationsStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import {
@@ -10,8 +10,11 @@ import {
 } from "react-icons/ai";
 import { IoChatboxOutline } from "react-icons/io5";
 import { FaSpinner } from "react-icons/fa";
+import useUserStore from "@/utils/store/user/userStore";
+import useAssistantStore from "@/utils/store/assistant/assistantStore";
 
 const Documents = ({}) => {
+  const { user } = useUserStore();
   const { openDocs } = useUiStore();
 
   const {
@@ -32,8 +35,22 @@ const Documents = ({}) => {
     handleEditDocumentPrompt,
     handleCancelEditDocumentTitle,
     handleDocumentSelected,
+    initializeDocumentConversations,
+    initializeDocumentMessages,
   } = useDocConversationsStore();
-  
+
+  const { activeUIAssistantTab } = useAssistantStore();
+
+  useEffect(() => {
+    const handleConvosAndMessages = async () => {
+      if (activeUIAssistantTab === "Document") {
+        await initializeDocumentConversations();
+        await initializeDocumentMessages(null, documentConversationHistories);
+      }
+    };
+    handleConvosAndMessages();
+  }, [user, activeUIAssistantTab]);
+
   return (
     <div
       className={`absolute z-10 top-0 bottom-0 left-0 
@@ -41,7 +58,7 @@ const Documents = ({}) => {
         openDocs ? "translate-x-0 w-[350px]" : "-translate-x-full w-[350px]"
       } dark:lg:border-white/10 dark:bg-[#111111] bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease lg:border-r`}
     >
-      <label className="hover:bg-blue-500 cursor-pointer w-full px-4 py-5 bg-blue-800 text-white text-center rounded-lg">
+      <label className="dark:shadow-white/40 hover:bg-blue-500 cursor-pointer w-full px-4 py-5 bg-blue-800 text-white text-center rounded-lg shadow-lg">
         <input
           className="hidden"
           key={Date.now()}

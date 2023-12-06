@@ -3,8 +3,7 @@
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import Layout from "@/components/Layouts/Layout.js";
-
-import { handleServerPropsData } from "@/utils/api/serverProps.js";
+import { useRouter } from "next/router";
 
 import useUserStore from "@/utils/store/user/userStore.js";
 import useUiStore from "@/utils/store/ui/uiStore.js";
@@ -13,7 +12,7 @@ import useInitializeAppStore from "@/utils/store/init/initializeAppStore.js";
 import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore.js";
 import useDocConversationsStore from "@/utils/store/interaction/conversations/docConversationsStore.js";
-
+import Cookies from "js-cookie";
 
 const Interaction = dynamic(() =>
   import("@/components/Dashboard/Interaction/Interaction.js")
@@ -26,60 +25,52 @@ const AssistantRail = dynamic(() =>
   import("@/components/Dashboard/Assistant/AssistantRail.js")
 );
 
-const DashboardPage = ({
-  initialUser,
-  initialConversations,
-  initialDocumentConversations,
-  initialAgents,
-}) => {
+const DashboardPage = ({}) => {
+  const session = Cookies.get("session_token");
+  const router = useRouter();
   const { initializeApp } = useInitializeAppStore();
   const { initializeUser } = useUserStore();
-  const {
-    initializeConversations,
-    initializeMessages,
-    currentConversationIndex,
-  } = useConversationStore();
-  const {
-    initializeDocumentConversations,
-    initializeDocumentMessages,
-    currentDocumentConversationIndex,
-  } = useDocConversationsStore();
+  const { getStorage, setStorage } = useLocalStorageStore();
+
+  const { currentConversationIndex } = useConversationStore();
+  const { currentDocumentConversationIndex } = useDocConversationsStore();
+  const { activeTab } = useUiStore();
   const { activeAssistantTab, activeUIAssistantTab } = useAssistantStore();
 
-  const { saveStorage, getStorage } = useLocalStorageStore();
-  const { activeTab } = useUiStore();
+  useEffect(() => {
+    if (router.isReady) {
+      const currentPath = router.asPath;
+      const { id } = router.query;
+      getStorage(currentPath);
+      if (id && session) {
+        initializeApp();
+        initializeUser(id);
+      } else {
+        router.push("/auth/login");
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.isReady, router.asPath]);
+
 
   useEffect(() => {
-    initializeApp(initialAgents);
-  }, [activeTab, initialAgents]);
+    setStorage();
 
-  useEffect(() => {
-    initializeUser(initialUser);
-    initializeConversations(initialConversations);
-    initializeDocumentConversations(initialDocumentConversations);
-  }, [initialUser, initialConversations, initialDocumentConversations]);
-
-  useEffect(() => {
-    getStorage();
-    initializeMessages();
-    initializeDocumentMessages();
-  }, [getStorage]);
-
-  useEffect(() => {
-    saveStorage();
-
-    window.addEventListener("beforeunload", saveStorage);
+    window.addEventListener("beforeunload", setStorage);
 
     return () => {
-      window.removeEventListener("beforeunload", saveStorage);
+      window.removeEventListener("beforeunload", setStorage);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    saveStorage,
+    activeTab,
     activeAssistantTab,
     activeUIAssistantTab,
     currentConversationIndex,
     currentDocumentConversationIndex,
   ]);
+
+  
 
   return (
     <>
@@ -88,31 +79,6 @@ const DashboardPage = ({
       <Assistant />
     </>
   );
-};
-export const getServerSideProps = async (context) => {
-  const {
-    params,
-    req: { cookies },
-  } = context;
-
-  const regularSessionToken = cookies["session_token"];
-
-  if (!regularSessionToken) {
-    return {
-      redirect: {
-        destination: "/auth/login",
-        permanent: false,
-      },
-    };
-  }
-
-  const clientId = params.id;
-
-  const response = await handleServerPropsData(clientId);
-
-  return {
-    props: { ...response },
-  };
 };
 
 DashboardPage.getLayout = (page) => {

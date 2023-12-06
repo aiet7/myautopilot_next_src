@@ -37,28 +37,29 @@ const WelcomePage = () => {
           className="flex items-center justify-center bg-gradient-to-b from-white via-white to-gray-400"
           style={{ height: `calc(${height}px - 1px)` }}
         >
-          <div className="flex flex-col items-center gap-4 w-full">
+          <div className="absolute inset-0 opacity-5 flex items-center justify-center ">
             <Image
               priority={true}
-              src="/images/etech7_logo.webp"
-              width={300}
-              height={300}
+              src="/images/autopilot_logo_light.png"
+              width={500}
+              height={500}
               alt="Etech7_Logo"
             />
-
-            <h1 className="text-3xl text-center">Client Portal</h1>
-            <div className="flex justify-center items-center gap-8">
+          </div>
+          <div className="relative flex flex-col items-center gap-4 w-full">
+            <h1 className="text-4xl font-bold w-full text-left px-4 lg:text-center">MyAutoPilot</h1>
+            <div className="text-lg font-bold flex flex-col w-full px-4 justify-center items-center gap-4 lg:flex-row">
               <button
                 onClick={handleShowLogin}
-                className="hover:bg-blue-500 w-[120px] bg-[#00AEEE] text-white py-3 rounded-sm"
+                className="hover:bg-blue-500 bg-blue-800 w-full text-white py-5 rounded-lg lg:w-[200px]"
               >
-                Login
+                Log in
               </button>
               <button
                 onClick={handleShowSigmup}
-                className="hover:bg-blue-500 w-[120px] bg-[#00AEEE] text-white py-3 rounded-sm"
+                className="hover:bg-blue-500 bg-blue-800 w-full text-white py-5 rounded-lg lg:w-[200px]"
               >
-                Signup
+                Sign up
               </button>
             </div>
           </div>

@@ -10,7 +10,7 @@ import { handleSendGraphMail } from "@/utils/api/microsoft";
 import useTasksStore from "../../assistant/sections/iternal/tasks/taskStore";
 import useTokenStore from "../token/tokenStore";
 import Cookies from "js-cookie";
-import useTicketsStore from "../../assistant/sections/iternal/tickets/ticketsStore";
+import useTicketsStore from "../../interaction/tickets/ticketsStore";
 import { validateTicketForm } from "@/utils/formValidations";
 import useTicketConversationsStore from "../conversations/ticketConversationsStore";
 

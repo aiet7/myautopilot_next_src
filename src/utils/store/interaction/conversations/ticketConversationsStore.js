@@ -20,6 +20,7 @@ const useTicketConversationsStore = create((set, get) => ({
   },
   setActiveSectionButton: (button) => set({ activeSectionButton: button }),
 
+
   handleAddUserMessage: async (message) => {
     const { handleAddTroubleShootMessage } = get();
     set((state) => {
