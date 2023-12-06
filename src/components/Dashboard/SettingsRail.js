@@ -4,7 +4,6 @@ import { AiOutlineMenu } from "react-icons/ai";
 
 import { BiBrain } from "react-icons/bi";
 
-import { Tooltip as ReactTooltip } from "react-tooltip";
 
 const SettingsRail = ({}) => {
   const { activeUIAssistantTab } = useAssistantStore();
@@ -41,7 +40,7 @@ const SettingsRail = ({}) => {
             onClick={handleHistoryMenu}
             className="cursor-pointer outline-none"
           />
-          <ReactTooltip
+          {/* <Tooltip
             place="left"
             content={
               openHistory || openDocs || openAdmin || openTickets
@@ -50,7 +49,7 @@ const SettingsRail = ({}) => {
             }
             id="Mobile History Menu"
             className="z-[99]"
-          />
+          /> */}
         </>
       )}
 
@@ -62,14 +61,14 @@ const SettingsRail = ({}) => {
             onClick={handleAssistantMenu}
             className="cursor-pointer outline-none"
           />
-          <ReactTooltip
+          {/* <Tooltip
             place="left"
             content={
               openAssistant ? "Hide Assistant Menu" : "Open Assistant Menu"
             }
             id="Mobile Assistant Menu"
             className="z-[99]"
-          />
+          /> */}
         </>
       ) : null}
     </div>

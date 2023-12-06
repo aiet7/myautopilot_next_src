@@ -27,7 +27,7 @@ const PersonalSignupPage = () => {
           <div className="p-4 flex flex-col items-center w-full justify-center h-full ">
             <form className=" p-6 w-[450px]  flex flex-col gap-10 items-start justify-center lg:shadow-lg  lg:rounded-lg lg:bg-white ">
               <div className="flex flex-col items-start">
-                <h1 className="text-2xl font-bold ">Personal</h1>
+                <h1 className="text-2xl font-bold ">Enter Your Personal Details</h1>
                 <p className="text-black/60">
                   Please fill out all of the required fields*
                 </p>

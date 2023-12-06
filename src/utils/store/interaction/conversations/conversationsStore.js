@@ -35,24 +35,25 @@ const useConversationStore = create((set, get) => ({
     }
   },
 
-  initializeMessages: async (passedConvoId = null) => {
+  initializeMessages: async (
+    passedConvoId = null,
+    passedConvoHistory = null
+  ) => {
     const { conversationHistories } = get();
 
-    const savedConversationIndex = localStorage.getItem(
-      "lastConversationIndex"
-    );
-    const parsedSavedConversationIndex = savedConversationIndex
-      ? parseInt(savedConversationIndex, 10)
-      : null;
+    const savedConvoOnInitialLoad = passedConvoHistory || conversationHistories;
+
+    const savedConversationIndex = localStorage.getItem("lastConvoIndex");
+    const parsedSavedConversationIndex = JSON.parse(savedConversationIndex);
 
     const convoId =
       passedConvoId ||
-      (parsedSavedConversationIndex !== null
-        ? conversationHistories[parsedSavedConversationIndex]?.id
+      (parsedSavedConversationIndex?.currentConversationIndex !== null
+        ? savedConvoOnInitialLoad[
+            parsedSavedConversationIndex?.currentConversationIndex
+          ]?.id
         : null);
-
     if (!convoId) return;
-
     const messages = await handleGetMessages(convoId);
 
     set((state) => {
@@ -266,7 +267,7 @@ const useConversationStore = create((set, get) => ({
 
   handleConversationSelected: async (index, convoId) => {
     const { initializeMessages } = get();
-    await initializeMessages(convoId);
+    await initializeMessages(convoId, null);
     set({ currentConversationIndex: index });
   },
 

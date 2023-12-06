@@ -33,22 +33,27 @@ const useDocConversationsStore = create((set, get) => ({
     }
   },
 
-  initializeDocumentMessages: async (passedConvoId = null) => {
-    const savedDocumentConversationIndex =
-      localStorage.getItem("lastDocumentIndex");
-    const parsedSavedDocumentConversationIndex = savedDocumentConversationIndex
-      ? parseInt(savedDocumentConversationIndex, 10)
-      : null;
+  initializeDocumentMessages: async (
+    passedConvoId = null,
+    passedConvoHistory = null
+  ) => {
     const { documentConversationHistories } = get();
 
-    const convoId =
-      passedConvoId ||
-      (parsedSavedDocumentConversationIndex !== null
-        ? documentConversationHistories[parsedSavedDocumentConversationIndex]
-            ?.id
-        : null);
+    const savedConvoOnInitialLoad = passedConvoHistory || documentConversationHistories;
 
-    if (!convoId) return;
+    const savedConversationIndex = localStorage.getItem("lastConvoIndex");
+
+    const parsedSavedConversationIndex = JSON.parse(savedConversationIndex);
+
+    const convoId =
+    passedConvoId ||
+    (parsedSavedConversationIndex?.currentDocumentConversationIndex !== null
+      ? savedConvoOnInitialLoad[
+          parsedSavedConversationIndex?.currentDocumentConversationIndex
+        ]?.id
+      : null);
+
+  if (!convoId) return;
 
     const documentMessages = await handleGetDocumentMessages(convoId);
 
@@ -152,7 +157,6 @@ const useDocConversationsStore = create((set, get) => ({
   },
 
   handleUploadDocument: async (file) => {
-    console.log(file);
     if (file.type !== "application/pdf") {
       alert("File Not Supported");
       return;
@@ -239,7 +243,7 @@ const useDocConversationsStore = create((set, get) => ({
   handleDocumentSelected: async (index, convoId) => {
     const { initializeDocumentMessages } = get();
 
-    await initializeDocumentMessages(convoId);
+    await initializeDocumentMessages(convoId, null);
 
     set({ currentDocumentConversationIndex: index });
   },

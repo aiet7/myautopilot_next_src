@@ -11,6 +11,7 @@ import { IoChatboxOutline } from "react-icons/io5";
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useUserStore from "@/utils/store/user/userStore";
+import useAssistantStore from "@/utils/store/assistant/assistantStore";
 
 const History = ({}) => {
   const { user } = useUserStore();
@@ -32,12 +33,21 @@ const History = ({}) => {
     handleEditConversationPrompt,
     handleEditConversationTitle,
     initializeConversations,
+    initializeMessages,
   } = useConversationStore();
+
   const { openHistory } = useUiStore();
-  
+  const { activeUIAssistantTab } = useAssistantStore();
+
   useEffect(() => {
-    initializeConversations();
-  }, [user]);
+    const handleConvosAndMessages = async () => {
+      if (activeUIAssistantTab === "Engineer") {
+        await initializeConversations();
+        await initializeMessages(null, conversationHistories);
+      }
+    };
+    handleConvosAndMessages();
+  }, [user, activeUIAssistantTab]);
 
   return (
     <div

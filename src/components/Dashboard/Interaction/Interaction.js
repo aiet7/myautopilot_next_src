@@ -17,6 +17,7 @@ import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore.js";
 import Support from "./Mode/Support.js";
 import Input from "./Input.js";
 
+
 const Interaction = ({}) => {
   const {
     openTickets,
@@ -39,6 +40,7 @@ const Interaction = ({}) => {
 
   const { activeUIAssistantTab } = useAssistantStore();
   const { activeTicketMode } = useTicketsStore();
+
 
   useEffect(() => {
     if (

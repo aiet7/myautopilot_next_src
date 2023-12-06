@@ -4,14 +4,9 @@ import { SiOpenai } from "react-icons/si";
 import { BsFiletypeDoc } from "react-icons/bs";
 import { FaMoneyBillAlt } from "react-icons/fa";
 import { AiFillTool } from "react-icons/ai";
-import {
-  MdScreenShare,
-  MdPassword,
-  MdPolicy,
-} from "react-icons/md";
+import { MdScreenShare, MdPassword, MdPolicy } from "react-icons/md";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
-import { Tooltip as ReactTooltip } from "react-tooltip";
 
 import { IoTicketSharp } from "react-icons/io5";
 
@@ -40,12 +35,12 @@ const AssistantRail = ({}) => {
           handleUIAssistantTabChange("Tickets");
         }}
       />
-      <ReactTooltip
+      {/* <Tooltip
         place="left"
         content="Tickets"
         id="Tickets"
         className="z-[99]"
-      />
+      /> */}
       <BsFiletypeDoc
         data-tooltip-id="Document"
         className={`${
@@ -57,12 +52,12 @@ const AssistantRail = ({}) => {
           handleUIAssistantTabChange("Document");
         }}
       />
-      <ReactTooltip
+      {/* <Tooltip
         place="left"
         content="Document"
         id="Document"
         className="z-[99]"
-      />
+      /> */}
       <SiOpenai
         data-tooltip-id="Engineer"
         className={`${
@@ -74,12 +69,12 @@ const AssistantRail = ({}) => {
           handleUIAssistantTabChange("Engineer");
         }}
       />
-      <ReactTooltip
+      {/* <Tooltip
         place="left"
         content="Engineer"
         id="Engineer"
         className="z-[99]"
-      />
+      /> */}
 
       <div className="dark:border-white/20 border-black/10 border w-full" />
 
@@ -91,12 +86,12 @@ const AssistantRail = ({}) => {
         size={35}
         onClick={() => handleAssistantTabChange("Remote Access")}
       />
-      <ReactTooltip
+      {/* <Tooltip
         place="left"
         content="Remote Access"
         id="Remote Access"
         className="z-[99]"
-      />
+      /> */}
       <MdPassword
         data-tooltip-id="Passwords"
         className={`${
@@ -105,12 +100,12 @@ const AssistantRail = ({}) => {
         size={35}
         onClick={() => handleAssistantTabChange("Passwords")}
       />
-      <ReactTooltip
+      {/* <Tooltip
         place="left"
         content="Passwords"
         id="Passwords"
         className="z-[99]"
-      />
+      /> */}
       <FaMoneyBillAlt
         data-tooltip-id="Billing"
         className={`${
@@ -119,12 +114,12 @@ const AssistantRail = ({}) => {
         size={35}
         onClick={() => handleAssistantTabChange("Billing")}
       />
-      <ReactTooltip
+      {/* <Tooltip
         place="left"
         content="Billing"
         id="Billing"
         className="z-[99]"
-      />
+      /> */}
       {/* <MdOutlineRequestQuote
         data-tooltip-id="Quotes"
         className={`${
@@ -175,12 +170,12 @@ const AssistantRail = ({}) => {
         size={35}
         onClick={() => handleAssistantTabChange("Tools")}
       />
-      <ReactTooltip
+      {/* <Tooltip
         place="left"
         content="Tools"
         id="Tools"
         className="z-[99]"
-      />
+      /> */}
       <MdPolicy
         data-tooltip-id="Policies"
         className={`${
@@ -189,12 +184,12 @@ const AssistantRail = ({}) => {
         size={35}
         onClick={() => handleAssistantTabChange("Policies")}
       />
-      <ReactTooltip
+      {/* <Tooltip
         place="left"
         content="Policies"
         id="Policies"
         className="z-[99]"
-      />
+      /> */}
     </div>
   );
 };

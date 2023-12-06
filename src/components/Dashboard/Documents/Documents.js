@@ -11,6 +11,7 @@ import {
 import { IoChatboxOutline } from "react-icons/io5";
 import { FaSpinner } from "react-icons/fa";
 import useUserStore from "@/utils/store/user/userStore";
+import useAssistantStore from "@/utils/store/assistant/assistantStore";
 
 const Documents = ({}) => {
   const { user } = useUserStore();
@@ -35,11 +36,20 @@ const Documents = ({}) => {
     handleCancelEditDocumentTitle,
     handleDocumentSelected,
     initializeDocumentConversations,
+    initializeDocumentMessages,
   } = useDocConversationsStore();
 
+  const { activeUIAssistantTab } = useAssistantStore();
+
   useEffect(() => {
-    initializeDocumentConversations();
-  }, [user]);
+    const handleConvosAndMessages = async () => {
+      if (activeUIAssistantTab === "Document") {
+        await initializeDocumentConversations();
+        await initializeDocumentMessages(null, documentConversationHistories);
+      }
+    };
+    handleConvosAndMessages();
+  }, [user, activeUIAssistantTab]);
 
   return (
     <div

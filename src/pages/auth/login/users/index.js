@@ -26,7 +26,7 @@ const UserLoginPage = () => {
           style={{ height: `calc(${height}px - 1px)` }}
         >
           <div className="flex flex-col gap-6 p-4">
-            <h1 className="text-4xl font-bold text-left px-4 lg:text-center">
+            <h1 className="text-4xl font-bold text-left lg:text-center">
               Log in
             </h1>
             <div className="flex flex-col gap-6  items-center justify-center lg:flex-row">
