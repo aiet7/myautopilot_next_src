@@ -20,9 +20,11 @@ import useUserStore from "@/utils/store/user/userStore";
 
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import Link from "next/link";
+import useTechStore from "@/utils/store/user/techStore";
 
 const TabNavRail = ({}) => {
   const { user, handleLogout } = useUserStore();
+  const { tech } = useTechStore();
 
   const { activeUIAssistantTab } = useAssistantStore();
 
@@ -64,7 +66,7 @@ const TabNavRail = ({}) => {
           /> */}
         </>
       )}
-      <Link href={`/dashboard/${user?.id}`}>
+      <Link href={`/${tech?.mspCustomDomain}/dashboard/${tech?.id}`}>
         <div
           onClick={() => {
             handleTabChange("iTAgent");
@@ -86,14 +88,10 @@ const TabNavRail = ({}) => {
           /> */}
         </div>
       </Link>
-      {[
-        "tim@etech7.com",
-        "ariel@etech7.com",
-        "eisanov@etech7.com",
-        "mkandinov@etech7.com",
-        "agogia@etech7.com",
-      ].includes(user?.email) && (
-        <Link href={`/dashboard/${user?.id}/admin/internal`}>
+      {tech?.roleId === "653ff2126a55f75b62a1b558" && (
+        <Link
+          href={`/${tech?.mspCustomDomain}/dashboard/${tech?.id}/admin/internal`}
+        >
           <div
             onClick={() => {
               handleTabChange("admin");
@@ -122,7 +120,7 @@ const TabNavRail = ({}) => {
         className="flex flex-col items-center cursor-pointer  lg:absolute lg:bottom-0 lg:py-3"
       >
         <div className="w-7 h-7 bg-blue-800 text-sm flex justify-center items-center text-white">
-          {user?.firstName?.[0]}
+          {tech?.firstName?.[0]}
         </div>
         {openSettings && (
           <div className="dark:bg-black dark:border-white/40 dark:border rounded-lg bg-white border border-black/10 absolute z-[99] bottom-[52px] right-0 w-full lg:bottom-0 lg:left-[37px] lg:w-[351px]">
@@ -155,8 +153,8 @@ const TabNavRail = ({}) => {
                 </div>
               </Link>
               <div className="dark:border-white/40 font-bold border-t border-black/10 w-full text-lg flex flex-col items-start gap-3 px-6 py-3">
-                <span>{user?.firstName + " " + user?.lastName}</span>
-                <span>{user?.companyName}</span>
+                <span>{tech?.firstName + " " + tech?.lastName}</span>
+                <span>{tech?.mspCustomDomain}</span>
               </div>
             </div>
           </div>

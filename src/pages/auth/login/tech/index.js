@@ -4,18 +4,21 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import useUiStore from "@/utils/store/ui/uiStore.js";
 import useAuthStore from "@/utils/store/auth/authStore.js";
+import useMspStore from "@/utils/store/auth/msp/mspStore";
 
 const TechLoginPage = () => {
   const router = useRouter();
   const { height, setHeight } = useUiStore();
   const {
-    errorMessage,
     setEmail,
     setPassword,
     handleLoginCredentialsAuth,
     handleShowSignup,
     handleShowForgotPassword,
   } = useAuthStore();
+
+  const { loginInputs, errorMessage, setLoginInputs, handleTechnicianLogin } =
+    useMspStore();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -36,6 +39,7 @@ const TechLoginPage = () => {
       };
     }
   }, []);
+
   return (
     <>
       {height && (
@@ -48,18 +52,29 @@ const TechLoginPage = () => {
               <h1 className="text-2xl font-bold ">
                 Enter Your Technician Details.
               </h1>
-              <p className="text-black/60">
+              <p
+                className={`${errorMessage ? "text-red-500" : "text-black/60"}`}
+              >
                 Please fill out all of the required fields*
               </p>
               <p className="text-red-500 text-sm">{errorMessage}</p>
             </div>
-            <div className="flex flex-col gap-4 w-full text-sm">
+            <div className="flex flex-col gap-4 w-full ">
               <input
-                onChange={(e) => setEmail(e.target.value)}
+                // onChange={(e) => setEmail(e.target.value)}
+                // onKeyDown={(e) => {
+                //   if (e.key === "Enter") {
+                //     e.preventDefault();
+                //     handleLoginCredentialsAuth(router.push);
+                //   }
+                // }}
+                onChange={(e) =>
+                  setLoginInputs("techInfo", "email", e.target.value)
+                }
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
-                    handleLoginCredentialsAuth(router.push);
+                    handleTechnicianLogin(router.push);
                   }
                 }}
                 type="email"
@@ -68,11 +83,20 @@ const TechLoginPage = () => {
               />
 
               <input
-                onChange={(e) => setPassword(e.target.value)}
+                // onChange={(e) => setPassword(e.target.value)}
+                // onKeyDown={(e) => {
+                //   if (e.key === "Enter") {
+                //     e.preventDefault();
+                //     handleLoginCredentialsAuth(router.push);
+                //   }
+                // }}
+                onChange={(e) =>
+                  setLoginInputs("techInfo", "password", e.target.value)
+                }
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
-                    handleLoginCredentialsAuth(router.push);
+                    handleTechnicianLogin(router.push);
                   }
                 }}
                 type="password"
@@ -80,7 +104,7 @@ const TechLoginPage = () => {
                 className="w-full p-2 border border-gray-300  bg-white text-black"
               />
               <button
-                onClick={() => handleLoginCredentialsAuth(router.push)}
+                onClick={() => handleTechnicianLogin(router.push)}
                 type="button"
                 className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4"
               >
@@ -94,7 +118,7 @@ const TechLoginPage = () => {
                 </Link>
                 <Link href={"/auth/signup"}>
                   <span className="text-sm text-blue-800 font-semibold">
-                    No Account?  Sign up
+                    No Account? Sign up
                   </span>
                 </Link>
               </div>

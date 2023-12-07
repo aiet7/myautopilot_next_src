@@ -59,13 +59,13 @@ const SignupPage = () => {
             <h1 className="text-4xl font-bold text-left lg:text-center">
               Sign up
             </h1>
-            <div className="flex flex-col gap-6  items-center justify-center lg:flex-row">
+            <div className="flex flex-col gap-3 items-center justify-center lg:flex-row lg:gap-6">
               <Link href={"/auth/signup/msp"}>
                 <div className="hover:shadow-blue-500  flex flex-col  justify-center items-center w-full shadow-xl rounded-lg  cursor-pointer lg:w-[275px]">
                   <h2 className="flex items-center justify-center text-2xl font-bold  bg-black/5 rounded-tr-lg rounded-tl-lg w-full p-3 lg:h-[100px]">
                     MSP
                   </h2>
-                  <p className="text-lg text-black/60 py-2 px-4 h-[100px] lg:h-[175px]">
+                  <p className="text-black/60 py-2 px-4 h-[100px] lg:h-[175px] lg:pt-8">
                     Ideal for IT service providers offering managed services.
                     Get tailored solutions to manage your clients IT
                     infrastructure efficiently.
@@ -80,7 +80,7 @@ const SignupPage = () => {
                   <h2 className="flex items-center justify-center text-2xl font-bold  bg-black/5 rounded-tr-lg rounded-tl-lg w-full p-3 lg:h-[100px]">
                     Businesses
                   </h2>
-                  <p className="text-lg text-black/60 py-2 px-4 h-[100px] lg:h-[175px]">
+                  <p className="text-black/60 py-2 px-4 h-[100px] lg:h-[175px] lg:pt-8">
                     Perfect for businesses of all sizes seeking robust IT
                     solutions. Enhance your operational efficiency and
                     streamline workflows.
@@ -95,7 +95,7 @@ const SignupPage = () => {
                   <h2 className="flex items-center justify-center text-2xl font-bold  bg-black/5 rounded-tr-lg rounded-tl-lg w-full p-3 lg:h-[100px]">
                     Personal
                   </h2>
-                  <p className=" text-lg text-black/60 py-2 px-4 h-[100px] lg:h-[175px]">
+                  <p className="text-black/60 py-2 px-4 h-[100px] lg:h-[175px] lg:pt-8">
                     Designed for individuals and freelancers needing reliable
                     and efficient IT tools for personal projects or home use.
                   </p>

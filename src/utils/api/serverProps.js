@@ -1,4 +1,11 @@
-
+export const handleGetTech = async (msp, techId) => {
+  const response = await fetch(
+    `http://localhost:9019/${encodeURIComponent(
+      msp
+    )}/technicianUsers/getById?id=${encodeURIComponent(techId)}`
+  );
+  return response.json();
+};
 
 export const handleGetUser = async (clientId) => {
   const response = await fetch(
