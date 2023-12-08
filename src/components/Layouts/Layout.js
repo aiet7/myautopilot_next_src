@@ -33,7 +33,7 @@ const Layout = ({ children }) => {
   }, []);
 
   return (
-    <ThemeProvider attribute="class">
+    <ThemeProvider defaultTheme="light" attribute="class">
       {height && (
         <div
           onClick={() => openSettings && handleToggleSettings(false)}

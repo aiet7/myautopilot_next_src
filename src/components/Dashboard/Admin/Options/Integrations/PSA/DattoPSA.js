@@ -1,13 +1,14 @@
 "use client";
+
 import useIntegrationsStore from "@/utils/store/admin/control/integrations/integrationsStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import Image from "next/image";
 
 import Link from "next/link";
-import useUserStore from "@/utils/store/user/userStore";
+import useTechStore from "@/utils/store/user/techStore";
 
 const DattoPSA = () => {
-  const { user } = useUserStore();
+  const { tech } = useTechStore();
   const { handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
   return (
@@ -38,7 +39,9 @@ const DattoPSA = () => {
                 />
               </div>
               <div className="flex flex-col">
-                <Link href={`/dashboard/${user?.id}/admin/integrations`}>
+                <Link
+                  href={`/${tech?.mspCustomDomain}/dashboard/${tech?.id}/admin/integrations`}
+                >
                   <button
                     onClick={() => handleIntegrationsCard("cards")}
                     className="dark:text-white dark:hover:bg-white/20 hover:bg-black/5 text-black px-4 py-2 w-full text-left text-sm border-b"

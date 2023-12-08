@@ -56,10 +56,10 @@ const SignupPage = () => {
           style={{ height: `calc(${height}px - 1px)` }}
         >
           <div className="flex flex-col gap-6 p-4">
-            <h1 className="text-4xl font-bold text-left lg:text-center">
+            <h1 className="text-black text-4xl font-bold text-left lg:text-center">
               Sign up
             </h1>
-            <div className="flex flex-col gap-3 items-center justify-center lg:flex-row lg:gap-6">
+            <div className="text-black flex flex-col gap-3 items-center justify-center lg:flex-row lg:gap-6">
               <Link href={"/auth/signup/msp"}>
                 <div className="hover:shadow-blue-500  flex flex-col  justify-center items-center w-full shadow-xl rounded-lg  cursor-pointer lg:w-[275px]">
                   <h2 className="flex items-center justify-center text-2xl font-bold  bg-black/5 rounded-tr-lg rounded-tl-lg w-full p-3 lg:h-[100px]">

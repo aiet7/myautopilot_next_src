@@ -48,8 +48,8 @@ const TechLoginPage = () => {
           style={{ height: `calc(${height}px - 1px)` }}
         >
           <form className="p-6 w-[450px] flex flex-col gap-10 items-start justify-center lg:shadow-lg  lg:rounded-lg lg:bg-white">
-            <div className="flex flex-col items-start">
-              <h1 className="text-2xl font-bold ">
+            <div className="text-black flex flex-col items-start">
+              <h1 className="text-2xl font-bold text-black">
                 Enter Your Technician Details.
               </h1>
               <p
