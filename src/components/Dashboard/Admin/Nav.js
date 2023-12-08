@@ -8,10 +8,10 @@ import { TiFlowSwitch } from "react-icons/ti";
 import useAdminStore from "@/utils/store/admin/adminStore";
 
 import Link from "next/link";
-import useUserStore from "@/utils/store/user/userStore";
+import useTechStore from "@/utils/store/user/techStore";
 
 const Nav = ({}) => {
-  const { user } = useUserStore();
+  const { tech } = useTechStore();
   const { openAdmin } = useUiStore();
   const { options, currentOption, handleOptionSelected } = useAdminStore();
 
@@ -46,7 +46,9 @@ const Nav = ({}) => {
           return (
             <Link
               key={option}
-              href={`/dashboard/${user?.id}/admin/${option.toLowerCase()}`}
+              href={`/${tech?.mspCustomDomain}/dashboard/${
+                tech?.id
+              }/admin/${option.toLowerCase()}`}
             >
               <div
                 onClick={() => handleOptionSelected(option)}

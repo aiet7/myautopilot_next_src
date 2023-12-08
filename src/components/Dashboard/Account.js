@@ -5,6 +5,7 @@ import { IoMdFingerPrint } from "react-icons/io";
 import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
 
 import useUserStore from "@/utils/store/user/userStore";
+import useTechStore from "@/utils/store/user/techStore";
 
 const Account = ({}) => {
   const {
@@ -21,6 +22,8 @@ const Account = ({}) => {
     handleSaveChanges,
     handleCancelEdit,
   } = useUserStore();
+
+  const { tech } = useTechStore();
   return (
     <div className="dark:bg-black bg-white relative overflow-y-auto px-4 py-2 w-full flex items-center justify-center transition-all duration-300 ease">
       <div className="flex flex-col h-full items-center gap-2 max-w-[800px]">

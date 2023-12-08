@@ -55,7 +55,7 @@ const BusinessSignupPage = () => {
                   Employee
                 </button>
               </div>
-              <div className="flex flex-col items-start">
+              <div className="text-black flex flex-col items-start">
                 <h1 className="text-2xl font-bold ">
                   {activeBusinessFormTab === "Technician"
                     ? "Enter Your Technician Details."

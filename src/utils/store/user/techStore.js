@@ -10,10 +10,19 @@ const useTechStore = create((set, get) => ({
   tech: null,
 
   initializeTech: async (msp, id) => {
-    const initialTech = await handleGetTech(msp, id);
-    set({
-      tech: initialTech,
-    });
+    const { getUser, saveUser } = useLocalStorageStore.getState();
+
+    const storedTech = getUser();
+
+    if (storedTech && storedTech.id === id) {
+      set({ tech: storedTech });
+    } else if (msp && id) {
+      const initialTech = await handleGetTech(msp, id);
+      set({
+        tech: initialTech,
+      });
+      saveUser(initialTech);
+    }
   },
 
   handleLogout: async () => {
