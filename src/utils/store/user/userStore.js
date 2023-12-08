@@ -274,7 +274,7 @@ const useUserStore = create((set, get) => ({
     const { clearInteraction } = useTicketConversationsStore.getState();
     const { clearEngineer } = useEngineerStore.getState();
 
-    set({ user: null });
+    set({ user: null});
 
     clearStorage();
     clearCookies();

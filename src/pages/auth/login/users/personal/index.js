@@ -43,7 +43,7 @@ const PersonalLoginPage = () => {
                 Please fill out all of the required fields*
               </p>
             </div>
-            <div className="flex flex-col gap-4 w-full text-sm">
+            <div className="flex flex-col gap-4 w-full ">
               <input
                 type="email"
                 placeholder="Enter your email"

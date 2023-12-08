@@ -65,7 +65,7 @@ const BusinessSignupPage = () => {
                   Please fill out all of the required fields*
                 </p>
               </div>
-              <div className="flex flex-col gap-4 w-full text-sm h-[200px] overflow-auto scrollbar-thin pr-2">
+              <div className="flex flex-col gap-4 w-full h-[200px] overflow-auto scrollbar-thin pr-2">
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -152,11 +152,18 @@ const BusinessSignupPage = () => {
               <button className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4">
                 Sign up
               </button>
-              <Link href={"/auth/signup"}>
-                <span className="text-sm text-blue-800 font-semibold">
-                  Back to sign up
-                </span>
-              </Link>
+              <div className="flex flex-col gap-1">
+                <Link href={"/auth/signup"}>
+                  <span className="text-sm text-blue-800 font-semibold">
+                    Back to sign up
+                  </span>
+                </Link>
+                <Link href={"/auth/login"}>
+                  <span className="text-sm text-blue-800 font-semibold">
+                    Have An Account? Log in
+                  </span>
+                </Link>
+              </div>
             </form>
           </div>
         </div>

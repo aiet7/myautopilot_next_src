@@ -27,12 +27,14 @@ const PersonalSignupPage = () => {
           <div className="p-4 flex flex-col items-center w-full justify-center h-full ">
             <form className=" p-6 w-[450px]  flex flex-col gap-10 items-start justify-center lg:shadow-lg  lg:rounded-lg lg:bg-white ">
               <div className="flex flex-col items-start">
-                <h1 className="text-2xl font-bold ">Enter Your Personal Details</h1>
+                <h1 className="text-2xl font-bold ">
+                  Enter Your Personal Details
+                </h1>
                 <p className="text-black/60">
                   Please fill out all of the required fields*
                 </p>
               </div>
-              <div className="flex flex-col gap-4 w-full text-sm  overflow-auto scrollbar-thin pr-2">
+              <div className="flex flex-col gap-4 w-full overflow-auto scrollbar-thin pr-2">
                 <input
                   type="email"
                   placeholder="Email Address"
@@ -48,9 +50,18 @@ const PersonalSignupPage = () => {
               <button className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4">
                 Sign up
               </button>
-              <Link href={"/auth/signup"}>
-                <span className="text-sm text-blue-800 font-semibold">Back to sign up</span>
-              </Link>
+              <div className="flex flex-col gap-1">
+                <Link href={"/auth/signup"}>
+                  <span className="text-sm text-blue-800 font-semibold">
+                    Back to sign up
+                  </span>
+                </Link>
+                <Link href={"/auth/login"}>
+                  <span className="text-sm text-blue-800 font-semibold">
+                    Have An Account? Log in
+                  </span>
+                </Link>
+              </div>
             </form>
           </div>
         </div>

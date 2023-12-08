@@ -1,8 +1,9 @@
 import { create } from "zustand";
 import useUiStore from "../ui/uiStore";
-import { handleGetAgents } from "@/utils/api/serverProps";
+import { handleGetAgents, handleGetMSPs } from "@/utils/api/serverProps";
 
 const useInitializeAppStore = create((set, get) => ({
+  mspSubDomain: null,
   selectedAgent: null,
   setSelectedAgent: (id) => set({ selectedAgent: id }),
 
@@ -22,6 +23,15 @@ const useInitializeAppStore = create((set, get) => ({
       } else {
         console.log("Not found");
       }
+    }
+  },
+
+  initializeSubDomain: async (msp) => {
+    set({ mspSubDomain: null });
+
+    if (msp) {
+      const intitialMSPSubdomain = await handleGetMSPs(msp);
+      set({ mspSubDomain: intitialMSPSubdomain });
     }
   },
 }));

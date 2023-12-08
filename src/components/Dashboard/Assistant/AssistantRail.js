@@ -35,12 +35,7 @@ const AssistantRail = ({}) => {
           handleUIAssistantTabChange("Tickets");
         }}
       />
-      {/* <Tooltip
-        place="left"
-        content="Tickets"
-        id="Tickets"
-        className="z-[99]"
-      /> */}
+
       <BsFiletypeDoc
         data-tooltip-id="Document"
         className={`${
@@ -52,12 +47,7 @@ const AssistantRail = ({}) => {
           handleUIAssistantTabChange("Document");
         }}
       />
-      {/* <Tooltip
-        place="left"
-        content="Document"
-        id="Document"
-        className="z-[99]"
-      /> */}
+
       <SiOpenai
         data-tooltip-id="Engineer"
         className={`${
@@ -69,12 +59,6 @@ const AssistantRail = ({}) => {
           handleUIAssistantTabChange("Engineer");
         }}
       />
-      {/* <Tooltip
-        place="left"
-        content="Engineer"
-        id="Engineer"
-        className="z-[99]"
-      /> */}
 
       <div className="dark:border-white/20 border-black/10 border w-full" />
 
@@ -86,12 +70,7 @@ const AssistantRail = ({}) => {
         size={35}
         onClick={() => handleAssistantTabChange("Remote Access")}
       />
-      {/* <Tooltip
-        place="left"
-        content="Remote Access"
-        id="Remote Access"
-        className="z-[99]"
-      /> */}
+
       <MdPassword
         data-tooltip-id="Passwords"
         className={`${
@@ -100,12 +79,7 @@ const AssistantRail = ({}) => {
         size={35}
         onClick={() => handleAssistantTabChange("Passwords")}
       />
-      {/* <Tooltip
-        place="left"
-        content="Passwords"
-        id="Passwords"
-        className="z-[99]"
-      /> */}
+
       <FaMoneyBillAlt
         data-tooltip-id="Billing"
         className={`${
@@ -114,54 +88,7 @@ const AssistantRail = ({}) => {
         size={35}
         onClick={() => handleAssistantTabChange("Billing")}
       />
-      {/* <Tooltip
-        place="left"
-        content="Billing"
-        id="Billing"
-        className="z-[99]"
-      /> */}
-      {/* <MdOutlineRequestQuote
-        data-tooltip-id="Quotes"
-        className={`${
-          activeAssistantTab === "Quotes" && "text-blue-800"
-        } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
-        size={35}
-        onClick={() => handleAssistantTabChange("Quotes")}
-      />
-      <ReactTooltip
-        place="left"
-        content="Quotes"
-        id="Quotes"
-        className="z-[99]"
-      />
-      <HiDocumentReport
-        data-tooltip-id="Reports"
-        className={`${
-          activeAssistantTab === "Reports" && "text-blue-800"
-        } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
-        size={35}
-        onClick={() => handleAssistantTabChange("Reports")}
-      />
-      <ReactTooltip
-        place="left"
-        content="Reports"
-        id="Reports"
-        className="z-[99]"
-      />
-      <AiFillProject
-        data-tooltip-id="Projects"
-        className={`${
-          activeAssistantTab === "Projects" && "text-blue-800"
-        } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
-        size={35}
-        onClick={() => handleAssistantTabChange("Projects")}
-      />
-      <ReactTooltip
-        place="left"
-        content="Projects"
-        id="Projects"
-        className="z-[99]"
-      /> */}
+
       <AiFillTool
         data-tooltip-id="Tools"
         className={`${
@@ -170,12 +97,7 @@ const AssistantRail = ({}) => {
         size={35}
         onClick={() => handleAssistantTabChange("Tools")}
       />
-      {/* <Tooltip
-        place="left"
-        content="Tools"
-        id="Tools"
-        className="z-[99]"
-      /> */}
+
       <MdPolicy
         data-tooltip-id="Policies"
         className={`${
@@ -184,12 +106,6 @@ const AssistantRail = ({}) => {
         size={35}
         onClick={() => handleAssistantTabChange("Policies")}
       />
-      {/* <Tooltip
-        place="left"
-        content="Policies"
-        id="Policies"
-        className="z-[99]"
-      /> */}
     </div>
   );
 };
