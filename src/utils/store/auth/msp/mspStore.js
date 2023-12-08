@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import Cookie from "js-cookie";
 
 const useMspStore = create((set, get) => ({
   currentStep: 1,
@@ -169,12 +170,40 @@ const useMspStore = create((set, get) => ({
       if (response.ok) {
         const tech = await response.json();
         set({ errorMessage: false });
-
         navigator(`/${tech.mspCustomDomain}/dashboard/${tech.id}`);
+        Cookie.set("session_token", tech.id, { expires: 7 });
+        Cookie.set("client_id", tech.id, { expires: 7 });
       }
     } catch (e) {
       console.log(e);
     }
+  },
+
+  clearMSPCredentials: () => {
+    set({
+      signupInputs: {
+        mspCustomDomain: "",
+        techInfo: {
+          firstName: "",
+          lastName: "",
+          email: "",
+          phoneNumber: "",
+          password: "",
+        },
+        mspInfo: {
+          mspName: "",
+          brandLogoUrl: "",
+        },
+      },
+
+      loginInputs: {
+        mspCustomDomain: "timsdomain",
+        techInfo: {
+          email: "",
+          password: "",
+        },
+      },
+    });
   },
 }));
 

@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import Layout from "@/components/Layouts/Layout.js";
 import { useRouter } from "next/router";
 
-import useUserStore from "@/utils/store/user/userStore.js";
 import useUiStore from "@/utils/store/ui/uiStore.js";
 import useLocalStorageStore from "@/utils/store/localstorage/localStorageStore.js";
 import useInitializeAppStore from "@/utils/store/init/initializeAppStore.js";
@@ -30,8 +29,7 @@ const DashboardPage = ({}) => {
   const session = Cookies.get("session_token");
   const router = useRouter();
   const { initializeApp } = useInitializeAppStore();
-  const { initializeUser } = useUserStore();
-  const { tech, initializeTech } = useTechStore();
+  const { initializeTech } = useTechStore();
   const { getStorage, setStorage } = useLocalStorageStore();
 
   const { currentConversationIndex } = useConversationStore();
@@ -39,30 +37,18 @@ const DashboardPage = ({}) => {
   const { activeTab } = useUiStore();
   const { activeAssistantTab, activeUIAssistantTab } = useAssistantStore();
 
-  // useEffect(() => {
-  //   if (router.isReady) {
-  //     const currentPath = router.asPath;
-
-  //     const { id } = router.query;
-  //     getStorage(currentPath);
-  //     console.log(id)
-  //     if (id ) {
-  //       initializeApp();
-  //       initializeUser(id);
-  //     }
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [router.isReady, router.asPath]);
 
   useEffect(() => {
     if (router.isReady) {
+      const currentPath = router.asPath;
       const { msp, id } = router.query;
-      if (msp && id) {
+      getStorage(currentPath);
+      if (msp && id && session) {
         initializeApp();
         initializeTech(msp, id);
       }
     }
-  }, [router.isReady]);
+  }, [router.isReady, router.asPath]);
 
   useEffect(() => {
     setStorage();

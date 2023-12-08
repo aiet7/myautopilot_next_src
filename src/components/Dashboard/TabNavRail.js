@@ -16,15 +16,13 @@ import { RiAdminLine } from "react-icons/ri";
 import { useTheme } from "next-themes";
 
 import useUiStore from "@/utils/store/ui/uiStore.js";
-import useUserStore from "@/utils/store/user/userStore";
 
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import Link from "next/link";
 import useTechStore from "@/utils/store/user/techStore";
 
 const TabNavRail = ({}) => {
-  const { user, handleLogout } = useUserStore();
-  const { tech } = useTechStore();
+  const { tech, handleLogout } = useTechStore();
 
   const { activeUIAssistantTab } = useAssistantStore();
 
@@ -56,14 +54,6 @@ const TabNavRail = ({}) => {
             size={20}
             className="hidden cursor-pointer outline-none lg:flex"
           />
-          {/* <Tooltip
-            place="right"
-            content={
-              openHistory || openDocs || openTickets ? "Hide Menu" : "Show Menu"
-            }
-            id="History Menu"
-            className="z-[99]"
-          /> */}
         </>
       )}
       <Link href={`/${tech?.mspCustomDomain}/dashboard/${tech?.id}`}>
@@ -80,12 +70,6 @@ const TabNavRail = ({}) => {
               activeTab === "iTAgent" && "text-blue-600"
             } outline-none`}
           />
-          {/* <Tooltip
-            place="right"
-            content="Home"
-            id="Home"
-            className="z-[99]"
-          /> */}
         </div>
       </Link>
       {tech?.roleId === "653ff2126a55f75b62a1b558" && (
@@ -105,12 +89,6 @@ const TabNavRail = ({}) => {
                 activeTab === "admin" && "text-blue-600"
               } outline-none`}
             />
-            {/* <Tooltip
-              place="right"
-              content="Admin"
-              id="Admin"
-              className="z-[99]"
-            /> */}
           </div>
         </Link>
       )}

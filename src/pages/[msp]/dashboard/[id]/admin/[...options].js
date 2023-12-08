@@ -4,9 +4,9 @@ import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import Layout from "@/components/Layouts/Layout";
 import useUiStore from "@/utils/store/ui/uiStore";
-import useUserStore from "@/utils/store/user/userStore";
 import Cookies from "js-cookie";
 import useLocalStorageStore from "@/utils/store/localstorage/localStorageStore";
+import useTechStore from "@/utils/store/user/techStore";
 
 const Branding = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Branding")
@@ -31,7 +31,7 @@ const OptionPages = () => {
   const session = Cookies.get("session_token");
   const router = useRouter();
 
-  const { initializeUser } = useUserStore();
+  const { initializeTech } = useTechStore();
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
 
@@ -40,10 +40,10 @@ const OptionPages = () => {
   useEffect(() => {
     if (router.isReady) {
       const currentPath = router.asPath;
-      const { id } = router.query;
+      const { msp, id } = router.query;
       getStorage(currentPath);
-      if (id && session) {
-        initializeUser(id);
+      if (msp && id && session) {
+        initializeTech(msp, id);
       } else {
         router.push("/auth/login");
       }
