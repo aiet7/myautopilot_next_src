@@ -2,13 +2,13 @@
 
 import useIntegrationsStore from "@/utils/store/admin/control/integrations/integrationsStore";
 import useUiStore from "@/utils/store/ui/uiStore";
-import useUserStore from "@/utils/store/user/userStore";
+import useTechStore from "@/utils/store/user/techStore";
 import Image from "next/image";
 
 import Link from "next/link";
 
 const Openai = () => {
-  const { user } = useUserStore();
+  const { tech } = useTechStore();
   const { handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
   return (
@@ -39,7 +39,7 @@ const Openai = () => {
                 />
               </div>
               <div className="flex flex-col">
-                <Link href={`/dashboard/${user?.id}/admin/integrations`}>
+                <Link href={`/${tech?.mspCustomDomain}/dashboard/${tech?.id}/admin/integrations`}>
                   <button
                     onClick={() => handleIntegrationsCard("cards")}
                     className="dark:text-white dark:hover:bg-white/20 hover:bg-black/5 text-black px-4 py-2 w-full text-left text-sm border-b"
