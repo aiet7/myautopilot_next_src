@@ -98,19 +98,19 @@ const Manage = () => {
                     <p>
                       <span className="font-bold">Company ID: </span>
                       {convertHideIntegrationKeys(
-                        integrations?.connectWiseManageIntegration?.clientId
+                        integrations?.connectWiseManageIntegration?.companyId
                       )}
                     </p>
                     <p>
                       <span className="font-bold">Public Key: </span>
                       {convertHideIntegrationKeys(
-                        integrations?.connectWiseManageIntegration?.clientId
+                        integrations?.connectWiseManageIntegration?.publicKey
                       )}
                     </p>
                     <p>
                       <span className="font-bold">Private Key: </span>
                       {convertHideIntegrationKeys(
-                        integrations?.connectWiseManageIntegration?.clientId
+                        integrations?.connectWiseManageIntegration?.privateKey
                       )}
                     </p>
                   </div>

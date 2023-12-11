@@ -3,6 +3,6 @@ export const convertKelvinToFahrenheit = (tempInKelvin) => {
 };
 
 export const convertHideIntegrationKeys = (keys) => {
-  if (!keys || keys.length <= 3) return keys;
-  return keys.substring(0, 3) + "*".repeat(keys.length - 3);
+  if (!keys || keys.length <= 5) return keys;
+  return keys.substring(0, 5) + "*".repeat(keys.length - 5);
 };
