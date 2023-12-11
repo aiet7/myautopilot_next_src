@@ -25,7 +25,7 @@ const IntegrationsPage = () => {
     if (router.isReady) {
       const currentPath = router.asPath;
       const { msp, id } = router.query;
-      getStorage(currentPath);
+      getStorage(currentPath, "integrations");
 
       if (msp && id && session) {
         initializeTech(msp, id);
@@ -35,7 +35,7 @@ const IntegrationsPage = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady, router.asPath]);
-  
+
   useEffect(() => {
     setStorage();
 

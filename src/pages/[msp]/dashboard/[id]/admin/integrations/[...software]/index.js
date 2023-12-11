@@ -61,7 +61,7 @@ const SoftwareIntegratePages = () => {
     if (router.isReady) {
       const currentPath = router.asPath;
       const { msp, id } = router.query;
-      getStorage(currentPath);
+      getStorage(currentPath, "integrations");
       if (msp && id && session) {
         initializeTech(msp, id);
       } else {

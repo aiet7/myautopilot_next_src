@@ -20,11 +20,14 @@ import useUiStore from "@/utils/store/ui/uiStore.js";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import Link from "next/link";
 import useTechStore from "@/utils/store/user/techStore";
+import useAdminStore from "@/utils/store/admin/adminStore";
 
 const TabNavRail = ({}) => {
   const { tech, handleLogout } = useTechStore();
 
   const { activeUIAssistantTab } = useAssistantStore();
+
+  const { handleOptionSelected } = useAdminStore();
 
   const {
     openSettings,
@@ -79,6 +82,7 @@ const TabNavRail = ({}) => {
           <div
             onClick={() => {
               handleTabChange("admin");
+              handleOptionSelected("internal");
             }}
             className="relative flex flex-col gap-2 items-center cursor-pointer"
           >

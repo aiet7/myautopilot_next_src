@@ -1,5 +1,6 @@
 "use client";
 
+import useManageStore from "@/utils/store/admin/control/integrations/PSA/manageStore";
 import useIntegrationsStore from "@/utils/store/admin/control/integrations/integrationsStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useTechStore from "@/utils/store/user/techStore";
@@ -10,9 +11,15 @@ import Link from "next/link";
 
 const Manage = () => {
   const { tech } = useTechStore();
+  const {
+    successMessage,
+    errorMessage,
+    integrationInputs,
+    setIntegrationInputs,
+    handleIntegrateManage,
+  } = useManageStore();
   const { handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
-
   return (
     <div
       onClick={() => {
@@ -77,13 +84,63 @@ const Manage = () => {
                 </p>
               </div>
               <div className="flex flex-col p-4 gap-6 text-sm">
+                <div className="flex flex-col gap-2">
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={integrationInputs.connectWiseManageIntegrator}
+                      onChange={() =>
+                        setIntegrationInputs(
+                          "checkbox",
+                          "connectWiseManageIntegrator",
+                          null
+                        )
+                      }
+                    />
+                    ConnectWise Manage Integrator
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={integrationInputs.microsoftGraphIntegrator}
+                      onChange={() =>
+                        setIntegrationInputs(
+                          "checkbox",
+                          "microsoftGraphIntegrator",
+                          null
+                        )
+                      }
+                    />
+                    Microsoft Graph Integrator
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={integrationInputs.emailIntegrator}
+                      onChange={() =>
+                        setIntegrationInputs(
+                          "checkbox",
+                          "emailIntegrator",
+                          null
+                        )
+                      }
+                    />
+                    Google Workspace Integrator
+                  </label>
+                </div>
                 <div className="flex flex-col gap-6 lg:flex-row ">
                   <div className="flex flex-col w-full gap-1">
-                    <p>Company ID</p>
+                    <p>Client ID</p>
                     <p className="dark:text-white/60 text-black/60">
-                      Your Company_ID that is assigned to you from ConnectWise
+                      Your Client ID that is assigned to you from ConnectWise
                     </p>
-                    <input className="border p-1" />
+                    <input
+                      value={integrationInputs.clientId}
+                      onChange={(e) =>
+                        setIntegrationInputs("text", "clientId", e.target.value)
+                      }
+                      className="border p-1"
+                    />
                   </div>
                   <div className="flex flex-col w-full gap-1">
                     <p>Public Key</p>
@@ -91,16 +148,36 @@ const Manage = () => {
                       Your generated Public Key that was created via ConnectWise
                       Manager
                     </p>
-                    <input className="border p-1" />
+                    <input
+                      value={integrationInputs.publicKey}
+                      onChange={(e) =>
+                        setIntegrationInputs(
+                          "text",
+                          "publicKey",
+                          e.target.value
+                        )
+                      }
+                      className="border p-1"
+                    />
                   </div>
                 </div>
                 <div className="flex flex-col gap-6 lg:flex-row">
                   <div className="flex flex-col w-full gap-1">
-                    <p>Server Domain</p>
+                    <p>Comapany ID</p>
                     <p className="dark:text-white/60 text-black/60">
-                      Your ConnectWise manage login url
+                      Your Company ID that is assigned to you from ConnectWise{" "}
                     </p>
-                    <input className="border p-1" />
+                    <input
+                      value={integrationInputs.companyId}
+                      onChange={(e) =>
+                        setIntegrationInputs(
+                          "text",
+                          "companyId",
+                          e.target.value
+                        )
+                      }
+                      className="border p-1"
+                    />
                   </div>
                   <div className="flex flex-col w-full gap-1">
                     <p>Private Key</p>
@@ -108,12 +185,35 @@ const Manage = () => {
                       Your generated Private Key that was created via
                       ConnectWise Manager
                     </p>
-                    <input className="border p-1" />
+                    <input
+                      value={integrationInputs.privateKey}
+                      onChange={(e) =>
+                        setIntegrationInputs(
+                          "text",
+                          "privateKey",
+                          e.target.value
+                        )
+                      }
+                      className="border p-1"
+                    />
                   </div>
                 </div>
               </div>
-              <div className="p-4 flex  justify-end">
-                <button className="hover:bg-blue-500 bg-blue-800 text-white px-3 py-1">
+              <div className="p-4 flex items-center justify-end gap-4">
+                {successMessage && (
+                  <p className="font-bold text-emerald-500">
+                    Successfully Integrated Manage!
+                  </p>
+                )}
+                {errorMessage && (
+                  <p className="font-bold text-red-500">
+                    Error Integrating Manage!
+                  </p>
+                )}
+                <button
+                  onClick={() => handleIntegrateManage(tech?.mspCustomDomain)}
+                  className="hover:bg-blue-500 bg-blue-800 text-white px-3 py-1"
+                >
                   Authenticate
                 </button>
               </div>

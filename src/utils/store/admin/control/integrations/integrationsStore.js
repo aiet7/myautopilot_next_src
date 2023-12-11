@@ -127,56 +127,14 @@ const useIntegrationsStore = create((set, get) => ({
   },
 
   handleIntegrationsCard: (view) => {
-    // const baseUrl = `/dashboard/${userStore.user.id}/admin/integrations/`;
-
-    // switch (view) {
-    //   case "automate":
-    //     navigator(`${baseUrl}${view}`, undefined, { shallow: true });
-    //     break;
-    //   case "connectwise":
-    //     navigator(`${baseUrl}${view}`, undefined, { shallow: true });
-    //     break;
-    //   case "office365":
-    //     navigator(`${baseUrl}${view}`, undefined, { shallow: true });
-    //     break;
-    //   case "googlews":
-    //     navigator(`${baseUrl}${view}`, undefined, { shallow: true });
-    //     break;
-    //   case "nablermm":
-    //     navigator(`${baseUrl}${view}`, undefined, { shallow: true });
-    //     break;
-    //   case "ncentral":
-    //     navigator(`${baseUrl}${view}`, undefined, { shallow: true });
-    //     break;
-    //   case "continuum":
-    //     navigator(`${baseUrl}${view}`, undefined, { shallow: true });
-    //     break;
-    //   case "aem":
-    //     navigator(`${baseUrl}${view}`, undefined, { shallow: true });
-    //     break;
-    //   case "autotask":
-    //     navigator(`${baseUrl}${view}`, undefined, { shallow: true });
-    //     break;
-    //   case "screenconnect":
-    //     navigator(`${baseUrl}${view}`, undefined, { shallow: true });
-    //     break;
-    //   case "openai":
-    //     navigator(`${baseUrl}${view}`, undefined, { shallow: true });
-    //     break;
-    //   case "emailconnecter":
-    //     navigator(`${baseUrl}${view}`, undefined, { shallow: true });
-    //     break;
-    //   default:
-    //     navigator(baseUrl, undefined, { shallow: true });
-    //     break;
-    // }
-
     set((state) => ({
       ...state,
       activeIntegrationsCard: view,
       cards: state.cards.map((card) => ({ ...card, isHovered: false })),
     }));
   },
+
+  
 }));
 
 export default useIntegrationsStore;
