@@ -7,6 +7,14 @@ export const handleGetTech = async (msp, techId) => {
   return response.json();
 };
 
+export const handleGetIntegrations = async (msp) => {
+  const response = await fetch(
+    `http://localhost:9019/${encodeURIComponent(msp)}/integrations`
+  );
+
+  return response.json();
+};
+
 export const handleGetUser = async (clientId) => {
   const response = await fetch(
     `https://etech7-wf-etech7-db-service.azuremicroservices.io/getClientById?id=${clientId}`

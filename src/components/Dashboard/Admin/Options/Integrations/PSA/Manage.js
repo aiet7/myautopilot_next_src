@@ -9,6 +9,8 @@ import Image from "next/image";
 
 import Link from "next/link";
 
+import { convertHideIntegrationKeys } from "@/utils/conversions";
+
 const Manage = () => {
   const { tech } = useTechStore();
   const {
@@ -18,8 +20,9 @@ const Manage = () => {
     setIntegrationInputs,
     handleIntegrateManage,
   } = useManageStore();
-  const { handleIntegrationsCard } = useIntegrationsStore();
+  const { integrations, handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
+
   return (
     <div
       onClick={() => {
@@ -84,6 +87,34 @@ const Manage = () => {
                 </p>
               </div>
               <div className="flex flex-col p-4 gap-6 text-sm">
+                {integrations && (
+                  <div className="flex flex-col">
+                    <p>
+                      <span className="font-bold">Client ID: </span>
+                      {convertHideIntegrationKeys(
+                        integrations?.connectWiseManageIntegration?.clientId
+                      )}
+                    </p>
+                    <p>
+                      <span className="font-bold">Company ID: </span>
+                      {convertHideIntegrationKeys(
+                        integrations?.connectWiseManageIntegration?.clientId
+                      )}
+                    </p>
+                    <p>
+                      <span className="font-bold">Public Key: </span>
+                      {convertHideIntegrationKeys(
+                        integrations?.connectWiseManageIntegration?.clientId
+                      )}
+                    </p>
+                    <p>
+                      <span className="font-bold">Private Key: </span>
+                      {convertHideIntegrationKeys(
+                        integrations?.connectWiseManageIntegration?.clientId
+                      )}
+                    </p>
+                  </div>
+                )}
                 <div className="flex flex-col gap-2">
                   <label className="flex items-center gap-2">
                     <input
@@ -201,7 +232,7 @@ const Manage = () => {
               </div>
               <div className="p-4 flex items-center justify-end gap-4">
                 {successMessage && (
-                  <p className="font-bold text-emerald-500">
+                  <p className="font-semibold text-emerald-500">
                     Successfully Integrated Manage!
                   </p>
                 )}

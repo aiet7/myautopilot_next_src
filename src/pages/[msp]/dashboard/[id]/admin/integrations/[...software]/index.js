@@ -10,6 +10,7 @@ import Cookies from "js-cookie";
 import useLocalStorageStore from "@/utils/store/localstorage/localStorageStore";
 import useTechStore from "@/utils/store/user/techStore";
 import useUiStore from "@/utils/store/ui/uiStore";
+import useIntegrationsStore from "@/utils/store/admin/control/integrations/integrationsStore";
 
 const Openai = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/AI/Openai")
@@ -52,6 +53,7 @@ const SoftwareIntegratePages = () => {
 
   const router = useRouter();
   const { initializeTech } = useTechStore();
+  const { initializeIntegrations } = useIntegrationsStore();
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
 
@@ -64,6 +66,7 @@ const SoftwareIntegratePages = () => {
       getStorage(currentPath, "integrations");
       if (msp && id && session) {
         initializeTech(msp, id);
+        initializeIntegrations(msp);
       } else {
         router.push("/auth/login");
       }

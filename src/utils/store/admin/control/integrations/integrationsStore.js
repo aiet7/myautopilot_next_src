@@ -1,6 +1,10 @@
+import { handleGetIntegrations } from "@/utils/api/serverProps";
+import useTechStore from "@/utils/store/user/techStore";
 import { create } from "zustand";
 
 const useIntegrationsStore = create((set, get) => ({
+  integrations: null,
+
   selectedCategory: null,
   activeIntegrationsCard: "cards",
   cards: [
@@ -113,6 +117,17 @@ const useIntegrationsStore = create((set, get) => ({
     },
   ],
   filteredCards: [],
+
+  initializeIntegrations: async (msp) => {
+    const techUser = useTechStore.getState();
+    set({ integrations: null });
+
+    if (techUser.tech) {
+      const newIntegrations = await handleGetIntegrations(msp);
+      set({ integrations: newIntegrations });
+    }
+  },
+
   setSelectedCategory: (category) => set({ selectedCategory: category }),
   setFilteredCards: (filtered) =>
     set((state) => ({ ...state, filteredCards: filtered })),
@@ -133,8 +148,6 @@ const useIntegrationsStore = create((set, get) => ({
       cards: state.cards.map((card) => ({ ...card, isHovered: false })),
     }));
   },
-
-  
 }));
 
 export default useIntegrationsStore;
