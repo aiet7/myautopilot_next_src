@@ -4,9 +4,10 @@ import useUserStore from "../user/userStore";
 import useAssistantStore from "../assistant/assistantStore";
 import useConversationStore from "../interaction/conversations/conversationsStore";
 import useDocConversationsStore from "../interaction/conversations/docConversationsStore";
+import useAdminStore from "../admin/adminStore";
 
 const useLocalStorageStore = create((set, get) => ({
-  getStorage: (navigator) => {
+  getStorage: (navigator, option) => {
     const lastActiveDirectory =
       localStorage.getItem("lastActiveDirectory") || "{}";
     const lastUI = localStorage.getItem("lastUI") || "{}";
@@ -19,6 +20,11 @@ const useLocalStorageStore = create((set, get) => ({
     const isOnAdminRoute = navigator.includes("/admin");
 
     useUserStore.setState({ user: parsedLastActiveDirectory });
+
+    useAdminStore.setState({
+      currentOption:
+        parsedLastUI.currentOption || (isOnAdminRoute ? option : "internal"),
+    });
 
     useUiStore.setState({
       activeTab:
@@ -41,6 +47,7 @@ const useLocalStorageStore = create((set, get) => ({
 
   setStorage: () => {
     const { user } = useUserStore.getState();
+    const { currentOption } = useAdminStore.getState();
     const { activeTab } = useUiStore.getState();
     const { activeAssistantTab, activeUIAssistantTab } =
       useAssistantStore.getState();
@@ -52,6 +59,7 @@ const useLocalStorageStore = create((set, get) => ({
     localStorage.setItem(
       "lastUI",
       JSON.stringify({
+        currentOption,
         activeTab,
         activeAssistantTab,
         activeUIAssistantTab,

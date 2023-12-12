@@ -27,6 +27,7 @@ const useMspStore = create((set, get) => ({
   },
 
   errorMessage: false,
+  successMessage: false,
 
   setCurrentStep: (step) => set({ currentStep: step }),
 
@@ -81,7 +82,7 @@ const useMspStore = create((set, get) => ({
       );
 
       if (response.ok) {
-        console.log("SAVED TECH");
+        return await response.json();
       } else {
         console.log("ERROR SAVING TECH");
       }
@@ -109,7 +110,7 @@ const useMspStore = create((set, get) => ({
       });
 
       if (response.ok) {
-        console.log("SAVED MSP");
+        return await response.json();
       } else {
         console.log("ERROR SAVING MSP");
       }
@@ -140,9 +141,16 @@ const useMspStore = create((set, get) => ({
     if (currentStep === 1) {
       set({ currentStep: 2, errorMessage: false });
     } else {
-      await Promise.all([handleSignupTechnician(), handleSignupMSP()]);
-      set({ errorMessage: false });
-      navigator("/auth/login");
+      const [msp, tech] = await Promise.all([
+        handleSignupMSP(),
+        handleSignupTechnician(),
+      ]);
+      set({ errorMessage: false, successMessage: true });
+      navigator(
+        `/${msp?.customDomain}/dashboard/${tech?.id}/admin/integrations`
+      );
+      Cookie.set("session_token", tech?.id, { expires: 7 });
+      Cookie.set("client_id", tech?.id, { expires: 7 });
     }
   },
 
@@ -170,9 +178,9 @@ const useMspStore = create((set, get) => ({
       if (response.ok) {
         const tech = await response.json();
         set({ errorMessage: false });
-        navigator(`/${tech.mspCustomDomain}/dashboard/${tech.id}`);
-        Cookie.set("session_token", tech.id, { expires: 7 });
-        Cookie.set("client_id", tech.id, { expires: 7 });
+        navigator(`/${tech?.mspCustomDomain}/dashboard/${tech?.id}`);
+        Cookie.set("session_token", tech?.id, { expires: 7 });
+        Cookie.set("client_id", tech?.id, { expires: 7 });
       }
     } catch (e) {
       console.log(e);
@@ -181,6 +189,8 @@ const useMspStore = create((set, get) => ({
 
   clearMSPCredentials: () => {
     set({
+      successMessage: false,
+      errorMessage: false,
       signupInputs: {
         mspCustomDomain: "",
         techInfo: {

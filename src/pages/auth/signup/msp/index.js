@@ -11,6 +11,7 @@ const MSPSignupPage = () => {
   const router = useRouter();
   const { height, setHeight } = useUiStore();
   const {
+    successMessage,
     errorMessage,
     currentStep,
     signupInputs,
@@ -62,9 +63,13 @@ const MSPSignupPage = () => {
                   : "Enter Your MSP Details."}
               </h1>
               <p
-                className={`${errorMessage ? "text-red-500" : "text-black/60"}`}
+                className={`${
+                  errorMessage ? "text-red-500" : "text-black/60"
+                } ${successMessage ? "text-emerald-500" : "text-black/60"}`}
               >
-                Please fill out all of the required fields*
+                {successMessage
+                  ? "Redirecting you to Integrations Page..."
+                  : "Please fill out all of the required fields*"}
               </p>
             </div>
             <div className="flex flex-col gap-4 w-full ">

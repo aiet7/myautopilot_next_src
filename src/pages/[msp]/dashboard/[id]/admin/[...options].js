@@ -7,6 +7,7 @@ import useUiStore from "@/utils/store/ui/uiStore";
 import Cookies from "js-cookie";
 import useLocalStorageStore from "@/utils/store/localstorage/localStorageStore";
 import useTechStore from "@/utils/store/user/techStore";
+import useAdminStore from "@/utils/store/admin/adminStore";
 
 const Branding = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Branding")
@@ -34,14 +35,19 @@ const OptionPages = () => {
   const { initializeTech } = useTechStore();
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
+  const { currentOption } = useAdminStore();
 
   const { options } = router.query;
 
   useEffect(() => {
     if (router.isReady) {
       const currentPath = router.asPath;
-      const { msp, id } = router.query;
-      getStorage(currentPath);
+      const { msp, id, options } = router.query;
+
+      getStorage(
+        currentPath,
+        options[0]
+      );
       if (msp && id && session) {
         initializeTech(msp, id);
       } else {
@@ -61,7 +67,7 @@ const OptionPages = () => {
       window.removeEventListener("beforeunload", setStorage);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab]);
+  }, [activeTab, currentOption]);
 
   const renderComponent = () => {
     if (options && options.length > 0) {

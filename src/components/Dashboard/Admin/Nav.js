@@ -17,23 +17,24 @@ const Nav = ({}) => {
 
   const renderIcon = (option) => {
     switch (option) {
-      case "Internal":
+      case "internal":
         return <GiOrganigram size={20} />;
-      case "Roles":
+      case "roles":
         return <FaUserCog size={20} />;
-      case "Integrations":
+      case "integrations":
         return <BsGearWideConnected size={20} />;
-      case "Branding":
+      case "branding":
         return <MdOutlineBrandingWatermark size={20} />;
-      case "Companies":
+      case "companies":
         return <MdBusinessCenter size={20} />;
-      case "Workflows":
+      case "workflows":
         return <TiFlowSwitch size={20} />;
 
       default:
         return null;
     }
   };
+
   return (
     <div
       className={`absolute z-10 top-0 bottom-0 left-0  
@@ -48,7 +49,7 @@ const Nav = ({}) => {
               key={option}
               href={`/${tech?.mspCustomDomain}/dashboard/${
                 tech?.id
-              }/admin/${option.toLowerCase()}`}
+              }/admin/${option}`}
             >
               <div
                 onClick={() => handleOptionSelected(option)}
@@ -62,7 +63,7 @@ const Nav = ({}) => {
                   <div className="flex items-center">
                     <div className="w-8">{renderIcon(option)}</div>
                     <div className="w-64 truncate flex">
-                      <span className="px-1">{option}</span>
+                      <span className="px-1">{option.charAt(0).toUpperCase() + option.slice(1)}</span>
                     </div>
                   </div>
                 </div>

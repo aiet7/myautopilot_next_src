@@ -11,11 +11,11 @@ const WelcomePage = () => {
   const router = useRouter();
 
   const handleShowLogin = () => {
-    router.push("auth/login");
+    router.push("/auth/login");
   };
 
   const handleShowSigmup = () => {
-    router.push("auth/signup");
+    router.push("/auth/signup");
   };
 
   useEffect(() => {
