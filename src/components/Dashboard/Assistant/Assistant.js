@@ -16,7 +16,9 @@ const Assistant = ({}) => {
   return (
     <div
       className={` absolute z-10 top-0 bottom-0 right-0 ${
-        openAssistant ? "translate-x-0 w-[350px]" : "translate-x-full w-[350px]"
+        openAssistant
+          ? "translate-x-0 w-full md:w-[350px]"
+          : "translate-x-full w-full md:w-[350px]"
       } flex transition-all duration-300 ease`}
     >
       <div
@@ -31,9 +33,9 @@ const Assistant = ({}) => {
       />
       {window.innerWidth < 1023 && <AssistantRail />}
 
-      <div className="flex flex-col">
+      <div className="flex flex-col w-full">
         <AssistantControl />
-        <div className="relative flex flex-col overflow-hidden h-full">
+        <div className="relative flex flex-col overflow-hidden h-full ">
           <InternalPilot />
 
           {ticketStatus.ticketCreated && <Progress />}

@@ -27,8 +27,10 @@ const Tickets = ({}) => {
     <div
       className={`absolute z-10 top-0 bottom-0 left-0  
       ${
-        openTickets ? "translate-x-0 w-[350px]" : "-translate-x-full w-[350px] "
-      } dark:lg:border-white/10 dark:bg-[#111111] bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease lg:border-r`}
+        openTickets
+          ? "translate-x-0 w-full md:w-[350px]"
+          : "-translate-x-full w-full md:w-[350px]"
+      } dark:bg-[#111111] dark:border-white/10 bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease md:border-r md:border-black/10`}
     >
       <div className="dark:bg-black dark:text-white dark:shadow-white/40 flex items-center w-full rounded-lg bg-white p-1 shadow-lg">
         <button
