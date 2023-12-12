@@ -8,7 +8,7 @@ const AssistantControl = () => {
   const { handleAssistantMenu } = useUiStore();
   const { activeAssistantTab } = useAssistantStore();
   return (
-    <div className="dark:border-white/20 relative border-b  py-4 px-4 flex justify-between items-center transition-all duration-300 ease">
+    <div className="dark:border-white/10 relative border-b border-black/10  py-4 px-4 flex justify-between items-center transition-all duration-300 ease">
       <p className="dark:text-white text-xl text-black">
         {activeAssistantTab} Support
       </p>
