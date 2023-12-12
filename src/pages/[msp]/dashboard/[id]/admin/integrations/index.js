@@ -8,6 +8,7 @@ import Cookies from "js-cookie";
 import useLocalStorageStore from "@/utils/store/localstorage/localStorageStore";
 import useTechStore from "@/utils/store/user/techStore";
 import useUiStore from "@/utils/store/ui/uiStore";
+import useAdminStore from "@/utils/store/admin/adminStore";
 
 const Cards = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/Cards/Cards")
@@ -20,6 +21,7 @@ const IntegrationsPage = () => {
   const { initializeTech } = useTechStore();
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
+  const { currentOption } = useAdminStore();
 
   useEffect(() => {
     if (router.isReady) {
@@ -45,7 +47,7 @@ const IntegrationsPage = () => {
       window.removeEventListener("beforeunload", setStorage);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab]);
+  }, [activeTab, currentOption]);
   return (
     <>
       <Cards />

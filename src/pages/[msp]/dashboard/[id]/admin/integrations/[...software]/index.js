@@ -11,6 +11,7 @@ import useLocalStorageStore from "@/utils/store/localstorage/localStorageStore";
 import useTechStore from "@/utils/store/user/techStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useIntegrationsStore from "@/utils/store/admin/control/integrations/integrationsStore";
+import useAdminStore from "@/utils/store/admin/adminStore";
 
 const Openai = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/AI/Openai")
@@ -56,6 +57,7 @@ const SoftwareIntegratePages = () => {
   const { initializeIntegrations } = useIntegrationsStore();
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
+  const { currentOption } = useAdminStore();
 
   const { software } = router.query;
 
@@ -83,7 +85,7 @@ const SoftwareIntegratePages = () => {
       window.removeEventListener("beforeunload", setStorage);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab]);
+  }, [activeTab, currentOption]);
 
   const renderComponent = () => {
     if (software && software.length > 0) {

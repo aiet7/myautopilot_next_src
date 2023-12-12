@@ -115,7 +115,7 @@ const Manage = () => {
                     </p>
                   </div>
                 )}
-                <div className="flex flex-col gap-2">
+                {/* <div className="flex flex-col gap-2">
                   <label className="flex items-center gap-2">
                     <input
                       type="checkbox"
@@ -158,7 +158,7 @@ const Manage = () => {
                     />
                     Google Workspace Integrator
                   </label>
-                </div>
+                </div> */}
                 <div className="flex flex-col gap-6 lg:flex-row ">
                   <div className="flex flex-col w-full gap-1">
                     <p>Client ID</p>

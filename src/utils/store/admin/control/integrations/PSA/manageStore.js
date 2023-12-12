@@ -51,9 +51,6 @@ const useManageStore = create((set, get) => ({
           },
           body: JSON.stringify({
             mspCustomDomain: mspCustomDomain,
-            connectWiseManageIntegrator: connectWiseManageIntegrator,
-            microsoftGraphIntegrator: microsoftGraphIntegrator,
-            emailIntegrator: emailIntegrator,
             connectWiseManageIntegration: connectWiseManageIntegration,
           }),
         }
