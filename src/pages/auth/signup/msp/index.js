@@ -57,7 +57,7 @@ const MSPSignupPage = () => {
               </div>
             </div>
             <div className="flex flex-col items-start">
-              <h1 className="text-2xl font-bold ">
+              <h1 className="text-2xl font-bold text-black">
                 {currentStep === 1
                   ? "Enter Your Technician Details."
                   : "Enter Your MSP Details."}
