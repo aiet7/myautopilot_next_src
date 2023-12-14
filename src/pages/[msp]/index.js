@@ -5,12 +5,10 @@ import useUiStore from "@/utils/store/ui/uiStore";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import useInitializeAppStore from "@/utils/store/init/initializeAppStore";
-import useAuthStore from "@/utils/store/auth/authStore";
 
 const MSPPage = ({}) => {
   const { height, setHeight } = useUiStore();
   const { mspSubDomain, initializeSubDomain } = useInitializeAppStore();
-  const { handleShowForgotPassword } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
@@ -66,11 +64,23 @@ const MSPPage = ({}) => {
             </div>
             <div className="flex flex-col gap-4 w-full">
               <input
-                onChange={(e) => setEmail(e.target.value)}
+                // onChange={(e) => setEmail(e.target.value)}
+                // onKeyDown={(e) => {
+                //   if (e.key === "Enter") {
+                //     e.preventDefault();
+                //     handleLoginCredentialsAuth(router.push);
+                //   }
+                // }}
+                onChange={(e) =>
+                  setLoginInputs("techInfo", "email", e.target.value)
+                }
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
-                    handleLoginCredentialsAuth(router.push);
+                    handleTechnicianLogin(
+                      router.push,
+                      mspSubDomain?.customDomain
+                    );
                   }
                 }}
                 type="email"
@@ -79,11 +89,23 @@ const MSPPage = ({}) => {
               />
 
               <input
-                onChange={(e) => setPassword(e.target.value)}
+                // onChange={(e) => setPassword(e.target.value)}
+                // onKeyDown={(e) => {
+                //   if (e.key === "Enter") {
+                //     e.preventDefault();
+                //     handleLoginCredentialsAuth(router.push);
+                //   }
+                // }}
+                onChange={(e) =>
+                  setLoginInputs("techInfo", "password", e.target.value)
+                }
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
-                    handleLoginCredentialsAuth(router.push);
+                    handleTechnicianLogin(
+                      router.push,
+                      mspSubDomain?.customDomain
+                    );
                   }
                 }}
                 type="password"
@@ -91,7 +113,9 @@ const MSPPage = ({}) => {
                 className="w-full p-2 border border-gray-300  bg-white text-black"
               />
               <button
-                onClick={() => handleLoginCredentialsAuth(router.push)}
+                onClick={() =>
+                  handleTechnicianLogin(router.push, mspSubDomain?.customDomain)
+                }
                 type="button"
                 className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4"
               >
