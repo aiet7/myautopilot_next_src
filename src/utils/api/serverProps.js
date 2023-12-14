@@ -11,7 +11,6 @@ export const handleGetIntegrations = async (msp) => {
   const response = await fetch(
     `http://localhost:9019/${encodeURIComponent(msp)}/integrations`
   );
-
   return response.json();
 };
 
