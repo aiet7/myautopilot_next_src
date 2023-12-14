@@ -9,6 +9,7 @@ import useUiStore from "@/utils/store/ui/uiStore";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 
 import { IoTicketSharp } from "react-icons/io5";
+import useIntegrationsStore from "@/utils/store/admin/control/integrations/integrationsStore";
 
 const AssistantRail = ({}) => {
   const { openAssistant } = useUiStore();
@@ -17,6 +18,7 @@ const AssistantRail = ({}) => {
     handleUIAssistantTabChange,
     handleAssistantTabChange,
   } = useAssistantStore();
+
 
   return (
     <div

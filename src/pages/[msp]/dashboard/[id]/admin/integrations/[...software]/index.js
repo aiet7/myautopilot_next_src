@@ -25,7 +25,7 @@ const DattoPSA = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/PSA/DattoPSA")
 );
 const Manage = dynamic(() =>
-  import("@/components/Dashboard/Admin/Options/Integrations/PSA/Manage")
+  import("@/components/Dashboard/Admin/Options/Integrations/PSA/Manage/Manage")
 );
 const Automate = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/RMM/Automate")

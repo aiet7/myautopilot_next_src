@@ -9,16 +9,15 @@ import useMspStore from "@/utils/store/auth/msp/mspStore";
 const TechLoginPage = () => {
   const router = useRouter();
   const { height, setHeight } = useUiStore();
-  const {
-    setEmail,
-    setPassword,
-    handleLoginCredentialsAuth,
-    handleShowSignup,
-    handleShowForgotPassword,
-  } = useAuthStore();
+  const { handleShowForgotPassword } = useAuthStore();
 
-  const { loginInputs, errorMessage, setLoginInputs, handleTechnicianLogin } =
-    useMspStore();
+  const {
+    mspDomains,
+    errorMessage,
+    setLoginInputs,
+    setMspDomains,
+    handleTechnicianCheck,
+  } = useMspStore();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -40,6 +39,7 @@ const TechLoginPage = () => {
     }
   }, []);
 
+
   return (
     <>
       {height && (
@@ -60,29 +60,7 @@ const TechLoginPage = () => {
               <p className="text-red-500 text-sm">{errorMessage}</p>
             </div>
             <div className="flex flex-col gap-4 w-full ">
-              <input
-                // onChange={(e) => setEmail(e.target.value)}
-                // onKeyDown={(e) => {
-                //   if (e.key === "Enter") {
-                //     e.preventDefault();
-                //     handleLoginCredentialsAuth(router.push);
-                //   }
-                // }}
-                onChange={(e) =>
-                  setLoginInputs("techInfo", "email", e.target.value)
-                }
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    handleTechnicianLogin(router.push);
-                  }
-                }}
-                type="email"
-                placeholder="Enter your email"
-                className="w-full p-2 border border-gray-300 bg-white text-black"
-              />
-
-              <input
+              {/* <input
                 // onChange={(e) => setPassword(e.target.value)}
                 // onKeyDown={(e) => {
                 //   if (e.key === "Enter") {
@@ -102,14 +80,59 @@ const TechLoginPage = () => {
                 type="password"
                 placeholder="Enter your password"
                 className="w-full p-2 border border-gray-300  bg-white text-black"
-              />
-              <button
-                onClick={() => handleTechnicianLogin(router.push)}
-                type="button"
-                className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4"
-              >
-                Continue
-              </button>
+              /> */}
+              {mspDomains ? (
+                <>
+                  <h2 className="text-lg font-semibold">List of domains.</h2>
+                  {mspDomains.map((msp) => {
+                    const { id, mspCustomDomain } = msp;
+                    return (
+                      <div
+                        onClick={() => setMspDomains(null)}
+                        key={id}
+                        className="rounded-lg shadow p-4"
+                      >
+                        <Link href={`/${mspCustomDomain}`}>
+                          <h2 className="font-bold text-lg">
+                            {mspCustomDomain}
+                          </h2>
+                        </Link>
+                      </div>
+                    );
+                  })}
+                </>
+              ) : (
+                <>
+                  <input
+                    // onChange={(e) => setEmail(e.target.value)}
+                    // onKeyDown={(e) => {
+                    //   if (e.key === "Enter") {
+                    //     e.preventDefault();
+                    //     handleLoginCredentialsAuth(router.push);
+                    //   }
+                    // }}
+                    onChange={(e) =>
+                      setLoginInputs("techInfo", "email", e.target.value)
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleTechnicianCheck(router.push);
+                      }
+                    }}
+                    type="email"
+                    placeholder="Enter your email"
+                    className="w-full p-2 border border-gray-300 bg-white text-black"
+                  />
+                  <button
+                    onClick={() => handleTechnicianCheck(router.push)}
+                    type="button"
+                    className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4"
+                  >
+                    Continue
+                  </button>
+                </>
+              )}
               <div className="flex flex-col gap-1">
                 <Link href={"/auth/login"}>
                   <span className="text-sm text-blue-800 font-semibold">

@@ -1,6 +1,10 @@
 import { create } from "zustand";
 
 const useManageStore = create((set, get) => ({
+  connectwiseBoards: null,
+
+  connectwisePriorityLevels: null,
+
   integrationInputs: {
     connectWiseManageIntegrator: false,
     microsoftGraphIntegrator: false,
@@ -13,6 +17,8 @@ const useManageStore = create((set, get) => ({
 
   successMessage: false,
   errorMessage: false,
+
+  setConnectwiseBoard: (board) => set({ connectwiseBoards: board }),
 
   setIntegrationInputs: (type, field, value) =>
     set((prevState) =>
@@ -62,6 +68,39 @@ const useManageStore = create((set, get) => ({
       } else {
         set({ errorMessage: true, successMessage: false });
         console.log("FAILED INTEGRATION");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleGetBoard: async (mspCustomDomain) => {
+    try {
+      const response = await fetch(
+        `http://localhost:9020/board?mspCustomDomain=${mspCustomDomain}`
+      );
+
+      if (response.status === 200) {
+        const boards = await response.json();
+        set({ connectwiseBoards: boards });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleGetBoardDetails: async (id, mspCustomDomain) => {
+    set({ connectwisePriorityLevels: null });
+    try {
+      const response = await fetch(
+        `http://localhost:9020/merge?mspCustomDomain=${mspCustomDomain}&boardId=${id}`
+      );
+
+      if (response.status === 200) {
+        const priorities = await response.json();
+        set({ connectwisePriorityLevels: priorities });
+      } else {
+        console.log("Error");
       }
     } catch (e) {
       console.log(e);

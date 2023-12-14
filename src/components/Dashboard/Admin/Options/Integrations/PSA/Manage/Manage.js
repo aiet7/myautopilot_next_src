@@ -6,9 +6,9 @@ import useUiStore from "@/utils/store/ui/uiStore";
 import useTechStore from "@/utils/store/user/techStore";
 
 import Image from "next/image";
+import Board from "./Board";
 
 import Link from "next/link";
-
 import { convertHideIntegrationKeys } from "@/utils/conversions";
 
 const Manage = () => {
@@ -16,9 +16,11 @@ const Manage = () => {
   const {
     successMessage,
     errorMessage,
+    connectwiseBoards,
     integrationInputs,
     setIntegrationInputs,
     handleIntegrateManage,
+    handleGetBoard,
   } = useManageStore();
   const { integrations, handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
@@ -34,6 +36,7 @@ const Manage = () => {
         openAdmin && "lg:opacity-100 opacity-5 xl:ml-[350px]"
       }  dark:bg-black transition-all duration-300 ease bg-white`}
     >
+      {connectwiseBoards && <Board />}
       <div className="w-full h-full flex flex-col">
         <div className="dark:border-b-white/20 border-b p-4">
           <h1 className="text-2xl">ConnectWise Manage PSA Integration</h1>
@@ -87,91 +90,31 @@ const Manage = () => {
                 </p>
               </div>
               <div className="flex flex-col p-4 gap-6 text-sm">
-                {integrations && (
-                  <div className="flex flex-col">
-                    <p>
-                      <span className="font-bold">Client ID: </span>
-                      {convertHideIntegrationKeys(
-                        integrations?.connectWiseManageIntegration?.clientId
-                      )}
-                    </p>
-                    <p>
-                      <span className="font-bold">Company ID: </span>
-                      {convertHideIntegrationKeys(
-                        integrations?.connectWiseManageIntegration?.companyId
-                      )}
-                    </p>
-                    <p>
-                      <span className="font-bold">Public Key: </span>
-                      {convertHideIntegrationKeys(
-                        integrations?.connectWiseManageIntegration?.publicKey
-                      )}
-                    </p>
-                    <p>
-                      <span className="font-bold">Private Key: </span>
-                      {convertHideIntegrationKeys(
-                        integrations?.connectWiseManageIntegration?.privateKey
-                      )}
-                    </p>
-                  </div>
-                )}
-                {/* <div className="flex flex-col gap-2">
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={integrationInputs.connectWiseManageIntegrator}
-                      onChange={() =>
-                        setIntegrationInputs(
-                          "checkbox",
-                          "connectWiseManageIntegrator",
-                          null
-                        )
-                      }
-                    />
-                    ConnectWise Manage Integrator
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={integrationInputs.microsoftGraphIntegrator}
-                      onChange={() =>
-                        setIntegrationInputs(
-                          "checkbox",
-                          "microsoftGraphIntegrator",
-                          null
-                        )
-                      }
-                    />
-                    Microsoft Graph Integrator
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={integrationInputs.emailIntegrator}
-                      onChange={() =>
-                        setIntegrationInputs(
-                          "checkbox",
-                          "emailIntegrator",
-                          null
-                        )
-                      }
-                    />
-                    Google Workspace Integrator
-                  </label>
-                </div> */}
                 <div className="flex flex-col gap-6 lg:flex-row ">
                   <div className="flex flex-col w-full gap-1">
                     <p>Client ID</p>
                     <p className="dark:text-white/60 text-black/60">
                       Your Client ID that is assigned to you from ConnectWise
                     </p>
-                    <input
-                      value={integrationInputs.clientId}
-                      onChange={(e) =>
-                        setIntegrationInputs("text", "clientId", e.target.value)
-                      }
-                      className="border p-1"
-                    />
+                    {integrations?.connectWiseManageIntegration ? (
+                      <p>
+                        {convertHideIntegrationKeys(
+                          integrations?.connectWiseManageIntegration?.clientId
+                        )}
+                      </p>
+                    ) : (
+                      <input
+                        value={integrationInputs.clientId}
+                        onChange={(e) =>
+                          setIntegrationInputs(
+                            "text",
+                            "clientId",
+                            e.target.value
+                          )
+                        }
+                        className="border p-1"
+                      />
+                    )}
                   </div>
                   <div className="flex flex-col w-full gap-1">
                     <p>Public Key</p>
@@ -179,36 +122,52 @@ const Manage = () => {
                       Your generated Public Key that was created via ConnectWise
                       Manager
                     </p>
-                    <input
-                      value={integrationInputs.publicKey}
-                      onChange={(e) =>
-                        setIntegrationInputs(
-                          "text",
-                          "publicKey",
-                          e.target.value
-                        )
-                      }
-                      className="border p-1"
-                    />
+                    {integrations?.connectWiseManageIntegration ? (
+                      <p>
+                        {convertHideIntegrationKeys(
+                          integrations?.connectWiseManageIntegration?.publicKey
+                        )}
+                      </p>
+                    ) : (
+                      <input
+                        value={integrationInputs.publicKey}
+                        onChange={(e) =>
+                          setIntegrationInputs(
+                            "text",
+                            "publicKey",
+                            e.target.value
+                          )
+                        }
+                        className="border p-1"
+                      />
+                    )}
                   </div>
                 </div>
                 <div className="flex flex-col gap-6 lg:flex-row">
                   <div className="flex flex-col w-full gap-1">
                     <p>Comapany ID</p>
                     <p className="dark:text-white/60 text-black/60">
-                      Your Company ID that is assigned to you from ConnectWise{" "}
+                      Your Company ID that is assigned to you from ConnectWise
                     </p>
-                    <input
-                      value={integrationInputs.companyId}
-                      onChange={(e) =>
-                        setIntegrationInputs(
-                          "text",
-                          "companyId",
-                          e.target.value
-                        )
-                      }
-                      className="border p-1"
-                    />
+                    {integrations?.connectWiseManageIntegration ? (
+                      <p>
+                        {convertHideIntegrationKeys(
+                          integrations?.connectWiseManageIntegration?.companyId
+                        )}
+                      </p>
+                    ) : (
+                      <input
+                        value={integrationInputs.companyId}
+                        onChange={(e) =>
+                          setIntegrationInputs(
+                            "text",
+                            "companyId",
+                            e.target.value
+                          )
+                        }
+                        className="border p-1"
+                      />
+                    )}
                   </div>
                   <div className="flex flex-col w-full gap-1">
                     <p>Private Key</p>
@@ -216,17 +175,25 @@ const Manage = () => {
                       Your generated Private Key that was created via
                       ConnectWise Manager
                     </p>
-                    <input
-                      value={integrationInputs.privateKey}
-                      onChange={(e) =>
-                        setIntegrationInputs(
-                          "text",
-                          "privateKey",
-                          e.target.value
-                        )
-                      }
-                      className="border p-1"
-                    />
+                    {integrations?.connectWiseManageIntegration ? (
+                      <p>
+                        {convertHideIntegrationKeys(
+                          integrations?.connectWiseManageIntegration?.privateKey
+                        )}
+                      </p>
+                    ) : (
+                      <input
+                        value={integrationInputs.privateKey}
+                        onChange={(e) =>
+                          setIntegrationInputs(
+                            "text",
+                            "privateKey",
+                            e.target.value
+                          )
+                        }
+                        className="border p-1"
+                      />
+                    )}
                   </div>
                 </div>
               </div>
@@ -241,11 +208,20 @@ const Manage = () => {
                     Error Integrating Manage!
                   </p>
                 )}
+
+                {integrations?.connectWiseManageIntegration && (
+                  <button
+                    onClick={() => handleGetBoard(tech?.mspCustomDomain)}
+                    className="hover:bg-blue-500 bg-blue-800 text-white px-3 py-1"
+                  >
+                    Categorization
+                  </button>
+                )}
                 <button
                   onClick={() => handleIntegrateManage(tech?.mspCustomDomain)}
                   className="hover:bg-blue-500 bg-blue-800 text-white px-3 py-1"
                 >
-                  Authenticate
+                  {integrations ? "Disconnect" : "Authenticate"}
                 </button>
               </div>
             </div>

@@ -2,6 +2,7 @@ import { create } from "zustand";
 import Cookie from "js-cookie";
 
 const useMspStore = create((set, get) => ({
+  mspDomains: null,
   currentStep: 1,
   signupInputs: {
     mspCustomDomain: "",
@@ -30,6 +31,8 @@ const useMspStore = create((set, get) => ({
   successMessage: false,
 
   setCurrentStep: (step) => set({ currentStep: step }),
+
+  setMspDomains: (msp) => set({ mspDomains: msp }),
 
   setSignupInputs: (section, field, value) =>
     set((prevState) => ({
@@ -154,24 +157,58 @@ const useMspStore = create((set, get) => ({
     }
   },
 
-  handleTechnicianLogin: async (navigator) => {
+  handleTechnicianCheck: async () => {
     const { loginInputs } = get();
-    const { mspCustomDomain, techInfo } = loginInputs;
+    const { techInfo } = loginInputs;
 
-    if (techInfo.email === "" && techInfo.password === "") {
+    if (techInfo.email === "") {
       set({ errorMessage: true });
       return;
     }
 
     try {
       const response = await fetch(
-        `http://localhost:9019/${encodeURIComponent(
-          mspCustomDomain
-        )}/technicianUsers/verifyPassword?email=${encodeURIComponent(
-          techInfo.email
-        )}&password=${encodeURIComponent(techInfo.password)}`,
+        `http://localhost:9019/technicianUsers/signin`,
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            emailId: techInfo.email,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const mspList = await response.json();
+        set({ mspDomains: mspList, errorMessage: false });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleTechnicianLogin: async (navigator, mspCustomDomain) => {
+    const { loginInputs } = get();
+    const { techInfo } = loginInputs;
+    if (techInfo.email === "" || techInfo.password === "") {
+      set({ errorMessage: true });
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:9019/${mspCustomDomain}/technicianUsers/signin`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            emailId: techInfo.email,
+            password: techInfo.password,
+          }),
         }
       );
 
