@@ -39,7 +39,6 @@ const TechLoginPage = () => {
     }
   }, []);
 
-  console.log(mspDomains);
 
   return (
     <>

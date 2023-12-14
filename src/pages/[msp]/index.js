@@ -5,10 +5,16 @@ import useUiStore from "@/utils/store/ui/uiStore";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import useInitializeAppStore from "@/utils/store/init/initializeAppStore";
+import useMspStore from "@/utils/store/auth/msp/mspStore";
+import useAuthStore from "@/utils/store/auth/authStore";
 
 const MSPPage = ({}) => {
   const { height, setHeight } = useUiStore();
   const { mspSubDomain, initializeSubDomain } = useInitializeAppStore();
+
+  const { setLoginInputs, handleTechnicianLogin } = useMspStore();
+
+  const { handleShowForgotPassword } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
