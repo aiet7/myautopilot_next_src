@@ -12,9 +12,11 @@ import useConversationStore from "@/utils/store/interaction/conversations/conver
 import useUiStore from "@/utils/store/ui/uiStore";
 import useUserStore from "@/utils/store/user/userStore";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
+import useTechStore from "@/utils/store/user/techStore";
 
 const History = ({}) => {
   const { user } = useUserStore();
+  const { tech } = useTechStore();
   const {
     editing,
     deleting,
@@ -47,7 +49,7 @@ const History = ({}) => {
       }
     };
     handleConvosAndMessages();
-  }, [user, activeUIAssistantTab]);
+  }, [tech, activeUIAssistantTab]);
 
   return (
     <div

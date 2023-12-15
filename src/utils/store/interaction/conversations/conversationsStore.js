@@ -8,6 +8,7 @@ import {
   handleGetMessages,
 } from "@/utils/api/serverProps";
 import useTicketConversationsStore from "./ticketConversationsStore";
+import useTechStore from "../../user/techStore";
 
 const useConversationStore = create((set, get) => ({
   conversationHistories: [],
@@ -24,12 +25,13 @@ const useConversationStore = create((set, get) => ({
     set((state) => ({ ...state, deleting: isDeleting })),
 
   initializeConversations: async () => {
-    const userStore = useUserStore.getState();
+    // const userStore = useUserStore.getState();
+    const techStore = useTechStore.getState();
     set({ conversationHistories: [] });
 
-    if (userStore.user) {
+    if (techStore.tech) {
       const initialConversations = await handleGetConversations(
-        userStore.user.id
+        techStore.tech.id
       );
       set({ conversationHistories: initialConversations });
     }
@@ -198,19 +200,20 @@ const useConversationStore = create((set, get) => ({
   },
 
   handleNewConversation: async (index) => {
-    const userStore = useUserStore.getState();
+    // const userStore = useUserStore.getState();
+    const techStore = useTechStore.getState();
 
     const { selectedAgent } = useInitializeAppStore.getState();
-
     const newConversation = {
-      userID: userStore.user.id,
+      userId: techStore.tech.id,
       conversationName: `Chat ${index + 1}`,
       agentID: selectedAgent,
     };
 
     try {
       const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/addConversation`,
+        // `https://etech7-wf-etech7-db-service.azuremicroservices.io/addConversation`//
+        `http://localhost:9019/conversations/addConversation`,
         {
           method: "POST",
           headers: {
@@ -246,7 +249,8 @@ const useConversationStore = create((set, get) => ({
     if (conversationToDelete) {
       try {
         const response = await fetch(
-          `https://etech7-wf-etech7-db-service.azuremicroservices.io/deleteConversation?conversationId=${conversationToDelete.id}`
+          // `https://etech7-wf-etech7-db-service.azuremicroservices.io/deleteConversation?conversationId=${conversationToDelete.id}`
+          `http://localhost:9019/conversations/deleteConversation?conversationId=${conversationToDelete.id}`
         );
 
         if (response.ok) {

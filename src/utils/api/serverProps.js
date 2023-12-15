@@ -23,8 +23,10 @@ export const handleGetUser = async (clientId) => {
 
 export const handleGetConversations = async (clientId) => {
   const response = await fetch(
-    `https://etech7-wf-etech7-db-service.azuremicroservices.io/getConversations?userId=${clientId}`
+    // `https://etech7-wf-etech7-db-service.azuremicroservices.io/getConversations?userId=${clientId}`
+    `http://localhost:9019/conversations/getConversations?userId=${clientId}`
   );
+
   return response.json();
 };
 

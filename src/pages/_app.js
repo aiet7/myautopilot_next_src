@@ -8,7 +8,6 @@ import { useEffect } from "react";
 import Router, { useRouter } from "next/router";
 import useAuthStore from "@/utils/store/auth/authStore";
 import { FaSpinner } from "react-icons/fa";
-
 import { Montserrat } from "next/font/google";
 
 const montserrat = Montserrat({
@@ -26,7 +25,10 @@ function MyApp({ Component, pageProps }) {
     const start = (url) => {
       const isAuthRoute = router.pathname.includes("/auth/");
       const isTargetAuthRoute = url.includes("/auth/");
-      if (router.pathname === "/auth/login/tech" && url.includes("/dashboard/")) {
+      if (
+        router.pathname === "/auth/login/tech" &&
+        url.includes("/dashboard/")
+      ) {
         setIsLoading(true);
       } else if (!isAuthRoute && !isTargetAuthRoute) {
         setIsSmallLoading(true);
@@ -63,7 +65,7 @@ function MyApp({ Component, pageProps }) {
           className="animate-spin absolute top-0 left-0 right-0 bottom-0 m-auto  text-blue-800"
         />
       ) : (
-        <Component {...pageProps} className={montserrat.className}/>
+        <Component {...pageProps} className={montserrat.className} />
       )}
     </>
   );

@@ -2,8 +2,10 @@ import { create } from "zustand";
 
 const useManageStore = create((set, get) => ({
   connectwiseBoards: null,
+  loadingBoards: false,
 
-  connectwisePriorityLevels: null,
+  connectwiseMerge: null,
+  loadingMerge: false,
 
   integrationInputs: {
     connectWiseManageIntegrator: false,
@@ -75,6 +77,7 @@ const useManageStore = create((set, get) => ({
   },
 
   handleGetBoard: async (mspCustomDomain) => {
+    set({ connectwiseBoards: null });
     try {
       const response = await fetch(
         `http://localhost:9020/board?mspCustomDomain=${mspCustomDomain}`
@@ -90,15 +93,15 @@ const useManageStore = create((set, get) => ({
   },
 
   handleGetBoardDetails: async (id, mspCustomDomain) => {
-    set({ connectwisePriorityLevels: null });
+    set({ connectwiseMerge: null, loadingMerge: true });
     try {
       const response = await fetch(
         `http://localhost:9020/merge?mspCustomDomain=${mspCustomDomain}&boardId=${id}`
       );
 
       if (response.status === 200) {
-        const priorities = await response.json();
-        set({ connectwisePriorityLevels: priorities });
+        const merge = await response.json();
+        set({ connectwiseMerge: merge, loadingMerge: false });
       } else {
         console.log("Error");
       }
