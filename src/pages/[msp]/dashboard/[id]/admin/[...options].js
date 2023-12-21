@@ -22,7 +22,7 @@ const Internal = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Internal")
 );
 const Roles = dynamic(() =>
-  import("@/components/Dashboard/Admin/Options/Roles")
+  import("@/components/Dashboard/Admin/Options/Roles/Roles")
 );
 const Workflows = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Workflows")

@@ -1,4 +1,5 @@
 "use client";
+
 import useManageStore from "@/utils/store/admin/control/integrations/PSA/manageStore";
 import useTechStore from "@/utils/store/user/techStore";
 import { AiOutlineClose } from "react-icons/ai";
@@ -8,33 +9,39 @@ const Board = () => {
   const { tech } = useTechStore();
 
   const {
+    activeBoard,
     connectwiseBoards,
     loadingMerge,
     connectwiseMerge,
     setConnectwiseBoard,
     handleGetBoardDetails,
   } = useManageStore();
-  console.log(connectwiseMerge);
+  
   return (
-    <div className="dark:bg-black/80 absolute bg-black/60 top-0 bottom-0 right-0 left-0 flex items-start justify-center py-10 px-2">
-      <div className="flex flex-col items-end gap-4 bg-white max-w-full p-4 rounded-lg shadow-lg text-black ">
+    <div className="dark:bg-black/80 absolute bg-black/60 z-[99] top-0 bottom-0 right-0 left-0 flex  items-center justify-center p-2 lg:p-10">
+      <div className="flex flex-col items-end bg-white w-full h-full p-4 rounded-lg text-black">
         <AiOutlineClose
           className="cursor-pointer"
           size={20}
-          onClick={() => setConnectwiseBoard(null)}
+          onClick={() => {
+            setConnectwiseBoard(null);
+          }}
         />
-        <div className="flex flex-col gap-4 ">
+        <div className="flex flex-col gap-4 overflow-hidden w-full h-full">
           {connectwiseBoards && (
             <div className="flex gap-2 items-center flex-wrap font-semibold">
               {connectwiseBoards.map((board) => {
                 const { id, name } = board;
+
                 return (
                   <div
                     key={id}
                     onClick={() =>
                       handleGetBoardDetails(id, tech?.mspCustomDomain)
                     }
-                    className="border rounded-lg shadow-lg px-4 py-2 cursor-pointer"
+                    className={`${
+                      activeBoard === id && "bg-blue-800 text-white"
+                    } border rounded-lg shadow-lg px-4 py-2 cursor-pointer`}
                   >
                     {name}
                   </div>
@@ -42,49 +49,97 @@ const Board = () => {
               })}
             </div>
           )}
-          <div className="flex flex-col items-center p-4 text-xl font-semibold italic text-black/30 ">
+          <div className="flex items-center gap-2 text-xl font-semibold italic text-black/30">
             {loadingMerge ? (
               <>
                 <p className="">
-                  Loading your board. This might take a few minutes.
+                  Loading your board. This might take a few minutes
                 </p>
-                <FaSpinner size={25} className="animate-spin" />
+                <FaSpinner size={20} className="animate-spin" />
               </>
             ) : (
               <>
-                <p className="">Please select a board to view.</p>
-                <FaClipboard size={25} />
+                <p className="">Please select a board to view</p>
+                <FaClipboard size={20} />
               </>
             )}
+          </div>
+          <div className="flex flex-col text-xl overflow-hidden">
             {connectwiseMerge &&
               connectwiseMerge.mspConnectWiseManageCategorizations && (
-                <div className="block overflow-auto scrollbar-thin h-[300px] lg:h-[600px] ">
-                  <table className="min-w-full table-fixed  border-separate border-spacing-0 text-left">
-                    <thead>
-                      <tr>
-                        <th>Category ID</th>
-                        <th>Category Name</th>
-                        <th>Sub-Categorizations</th>
+                <div className="block text-sm overflow-auto scrollbar-thin  max-h-full max-w-full">
+                  <table className=" min-w-full table-fixed border-separate border-spacing-0 text-left">
+                    <thead className="sticky top-0 bg-white text-lg text-black/60">
+                      <tr className="">
+                        <th className="p-2 border-l border-t border-b border-r ">
+                          Category Name
+                        </th>
+                        <th className="p-2 border-t border-b border-r">
+                          Sub-Categorizations
+                        </th>
+                        <th className="p-2 border-t border-b border-r">
+                          Priority
+                        </th>
+                        <th className="p-2 border-t border-b border-r">
+                          Severity
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
                       {connectwiseMerge.mspConnectWiseManageCategorizations.map(
-                        (category) => (
-                          <tr key={category.categoryId}>
-                            <td>{category.categoryId}</td>
-                            <td>{category.categoryName}</td>
-                            <td>
-                              {category.mspConnectWiseManageSubCategorizations.map(
-                                (subCat) => (
-                                  <div key={subCat.subCategoryId}>
-                                    {subCat.subCategoryName} (Priority:{" "}
-                                    {subCat.priority})
-                                  </div>
-                                )
-                              )}
-                            </td>
-                          </tr>
-                        )
+                        (category) => {
+                          const { categoryId, categoryName } = category;
+                          return (
+                            <tr key={categoryId}>
+                              <td className="p-2 truncate border-l border-r border-b">
+                                {categoryName}
+                              </td>
+                              <td className="p-2 truncate border-r border-b">
+                                <select className="w-full">
+                                  {category.mspConnectWiseManageSubCategorizations.map(
+                                    (subCat) => {
+                                      const { subCategoryId, subCategoryName } =
+                                        subCat;
+                                      return (
+                                        <option key={subCategoryId}>
+                                          {subCategoryName}
+                                        </option>
+                                      );
+                                    }
+                                  )}
+                                </select>
+                              </td>
+                              <td className="p-2 border-r border-b">
+                                <select className="w-full">
+                                  {category.mspConnectWiseManageSubCategorizations.map(
+                                    (subCat) => {
+                                      const { priority } = subCat;
+                                      return (
+                                        <option key={priority}>
+                                          {priority}
+                                        </option>
+                                      );
+                                    }
+                                  )}
+                                </select>
+                              </td>
+                              <td className="p-2 border-r border-b">
+                                <select className="w-full">
+                                  {category.mspConnectWiseManageSubCategorizations.map(
+                                    (subCat) => {
+                                      const { severity } = subCat;
+                                      return (
+                                        <option key={severity}>
+                                          {severity}
+                                        </option>
+                                      );
+                                    }
+                                  )}
+                                </select>
+                              </td>
+                            </tr>
+                          );
+                        }
                       )}
                     </tbody>
                   </table>

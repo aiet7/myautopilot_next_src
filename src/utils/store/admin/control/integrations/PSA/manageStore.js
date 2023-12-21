@@ -7,6 +7,8 @@ const useManageStore = create((set, get) => ({
   connectwiseMerge: null,
   loadingMerge: false,
 
+  activeBoard: null,
+
   integrationInputs: {
     connectWiseManageIntegrator: false,
     microsoftGraphIntegrator: false,
@@ -93,7 +95,7 @@ const useManageStore = create((set, get) => ({
   },
 
   handleGetBoardDetails: async (id, mspCustomDomain) => {
-    set({ connectwiseMerge: null, loadingMerge: true });
+    set({ connectwiseMerge: null, loadingMerge: true, activeBoard: id });
     try {
       const response = await fetch(
         `http://localhost:9020/merge?mspCustomDomain=${mspCustomDomain}&boardId=${id}`
