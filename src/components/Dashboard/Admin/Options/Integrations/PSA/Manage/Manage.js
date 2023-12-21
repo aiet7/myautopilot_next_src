@@ -14,12 +14,11 @@ import { convertHideIntegrationKeys } from "@/utils/conversions";
 const Manage = () => {
   const { tech } = useTechStore();
   const {
-    successMessage,
-    errorMessage,
     connectwiseBoards,
     integrationInputs,
     setIntegrationInputs,
     handleIntegrateManage,
+    handleDisconnectManage,
     handleGetBoard,
   } = useManageStore();
   const { integrations, handleIntegrationsCard } = useIntegrationsStore();
@@ -96,7 +95,7 @@ const Manage = () => {
                     <p className="dark:text-white/60 text-black/60">
                       Your Client ID that is assigned to you from ConnectWise
                     </p>
-                    {integrations?.connectWiseManageIntegration ? (
+                    {integrations?.connectWiseManageIntegration?.clientId ? (
                       <p>
                         {convertHideIntegrationKeys(
                           integrations?.connectWiseManageIntegration?.clientId
@@ -122,7 +121,7 @@ const Manage = () => {
                       Your generated Public Key that was created via ConnectWise
                       Manager
                     </p>
-                    {integrations?.connectWiseManageIntegration ? (
+                    {integrations?.connectWiseManageIntegration?.publicKey ? (
                       <p>
                         {convertHideIntegrationKeys(
                           integrations?.connectWiseManageIntegration?.publicKey
@@ -149,7 +148,7 @@ const Manage = () => {
                     <p className="dark:text-white/60 text-black/60">
                       Your Company ID that is assigned to you from ConnectWise
                     </p>
-                    {integrations?.connectWiseManageIntegration ? (
+                    {integrations?.connectWiseManageIntegration?.companyId ? (
                       <p>
                         {convertHideIntegrationKeys(
                           integrations?.connectWiseManageIntegration?.companyId
@@ -175,7 +174,7 @@ const Manage = () => {
                       Your generated Private Key that was created via
                       ConnectWise Manager
                     </p>
-                    {integrations?.connectWiseManageIntegration ? (
+                    {integrations?.connectWiseManageIntegration?.privateKey ? (
                       <p>
                         {convertHideIntegrationKeys(
                           integrations?.connectWiseManageIntegration?.privateKey
@@ -198,18 +197,7 @@ const Manage = () => {
                 </div>
               </div>
               <div className="p-4 flex items-center justify-end gap-4">
-                {successMessage && (
-                  <p className="font-semibold text-emerald-500">
-                    Successfully Integrated Manage!
-                  </p>
-                )}
-                {errorMessage && (
-                  <p className="font-bold text-red-500">
-                    Error Integrating Manage!
-                  </p>
-                )}
-
-                {integrations?.connectWiseManageIntegration && (
+                {integrations?.connectWiseManageIntegrator && (
                   <button
                     onClick={() => handleGetBoard(tech?.mspCustomDomain)}
                     className="hover:bg-blue-500 bg-blue-800 text-white px-3 py-1"
@@ -218,10 +206,16 @@ const Manage = () => {
                   </button>
                 )}
                 <button
-                  onClick={() => handleIntegrateManage(tech?.mspCustomDomain)}
+                  onClick={() =>
+                    integrations?.connectWiseManageIntegrator
+                      ? handleDisconnectManage(tech?.mspCustomDomain)
+                      : handleIntegrateManage(tech?.mspCustomDomain)
+                  }
                   className="hover:bg-blue-500 bg-blue-800 text-white px-3 py-1"
                 >
-                  {integrations ? "Disconnect" : "Authenticate"}
+                  {integrations?.connectWiseManageIntegrator
+                    ? "Disconnect"
+                    : "Authenticate"}
                 </button>
               </div>
             </div>

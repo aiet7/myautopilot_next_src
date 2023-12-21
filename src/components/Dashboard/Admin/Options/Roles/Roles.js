@@ -1,34 +1,34 @@
 "use client";
 
+import useRolesStore from "@/utils/store/admin/control/roles/rolesStore";
 import useUiStore from "@/utils/store/ui/uiStore";
+import useTechStore from "@/utils/store/user/techStore";
 import { useEffect, useState } from "react";
+import { convertDate } from "@/utils/conversions";
+import EditRole from "./EditRole";
+import CreateRole from "./CreateRole";
 
 const Roles = ({}) => {
+  const { tech } = useTechStore();
+
+  const {
+    errorMessage,
+    roles,
+    activeRole,
+    createRole,
+    setActiveEditRole,
+    setCreateRole,
+    handleCloneRole,
+    handleDeleteRole,
+    initializeRoles,
+  } = useRolesStore();
+
   const { openAdmin, handleHistoryMenu } = useUiStore();
   const [search, setSearch] = useState("");
-  const [filteredRoles, setFilteredRoles] = useState([]);
-
-  const roleNames = ["Super Admin", "Admin", "User"];
-
-  const roles = roleNames.map((name, idx) => {
-    const permissionCount = Math.floor(Math.random() * 31);
-    const summary = `${permissionCount} permission ${
-      permissionCount === 1 ? "entry" : "entries"
-    }`;
-
-    return {
-      id: idx,
-      name: name,
-      summary: summary,
-    };
-  });
 
   useEffect(() => {
-    const results = roles.filter((role) =>
-      role.name.toLowerCase().includes(search.toLowerCase())
-    );
-    setFilteredRoles(results);
-  }, [search]);
+    initializeRoles();
+  }, [tech]);
 
   return (
     <div
@@ -41,6 +41,8 @@ const Roles = ({}) => {
         openAdmin && "lg:opacity-100 opacity-5 xl:ml-[350px]"
       }  dark:bg-black transition-all duration-300 ease bg-white`}
     >
+      {activeRole && <EditRole />}
+      {createRole && <CreateRole />}
       <div className="w-full h-full flex flex-col ">
         <div className="dark:border-b-white/20 border-b p-4">
           <h1 className="text-2xl">Roles</h1>
@@ -51,7 +53,10 @@ const Roles = ({}) => {
               Create roles and assign permissions
             </p>
             <div className="flex items-center gap-2 ">
-              <button className="dark:border-white/20 hover:bg-blue-500 border bg-blue-800 text-white py-1 px-3">
+              <button
+                onClick={() => setCreateRole(true)}
+                className="dark:border-white/20 hover:bg-blue-500 border bg-blue-800 text-white py-1 px-3"
+              >
                 Create Role
               </button>
               <input
@@ -69,42 +74,69 @@ const Roles = ({}) => {
               <thead className="dark:bg-gray-700 sticky top-0 bg-[#F5F8FA]">
                 <tr className="">
                   <th className="p-2 w-[44px] h-[44px] border"></th>
-                  <th className="p-2  truncate border-t border-b border-r">
+                  <th className="p-2  truncate border-t border-b border-r cursor-pointer">
                     Name
                   </th>
-                  <th className="p-2  truncate border-t border-b border-r">
-                    Summary
+                  <th className="p-2  truncate border-t border-b border-r cursor-pointer">
+                    Date Created
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {filteredRoles.map((role, index) => {
+                {roles?.map((role, index) => {
+                  const { id, custom, name, timeStamp } = role;
                   return (
-                    <tr key={index} className="">
+                    <tr key={id} className="">
                       <td className="p-2 border-r border-l border-b text-center">
-                        <div className="flex gap-2">
-                          <button className="hover:underline text-blue-500">
-                            Edit
-                          </button>
-                          <button className="hover:underline text-blue-500">
+                        <div className="flex gap-3">
+                          <button
+                            onClick={() =>
+                              handleCloneRole(id, tech?.mspCustomDomain)
+                            }
+                            className="hover:underline text-blue-500"
+                          >
                             Clone
                           </button>
-                          <button className="hover:underline text-blue-500">
-                            Delete
-                          </button>
+                          {!custom === true && (
+                            <>
+                              <button
+                                onClick={() => setActiveEditRole(id)}
+                                className="hover:underline text-blue-500"
+                              >
+                                Edit
+                              </button>
+
+                              <button
+                                onClick={() =>
+                                  handleDeleteRole(id, tech?.mspCustomDomain)
+                                }
+                                className="hover:underline text-blue-500"
+                              >
+                                Delete
+                              </button>
+                            </>
+                          )}
                         </div>
                       </td>
                       <td className="p-2 truncate border-r border-b">
-                        {role.name}
+                        {name} (Custom: {custom ? "True" : "False"})
                       </td>
                       <td className="p-2 truncate border-r border-b">
-                        {role.summary}
+                        {convertDate(timeStamp)}
                       </td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
+
+            {errorMessage.clone && (
+              <p className="font-semibold text-red-500">Error Cloning Role!</p>
+            )}
+
+            {errorMessage.delete && (
+              <p className="font-bold text-red-500">Error Deleting Role!</p>
+            )}
           </div>
         </div>
       </div>

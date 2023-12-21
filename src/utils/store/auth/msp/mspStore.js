@@ -148,7 +148,7 @@ const useMspStore = create((set, get) => ({
         handleSignupMSP(),
         handleSignupTechnician(),
       ]);
-      set({ errorMessage: false, successMessage: true });
+      set({ currentStep: 1, errorMessage: false, successMessage: true });
       navigator(
         `/${msp?.customDomain}/dashboard/${tech?.id}/admin/integrations`
       );

@@ -14,6 +14,13 @@ export const handleGetIntegrations = async (msp) => {
   return response.json();
 };
 
+export const handleGetRoles = async (msp) => {
+  const response = await fetch(
+    `http://localhost:9019/${encodeURIComponent(msp)}/roles/all`
+  );
+  return response.json();
+};
+
 export const handleGetUser = async (clientId) => {
   const response = await fetch(
     `https://etech7-wf-etech7-db-service.azuremicroservices.io/getClientById?id=${clientId}`
@@ -23,8 +30,10 @@ export const handleGetUser = async (clientId) => {
 
 export const handleGetConversations = async (clientId) => {
   const response = await fetch(
-    `https://etech7-wf-etech7-db-service.azuremicroservices.io/getConversations?userId=${clientId}`
+    // `https://etech7-wf-etech7-db-service.azuremicroservices.io/getConversations?userId=${clientId}`
+    `http://localhost:9019/conversations/getConversations?userId=${clientId}`
   );
+
   return response.json();
 };
 

@@ -1,9 +1,14 @@
 import { create } from "zustand";
+import useIntegrationsStore from "../integrationsStore";
 
 const useManageStore = create((set, get) => ({
   connectwiseBoards: null,
+  loadingBoards: false,
 
-  connectwisePriorityLevels: null,
+  connectwiseMerge: null,
+  loadingMerge: false,
+
+  activeBoard: null,
 
   integrationInputs: {
     connectWiseManageIntegrator: false,
@@ -39,6 +44,7 @@ const useManageStore = create((set, get) => ({
 
   handleIntegrateManage: async (mspCustomDomain) => {
     const { integrationInputs } = get();
+    const { handleUpdateIntegrations } = useIntegrationsStore.getState();
 
     const {
       connectWiseManageIntegrator,
@@ -57,12 +63,58 @@ const useManageStore = create((set, get) => ({
           },
           body: JSON.stringify({
             mspCustomDomain: mspCustomDomain,
+            connectWiseManageIntegrator: true,
             connectWiseManageIntegration: connectWiseManageIntegration,
           }),
         }
       );
 
       if (response.status === 200) {
+        const updatedIntegrations = await response.json();
+        handleUpdateIntegrations(updatedIntegrations);
+        set({
+          errorMessage: false,
+          successMessage: true,
+        });
+        console.log("MANAGE INTEGRATED");
+      } else {
+        set({ errorMessage: true, successMessage: false });
+        console.log("FAILED INTEGRATION");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleDisconnectManage: async (mspCustomDomain) => {
+    const { handleUpdateIntegrations } = useIntegrationsStore.getState();
+
+    try {
+      const response = await fetch(
+        `http://localhost:9019/${mspCustomDomain}/integrations/update`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            mspCustomDomain: mspCustomDomain,
+            connectWiseManageIntegration: {
+              connectWiseManageIntegrator: false,
+              microsoftGraphIntegrator: false,
+              emailIntegrator: false,
+              clientId: "",
+              companyId: "",
+              publicKey: "",
+              privateKey: "",
+            },
+          }),
+        }
+      );
+
+      if (response.status === 200) {
+        const updatedIntegrations = await response.json();
+        handleUpdateIntegrations(updatedIntegrations);
         set({ errorMessage: false, successMessage: true });
         console.log("MANAGE INTEGRATED");
       } else {
@@ -75,6 +127,7 @@ const useManageStore = create((set, get) => ({
   },
 
   handleGetBoard: async (mspCustomDomain) => {
+    set({ connectwiseBoards: null });
     try {
       const response = await fetch(
         `http://localhost:9020/board?mspCustomDomain=${mspCustomDomain}`
@@ -90,15 +143,15 @@ const useManageStore = create((set, get) => ({
   },
 
   handleGetBoardDetails: async (id, mspCustomDomain) => {
-    set({ connectwisePriorityLevels: null });
+    set({ connectwiseMerge: null, loadingMerge: true, activeBoard: id });
     try {
       const response = await fetch(
         `http://localhost:9020/merge?mspCustomDomain=${mspCustomDomain}&boardId=${id}`
       );
 
       if (response.status === 200) {
-        const priorities = await response.json();
-        set({ connectwisePriorityLevels: priorities });
+        const merge = await response.json();
+        set({ connectwiseMerge: merge, loadingMerge: false });
       } else {
         console.log("Error");
       }

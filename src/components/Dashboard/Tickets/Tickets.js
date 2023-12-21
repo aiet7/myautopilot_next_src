@@ -1,13 +1,13 @@
 "use client";
 import { useEffect } from "react";
 import useUiStore from "@/utils/store/ui/uiStore";
-import useUserStore from "@/utils/store/user/userStore";
 import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
 import { FiRefreshCcw } from "react-icons/fi";
+import useTechStore from "@/utils/store/user/techStore";
 
 const Tickets = ({}) => {
   const { openTickets } = useUiStore();
-  const { user } = useUserStore();
+  const { tech } = useTechStore();
   const {
     tickets,
     ticketStatus,
@@ -21,7 +21,7 @@ const Tickets = ({}) => {
 
   useEffect(() => {
     initializeTickets();
-  }, [user]);
+  }, [tech]);
 
   return (
     <div
@@ -76,7 +76,7 @@ const Tickets = ({}) => {
             return (
               <div
                 onClick={() => handleTicketMode("Support", ticketId)}
-                key={index}
+                key={ticketId}
                 className="dark:bg-white/30 dark:text-white dark:border-white/20 cursor-pointer text-sm flex flex-col justify-between gap-1 border rounded-md text-black bg-white px-2 py-3 mb-2"
               >
                 <div className="flex justify-between items-center">
