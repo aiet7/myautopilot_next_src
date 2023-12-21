@@ -74,10 +74,10 @@ const Roles = ({}) => {
               <thead className="dark:bg-gray-700 sticky top-0 bg-[#F5F8FA]">
                 <tr className="">
                   <th className="p-2 w-[44px] h-[44px] border"></th>
-                  <th className="p-2  truncate border-t border-b border-r">
+                  <th className="p-2  truncate border-t border-b border-r cursor-pointer">
                     Name
                   </th>
-                  <th className="p-2  truncate border-t border-b border-r">
+                  <th className="p-2  truncate border-t border-b border-r cursor-pointer">
                     Date Created
                   </th>
                 </tr>
