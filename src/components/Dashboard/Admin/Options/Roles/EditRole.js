@@ -13,12 +13,11 @@ const EditRole = () => {
     errorMessage,
     roles,
     activeRole,
-    setActiveRole,
+    setActiveEditRole,
     setRoleInputs,
     handleSaveEditedRole,
   } = useRolesStore();
 
-  console.log(roleInputs);
   return (
     <div className="dark:bg-black/80 absolute bg-black/60 z-[99] top-0 bottom-0 right-0 left-0 p-2 lg:p-10">
       <div className="flex flex-col items-end bg-white max-w-[700px] h-full p-4 rounded-lg text-black mx-auto">
@@ -26,7 +25,7 @@ const EditRole = () => {
           className="cursor-pointer"
           size={20}
           onClick={() => {
-            setActiveRole(null);
+            setActiveEditRole(null);
           }}
         />
         <div className="flex flex-col gap-4 overflow-hidden w-full h-full">

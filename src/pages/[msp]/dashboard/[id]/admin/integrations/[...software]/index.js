@@ -54,13 +54,12 @@ const SoftwareIntegratePages = () => {
 
   const router = useRouter();
   const { initializeTech } = useTechStore();
-  const { initializeIntegrations } = useIntegrationsStore();
+  const { integrations, initializeIntegrations } = useIntegrationsStore();
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
   const { currentOption } = useAdminStore();
 
   const { software } = router.query;
-
   useEffect(() => {
     if (router.isReady) {
       const currentPath = router.asPath;

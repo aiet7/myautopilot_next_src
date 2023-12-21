@@ -12,12 +12,11 @@ const Roles = ({}) => {
   const { tech } = useTechStore();
 
   const {
-    successMessage,
     errorMessage,
     roles,
     activeRole,
     createRole,
-    setActiveRole,
+    setActiveEditRole,
     setCreateRole,
     handleCloneRole,
     handleDeleteRole,
@@ -101,7 +100,7 @@ const Roles = ({}) => {
                           {!custom === true && (
                             <>
                               <button
-                                onClick={() => setActiveRole(id)}
+                                onClick={() => setActiveEditRole(id)}
                                 className="hover:underline text-blue-500"
                               >
                                 Edit
@@ -130,19 +129,11 @@ const Roles = ({}) => {
                 })}
               </tbody>
             </table>
-            {successMessage.clone && (
-              <p className="font-semibold text-emerald-500">
-                Successfully Cloned Role!
-              </p>
-            )}
+
             {errorMessage.clone && (
               <p className="font-semibold text-red-500">Error Cloning Role!</p>
             )}
-            {successMessage.delete && (
-              <p className="font-bold text-emerald-500">
-                Successfully Deleted Role!
-              </p>
-            )}
+
             {errorMessage.delete && (
               <p className="font-bold text-red-500">Error Deleting Role!</p>
             )}

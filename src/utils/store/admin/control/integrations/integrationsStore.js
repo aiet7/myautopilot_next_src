@@ -148,6 +148,10 @@ const useIntegrationsStore = create((set, get) => ({
       cards: state.cards.map((card) => ({ ...card, isHovered: false })),
     }));
   },
+
+  handleUpdateIntegrations: (updatedIntegrations) => {
+    set({ integrations: updatedIntegrations });
+  },
 }));
 
 export default useIntegrationsStore;

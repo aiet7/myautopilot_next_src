@@ -15,7 +15,7 @@ const CreateRole = () => {
     setRoleInputs,
     handleCreateRole,
   } = useRolesStore();
-
+  
   return (
     <div className="dark:bg-black/80 absolute bg-black/60 z-[99] top-0 bottom-0 right-0 left-0 p-2 lg:p-10">
       <div className="flex flex-col items-end bg-white max-w-[700px] h-full p-4 rounded-lg text-black mx-auto">
@@ -39,6 +39,7 @@ const CreateRole = () => {
               <div className="flex items-center w-full gap-4">
                 <p className="text-lg w-24 font-bold">Role Title</p>
                 <input
+                  value={roleInputs.roleTitle}
                   onChange={(e) =>
                     setRoleInputs("text", "roleTitle", e.target.value)
                   }

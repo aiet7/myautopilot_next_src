@@ -78,8 +78,8 @@ const useRolesStore = create((set, get) => ({
     }));
   },
 
-  setActiveRole: (roleId) => {
-    const { roles } = get();
+  setActiveEditRole: (roleId) => {
+    const { roles, errorMessage, successMessage } = get();
 
     if (roleId === null) {
       set({
@@ -104,12 +104,23 @@ const useRolesStore = create((set, get) => ({
         });
       }
     }
+    set({
+      errorMessage: { ...errorMessage, edit: false },
+      successMessage: { ...successMessage, edit: false },
+    });
   },
 
-  setCreateRole: (create) => set({ createRole: create }),
+  setCreateRole: (create) => {
+    const { errorMessage, successMessage } = get();
+    set({
+      createRole: create,
+      errorMessage: { ...errorMessage, create: false },
+      successMessage: { ...successMessage, create: false },
+    });
+  },
 
   handleSaveEditedRole: async (roleId, mspCustomDomain) => {
-    const { roleInputs, errorMessage, successMessage } = get();
+    const { roles, roleInputs, errorMessage, successMessage } = get();
     const { roleTitle, selectedPermissions } = roleInputs;
 
     try {
@@ -129,7 +140,12 @@ const useRolesStore = create((set, get) => ({
       );
 
       if (response.status === 200) {
+        const updatedRole = await response.json();
+        const updatedRoles = roles.map((role) =>
+          role.id === roleId ? updatedRole : role
+        );
         set({
+          roles: updatedRoles,
           errorMessage: { ...errorMessage, edit: false },
           successMessage: { ...successMessage, edit: true },
         });
@@ -147,7 +163,7 @@ const useRolesStore = create((set, get) => ({
   },
 
   handleCreateRole: async (mspCustomDomain) => {
-    const { roleInputs, errorMessage, successMessage } = get();
+    const { roles, roleInputs, errorMessage, successMessage } = get();
 
     const { roleTitle, selectedPermissions } = roleInputs;
 
@@ -168,9 +184,11 @@ const useRolesStore = create((set, get) => ({
       );
 
       if (response.status === 200) {
+        const newRole = await response.json();
         set({
           errorMessage: { ...errorMessage, create: false },
           successMessage: { ...successMessage, create: true },
+          roles: [...roles, newRole],
         });
         console.log("ROLE CREATED");
       } else {
@@ -182,6 +200,22 @@ const useRolesStore = create((set, get) => ({
       }
     } catch (e) {
       console.log(e);
+    } finally {
+      set({
+        roleInputs: {
+          roleTitle: "",
+          selectedPermissions: {
+            clientBilling: false,
+            mspBilling: false,
+            clientUserManagement: false,
+            technicianUserManagement: false,
+            mspBranding: false,
+            mspIntegrations: false,
+            clientDocuments: false,
+            mspDocuments: false,
+          },
+        },
+      });
     }
   },
 
@@ -207,9 +241,11 @@ const useRolesStore = create((set, get) => ({
       );
 
       if (response.status === 200) {
+        const clonedRole = await response.json();
         set({
           errorMessage: { ...errorMessage, clone: false },
           successMessage: { ...successMessage, clone: true },
+          roles: [...roles, clonedRole],
         });
         console.log("ROLE CLONED");
       } else {
@@ -227,17 +263,21 @@ const useRolesStore = create((set, get) => ({
   handleDeleteRole: async (roleId, mspCustomDomain) => {
     const { roles, errorMessage, successMessage } = get();
 
-    const roleToClone = roles.find((role) => role.id === roleId);
+    const roletoDelete = roles.find((role) => role.id === roleId);
 
     try {
       const response = await fetch(
-        `http://localhost:9019/${mspCustomDomain}/roles/delete?id=${roleToClone.id}`
+        `http://localhost:9019/${mspCustomDomain}/roles/delete?id=${roletoDelete.id}`
       );
 
       if (response.status === 200) {
+        const updatedRoles = roles.filter(
+          (role) => role.id !== roletoDelete.id
+        );
         set({
           errorMessage: { ...errorMessage, delete: false },
           successMessage: { ...successMessage, delete: true },
+          roles: updatedRoles,
         });
         console.log("ROLE DELETED");
       } else {

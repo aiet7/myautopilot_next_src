@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import useIntegrationsStore from "../integrationsStore";
 
 const useManageStore = create((set, get) => ({
   connectwiseBoards: null,
@@ -43,6 +44,7 @@ const useManageStore = create((set, get) => ({
 
   handleIntegrateManage: async (mspCustomDomain) => {
     const { integrationInputs } = get();
+    const { handleUpdateIntegrations } = useIntegrationsStore.getState();
 
     const {
       connectWiseManageIntegrator,
@@ -61,12 +63,58 @@ const useManageStore = create((set, get) => ({
           },
           body: JSON.stringify({
             mspCustomDomain: mspCustomDomain,
+            connectWiseManageIntegrator: true,
             connectWiseManageIntegration: connectWiseManageIntegration,
           }),
         }
       );
 
       if (response.status === 200) {
+        const updatedIntegrations = await response.json();
+        handleUpdateIntegrations(updatedIntegrations);
+        set({
+          errorMessage: false,
+          successMessage: true,
+        });
+        console.log("MANAGE INTEGRATED");
+      } else {
+        set({ errorMessage: true, successMessage: false });
+        console.log("FAILED INTEGRATION");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleDisconnectManage: async (mspCustomDomain) => {
+    const { handleUpdateIntegrations } = useIntegrationsStore.getState();
+
+    try {
+      const response = await fetch(
+        `http://localhost:9019/${mspCustomDomain}/integrations/update`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            mspCustomDomain: mspCustomDomain,
+            connectWiseManageIntegration: {
+              connectWiseManageIntegrator: false,
+              microsoftGraphIntegrator: false,
+              emailIntegrator: false,
+              clientId: "",
+              companyId: "",
+              publicKey: "",
+              privateKey: "",
+            },
+          }),
+        }
+      );
+
+      if (response.status === 200) {
+        const updatedIntegrations = await response.json();
+        handleUpdateIntegrations(updatedIntegrations);
         set({ errorMessage: false, successMessage: true });
         console.log("MANAGE INTEGRATED");
       } else {
