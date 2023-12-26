@@ -44,10 +44,12 @@ const ForgotPasswordPage = () => {
           <form className="p-6 w-[450px] flex flex-col gap-10 items-start justify-center lg:shadow-lg  lg:rounded-lg lg:bg-white">
             <div className="text-black flex flex-col items-start">
               <h1 className="text-2xl font-bold ">Forgot My Password</h1>
-              <p className="text-black/60">
-                Please fill out all of the required fields*
-              </p>
-              <p className="text-red-500 text-sm">{errorMessage}</p>
+              {errorMessage?.emailCheck && (
+                <p className="text-red-500">Email does not exist.</p>
+              )}
+              {errorMessage?.emptyFields && (
+                <p className="text-red-500">Please fill out required field*.</p>
+              )}
             </div>
             <div className="flex flex-col gap-4 w-full text-sm">
               <input

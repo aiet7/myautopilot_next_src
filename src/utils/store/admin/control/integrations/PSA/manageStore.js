@@ -20,6 +20,22 @@ const useManageStore = create((set, get) => ({
     privateKey: "",
   },
 
+  boardInputs: {},
+
+  severityOptions: ["Low", "Medium", "High"],
+  impactOptions: ["Low", "Medium", "High"],
+  tierOptions: ["Tier1", "Tier2", "Tier3"],
+  durationOptions: [
+    "15 Minutes",
+    "30 Minutes",
+    "45 Minutes",
+    "1 Hour",
+    "1 Hour 30 Minutes",
+    "2 Hours 30 Minutes",
+    "3 Hours 30 Minutes",
+    "4 Hours",
+  ],
+
   successMessage: false,
   errorMessage: false,
 
@@ -41,6 +57,26 @@ const useManageStore = create((set, get) => ({
             },
           }
     ),
+
+  setBoardInputs: (categoryId, subCategoryId, field, id, name) =>
+    set((prevState) => {
+      const boardInputs = { ...prevState.boardInputs };
+      if (!boardInputs[categoryId]) {
+        boardInputs[categoryId] = {};
+      }
+      if (!boardInputs[categoryId][subCategoryId]) {
+        boardInputs[categoryId][subCategoryId] = {};
+      }
+
+      if (field === "priority") {
+        boardInputs[categoryId][subCategoryId]["priorityId"] = id;
+        boardInputs[categoryId][subCategoryId]["priority"] = name;
+      } else {
+        boardInputs[categoryId][subCategoryId][field] = id;
+      }
+
+      return { boardInputs };
+    }),
 
   handleIntegrateManage: async (mspCustomDomain) => {
     const { integrationInputs } = get();
@@ -130,7 +166,7 @@ const useManageStore = create((set, get) => ({
     set({ connectwiseBoards: null });
     try {
       const response = await fetch(
-        `http://localhost:9020/board?mspCustomDomain=${mspCustomDomain}`
+        `http://localhost:9020/getConnectWiseBoards?mspCustomDomain=${mspCustomDomain}`
       );
 
       if (response.status === 200) {
@@ -146,7 +182,7 @@ const useManageStore = create((set, get) => ({
     set({ connectwiseMerge: null, loadingMerge: true, activeBoard: id });
     try {
       const response = await fetch(
-        `http://localhost:9020/merge?mspCustomDomain=${mspCustomDomain}&boardId=${id}`
+        `http://localhost:9020/getMergedConnectWiseCategorizationWithoutGpt?mspCustomDomain=${mspCustomDomain}&boardId=${id}`
       );
 
       if (response.status === 200) {
@@ -157,6 +193,53 @@ const useManageStore = create((set, get) => ({
       }
     } catch (e) {
       console.log(e);
+    }
+  },
+
+  handleSaveBoard: async (mspCustomDomain) => {
+    const { boardInputs, connectwiseMerge, connectwiseBoards, activeBoard } =
+      get();
+    const activeBoardDetails = connectwiseBoards.find(
+      (board) => board.id === activeBoard
+    );
+    const updatedCategorizations =
+      connectwiseMerge.mspConnectWiseManageCategorizations.map((category) => {
+        return {
+          ...category,
+          mspConnectWiseManageSubCategorizations:
+            category.mspConnectWiseManageSubCategorizations.map((subCat) => {
+              return {
+                ...subCat,
+                ...boardInputs[category.categoryId]?.[subCat.subCategoryId],
+              };
+            }),
+        };
+      });
+    try {
+      const response = await fetch(
+        `http://localhost:9019/${mspCustomDomain}/connectWiseManageDetails/update`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            mspCustomDomain: mspCustomDomain,
+            boardId: activeBoardDetails.id,
+            boardName: activeBoardDetails.name,
+            mspConnectWiseManageCategorizations: updatedCategorizations,
+          }),
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("Board details saved successfully");
+      } else {
+        console.log("Board details not saved.");
+      }
+    } catch (error) {
+      console.error("Error saving board details:", error);
+      set({ errorMessage: true, successMessage: false });
     }
   },
 }));

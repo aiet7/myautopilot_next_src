@@ -135,6 +135,8 @@ const useRolesStore = create((set, get) => ({
             id: roleId,
             name: roleTitle,
             permissions: selectedPermissions,
+            custom: true,
+            mspCustomDomain: mspCustomDomain,
           }),
         }
       );
@@ -178,7 +180,8 @@ const useRolesStore = create((set, get) => ({
           body: JSON.stringify({
             name: roleTitle,
             permissions: selectedPermissions,
-            isCustom: true,
+            custom: true,
+            mspCustomDomain: mspCustomDomain,
           }),
         }
       );
@@ -223,6 +226,10 @@ const useRolesStore = create((set, get) => ({
     const { roles, errorMessage, successMessage } = get();
 
     const roleToClone = roles.find((role) => role.id === roleId);
+    const baseName = roleToClone.name.split(" - Clone")[0];
+    const cloneCount = roles.filter((role) =>
+      role.name.startsWith(baseName + " - Clone")
+    ).length;
 
     try {
       const response = await fetch(
@@ -233,9 +240,10 @@ const useRolesStore = create((set, get) => ({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            name: `${roleToClone.name} - Clone`,
+            name: `${baseName} - Clone ${cloneCount + 1}`,
             permissions: roleToClone.permissions,
-            isCustom: true,
+            custom: true,
+            mspCustomDomain: mspCustomDomain,
           }),
         }
       );

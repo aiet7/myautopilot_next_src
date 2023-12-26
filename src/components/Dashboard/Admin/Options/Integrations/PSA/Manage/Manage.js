@@ -23,7 +23,7 @@ const Manage = () => {
   } = useManageStore();
   const { integrations, handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
-
+  
   return (
     <div
       onClick={() => {

@@ -24,9 +24,7 @@ const Internal = dynamic(() =>
 const Roles = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Roles/Roles")
 );
-const Workflows = dynamic(() =>
-  import("@/components/Dashboard/Admin/Options/Workflows")
-);
+
 
 const OptionPages = () => {
   const session = Cookies.get("session_token");
@@ -44,10 +42,7 @@ const OptionPages = () => {
       const currentPath = router.asPath;
       const { msp, id, options } = router.query;
 
-      getStorage(
-        currentPath,
-        options[0]
-      );
+      getStorage(currentPath, options[0]);
       if (msp && id && session) {
         initializeTech(msp, id);
       } else {
@@ -83,8 +78,6 @@ const OptionPages = () => {
           return <Internal />;
         case "roles":
           return <Roles />;
-        case "workflows":
-          return <Workflows />;
         default:
           return <p>Option not found</p>;
       }

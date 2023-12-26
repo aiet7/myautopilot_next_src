@@ -2,12 +2,10 @@
 import useUiStore from "@/utils/store/ui/uiStore.js";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { UsaStates } from "usa-states";
 import Link from "next/link";
 import useMspStore from "@/utils/store/auth/msp/mspStore";
 
 const MSPSignupPage = () => {
-  const usStates = new UsaStates();
   const router = useRouter();
   const { height, setHeight } = useUiStore();
   const {
@@ -18,6 +16,7 @@ const MSPSignupPage = () => {
     setCurrentStep,
     setSignupInputs,
     handleSignupProgression,
+    clearMSPCredentials,
   } = useMspStore();
 
   useEffect(() => {
@@ -62,15 +61,17 @@ const MSPSignupPage = () => {
                   ? "Enter Your Technician Details."
                   : "Enter Your MSP Details."}
               </h1>
-              <p
-                className={`${
-                  errorMessage ? "text-red-500" : "text-black/60"
-                } ${successMessage ? "text-emerald-500" : "text-black/60"}`}
-              >
-                {successMessage
-                  ? "Redirecting you to Integrations Page..."
-                  : "Please fill out all of the required fields*"}
-              </p>
+              {errorMessage?.emailCheck && (
+                <p className="text-red-500">Email does not exist.</p>
+              )}
+              {errorMessage?.emptyFields && (
+                <p className="text-red-500">Please fill out required field*.</p>
+              )}
+              {successMessage && (
+                <p className="text-emerald-500">
+                  Redirecting you to Integrations Page...
+                </p>
+              )}
             </div>
             <div className="flex flex-col gap-4 w-full ">
               <input
@@ -175,15 +176,12 @@ const MSPSignupPage = () => {
               </button>
             </div>
             <div className="flex flex-col gap-1">
-              <Link href={"/auth/signup"}>
-                <span
-                  onClick={() => setCurrentStep(1)}
-                  className="text-sm text-blue-800 font-semibold"
-                >
+              <Link onClick={() => clearMSPCredentials()} href={"/auth/signup"}>
+                <span className="text-sm text-blue-800 font-semibold">
                   Back to sign up
                 </span>
               </Link>
-              <Link href={"/auth/login"}>
+              <Link onClick={() => clearMSPCredentials()} href={"/auth/login"}>
                 <span className="text-sm text-blue-800 font-semibold">
                   Have An Account? Log in
                 </span>

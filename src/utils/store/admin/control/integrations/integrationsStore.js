@@ -1,10 +1,8 @@
 import { handleGetIntegrations } from "@/utils/api/serverProps";
-import useTechStore from "@/utils/store/user/techStore";
 import { create } from "zustand";
 
 const useIntegrationsStore = create((set, get) => ({
   integrations: null,
-
   selectedCategory: null,
   activeIntegrationsCard: "cards",
   cards: [
@@ -106,26 +104,13 @@ const useIntegrationsStore = create((set, get) => ({
         "Leverage advanced AI models for natural language processing, machine learning, and data analysis.",
       isHovered: false,
     },
-    {
-      type: "image",
-      value: "/images/logo-EmailConnecter.png",
-      category: "EMAIL",
-      view: "emailconnecter",
-      description:
-        "Efficient email integration tool for streamlined communication and workflow automation.",
-      isHovered: false,
-    },
   ],
   filteredCards: [],
 
   initializeIntegrations: async (msp) => {
-    const techUser = useTechStore.getState();
     set({ integrations: null });
-
-    if (techUser.tech) {
-      const newIntegrations = await handleGetIntegrations(msp);
-      set({ integrations: newIntegrations });
-    }
+    const newIntegrations = await handleGetIntegrations(msp);
+    set({ integrations: newIntegrations });
   },
 
   setSelectedCategory: (category) => set({ selectedCategory: category }),

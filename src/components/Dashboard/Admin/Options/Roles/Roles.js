@@ -3,7 +3,7 @@
 import useRolesStore from "@/utils/store/admin/control/roles/rolesStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useTechStore from "@/utils/store/user/techStore";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { convertDate } from "@/utils/conversions";
 import EditRole from "./EditRole";
 import CreateRole from "./CreateRole";
@@ -24,7 +24,6 @@ const Roles = ({}) => {
   } = useRolesStore();
 
   const { openAdmin, handleHistoryMenu } = useUiStore();
-  const [search, setSearch] = useState("");
 
   useEffect(() => {
     initializeRoles();
@@ -62,8 +61,6 @@ const Roles = ({}) => {
               <input
                 type="text"
                 placeholder="Search by name"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
                 className="dark:border-white/20 p-1 border mr-2"
               />
             </div>
@@ -97,7 +94,7 @@ const Roles = ({}) => {
                           >
                             Clone
                           </button>
-                          {!custom === true && (
+                          {custom === true && (
                             <>
                               <button
                                 onClick={() => setActiveEditRole(id)}
@@ -145,3 +142,23 @@ const Roles = ({}) => {
 };
 
 export default Roles;
+
+// db.Roles.insertMany([
+//   {
+//     _id: ObjectId("654002b96a55f75b62a1b55b"),
+//     name: "regular",
+//     permissions: {
+//       clientBilling: false,
+//       mspBilling: false,
+//       clientUserManagement: false,
+//       technicianUserManagement: false,
+//       mspBranding: false,
+//       mspIntegrations: false,
+//       clientDocuments: false,
+//       mspDocuments: false,
+//     },
+//     mspCustomDomain: 5,
+//     custom: false,
+//     _class: "com.etech7.entity.Roles",
+//   },
+// ]);

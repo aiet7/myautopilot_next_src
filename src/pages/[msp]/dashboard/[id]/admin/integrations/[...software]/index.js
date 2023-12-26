@@ -16,11 +16,6 @@ import useAdminStore from "@/utils/store/admin/adminStore";
 const Openai = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/AI/Openai")
 );
-const EmailConnecter = dynamic(() =>
-  import(
-    "@/components/Dashboard/Admin/Options/Integrations/Email/EmailConnecter"
-  )
-);
 const DattoPSA = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/PSA/DattoPSA")
 );
@@ -54,12 +49,13 @@ const SoftwareIntegratePages = () => {
 
   const router = useRouter();
   const { initializeTech } = useTechStore();
-  const { integrations, initializeIntegrations } = useIntegrationsStore();
+  const { initializeIntegrations } = useIntegrationsStore();
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
   const { currentOption } = useAdminStore();
 
   const { software } = router.query;
+
   useEffect(() => {
     if (router.isReady) {
       const currentPath = router.asPath;
@@ -93,8 +89,6 @@ const SoftwareIntegratePages = () => {
       switch (componentKey) {
         case "openai":
           return <Openai />;
-        case "emailconnecter":
-          return <EmailConnecter />;
         case "autotask":
           return <DattoPSA />;
         case "connectwise":

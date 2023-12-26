@@ -20,19 +20,20 @@ const useMspStore = create((set, get) => ({
   },
 
   loginInputs: {
-    mspCustomDomain: "timsdomain",
+    mspCustomDomain: "",
     techInfo: {
       email: "",
       password: "",
     },
   },
 
-  errorMessage: false,
+  errorMessage: {
+    emptyFields: false,
+    emailCheck: false,
+  },
   successMessage: false,
 
   setCurrentStep: (step) => set({ currentStep: step }),
-
-  setMspDomains: (msp) => set({ mspDomains: msp }),
 
   setSignupInputs: (section, field, value) =>
     set((prevState) => ({
@@ -124,6 +125,7 @@ const useMspStore = create((set, get) => ({
 
   handleSignupProgression: async (navigator) => {
     const {
+      errorMessage,
       signupInputs,
       currentStep,
       handleSignupTechnician,
@@ -138,17 +140,34 @@ const useMspStore = create((set, get) => ({
       techInfo.phoneNumber === "" ||
       techInfo.password === ""
     ) {
-      set({ errorMessage: true });
+      set({
+        errorMessage: { ...errorMessage, emptyFields: true, emailCheck: false },
+      });
       return;
     }
     if (currentStep === 1) {
-      set({ currentStep: 2, errorMessage: false });
+      set({
+        currentStep: 2,
+        errorMessage: {
+          ...errorMessage,
+          emptyFields: false,
+          emailCheck: false,
+        },
+      });
     } else {
       const [msp, tech] = await Promise.all([
         handleSignupMSP(),
         handleSignupTechnician(),
       ]);
-      set({ currentStep: 1, errorMessage: false, successMessage: true });
+      set({
+        currentStep: 1,
+        errorMessage: {
+          ...errorMessage,
+          emptyFields: false,
+          emailCheck: false,
+        },
+        successMessage: true,
+      });
       navigator(
         `/${msp?.customDomain}/dashboard/${tech?.id}/admin/integrations`
       );
@@ -158,11 +177,13 @@ const useMspStore = create((set, get) => ({
   },
 
   handleTechnicianCheck: async () => {
-    const { loginInputs } = get();
+    const { loginInputs, errorMessage } = get();
     const { techInfo } = loginInputs;
 
     if (techInfo.email === "") {
-      set({ errorMessage: true });
+      set({
+        errorMessage: { ...errorMessage, emptyFields: true, emailCheck: false },
+      });
       return;
     }
 
@@ -182,7 +203,22 @@ const useMspStore = create((set, get) => ({
 
       if (response.ok) {
         const mspList = await response.json();
-        set({ mspDomains: mspList, errorMessage: false });
+        set({
+          mspDomains: mspList,
+          errorMessage: {
+            ...errorMessage,
+            emptyFields: false,
+            emailCheck: false,
+          },
+        });
+      } else {
+        set({
+          errorMessage: {
+            ...errorMessage,
+            emailCheck: true,
+            emptyFields: false,
+          },
+        });
       }
     } catch (e) {
       console.log(e);
@@ -190,10 +226,12 @@ const useMspStore = create((set, get) => ({
   },
 
   handleTechnicianLogin: async (navigator, mspCustomDomain) => {
-    const { loginInputs } = get();
+    const { loginInputs, errorMessage } = get();
     const { techInfo } = loginInputs;
     if (techInfo.email === "" || techInfo.password === "") {
-      set({ errorMessage: true });
+      set({
+        errorMessage: { ...errorMessage, emptyFields: true, emailCheck: false },
+      });
       return;
     }
 
@@ -214,10 +252,24 @@ const useMspStore = create((set, get) => ({
 
       if (response.ok) {
         const tech = await response.json();
-        set({ errorMessage: false });
+        set({
+          errorMessage: {
+            ...errorMessage,
+            emailCheck: false,
+            emptyFields: false,
+          },
+        });
         navigator(`/${tech?.mspCustomDomain}/dashboard/${tech?.id}`);
         Cookie.set("session_token", tech?.id, { expires: 7 });
         Cookie.set("client_id", tech?.id, { expires: 7 });
+      } else {
+        set({
+          errorMessage: {
+            ...errorMessage,
+            emailCheck: true,
+            emptyFields: false,
+          },
+        });
       }
     } catch (e) {
       console.log(e);
@@ -225,9 +277,12 @@ const useMspStore = create((set, get) => ({
   },
 
   clearMSPCredentials: () => {
+    const { errorMessage } = get();
     set({
-      successMessage: false,
-      errorMessage: false,
+      mspDomains: null,
+      currentStep: 1,
+      successMessage: "",
+      errorMessage: { ...errorMessage, emptyFields: false, emailCheck: false },
       signupInputs: {
         mspCustomDomain: "",
         techInfo: {
@@ -244,7 +299,7 @@ const useMspStore = create((set, get) => ({
       },
 
       loginInputs: {
-        mspCustomDomain: "timsdomain",
+        mspCustomDomain: "",
         techInfo: {
           email: "",
           password: "",

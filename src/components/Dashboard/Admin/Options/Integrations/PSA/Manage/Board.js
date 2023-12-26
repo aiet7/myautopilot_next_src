@@ -9,14 +9,21 @@ const Board = () => {
   const { tech } = useTechStore();
 
   const {
+    severityOptions,
+    impactOptions,
+    tierOptions,
+    durationOptions,
     activeBoard,
     connectwiseBoards,
     loadingMerge,
     connectwiseMerge,
     setConnectwiseBoard,
+    setBoardInputs,
     handleGetBoardDetails,
+    handleSaveBoard,
   } = useManageStore();
-  
+
+
   return (
     <div className="dark:bg-black/80 absolute bg-black/60 z-[99] top-0 bottom-0 right-0 left-0 flex  items-center justify-center p-2 lg:p-10">
       <div className="flex flex-col items-end bg-white w-full h-full p-4 rounded-lg text-black">
@@ -49,20 +56,29 @@ const Board = () => {
               })}
             </div>
           )}
-          <div className="flex items-center gap-2 text-xl font-semibold italic text-black/30">
+          <div className="flex flex-col gap-8 justify-between items-center  text-xl font-semibold italic text-black/30 md:flex-row">
             {loadingMerge ? (
-              <>
-                <p className="">
-                  Loading your board. This might take a few minutes
-                </p>
+              <div className="flex items-center gap-2">
+                <p>Loading your board. This might take a few minutes</p>
                 <FaSpinner size={20} className="animate-spin" />
-              </>
+              </div>
             ) : (
-              <>
-                <p className="">Please select a board to view</p>
+              <div className="flex items-center gap-2">
+                <p>Please select a board to view</p>
                 <FaClipboard size={20} />
-              </>
+              </div>
             )}
+            <div className="flex flex-col gap-2 items-center md:flex-row">
+              <div className="flex flex-col items-start ">
+                <p>Ask our AI to generate you a board! </p>
+                <div className="flex items-center w-full">
+                  <p className="text-xs">This might take a few minutes...</p>
+                  <button className="hover:bg-emerald-600 bg-emerald-500 text-white text-sm px-8 py-1 w-full rounded-lg">
+                    Generate
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
           <div className="flex flex-col text-xl overflow-hidden">
             {connectwiseMerge &&
@@ -83,59 +99,202 @@ const Board = () => {
                         <th className="p-2 border-t border-b border-r">
                           Severity
                         </th>
+                        <th className="p-2 border-t border-b border-r">
+                          Impact
+                        </th>
+                        <th className="p-2 border-t border-b border-r">Tier</th>
+                        <th className="p-2 border-t border-b border-r">
+                          Duration
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
                       {connectwiseMerge.mspConnectWiseManageCategorizations.map(
                         (category) => {
-                          const { categoryId, categoryName } = category;
+                          const {
+                            categoryId,
+                            categoryName,
+                            mspConnectWiseManageSubCategorizations,
+                          } = category;
                           return (
                             <tr key={categoryId}>
                               <td className="p-2 truncate border-l border-r border-b">
                                 {categoryName}
                               </td>
                               <td className="p-2 truncate border-r border-b">
-                                <select className="w-full">
-                                  {category.mspConnectWiseManageSubCategorizations.map(
-                                    (subCat) => {
-                                      const { subCategoryId, subCategoryName } =
-                                        subCat;
-                                      return (
-                                        <option key={subCategoryId}>
-                                          {subCategoryName}
-                                        </option>
-                                      );
-                                    }
-                                  )}
-                                </select>
+                                {mspConnectWiseManageSubCategorizations.map(
+                                  (subCat) => {
+                                    const { subCategoryId, subCategoryName } =
+                                      subCat;
+                                    return (
+                                      <p key={subCategoryId}>
+                                        {subCategoryName}
+                                      </p>
+                                    );
+                                  }
+                                )}
                               </td>
                               <td className="p-2 border-r border-b">
-                                <select className="w-full">
-                                  {category.mspConnectWiseManageSubCategorizations.map(
-                                    (subCat) => {
-                                      const { priority } = subCat;
-                                      return (
-                                        <option key={priority}>
-                                          {priority}
-                                        </option>
-                                      );
-                                    }
-                                  )}
-                                </select>
+                                {mspConnectWiseManageSubCategorizations.map(
+                                  (subCat) => {
+                                    const { subCategoryId } = subCat;
+                                    return (
+                                      <div
+                                        key={subCategoryId}
+                                        className="flex flex-col"
+                                      >
+                                        <select
+                                          onChange={(e) => {
+                                            const selectedPriority =
+                                              connectwiseMerge?.prioritiesList.find(
+                                                (priority) =>
+                                                  priority.id ===
+                                                  parseInt(e.target.value)
+                                              );
+                                            setBoardInputs(
+                                              categoryId,
+                                              subCategoryId,
+                                              "priority",
+                                              selectedPriority.id,
+                                              selectedPriority.name
+                                            );
+                                          }}
+                                        >
+                                          {connectwiseMerge.prioritiesList.map(
+                                            (priority) => {
+                                              const { id, name } = priority;
+                                              return (
+                                                <option key={id} value={id}>
+                                                  {name}
+                                                </option>
+                                              );
+                                            }
+                                          )}
+                                        </select>
+                                      </div>
+                                    );
+                                  }
+                                )}
                               </td>
                               <td className="p-2 border-r border-b">
-                                <select className="w-full">
-                                  {category.mspConnectWiseManageSubCategorizations.map(
-                                    (subCat) => {
-                                      const { severity } = subCat;
-                                      return (
-                                        <option key={severity}>
-                                          {severity}
-                                        </option>
-                                      );
-                                    }
-                                  )}
-                                </select>
+                                {mspConnectWiseManageSubCategorizations.map(
+                                  (subCat) => {
+                                    const { subCategoryId } = subCat;
+                                    return (
+                                      <div
+                                        key={subCategoryId}
+                                        className="flex flex-col"
+                                      >
+                                        <select
+                                          onChange={(e) =>
+                                            setBoardInputs(
+                                              categoryId,
+                                              subCategoryId,
+                                              "severity",
+                                              e.target.value
+                                            )
+                                          }
+                                        >
+                                          {severityOptions.map((option) => (
+                                            <option key={option} value={option}>
+                                              {option}
+                                            </option>
+                                          ))}
+                                        </select>
+                                      </div>
+                                    );
+                                  }
+                                )}
+                              </td>
+                              <td className="p-2 border-r border-b">
+                                {mspConnectWiseManageSubCategorizations.map(
+                                  (subCat) => {
+                                    const { subCategoryId } = subCat;
+                                    return (
+                                      <div
+                                        key={subCategoryId}
+                                        className="flex flex-col"
+                                      >
+                                        <select
+                                          onChange={(e) =>
+                                            setBoardInputs(
+                                              categoryId,
+                                              subCategoryId,
+                                              "impact",
+                                              e.target.value
+                                            )
+                                          }
+                                        >
+                                          {impactOptions.map((option) => (
+                                            <option key={option} value={option}>
+                                              {option}
+                                            </option>
+                                          ))}
+                                        </select>
+                                      </div>
+                                    );
+                                  }
+                                )}
+                              </td>
+                              <td className="p-2 border-r border-b">
+                                {mspConnectWiseManageSubCategorizations.map(
+                                  (subCat) => {
+                                    const { subCategoryId } = subCat;
+                                    return (
+                                      <div
+                                        key={subCategoryId}
+                                        className="flex flex-col"
+                                      >
+                                        <select
+                                          onChange={(e) =>
+                                            setBoardInputs(
+                                              categoryId,
+                                              subCategoryId,
+                                              "tier",
+                                              e.target.value
+                                            )
+                                          }
+                                        >
+                                          {tierOptions.map((option) => (
+                                            <option key={option}>
+                                              {option}
+                                            </option>
+                                          ))}
+                                        </select>
+                                      </div>
+                                    );
+                                  }
+                                )}
+                              </td>
+                              <td className="p-2 border-r border-b">
+                                {mspConnectWiseManageSubCategorizations.map(
+                                  (subCat) => {
+                                    const { subCategoryId } = subCat;
+                                    return (
+                                      <div
+                                        key={subCategoryId}
+                                        className="flex flex-col"
+                                      >
+                                        <select
+                                          onChange={(e) =>
+                                            setBoardInputs(
+                                              categoryId,
+                                              subCategoryId,
+                                              "duration",
+                                              e.target.value
+                                            )
+                                          }
+                                        >
+                                          {durationOptions.map((option) => (
+                                            <option key={option}>
+                                              {option}
+                                            </option>
+                                          ))}
+                                        </select>
+                                      </div>
+                                    );
+                                  }
+                                )}
                               </td>
                             </tr>
                           );
@@ -146,6 +305,12 @@ const Board = () => {
                 </div>
               )}
           </div>
+          <button
+            onClick={() => handleSaveBoard(tech?.mspCustomDomain)}
+            className="hover:bg-blue-500 bg-blue-800 text-white px-6 py-2 rounded-lg self-end"
+          >
+            SAVE
+          </button>
         </div>
       </div>
     </div>
