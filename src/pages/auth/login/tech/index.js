@@ -24,9 +24,7 @@ const TechLoginPage = () => {
       setHeight(window.innerHeight);
 
       // let session_token = Cookie.get("session_token");
-
       // const client_id = Cookie.get("client_id");
-
       // if (session_token && client_id) {
       //   router.push(`/dashboard/${client_id}`);
       // }
@@ -65,11 +63,7 @@ const TechLoginPage = () => {
                   {mspDomains.map((msp) => {
                     const { id, mspCustomDomain } = msp;
                     return (
-                      <div
-                        onClick={() => setMspDomains(null)}
-                        key={id}
-                        className="rounded-lg shadow p-4"
-                      >
+                      <div key={id} className="rounded-lg shadow p-4">
                         <Link href={`/${mspCustomDomain}`}>
                           <h2 className="font-bold text-lg">
                             {mspCustomDomain}
@@ -82,13 +76,6 @@ const TechLoginPage = () => {
               ) : (
                 <>
                   <input
-                    // onChange={(e) => setEmail(e.target.value)}
-                    // onKeyDown={(e) => {
-                    //   if (e.key === "Enter") {
-                    //     e.preventDefault();
-                    //     handleLoginCredentialsAuth(router.push);
-                    //   }
-                    // }}
                     onChange={(e) =>
                       setLoginInputs("techInfo", "email", e.target.value)
                     }

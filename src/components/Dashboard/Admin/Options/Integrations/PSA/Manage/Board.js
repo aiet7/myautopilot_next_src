@@ -9,6 +9,8 @@ const Board = () => {
   const { tech } = useTechStore();
 
   const {
+    successMessage,
+    errorMessage,
     severityOptions,
     impactOptions,
     tierOptions,
@@ -22,7 +24,6 @@ const Board = () => {
     handleGetBoardDetails,
     handleSaveBoard,
   } = useManageStore();
-
 
   return (
     <div className="dark:bg-black/80 absolute bg-black/60 z-[99] top-0 bottom-0 right-0 left-0 flex  items-center justify-center p-2 lg:p-10">
@@ -186,14 +187,15 @@ const Board = () => {
                                         className="flex flex-col"
                                       >
                                         <select
-                                          onChange={(e) =>
+                                          onChange={(e) => {
                                             setBoardInputs(
                                               categoryId,
                                               subCategoryId,
                                               "severity",
-                                              e.target.value
-                                            )
-                                          }
+                                              e.target.value,
+                                              null
+                                            );
+                                          }}
                                         >
                                           {severityOptions.map((option) => (
                                             <option key={option} value={option}>
@@ -216,14 +218,15 @@ const Board = () => {
                                         className="flex flex-col"
                                       >
                                         <select
-                                          onChange={(e) =>
+                                          onChange={(e) => {
                                             setBoardInputs(
                                               categoryId,
                                               subCategoryId,
                                               "impact",
-                                              e.target.value
-                                            )
-                                          }
+                                              e.target.value,
+                                              null
+                                            );
+                                          }}
                                         >
                                           {impactOptions.map((option) => (
                                             <option key={option} value={option}>
@@ -246,14 +249,15 @@ const Board = () => {
                                         className="flex flex-col"
                                       >
                                         <select
-                                          onChange={(e) =>
+                                          onChange={(e) => {
                                             setBoardInputs(
                                               categoryId,
                                               subCategoryId,
                                               "tier",
-                                              e.target.value
-                                            )
-                                          }
+                                              e.target.value,
+                                              null
+                                            );
+                                          }}
                                         >
                                           {tierOptions.map((option) => (
                                             <option key={option}>
@@ -276,14 +280,15 @@ const Board = () => {
                                         className="flex flex-col"
                                       >
                                         <select
-                                          onChange={(e) =>
+                                          onChange={(e) => {
                                             setBoardInputs(
                                               categoryId,
                                               subCategoryId,
                                               "duration",
-                                              e.target.value
-                                            )
-                                          }
+                                              e.target.value,
+                                              null
+                                            );
+                                          }}
                                         >
                                           {durationOptions.map((option) => (
                                             <option key={option}>
@@ -305,12 +310,18 @@ const Board = () => {
                 </div>
               )}
           </div>
-          <button
-            onClick={() => handleSaveBoard(tech?.mspCustomDomain)}
-            className="hover:bg-blue-500 bg-blue-800 text-white px-6 py-2 rounded-lg self-end"
-          >
-            SAVE
-          </button>
+          <div className="flex items-center gap-2 self-end">
+            {successMessage && (
+              <p className="text-emerald-500">Saved Board Successfully!</p>
+            )}
+            {errorMessage && <p className="text-red-500">Error Saving Board</p>}
+            <button
+              onClick={() => handleSaveBoard(tech?.mspCustomDomain)}
+              className="hover:bg-blue-500 bg-blue-800 text-white px-6 py-2 rounded-lg "
+            >
+              SAVE
+            </button>
+          </div>
         </div>
       </div>
     </div>

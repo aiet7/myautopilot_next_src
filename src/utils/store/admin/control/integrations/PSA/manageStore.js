@@ -1,7 +1,16 @@
 import { create } from "zustand";
 import useIntegrationsStore from "../integrationsStore";
+import useTechStore from "@/utils/store/user/techStore";
+import { handleGetManageTechnicians } from "@/utils/api/serverProps";
+
+const isBrowser = typeof window !== "undefined";
+const initialWidth = isBrowser ? window.innerWidth : 1023;
 
 const useManageStore = create((set, get) => ({
+  technicians: null,
+  clients: null,
+  contact: null,
+
   connectwiseBoards: null,
   loadingBoards: false,
 
@@ -9,6 +18,14 @@ const useManageStore = create((set, get) => ({
   loadingMerge: false,
 
   activeBoard: null,
+
+  activeConfig: false,
+
+  activeConfigSteps: 1,
+
+  showTechnicians: false,
+
+  isMobile: initialWidth < 1023,
 
   integrationInputs: {
     connectWiseManageIntegrator: false,
@@ -21,6 +38,15 @@ const useManageStore = create((set, get) => ({
   },
 
   boardInputs: {},
+  technicianInputs: {
+    identifier: "",
+    firstName: "",
+    lastName: "",
+    primaryEmail: "",
+    officeEmail: "",
+    mobileNumber: "",
+    officeNumber: "",
+  },
 
   severityOptions: ["Low", "Medium", "High"],
   impactOptions: ["Low", "Medium", "High"],
@@ -39,7 +65,30 @@ const useManageStore = create((set, get) => ({
   successMessage: false,
   errorMessage: false,
 
+  initializeManageTechnicians: async () => {
+    const techStore = useTechStore.getState();
+    set({ technicians: null });
+    if (techStore.tech) {
+      const newTechnicians = await handleGetManageTechnicians(
+        techStore.tech.mspCustomDomain
+      );
+      set({ technicians: newTechnicians });
+    }
+  },
+
+  setShowTechnicians: (option) => {
+    set({ showTechnicians: option, showTechniciansForm: false });
+  },
+
+
+
+  setIsMobile: (value) => {
+    set({ isMobile: value });
+  },
+
   setConnectwiseBoard: (board) => set({ connectwiseBoards: board }),
+
+  setActiveConfig: (config) => set({ activeConfig: config }),
 
   setIntegrationInputs: (type, field, value) =>
     set((prevState) =>
@@ -58,8 +107,17 @@ const useManageStore = create((set, get) => ({
           }
     ),
 
+  setTechnicianInputs: (field, value) =>
+    set((prevState) => ({
+      technicianInputs: {
+        ...prevState.technicianInputs,
+        [field]: value,
+      },
+    })),
+
   setBoardInputs: (categoryId, subCategoryId, field, id, name) =>
     set((prevState) => {
+      console.log(id);
       const boardInputs = { ...prevState.boardInputs };
       if (!boardInputs[categoryId]) {
         boardInputs[categoryId] = {};
@@ -162,16 +220,16 @@ const useManageStore = create((set, get) => ({
     }
   },
 
-  handleGetBoard: async (mspCustomDomain) => {
-    set({ connectwiseBoards: null });
+  handleCheckManageKeys: async (mspCustomDomain) => {
     try {
       const response = await fetch(
         `http://localhost:9020/getConnectWiseBoards?mspCustomDomain=${mspCustomDomain}`
       );
 
       if (response.status === 200) {
-        const boards = await response.json();
-        set({ connectwiseBoards: boards });
+        set({ activeConfig: true, errorMessage: false });
+      } else {
+        set({ activeConfig: false, errorMessage: true });
       }
     } catch (e) {
       console.log(e);
@@ -233,13 +291,62 @@ const useManageStore = create((set, get) => ({
       );
 
       if (response.status === 200) {
-        console.log("Board details saved successfully");
+        set({ errorMessage: false, successMessage: true });
       } else {
-        console.log("Board details not saved.");
+        set({ errorMessage: true, successMessage: false });
       }
     } catch (error) {
-      console.error("Error saving board details:", error);
-      set({ errorMessage: true, successMessage: false });
+      console.log(e);
+    }
+  },
+
+  handleAddManageTechnician: async (mspCustomDomain) => {
+    const { technicianInputs } = get();
+
+    const techniciansPayload = [
+      {
+        ...technicianInputs,
+        mspCustomDomain: mspCustomDomain,
+      },
+    ];
+
+    try {
+      const response = await fetch(
+        `http://localhost:9019/${mspCustomDomain}/addConnectWiseMembers`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(techniciansPayload),
+        }
+      );
+
+      if (response.status === 200) {
+        const newTechnician = await response.json();
+        set((prevState) => ({
+          technicians: prevState.technicians
+            ? [...prevState.technicians, ...newTechnician]
+            : [...newTechnician],
+          technicianInputs: {
+            identifier: "",
+            firstName: "",
+            lastName: "",
+            primaryEmail: "",
+            officeEmail: "",
+            mobileNumber: "",
+            officeNumber: "",
+          },
+          errorMessage: false,
+        }));
+
+        console.log("MANAGE TECH ADDED");
+      } else {
+        set({ errorMessage: true });
+        console.log("ERROR ADDING MANAGE TECH");
+      }
+    } catch (e) {
+      console.log(e);
     }
   },
 }));

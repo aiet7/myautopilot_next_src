@@ -6,24 +6,26 @@ import useUiStore from "@/utils/store/ui/uiStore";
 import useTechStore from "@/utils/store/user/techStore";
 
 import Image from "next/image";
-import Board from "./Board";
+import Configuration from "./Configuration";
 
 import Link from "next/link";
 import { convertHideIntegrationKeys } from "@/utils/conversions";
 
 const Manage = () => {
   const { tech } = useTechStore();
+
   const {
-    connectwiseBoards,
+    activeConfig,
     integrationInputs,
     setIntegrationInputs,
     handleIntegrateManage,
     handleDisconnectManage,
-    handleGetBoard,
+    handleCheckManageKeys,
   } = useManageStore();
+  
   const { integrations, handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
-  
+
   return (
     <div
       onClick={() => {
@@ -35,7 +37,7 @@ const Manage = () => {
         openAdmin && "lg:opacity-100 opacity-5 xl:ml-[350px]"
       }  dark:bg-black transition-all duration-300 ease bg-white`}
     >
-      {connectwiseBoards && <Board />}
+      {activeConfig && <Configuration />}
       <div className="w-full h-full flex flex-col">
         <div className="dark:border-b-white/20 border-b p-4">
           <h1 className="text-2xl">ConnectWise Manage PSA Integration</h1>
@@ -199,10 +201,10 @@ const Manage = () => {
               <div className="p-4 flex items-center justify-end gap-4">
                 {integrations?.connectWiseManageIntegrator && (
                   <button
-                    onClick={() => handleGetBoard(tech?.mspCustomDomain)}
+                    onClick={() => handleCheckManageKeys(tech?.mspCustomDomain)}
                     className="hover:bg-blue-500 bg-blue-800 text-white px-3 py-1"
                   >
-                    Categorization
+                    Configuration
                   </button>
                 )}
                 <button

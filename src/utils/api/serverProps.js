@@ -14,6 +14,13 @@ export const handleGetIntegrations = async (msp) => {
   return response.json();
 };
 
+export const handleGetManageTechnicians = async (msp) => {
+  const response = await fetch(
+    `http://localhost:9019/${encodeURIComponent(msp)}/connectWiseMembers`
+  );
+  return response.json();
+};
+
 export const handleGetRoles = async (msp) => {
   const response = await fetch(
     `http://localhost:9019/${encodeURIComponent(msp)}/roles/all`
