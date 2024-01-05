@@ -1,14 +1,20 @@
 import { create } from "zustand";
 import useIntegrationsStore from "../integrationsStore";
 import useTechStore from "@/utils/store/user/techStore";
-import { handleGetManageTechnicians } from "@/utils/api/serverProps";
-
-const isBrowser = typeof window !== "undefined";
-const initialWidth = isBrowser ? window.innerWidth : 1023;
+import {
+  handleGetManageTechnicians,
+  handleGetManageClients,
+  handleGetRoles,
+} from "@/utils/api/serverProps";
 
 const useManageStore = create((set, get) => ({
   technicians: null,
+  techniciansTierOptions: ["Tier1", "Tier2", "Tier3", "NoTier"],
+  techniciansRoleOptions: null,
+  techniciansSelected: {},
+
   clients: null,
+  clientTypeOptions: [],
   contact: null,
 
   connectwiseBoards: null,
@@ -23,9 +29,9 @@ const useManageStore = create((set, get) => ({
 
   activeConfigSteps: 1,
 
-  showTechnicians: false,
-
-  isMobile: initialWidth < 1023,
+  activeClientPage: 1,
+  activeClientsPerPage: 30,
+  activeClientsPageNumbers: [],
 
   integrationInputs: {
     connectWiseManageIntegrator: false,
@@ -38,19 +44,11 @@ const useManageStore = create((set, get) => ({
   },
 
   boardInputs: {},
-  technicianInputs: {
-    identifier: "",
-    firstName: "",
-    lastName: "",
-    primaryEmail: "",
-    officeEmail: "",
-    mobileNumber: "",
-    officeNumber: "",
-  },
 
   severityOptions: ["Low", "Medium", "High"],
   impactOptions: ["Low", "Medium", "High"],
   tierOptions: ["Tier1", "Tier2", "Tier3"],
+  technicianTierOptions: ["Tier1", "Tier2", "Tier3"],
   durationOptions: [
     "15 Minutes",
     "30 Minutes",
@@ -67,28 +65,77 @@ const useManageStore = create((set, get) => ({
 
   initializeManageTechnicians: async () => {
     const techStore = useTechStore.getState();
-    set({ technicians: null });
+    set({ technicians: null, techniciansRoleOptions: null });
     if (techStore.tech) {
-      const newTechnicians = await handleGetManageTechnicians(
-        techStore.tech.mspCustomDomain
-      );
-      set({ technicians: newTechnicians });
+      try {
+        const [newTechnicians, newRoles] = await Promise.all([
+          handleGetManageTechnicians(techStore.tech.mspCustomDomain),
+          handleGetRoles(techStore.tech.mspCustomDomain),
+        ]);
+
+        set({ technicians: newTechnicians, techniciansRoleOptions: newRoles });
+      } catch (e) {
+        console.log(e);
+      }
     }
   },
 
-  setShowTechnicians: (option) => {
-    set({ showTechnicians: option, showTechniciansForm: false });
-  },
+  initializeManageClients: async () => {
+    const { activeClientsPerPage } = get();
+    const techStore = useTechStore.getState();
+    set({ clients: null });
 
-
-
-  setIsMobile: (value) => {
-    set({ isMobile: value });
+    if (techStore.tech) {
+      const newClients = await handleGetManageClients(
+        techStore.tech.mspCustomDomain
+      );
+      const totalClients = newClients.length;
+      const totalPages = Math.ceil(totalClients / activeClientsPerPage);
+      set({
+        activeClientsPageNumbers: Array.from(
+          { length: totalPages },
+          (_, i) => i + 1
+        ),
+        clients: newClients,
+      });
+    }
   },
 
   setConnectwiseBoard: (board) => set({ connectwiseBoards: board }),
 
-  setActiveConfig: (config) => set({ activeConfig: config }),
+  setActiveConfig: (config) =>
+    set({
+      activeConfig: config,
+      activeConfigSteps: 1,
+      successMessage: false,
+      errorMessage: false,
+    }),
+
+  setActiveConfigStep: (step) => {
+    set({
+      activeConfigSteps: step,
+      successMessage: false,
+      errorMessage: false,
+    });
+  },
+
+  setActiveConfigPreviousStep: () => {
+    const { activeConfigSteps } = get();
+    if (activeConfigSteps > 1) {
+      set({ activeConfigSteps: activeConfigSteps - 1 });
+    }
+  },
+
+  setActiveConfigNextStep: () => {
+    const { activeConfigSteps } = get();
+    if (activeConfigSteps < 4) {
+      set({ activeConfigSteps: activeConfigSteps + 1 });
+    }
+  },
+
+  setActiveClientsPage: (page) => {
+    set({ activeClientPage: page });
+  },
 
   setIntegrationInputs: (type, field, value) =>
     set((prevState) =>
@@ -107,17 +154,8 @@ const useManageStore = create((set, get) => ({
           }
     ),
 
-  setTechnicianInputs: (field, value) =>
-    set((prevState) => ({
-      technicianInputs: {
-        ...prevState.technicianInputs,
-        [field]: value,
-      },
-    })),
-
   setBoardInputs: (categoryId, subCategoryId, field, id, name) =>
     set((prevState) => {
-      console.log(id);
       const boardInputs = { ...prevState.boardInputs };
       if (!boardInputs[categoryId]) {
         boardInputs[categoryId] = {};
@@ -134,6 +172,20 @@ const useManageStore = create((set, get) => ({
       }
 
       return { boardInputs };
+    }),
+
+  setSelectedTechnicians: (technicianId, field, value) =>
+    set((prevState) => {
+      const techniciansSelected = { ...prevState.techniciansSelected };
+      if (!techniciansSelected[technicianId]) {
+        techniciansSelected[technicianId] = {
+          selected: false,
+          tier: "",
+          role: "",
+        };
+      }
+      techniciansSelected[technicianId][field] = value;
+      return { techniciansSelected };
     }),
 
   handleIntegrateManage: async (mspCustomDomain) => {
@@ -227,9 +279,18 @@ const useManageStore = create((set, get) => ({
       );
 
       if (response.status === 200) {
-        set({ activeConfig: true, errorMessage: false });
+        const boards = await response.json();
+        set({
+          connectwiseBoards: boards,
+          activeConfig: true,
+          errorMessage: false,
+        });
       } else {
-        set({ activeConfig: false, errorMessage: true });
+        set({
+          connectwiseBoards: null,
+          activeConfig: false,
+          errorMessage: true,
+        });
       }
     } catch (e) {
       console.log(e);
@@ -301,48 +362,41 @@ const useManageStore = create((set, get) => ({
   },
 
   handleAddManageTechnician: async (mspCustomDomain) => {
-    const { technicianInputs } = get();
+    const { techniciansSelected, technicians } = get();
 
-    const techniciansPayload = [
-      {
-        ...technicianInputs,
-        mspCustomDomain: mspCustomDomain,
-      },
-    ];
+    const selectedTechniciansPayload = Object.entries(techniciansSelected)
+      .filter(([_, techData]) => techData.selected)
+      .map(([id, { tier, role }]) => ({
+        ...technicians.find((t) => t.id === id),
+        tier,
+        role,
+        mspCustomDomain,
+      }));
 
     try {
       const response = await fetch(
-        `http://localhost:9019/${mspCustomDomain}/addConnectWiseMembers`,
+        `http://localhost:9019/${encodeURIComponent(
+          mspCustomDomain
+        )}/addConnectWiseMembers`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(techniciansPayload),
+          body: JSON.stringify(selectedTechniciansPayload),
         }
       );
 
       if (response.status === 200) {
-        const newTechnician = await response.json();
-        set((prevState) => ({
-          technicians: prevState.technicians
-            ? [...prevState.technicians, ...newTechnician]
-            : [...newTechnician],
-          technicianInputs: {
-            identifier: "",
-            firstName: "",
-            lastName: "",
-            primaryEmail: "",
-            officeEmail: "",
-            mobileNumber: "",
-            officeNumber: "",
-          },
+        set({
+          successMessage: true,
+          techniciansSelected: {},
           errorMessage: false,
-        }));
+        });
 
         console.log("MANAGE TECH ADDED");
       } else {
-        set({ errorMessage: true });
+        set({ successMessage: false, errorMessage: true });
         console.log("ERROR ADDING MANAGE TECH");
       }
     } catch (e) {

@@ -16,7 +16,7 @@ const Nav = ({}) => {
 
   const renderIcon = (option) => {
     switch (option) {
-      case "internal":
+      case "employees":
         return <GiOrganigram size={20} />;
       case "roles":
         return <FaUserCog size={20} />;

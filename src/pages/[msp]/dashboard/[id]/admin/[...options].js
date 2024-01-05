@@ -18,8 +18,8 @@ const Companies = dynamic(() =>
 const Cards = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/Cards/Cards")
 );
-const Internal = dynamic(() =>
-  import("@/components/Dashboard/Admin/Options/Internal")
+const Employees = dynamic(() =>
+  import("@/components/Dashboard/Admin/Options/Employees")
 );
 const Roles = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Roles/Roles")
@@ -74,8 +74,8 @@ const OptionPages = () => {
           return <Companies />;
         case "integrations":
           return <Cards />;
-        case "internal":
-          return <Internal />;
+        case "employees":
+          return <Employees />;
         case "roles":
           return <Roles />;
         default:

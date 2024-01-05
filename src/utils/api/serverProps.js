@@ -21,6 +21,14 @@ export const handleGetManageTechnicians = async (msp) => {
   return response.json();
 };
 
+export const handleGetManageClients = async (msp) => {
+  const response = await fetch(
+    `http://localhost:9019/${encodeURIComponent(msp)}/connectWiseClients`
+  );
+
+  return response.json();
+};
+
 export const handleGetRoles = async (msp) => {
   const response = await fetch(
     `http://localhost:9019/${encodeURIComponent(msp)}/roles/all`

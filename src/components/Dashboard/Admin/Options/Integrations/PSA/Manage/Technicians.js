@@ -4,39 +4,40 @@ import useManageStore from "@/utils/store/admin/control/integrations/PSA/manageS
 import useTechStore from "@/utils/store/user/techStore";
 import { useEffect } from "react";
 
-const Clients = () => {
+const Technician = () => {
   const { tech } = useTechStore();
+
   const {
     successMessage,
     errorMessage,
-    clients,
-    activeClientPage,
-    activeClientsPerPage,
-    setActiveClientsPage,
-    activeClientsPageNumbers,
-    initializeManageClients,
+    techniciansSelected,
+    technicians,
+    techniciansTierOptions,
+    techniciansRoleOptions,
+    setSelectedTechnicians,
+    handleAddManageTechnician,
+    initializeManageTechnicians,
   } = useManageStore();
 
-  const indexOfLastClient = activeClientPage * activeClientsPerPage;
-  const indexOfFirstClient = indexOfLastClient - activeClientsPerPage;
-  const currentClients = clients?.slice(indexOfFirstClient, indexOfLastClient);
-
-  console.log(clients);
-
   useEffect(() => {
-    initializeManageClients();
+    initializeManageTechnicians();
   }, [tech]);
-  console.log(currentClients);
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex flex-col text-xl overflow-hidden">
-        {currentClients?.length !== 0 ? (
+        {technicians?.length !== 0 ? (
           <div className="flex flex-col gap-7 text-xl overflow-hidden">
-            <p className="font-bold">Your Current Clients</p>
-            {currentClients && (
+            <p className="font-bold">Your Current Technicians</p>
+            {technicians && (
               <div className="flex gap-2 flex-col overflow-hidden ">
                 <div className="flex items-center justify-start gap-2">
-                  <button className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1">
+                  <button
+                    onClick={() =>
+                      handleAddManageTechnician(tech?.mspCustomDomain)
+                    }
+                    className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+                  >
                     Bulk Save
                   </button>
                   {successMessage && (
@@ -57,81 +58,112 @@ const Clients = () => {
                           Name
                         </th>
                         <th className="p-2 border-t border-b border-r">
-                          Company ID
-                        </th>
-
-                        <th className="p-2 border-t border-b border-r">
-                          Address
+                          Identifier
                         </th>
                         <th className="p-2 border-t border-b border-r">
-                          Contact
+                          Primary Email
                         </th>
                         <th className="p-2 border-t border-b border-r">
-                          Phone Number
+                          Office Email
                         </th>
-                        <th className="p-2 border-t border-b border-r">Type</th>
                         <th className="p-2 border-t border-b border-r">
-                          Status
+                          Mobile Phone
                         </th>
-                        <th className="p-2 border-t border-b border-r">Site</th>
+                        <th className="p-2 border-t border-b border-r">
+                          Office Phone
+                        </th>
+                        <th className="p-2 border-t border-b border-r">Tier</th>
+                        <th className="p-2 border-t border-b border-r">Role</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {currentClients?.map((client) => {
+                      {technicians?.map((technician) => {
                         const {
                           id,
-                          name,
-                          connectWiseCompanyId,
-                          addressLine1,
-                          addressLine2,
-                          city,
-                          zip,
-                          defaultContact,
-                          types,
-                          status,
-                          site,
-                          phoneNumber,
-                        } = client;
+                          firstName,
+                          lastName,
+                          mobilePhone,
+                          identifier,
+                          officeEmail,
+                          officePhone,
+                          primaryEmail,
+                        } = technician;
                         return (
                           <tr key={id}>
                             <td className="p-2 truncate border-l border-r border-b">
                               <input
+                                checked={
+                                  techniciansSelected[id]?.selected || false
+                                }
+                                onChange={(e) =>
+                                  setSelectedTechnicians(
+                                    id,
+                                    "selected",
+                                    e.target.checked
+                                  )
+                                }
                                 className="flex items-center justify-center w-full h-full"
                                 type="checkbox"
                               />
                             </td>
                             <td className="p-2 truncate  border-r border-b">
-                              {name}
+                              {firstName + " " + lastName}
                             </td>
                             <td className="p-2 truncate border-r border-b">
-                              {connectWiseCompanyId}
+                              {identifier}
                             </td>
                             <td className="p-2 truncate border-r border-b">
-                              {addressLine1 +
-                                ", " +
-                                addressLine2 +
-                                ", " +
-                                city +
-                                " " +
-                                zip}
+                              {primaryEmail}
                             </td>
                             <td className="p-2 truncate border-r border-b">
-                              {defaultContact?.name}
+                              {officeEmail}
                             </td>
                             <td className="p-2 truncate border-r border-b">
-                              {phoneNumber}
+                              {mobilePhone}
                             </td>
                             <td className="p-2 truncate border-r border-b">
-                              {types?.map((type) => {
-                                const { id, name } = type;
-                                return <div key={id}>{name}</div>;
-                              })}
+                              {officePhone}
                             </td>
                             <td className="p-2 truncate border-r border-b">
-                              {status?.name}
+                              <div className="flex flex-col">
+                                <select
+                                  onChange={(e) =>
+                                    setSelectedTechnicians(
+                                      id,
+                                      "tier",
+                                      e.target.value
+                                    )
+                                  }
+                                >
+                                  {techniciansTierOptions.map((tier) => (
+                                    <option value={tier} key={tier}>
+                                      {tier}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
                             </td>
                             <td className="p-2 truncate border-r border-b">
-                              {site?.name}
+                              <div className="flex flex-col">
+                                <select
+                                  onChange={(e) =>
+                                    setSelectedTechnicians(
+                                      id,
+                                      "role",
+                                      e.target.value
+                                    )
+                                  }
+                                >
+                                  {techniciansRoleOptions.map((role) => {
+                                    const { name } = role;
+                                    return (
+                                      <option key={name} value={name}>
+                                        {name}
+                                      </option>
+                                    );
+                                  })}
+                                </select>
+                              </div>
                             </td>
                           </tr>
                         );
@@ -152,4 +184,4 @@ const Clients = () => {
   );
 };
 
-export default Clients;
+export default Technician;

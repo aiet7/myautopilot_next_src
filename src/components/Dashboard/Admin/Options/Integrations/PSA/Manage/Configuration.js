@@ -1,14 +1,19 @@
 "use client";
 import useManageStore from "@/utils/store/admin/control/integrations/PSA/manageStore";
 import { AiOutlineClose } from "react-icons/ai";
-import Technician from "./Technician";
+import Technician from "./Technicians";
 import Clients from "./Clients";
-import Board from "./Board";
+import Board from "./Boards";
 import Contacts from "./Contacts";
 
 const Configuration = () => {
-  const { activeConfigSteps, setActiveConfig } = useManageStore();
-
+  const {
+    activeConfigSteps,
+    setActiveConfigPreviousStep,
+    setActiveConfigNextStep,
+    setActiveConfigStep,
+    setActiveConfig,
+  } = useManageStore();
 
   const renderComponent = () => {
     switch (activeConfigSteps) {
@@ -31,24 +36,63 @@ const Configuration = () => {
           size={20}
           onClick={() => {
             setActiveConfig(false);
+            setActiveConfigStep(1);
           }}
         />
         <div className="flex flex-col gap-4 overflow-hidden w-full h-full">
-          <div className="flex flex-col gap-2 py-2 text-center font-bold lg:flex-row">
-            <button className="bg-blue-800 text-white px-4 py-3 rounded-lg w-full border">
+          <div className="flex gap-2 py-2 text-center font-bold ">
+            <button
+              onClick={() => setActiveConfigStep(1)}
+              className={`${
+                activeConfigSteps === 1 && "text-white bg-blue-800"
+              } px-4 py-3 rounded-lg w-full text-black/20 border`}
+            >
               Technicians
             </button>
-            <button className="px-4 py-3 rounded-lg w-full text-black/20 border">
+            <button
+              onClick={() => setActiveConfigStep(2)}
+              className={`${
+                activeConfigSteps === 2 && "text-white bg-blue-800"
+              } px-4 py-3 rounded-lg w-full text-black/20 border`}
+            >
               Clients
             </button>
-            <button className="px-4 py-3 rounded-lg w-full text-black/20 border">
+            <button
+              onClick={() => setActiveConfigStep(3)}
+              className={`${
+                activeConfigSteps === 3 && "text-white bg-blue-800"
+              } px-4 py-3 rounded-lg w-full text-black/20 border`}
+            >
               Contacts
             </button>
-            <button className="px-4 py-3 rounded-lg w-full text-black/20 border">
+            <button
+              onClick={() => setActiveConfigStep(4)}
+              className={`${
+                activeConfigSteps === 4 && "text-white bg-blue-800"
+              } px-4 py-3 rounded-lg w-full text-black/20 border`}
+            >
               Board
             </button>
           </div>
           {renderComponent()}
+          <div className="flex justify-between font-bold py-4">
+            <button
+              onClick={setActiveConfigPreviousStep}
+              className={`${
+                activeConfigSteps <= 1 ? "opacity-0" : "opacity-100"
+              } hover:bg-blue-500  bg-blue-800 text-white px-6 py-2 rounded-lg`}
+            >
+              Previous
+            </button>
+            <button
+              onClick={setActiveConfigNextStep}
+              className={`${
+                activeConfigSteps === 4 ? "opacity-0" : "opacity-100"
+              } hover:bg-blue-500  bg-blue-800 text-white px-6 py-2 rounded-lg`}
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
     </div>

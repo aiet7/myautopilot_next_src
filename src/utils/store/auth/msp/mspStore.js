@@ -159,6 +159,7 @@ const useMspStore = create((set, get) => ({
         handleSignupMSP(),
         handleSignupTechnician(),
       ]);
+
       set({
         currentStep: 1,
         errorMessage: {
