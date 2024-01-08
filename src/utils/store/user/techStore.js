@@ -8,7 +8,6 @@ import useEngineerStore from "../assistant/sections/iternal/engineer/engineerSto
 
 const useTechStore = create((set, get) => ({
   tech: null,
-  integrations: null,
 
   initializeTech: async (msp, id) => {
     const { getUser, saveUser } = useLocalStorageStore.getState();
@@ -26,7 +25,6 @@ const useTechStore = create((set, get) => ({
     }
   },
 
- 
   handleLogout: async () => {
     const { clearMSPCredentials } = useMspStore.getState();
     const { clearStorage } = useLocalStorageStore.getState();

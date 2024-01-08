@@ -77,12 +77,12 @@ const TabNavRail = ({}) => {
       </Link>
       {tech?.roleId === "653ff2126a55f75b62a1b558" && (
         <Link
-          href={`/${tech?.mspCustomDomain}/dashboard/${tech?.id}/admin/internal`}
+          href={`/${tech?.mspCustomDomain}/dashboard/${tech?.id}/admin/employees`}
         >
           <div
             onClick={() => {
               handleTabChange("admin");
-              handleOptionSelected("internal");
+              handleOptionSelected("employees");
             }}
             className="relative flex flex-col gap-2 items-center cursor-pointer"
           >

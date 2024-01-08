@@ -12,7 +12,12 @@ const MSPPage = ({}) => {
   const { height, setHeight } = useUiStore();
   const { mspSubDomain, initializeSubDomain } = useInitializeAppStore();
 
-  const { setLoginInputs, handleTechnicianLogin } = useMspStore();
+  const {
+    errorMessage,
+    setLoginInputs,
+    handleTechnicianLogin,
+    clearMSPCredentials,
+  } = useMspStore();
 
   const { handleShowForgotPassword } = useAuthStore();
   const router = useRouter();
@@ -57,7 +62,7 @@ const MSPPage = ({}) => {
           </div>
 
           <form className="relative p-6 w-[450px] flex flex-col gap-10 items-center justify-center lg:shadow-lg  lg:rounded-lg lg:bg-white">
-            <div className="flex flex-col items-center gap-10">
+            <div className="text-black flex flex-col items-center gap-10">
               <div className="rounded-full w-44 h-44 shadow-xl shadow-black/30  flex items-center justify-center">
                 <img
                   src={mspSubDomain?.brandLogoUrl}
@@ -67,6 +72,12 @@ const MSPPage = ({}) => {
               <h1 className="text-2xl font-bold text-black text-center">
                 Welcome back to {mspSubDomain?.mspName}
               </h1>
+              {errorMessage?.emailCheck && (
+                <p className="text-red-500">Email does not exist.</p>
+              )}
+              {errorMessage?.emptyFields && (
+                <p className="text-red-500">Please fill out required field*.</p>
+              )}
             </div>
             <div className="flex flex-col gap-4 w-full">
               <input
@@ -128,14 +139,20 @@ const MSPPage = ({}) => {
                 Continue
               </button>
               <div className="flex flex-col w-full">
-                <Link href={"/auth/signup"}>
+                <Link
+                  onClick={() => clearMSPCredentials()}
+                  href={"/auth/signup"}
+                >
                   <span className="text-sm text-blue-800 font-semibold">
                     No Account? Sign up
                   </span>
                 </Link>
               </div>
               <span
-                onClick={() => handleShowForgotPassword(router.push)}
+                onClick={() => {
+                  clearMSPCredentials();
+                  handleShowForgotPassword(router.push);
+                }}
                 className="text-sm text-blue-800 font-extrabold cursor-pointer"
               >
                 Forgot password?

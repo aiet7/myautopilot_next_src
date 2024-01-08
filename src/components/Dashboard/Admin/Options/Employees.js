@@ -3,7 +3,7 @@
 import useUiStore from "@/utils/store/ui/uiStore";
 import { useEffect, useState } from "react";
 
-const Internal = ({}) => {
+const Employees = ({}) => {
   const { openAdmin, handleHistoryMenu } = useUiStore();
 
   const [search, setSearch] = useState("");
@@ -36,7 +36,7 @@ const Internal = ({}) => {
     >
       <div className="w-full h-full flex flex-col">
         <div className="dark:border-b-white/20 border-b p-4">
-          <h1 className="text-2xl">Internal</h1>
+          <h1 className="text-2xl">Employees</h1>
         </div>
         <div className="dark:shadow-white/40 dark:border-white/20 overflow-hidden flex flex-col lg:dark:shadow-white/40 lg:border lg:shadow lg:my-12 lg:mx-4">
           <div className="flex flex-col gap-2 p-4">
@@ -108,4 +108,4 @@ const Internal = ({}) => {
   );
 };
 
-export default Internal;
+export default Employees;

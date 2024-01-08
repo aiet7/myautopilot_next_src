@@ -18,15 +18,13 @@ const Companies = dynamic(() =>
 const Cards = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/Cards/Cards")
 );
-const Internal = dynamic(() =>
-  import("@/components/Dashboard/Admin/Options/Internal")
+const Employees = dynamic(() =>
+  import("@/components/Dashboard/Admin/Options/Employees")
 );
 const Roles = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Roles/Roles")
 );
-const Workflows = dynamic(() =>
-  import("@/components/Dashboard/Admin/Options/Workflows")
-);
+
 
 const OptionPages = () => {
   const session = Cookies.get("session_token");
@@ -44,10 +42,7 @@ const OptionPages = () => {
       const currentPath = router.asPath;
       const { msp, id, options } = router.query;
 
-      getStorage(
-        currentPath,
-        options[0]
-      );
+      getStorage(currentPath, options[0]);
       if (msp && id && session) {
         initializeTech(msp, id);
       } else {
@@ -79,12 +74,10 @@ const OptionPages = () => {
           return <Companies />;
         case "integrations":
           return <Cards />;
-        case "internal":
-          return <Internal />;
+        case "employees":
+          return <Employees />;
         case "roles":
           return <Roles />;
-        case "workflows":
-          return <Workflows />;
         default:
           return <p>Option not found</p>;
       }
