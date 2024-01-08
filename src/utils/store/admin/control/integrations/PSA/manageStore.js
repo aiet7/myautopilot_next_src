@@ -149,20 +149,21 @@ const useManageStore = create((set, get) => ({
       activeConfigSteps: step,
       successMessage: false,
       errorMessage: false,
+      activePage: 1,
     });
   },
 
   setActiveConfigPreviousStep: () => {
     const { activeConfigSteps } = get();
     if (activeConfigSteps > 1) {
-      set({ activeConfigSteps: activeConfigSteps - 1 });
+      set({ activeConfigSteps: activeConfigSteps - 1, activePage: 1 });
     }
   },
 
   setActiveConfigNextStep: () => {
     const { activeConfigSteps } = get();
     if (activeConfigSteps < 4) {
-      set({ activeConfigSteps: activeConfigSteps + 1 });
+      set({ activeConfigSteps: activeConfigSteps + 1, activePage: 1 });
     }
   },
 

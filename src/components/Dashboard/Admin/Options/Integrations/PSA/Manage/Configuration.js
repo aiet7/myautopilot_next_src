@@ -39,6 +39,7 @@ const Configuration = () => {
           onClick={() => {
             setActiveConfig(false);
             setActiveConfigStep(1);
+            setActivePage(1);
           }}
         />
         <div className="flex flex-col gap-4 overflow-hidden w-full h-full">
@@ -77,19 +78,21 @@ const Configuration = () => {
             </button>
           </div>
           {renderComponent()}
-          <div className="flex justify-between font-bold py-2">
-            {activePageNumbers.map((page) => (
-              <button
-                className={`${
-                  activePage === page ? "text-blue-800" : "text-black/20"
-                }`}
-                onClick={() => setActivePage(page)}
-                key={page}
-              >
-                {page}
-              </button>
-            ))}
-          </div>
+          {activeConfigSteps !== 4 && (
+            <div className="flex justify-between font-bold py-2">
+              {activePageNumbers.map((page) => (
+                <button
+                  className={`${
+                    activePage === page ? "text-blue-800" : "text-black/20"
+                  }`}
+                  onClick={() => setActivePage(page)}
+                  key={page}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+          )}
           <div className="flex justify-between font-bold py-4">
             <button
               onClick={setActiveConfigPreviousStep}

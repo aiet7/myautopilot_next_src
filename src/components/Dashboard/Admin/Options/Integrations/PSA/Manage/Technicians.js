@@ -24,7 +24,6 @@ const Technician = () => {
   const indexOfLastTech = activePage * activePerPage;
   const indexOfFirstTech = indexOfLastTech - activePerPage;
   const currentTechs = technicians?.slice(indexOfFirstTech, indexOfLastTech);
-
   
   useEffect(() => {
     initializeManageTechnicians();
