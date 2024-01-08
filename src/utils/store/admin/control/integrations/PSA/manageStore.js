@@ -4,6 +4,7 @@ import useTechStore from "@/utils/store/user/techStore";
 import {
   handleGetManageTechnicians,
   handleGetManageClients,
+  handleGetManageContacts,
   handleGetRoles,
 } from "@/utils/api/serverProps";
 
@@ -14,8 +15,10 @@ const useManageStore = create((set, get) => ({
   techniciansSelected: {},
 
   clients: null,
-  clientTypeOptions: [],
-  contact: null,
+  clientsSelected: {},
+
+  contacts: null,
+  contactsSelected: {},
 
   connectwiseBoards: null,
   loadingBoards: false,
@@ -29,9 +32,9 @@ const useManageStore = create((set, get) => ({
 
   activeConfigSteps: 1,
 
-  activeClientPage: 1,
-  activeClientsPerPage: 30,
-  activeClientsPageNumbers: [],
+  activePage: 1,
+  activePerPage: 30,
+  activePageNumbers: [],
 
   integrationInputs: {
     connectWiseManageIntegrator: false,
@@ -64,6 +67,8 @@ const useManageStore = create((set, get) => ({
   errorMessage: false,
 
   initializeManageTechnicians: async () => {
+    const { activePerPage } = get();
+
     const techStore = useTechStore.getState();
     set({ technicians: null, techniciansRoleOptions: null });
     if (techStore.tech) {
@@ -73,7 +78,17 @@ const useManageStore = create((set, get) => ({
           handleGetRoles(techStore.tech.mspCustomDomain),
         ]);
 
-        set({ technicians: newTechnicians, techniciansRoleOptions: newRoles });
+        const totalTechs = newTechnicians.length;
+        const totalPages = Math.ceil(totalTechs / activePerPage);
+
+        set({
+          activePageNumbers: Array.from(
+            { length: totalPages },
+            (_, i) => i + 1
+          ),
+          technicians: newTechnicians,
+          techniciansRoleOptions: newRoles,
+        });
       } catch (e) {
         console.log(e);
       }
@@ -81,7 +96,7 @@ const useManageStore = create((set, get) => ({
   },
 
   initializeManageClients: async () => {
-    const { activeClientsPerPage } = get();
+    const { activePerPage } = get();
     const techStore = useTechStore.getState();
     set({ clients: null });
 
@@ -90,13 +105,31 @@ const useManageStore = create((set, get) => ({
         techStore.tech.mspCustomDomain
       );
       const totalClients = newClients.length;
-      const totalPages = Math.ceil(totalClients / activeClientsPerPage);
+      const totalPages = Math.ceil(totalClients / activePerPage);
+
       set({
-        activeClientsPageNumbers: Array.from(
-          { length: totalPages },
-          (_, i) => i + 1
-        ),
+        activePageNumbers: Array.from({ length: totalPages }, (_, i) => i + 1),
         clients: newClients,
+      });
+    }
+  },
+
+  initializeManageContacts: async () => {
+    const { activePerPage } = get();
+    const techStore = useTechStore.getState();
+    set({ contacts: null });
+
+    if (techStore.tech) {
+      const newContacts = await handleGetManageContacts(
+        techStore.tech.mspCustomDomain
+      );
+
+      const totalContacts = newContacts.length;
+      const totalPages = Math.ceil(totalContacts / activePerPage);
+
+      set({
+        activePageNumbers: Array.from({ length: totalPages }, (_, i) => i + 1),
+        contacts: newContacts,
       });
     }
   },
@@ -133,8 +166,8 @@ const useManageStore = create((set, get) => ({
     }
   },
 
-  setActiveClientsPage: (page) => {
-    set({ activeClientPage: page });
+  setActivePage: (page) => {
+    set({ activePage: page });
   },
 
   setIntegrationInputs: (type, field, value) =>
@@ -186,6 +219,32 @@ const useManageStore = create((set, get) => ({
       }
       techniciansSelected[technicianId][field] = value;
       return { techniciansSelected };
+    }),
+
+  setSelectedClients: (clientId, value) =>
+    set((prevState) => {
+      const clientsSelected = { ...prevState.clientsSelected };
+      if (!clientsSelected[clientId]) {
+        clientsSelected[clientId] = {
+          selected: false,
+        };
+      }
+
+      clientsSelected[clientId].selected = value;
+      return { clientsSelected };
+    }),
+
+  setSelectedContacts: (clientId, value) =>
+    set((prevState) => {
+      const contactsSelected = { ...prevState.contactsSelected };
+      if (!contactsSelected[clientId]) {
+        contactsSelected[clientId] = {
+          selected: false,
+        };
+      }
+
+      contactsSelected[clientId].selected = value;
+      return { contactsSelected };
     }),
 
   handleIntegrateManage: async (mspCustomDomain) => {
@@ -398,6 +457,79 @@ const useManageStore = create((set, get) => ({
       } else {
         set({ successMessage: false, errorMessage: true });
         console.log("ERROR ADDING MANAGE TECH");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleAddManageClient: async (mspCustomDomain) => {
+    const { clientsSelected, clients } = get();
+
+    const selectedClientsPayload = clients.filter(
+      (client) => clientsSelected[client.id]?.selected
+    );
+    try {
+      const response = await fetch(
+        `http://localhost:9019/${encodeURIComponent(
+          mspCustomDomain
+        )}/addConnectWiseClients`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(selectedClientsPayload),
+        }
+      );
+
+      if (response.status === 200) {
+        set({
+          successMessage: true,
+          clientsSelected: {},
+          errorMessage: false,
+        });
+
+        console.log("MANAGE CLIENT ADDED");
+      } else {
+        set({ successMessage: false, errorMessage: true });
+        console.log("ERROR ADDING MANAGE CLIENT");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleAddManageContacts: async (mspCustomDomain) => {
+    const { contactsSelected, contacts } = get();
+    const selectedContactsPayload = contacts.filter(
+      (contact) => contactsSelected[contact.id]?.selected
+    );
+    try {
+      const response = await fetch(
+        `http://localhost:9019/${encodeURIComponent(
+          mspCustomDomain
+        )}/addConnectWiseContacts`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(selectedContactsPayload),
+        }
+      );
+
+      if (response.status === 200) {
+        set({
+          successMessage: true,
+          contactsSelected: {},
+          errorMessage: false,
+        });
+
+        console.log("MANAGE CONTACT ADDED");
+      } else {
+        set({ successMessage: false, errorMessage: true });
+        console.log("ERROR ADDING MANAGE CONTACT");
       }
     } catch (e) {
       console.log(e);

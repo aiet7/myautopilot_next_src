@@ -7,26 +7,25 @@ import { useEffect } from "react";
 const Clients = () => {
   const { tech } = useTechStore();
   const {
+    activePage,
+    activePerPage,
     successMessage,
     errorMessage,
     clients,
-    activeClientPage,
-    activeClientsPerPage,
-    setActiveClientsPage,
-    activeClientsPageNumbers,
+    clientsSelected,
+    setSelectedClients,
+    handleAddManageClient,
     initializeManageClients,
   } = useManageStore();
 
-  const indexOfLastClient = activeClientPage * activeClientsPerPage;
-  const indexOfFirstClient = indexOfLastClient - activeClientsPerPage;
+  const indexOfLastClient = activePage * activePerPage;
+  const indexOfFirstClient = indexOfLastClient - activePerPage;
   const currentClients = clients?.slice(indexOfFirstClient, indexOfLastClient);
-
-  console.log(clients);
 
   useEffect(() => {
     initializeManageClients();
   }, [tech]);
-  console.log(currentClients);
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex flex-col text-xl overflow-hidden">
@@ -36,7 +35,10 @@ const Clients = () => {
             {currentClients && (
               <div className="flex gap-2 flex-col overflow-hidden ">
                 <div className="flex items-center justify-start gap-2">
-                  <button className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1">
+                  <button
+                    onClick={() => handleAddManageClient(tech?.mspCustomDomain)}
+                    className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+                  >
                     Bulk Save
                   </button>
                   {successMessage && (
@@ -73,7 +75,6 @@ const Clients = () => {
                         <th className="p-2 border-t border-b border-r">
                           Status
                         </th>
-                        <th className="p-2 border-t border-b border-r">Site</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -87,15 +88,18 @@ const Clients = () => {
                           city,
                           zip,
                           defaultContact,
-                          types,
-                          status,
-                          site,
                           phoneNumber,
+                          status,
+                          types,
                         } = client;
                         return (
                           <tr key={id}>
                             <td className="p-2 truncate border-l border-r border-b">
                               <input
+                                checked={clientsSelected[id]?.selected || false}
+                                onChange={(e) =>
+                                  setSelectedClients(id, e.target.checked)
+                                }
                                 className="flex items-center justify-center w-full h-full"
                                 type="checkbox"
                               />
@@ -122,16 +126,16 @@ const Clients = () => {
                               {phoneNumber}
                             </td>
                             <td className="p-2 truncate border-r border-b">
-                              {types?.map((type) => {
-                                const { id, name } = type;
-                                return <div key={id}>{name}</div>;
-                              })}
+                              <div className="flex flex-col gap-1">
+                                {types?.map((type) => {
+                                  const { id, name } = type;
+                                  return <p key={id}>{name}</p>;
+                                })}
+                              </div>
                             </td>
+
                             <td className="p-2 truncate border-r border-b">
                               {status?.name}
-                            </td>
-                            <td className="p-2 truncate border-r border-b">
-                              {site?.name}
                             </td>
                           </tr>
                         );
@@ -144,7 +148,7 @@ const Clients = () => {
           </div>
         ) : (
           <p className="text-xl font-bold text-black/20  w-full">
-            Currently Have No Technicians Listed
+            Currently Have No Clients Listed
           </p>
         )}
       </div>

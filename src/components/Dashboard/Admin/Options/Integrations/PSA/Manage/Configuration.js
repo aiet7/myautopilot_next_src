@@ -8,6 +8,9 @@ import Contacts from "./Contacts";
 
 const Configuration = () => {
   const {
+    activePage,
+    activePageNumbers,
+    setActivePage,
     activeConfigSteps,
     setActiveConfigPreviousStep,
     setActiveConfigNextStep,
@@ -27,7 +30,6 @@ const Configuration = () => {
         return <Board />;
     }
   };
-
   return (
     <div className="dark:bg-black/80 absolute bg-black/60 z-[99] top-0 bottom-0 right-0 left-0 flex  items-center justify-center p-2 lg:p-10">
       <div className="flex flex-col items-end bg-white w-full h-full p-4 rounded-lg text-black">
@@ -75,6 +77,19 @@ const Configuration = () => {
             </button>
           </div>
           {renderComponent()}
+          <div className="flex justify-between font-bold py-2">
+            {activePageNumbers.map((page) => (
+              <button
+                className={`${
+                  activePage === page ? "text-blue-800" : "text-black/20"
+                }`}
+                onClick={() => setActivePage(page)}
+                key={page}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
           <div className="flex justify-between font-bold py-4">
             <button
               onClick={setActiveConfigPreviousStep}
