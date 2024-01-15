@@ -19,11 +19,13 @@ const useMspStore = create((set, get) => ({
     },
   },
 
+  current2FA: false,
   loginInputs: {
     mspCustomDomain: "",
     techInfo: {
       email: "",
       password: "",
+      login2FA: "",
     },
   },
 
@@ -226,7 +228,7 @@ const useMspStore = create((set, get) => ({
     }
   },
 
-  handleTechnicianLogin: async (navigator, mspCustomDomain) => {
+  handleTechnicianLogin: async (mspCustomDomain) => {
     const { loginInputs, errorMessage } = get();
     const { techInfo } = loginInputs;
     if (techInfo.email === "" || techInfo.password === "") {
@@ -235,7 +237,6 @@ const useMspStore = create((set, get) => ({
       });
       return;
     }
-
     try {
       const response = await fetch(
         `http://localhost:9019/${mspCustomDomain}/technicianUsers/signin`,
@@ -249,6 +250,48 @@ const useMspStore = create((set, get) => ({
             password: techInfo.password,
           }),
         }
+      );
+
+      if (response.ok) {
+        set({
+          current2FA: true,
+          errorMessage: {
+            ...errorMessage,
+            emailCheck: false,
+            emptyFields: false,
+          },
+        });
+      } else {
+        set({
+          current2FA: false,
+          errorMessage: {
+            ...errorMessage,
+            emailCheck: true,
+            emptyFields: false,
+          },
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleTechnician2FALogin: async (navigator, mspCustomDomain) => {
+    const { loginInputs, errorMessage } = get();
+    const { techInfo } = loginInputs;
+    if (techInfo.login2FA === "") {
+      set({
+        errorMessage: { ...errorMessage, emptyFields: true, emailCheck: false },
+      });
+      return;
+    }
+
+    const encodedEmail = encodeURIComponent(techInfo.email);
+    const encodedToken = encodeURIComponent(techInfo.login2FA);
+
+    try {
+      const response = await fetch(
+        `http://localhost:9019/${mspCustomDomain}/technicianUsers/validateResetToken?email=${encodedEmail}&token=${encodedToken}`
       );
 
       if (response.ok) {
@@ -299,11 +342,13 @@ const useMspStore = create((set, get) => ({
         },
       },
 
+      current2FA: false,
       loginInputs: {
         mspCustomDomain: "",
         techInfo: {
           email: "",
           password: "",
+          login2FA: "",
         },
       },
     });

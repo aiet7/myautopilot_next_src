@@ -13,9 +13,11 @@ const MSPPage = ({}) => {
   const { mspSubDomain, initializeSubDomain } = useInitializeAppStore();
 
   const {
+    current2FA,
     errorMessage,
     setLoginInputs,
     handleTechnicianLogin,
+    handleTechnician2FALogin,
     clearMSPCredentials,
   } = useMspStore();
 
@@ -73,71 +75,86 @@ const MSPPage = ({}) => {
                 Welcome back to {mspSubDomain?.mspName}
               </h1>
               {errorMessage?.emailCheck && (
-                <p className="text-red-500">Email does not exist.</p>
+                <p className="text-red-500">Email or password incorrect.</p>
               )}
               {errorMessage?.emptyFields && (
                 <p className="text-red-500">Please fill out required field*.</p>
               )}
             </div>
             <div className="flex flex-col gap-4 w-full">
-              <input
-                // onChange={(e) => setEmail(e.target.value)}
-                // onKeyDown={(e) => {
-                //   if (e.key === "Enter") {
-                //     e.preventDefault();
-                //     handleLoginCredentialsAuth(router.push);
-                //   }
-                // }}
-                onChange={(e) =>
-                  setLoginInputs("techInfo", "email", e.target.value)
-                }
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    handleTechnicianLogin(
-                      router.push,
-                      mspSubDomain?.customDomain
-                    );
-                  }
-                }}
-                type="email"
-                placeholder="Enter your email"
-                className="w-full p-2 border border-gray-300 bg-white text-black"
-              />
-
-              <input
-                // onChange={(e) => setPassword(e.target.value)}
-                // onKeyDown={(e) => {
-                //   if (e.key === "Enter") {
-                //     e.preventDefault();
-                //     handleLoginCredentialsAuth(router.push);
-                //   }
-                // }}
-                onChange={(e) =>
-                  setLoginInputs("techInfo", "password", e.target.value)
-                }
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    handleTechnicianLogin(
-                      router.push,
-                      mspSubDomain?.customDomain
-                    );
-                  }
-                }}
-                type="password"
-                placeholder="Enter your password"
-                className="w-full p-2 border border-gray-300  bg-white text-black"
-              />
-              <button
-                onClick={() =>
-                  handleTechnicianLogin(router.push, mspSubDomain?.customDomain)
-                }
-                type="button"
-                className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4"
-              >
-                Continue
-              </button>
+              {current2FA ? (
+                <>
+                  <input
+                    onChange={(e) =>
+                      setLoginInputs("techInfo", "login2FA", e.target.value)
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleTechnician2FALogin(
+                          router.push,
+                          mspSubDomain?.customDomain
+                        );
+                      }
+                    }}
+                    type="text"
+                    placeholder="Enter 2FA Token"
+                    className="w-full p-2 border border-gray-300 bg-white text-black"
+                  />
+                  <button
+                    onClick={() =>
+                      handleTechnician2FALogin(
+                        router.push,
+                        mspSubDomain?.customDomain
+                      )
+                    }
+                    type="button"
+                    className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4"
+                  >
+                    Continue
+                  </button>
+                </>
+              ) : (
+                <>
+                  <input
+                    onChange={(e) =>
+                      setLoginInputs("techInfo", "email", e.target.value)
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleTechnicianLogin(mspSubDomain?.customDomain);
+                      }
+                    }}
+                    type="email"
+                    placeholder="Enter your email"
+                    className="w-full p-2 border border-gray-300 bg-white text-black"
+                  />
+                  <input
+                    onChange={(e) =>
+                      setLoginInputs("techInfo", "password", e.target.value)
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleTechnicianLogin(mspSubDomain?.customDomain);
+                      }
+                    }}
+                    type="password"
+                    placeholder="Enter your password"
+                    className="w-full p-2 border border-gray-300  bg-white text-black"
+                  />
+                  <button
+                    onClick={() =>
+                      handleTechnicianLogin(mspSubDomain?.customDomain)
+                    }
+                    type="button"
+                    className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4"
+                  >
+                    Continue
+                  </button>
+                </>
+              )}
               <div className="flex flex-col w-full">
                 <Link
                   onClick={() => clearMSPCredentials()}
