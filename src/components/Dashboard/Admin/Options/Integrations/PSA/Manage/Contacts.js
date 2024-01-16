@@ -27,7 +27,7 @@ const Contacts = () => {
   useEffect(() => {
     initializeManageContacts();
   }, [tech]);
-
+  
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex flex-col text-xl overflow-hidden">
@@ -101,14 +101,14 @@ const Contacts = () => {
                           defaultPhoneType,
                         } = contact;
                         return (
-                          <tr key={id}>
+                          <tr key={connectWiseContactId}>
                             <td className="p-2 truncate border-l border-r border-b">
                               <input
                                 checked={
-                                  contactsSelected[id]?.selected || false
+                                  contactsSelected[connectWiseContactId]?.selected || false
                                 }
                                 onChange={(e) =>
-                                  setSelectedContacts(id, e.target.checked)
+                                  setSelectedContacts(connectWiseContactId, e.target.checked)
                                 }
                                 className="flex items-center justify-center w-full h-full"
                                 type="checkbox"

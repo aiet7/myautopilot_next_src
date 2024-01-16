@@ -16,14 +16,14 @@ export const handleGetIntegrations = async (msp) => {
 
 export const handleGetManageTechnicians = async (msp) => {
   const response = await fetch(
-    `http://localhost:9019/${encodeURIComponent(msp)}/connectWiseMembers`
+    `http://localhost:9020/getConnectWiseMembers?mspCustomDomain=${encodeURIComponent(msp)}`
   );
   return response.json();
 };
 
 export const handleGetManageClients = async (msp) => {
   const response = await fetch(
-    `http://localhost:9019/${encodeURIComponent(msp)}/connectWiseClients`
+    `http://localhost:9020/getConnectWiseClients?mspCustomDomain=${encodeURIComponent(msp)}`
   );
 
   return response.json();
@@ -31,7 +31,7 @@ export const handleGetManageClients = async (msp) => {
 
 export const handleGetManageContacts = async (msp) => {
   const response = await fetch(
-    `http://localhost:9019/${encodeURIComponent(msp)}/connectWiseContacts`
+    `http://localhost:9020/getConnectWiseContacts?mspCustomDomain=${encodeURIComponent(msp)}`
   );
   return response.json();
 };

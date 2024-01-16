@@ -24,10 +24,11 @@ const Technician = () => {
   const indexOfLastTech = activePage * activePerPage;
   const indexOfFirstTech = indexOfLastTech - activePerPage;
   const currentTechs = technicians?.slice(indexOfFirstTech, indexOfLastTech);
-  
+
   useEffect(() => {
     initializeManageTechnicians();
   }, [tech]);
+
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
@@ -85,7 +86,7 @@ const Technician = () => {
                     <tbody>
                       {currentTechs?.map((technician) => {
                         const {
-                          id,
+                          connectWiseMembersId,
                           firstName,
                           lastName,
                           mobilePhone,
@@ -95,15 +96,15 @@ const Technician = () => {
                           primaryEmail,
                         } = technician;
                         return (
-                          <tr key={id}>
+                          <tr key={connectWiseMembersId}>
                             <td className="p-2 truncate border-l border-r border-b">
                               <input
                                 checked={
-                                  techniciansSelected[id]?.selected || false
+                                  techniciansSelected[connectWiseMembersId]?.selected || false
                                 }
                                 onChange={(e) =>
                                   setSelectedTechnicians(
-                                    id,
+                                    connectWiseMembersId,
                                     "selected",
                                     e.target.checked
                                   )
@@ -135,7 +136,7 @@ const Technician = () => {
                                 <select
                                   onChange={(e) =>
                                     setSelectedTechnicians(
-                                      id,
+                                      connectWiseMembersId,
                                       "tier",
                                       e.target.value
                                     )
@@ -154,7 +155,7 @@ const Technician = () => {
                                 <select
                                   onChange={(e) =>
                                     setSelectedTechnicians(
-                                      id,
+                                      connectWiseMembersId,
                                       "role",
                                       e.target.value
                                     )

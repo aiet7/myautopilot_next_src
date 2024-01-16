@@ -80,7 +80,6 @@ const useManageStore = create((set, get) => ({
 
         const totalTechs = newTechnicians.length;
         const totalPages = Math.ceil(totalTechs / activePerPage);
-
         set({
           activePageNumbers: Array.from(
             { length: totalPages },
@@ -104,6 +103,7 @@ const useManageStore = create((set, get) => ({
       const newClients = await handleGetManageClients(
         techStore.tech.mspCustomDomain
       );
+
       const totalClients = newClients.length;
       const totalPages = Math.ceil(totalClients / activePerPage);
 
@@ -123,10 +123,9 @@ const useManageStore = create((set, get) => ({
       const newContacts = await handleGetManageContacts(
         techStore.tech.mspCustomDomain
       );
-
       const totalContacts = newContacts.length;
       const totalPages = Math.ceil(totalContacts / activePerPage);
-
+      console.log(newContacts)
       set({
         activePageNumbers: Array.from({ length: totalPages }, (_, i) => i + 1),
         contacts: newContacts,
@@ -175,17 +174,17 @@ const useManageStore = create((set, get) => ({
     set((prevState) =>
       type === "checkbox"
         ? {
-            integrationInputs: {
-              ...prevState.integrationInputs,
-              [field]: !prevState.integrationInputs[field],
-            },
-          }
+          integrationInputs: {
+            ...prevState.integrationInputs,
+            [field]: !prevState.integrationInputs[field],
+          },
+        }
         : {
-            integrationInputs: {
-              ...prevState.integrationInputs,
-              [field]: value,
-            },
-          }
+          integrationInputs: {
+            ...prevState.integrationInputs,
+            [field]: value,
+          },
+        }
     ),
 
   setBoardInputs: (categoryId, subCategoryId, field, id, name) =>
@@ -424,15 +423,17 @@ const useManageStore = create((set, get) => ({
   handleAddManageTechnician: async (mspCustomDomain) => {
     const { techniciansSelected, technicians } = get();
 
-    const selectedTechniciansPayload = Object.entries(techniciansSelected)
-      .filter(([_, techData]) => techData.selected)
-      .map(([id, { tier, role }]) => ({
-        ...technicians.find((t) => t.id === id),
-        tier,
-        role,
-        mspCustomDomain,
-      }));
-
+    const selectedTechniciansPayload = technicians
+      .filter(technician => techniciansSelected[technician.connectWiseMembersId]?.selected)
+      .map(technician => {
+        const additionalData = techniciansSelected[technician.connectWiseMembersId];
+        return {
+          ...technician,
+          tier: additionalData?.tier,
+          role: additionalData?.role,
+          mspCustomDomain,
+        };
+      });
     try {
       const response = await fetch(
         `http://localhost:9019/${encodeURIComponent(
@@ -464,12 +465,13 @@ const useManageStore = create((set, get) => ({
     }
   },
 
-  handleAddManageClient: async (mspCustomDomain) => {
+  handleAddManageClients: async (mspCustomDomain) => {
     const { clientsSelected, clients } = get();
 
     const selectedClientsPayload = clients.filter(
-      (client) => clientsSelected[client.id]?.selected
+      (client) => clientsSelected[client.connectWiseCompanyId]?.selected
     );
+
     try {
       const response = await fetch(
         `http://localhost:9019/${encodeURIComponent(
@@ -504,8 +506,9 @@ const useManageStore = create((set, get) => ({
   handleAddManageContacts: async (mspCustomDomain) => {
     const { contactsSelected, contacts } = get();
     const selectedContactsPayload = contacts.filter(
-      (contact) => contactsSelected[contact.id]?.selected
+      (contact) => contactsSelected[contact.connectWiseContactId]?.selected
     );
+
     try {
       const response = await fetch(
         `http://localhost:9019/${encodeURIComponent(

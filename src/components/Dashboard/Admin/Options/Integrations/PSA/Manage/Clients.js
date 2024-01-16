@@ -14,7 +14,7 @@ const Clients = () => {
     clients,
     clientsSelected,
     setSelectedClients,
-    handleAddManageClient,
+    handleAddManageClients,
     initializeManageClients,
   } = useManageStore();
 
@@ -25,7 +25,6 @@ const Clients = () => {
   useEffect(() => {
     initializeManageClients();
   }, [tech]);
-
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex flex-col text-xl overflow-hidden">
@@ -36,18 +35,18 @@ const Clients = () => {
               <div className="flex gap-2 flex-col overflow-hidden ">
                 <div className="flex items-center justify-start gap-2">
                   <button
-                    onClick={() => handleAddManageClient(tech?.mspCustomDomain)}
+                    onClick={() => handleAddManageClients(tech?.mspCustomDomain)}
                     className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
                   >
                     Bulk Save
                   </button>
                   {successMessage && (
                     <p className="text-emerald-500">
-                      Saved Technicians Successfully!
+                      Saved Clients Successfully!
                     </p>
                   )}
                   {errorMessage && (
-                    <p className="text-red-500">Error Saving Technicians</p>
+                    <p className="text-red-500">Error Saving Clients</p>
                   )}
                 </div>
                 <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full ">
@@ -80,7 +79,7 @@ const Clients = () => {
                     <tbody>
                       {currentClients?.map((client) => {
                         const {
-                          id,
+
                           name,
                           connectWiseCompanyId,
                           addressLine1,
@@ -93,12 +92,12 @@ const Clients = () => {
                           types,
                         } = client;
                         return (
-                          <tr key={id}>
+                          <tr key={connectWiseCompanyId}>
                             <td className="p-2 truncate border-l border-r border-b">
                               <input
-                                checked={clientsSelected[id]?.selected || false}
+                                checked={clientsSelected[connectWiseCompanyId]?.selected || false}
                                 onChange={(e) =>
-                                  setSelectedClients(id, e.target.checked)
+                                  setSelectedClients(connectWiseCompanyId, e.target.checked)
                                 }
                                 className="flex items-center justify-center w-full h-full"
                                 type="checkbox"
