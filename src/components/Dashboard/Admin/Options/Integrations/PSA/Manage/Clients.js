@@ -6,6 +6,7 @@ import { useEffect } from "react";
 
 const Clients = () => {
   const { tech } = useTechStore();
+
   const {
     activePage,
     activePerPage,
@@ -13,18 +14,36 @@ const Clients = () => {
     errorMessage,
     clients,
     clientsSelected,
+    clientsFilterType,
     setSelectedClients,
+    setClientsFilterType,
     handleAddManageClients,
     initializeManageClients,
   } = useManageStore();
 
+  const filteredClients = clientsFilterType
+    ? clients?.filter((client) =>
+        client.types?.some((type) => type.name === clientsFilterType)
+      )
+    : clients;
+
   const indexOfLastClient = activePage * activePerPage;
   const indexOfFirstClient = indexOfLastClient - activePerPage;
-  const currentClients = clients?.slice(indexOfFirstClient, indexOfLastClient);
+  const currentClients = filteredClients?.slice(
+    indexOfFirstClient,
+    indexOfLastClient
+  );
+
+  const filteredClientTypes = Array.from(
+    new Set(
+      clients?.flatMap((client) => client.types?.map((type) => type.name))
+    )
+  );
 
   useEffect(() => {
     initializeManageClients();
   }, [tech]);
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex flex-col text-xl overflow-hidden">
@@ -35,7 +54,9 @@ const Clients = () => {
               <div className="flex gap-2 flex-col overflow-hidden ">
                 <div className="flex items-center justify-start gap-2">
                   <button
-                    onClick={() => handleAddManageClients(tech?.mspCustomDomain)}
+                    onClick={() =>
+                      handleAddManageClients(tech?.mspCustomDomain)
+                    }
                     className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
                   >
                     Bulk Save
@@ -70,7 +91,25 @@ const Clients = () => {
                         <th className="p-2 border-t border-b border-r">
                           Phone Number
                         </th>
-                        <th className="p-2 border-t border-b border-r">Type</th>
+                        <th className="p-2 border-t border-b border-r">
+                          <div className="flex flex-col items-start lg:flex-row lg:items-center">
+                            <span>Type</span>
+
+                            <select
+                             
+                              onChange={(e) =>
+                                setClientsFilterType(e.target.value)
+                              }
+                            >
+                              <option value="">All Types</option>
+                              {filteredClientTypes?.map((type) => (
+                                <option key={type} value={type}>
+                                  {type}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </th>
                         <th className="p-2 border-t border-b border-r">
                           Status
                         </th>
@@ -79,7 +118,6 @@ const Clients = () => {
                     <tbody>
                       {currentClients?.map((client) => {
                         const {
-
                           name,
                           connectWiseCompanyId,
                           addressLine1,
@@ -95,9 +133,15 @@ const Clients = () => {
                           <tr key={connectWiseCompanyId}>
                             <td className="p-2 truncate border-l border-r border-b">
                               <input
-                                checked={clientsSelected[connectWiseCompanyId]?.selected || false}
+                                checked={
+                                  clientsSelected[connectWiseCompanyId]
+                                    ?.selected || false
+                                }
                                 onChange={(e) =>
-                                  setSelectedClients(connectWiseCompanyId, e.target.checked)
+                                  setSelectedClients(
+                                    connectWiseCompanyId,
+                                    e.target.checked
+                                  )
                                 }
                                 className="flex items-center justify-center w-full h-full"
                                 type="checkbox"

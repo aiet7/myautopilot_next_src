@@ -29,7 +29,6 @@ const Technician = () => {
     initializeManageTechnicians();
   }, [tech]);
 
-
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex flex-col text-xl overflow-hidden">
@@ -56,7 +55,7 @@ const Technician = () => {
                     <p className="text-red-500">Error Saving Technicians</p>
                   )}
                 </div>
-                <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full ">
+                <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
                   <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
                     <thead className="sticky top-0 bg-white text-lg text-black/60">
                       <tr className="">
@@ -100,7 +99,8 @@ const Technician = () => {
                             <td className="p-2 truncate border-l border-r border-b">
                               <input
                                 checked={
-                                  techniciansSelected[connectWiseMembersId]?.selected || false
+                                  techniciansSelected[connectWiseMembersId]
+                                    ?.selected || false
                                 }
                                 onChange={(e) =>
                                   setSelectedTechnicians(
@@ -156,15 +156,15 @@ const Technician = () => {
                                   onChange={(e) =>
                                     setSelectedTechnicians(
                                       connectWiseMembersId,
-                                      "role",
+                                      "roleId",
                                       e.target.value
                                     )
                                   }
                                 >
                                   {techniciansRoleOptions.map((role) => {
-                                    const { name } = role;
+                                    const { id, name } = role;
                                     return (
-                                      <option key={name} value={name}>
+                                      <option key={name} value={id}>
                                         {name}
                                       </option>
                                     );

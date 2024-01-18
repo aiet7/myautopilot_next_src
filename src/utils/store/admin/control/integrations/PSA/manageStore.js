@@ -16,6 +16,7 @@ const useManageStore = create((set, get) => ({
 
   clients: null,
   clientsSelected: {},
+  clientsFilterType: "",
 
   contacts: null,
   contactsSelected: {},
@@ -33,7 +34,7 @@ const useManageStore = create((set, get) => ({
   activeConfigSteps: 1,
 
   activePage: 1,
-  activePerPage: 30,
+  activePerPage: 50,
   activePageNumbers: [],
 
   integrationInputs: {
@@ -125,7 +126,6 @@ const useManageStore = create((set, get) => ({
       );
       const totalContacts = newContacts.length;
       const totalPages = Math.ceil(totalContacts / activePerPage);
-      console.log(newContacts)
       set({
         activePageNumbers: Array.from({ length: totalPages }, (_, i) => i + 1),
         contacts: newContacts,
@@ -174,17 +174,17 @@ const useManageStore = create((set, get) => ({
     set((prevState) =>
       type === "checkbox"
         ? {
-          integrationInputs: {
-            ...prevState.integrationInputs,
-            [field]: !prevState.integrationInputs[field],
-          },
-        }
+            integrationInputs: {
+              ...prevState.integrationInputs,
+              [field]: !prevState.integrationInputs[field],
+            },
+          }
         : {
-          integrationInputs: {
-            ...prevState.integrationInputs,
-            [field]: value,
-          },
-        }
+            integrationInputs: {
+              ...prevState.integrationInputs,
+              [field]: value,
+            },
+          }
     ),
 
   setBoardInputs: (categoryId, subCategoryId, field, id, name) =>
@@ -214,7 +214,7 @@ const useManageStore = create((set, get) => ({
         techniciansSelected[technicianId] = {
           selected: false,
           tier: "",
-          role: "",
+          roleId: "",
         };
       }
       techniciansSelected[technicianId][field] = value;
@@ -233,6 +233,10 @@ const useManageStore = create((set, get) => ({
       clientsSelected[clientId].selected = value;
       return { clientsSelected };
     }),
+
+  setClientsFilterType: (filter) => {
+    set({ clientsFilterType: filter });
+  },
 
   setSelectedContacts: (clientId, value) =>
     set((prevState) => {
@@ -424,16 +428,21 @@ const useManageStore = create((set, get) => ({
     const { techniciansSelected, technicians } = get();
 
     const selectedTechniciansPayload = technicians
-      .filter(technician => techniciansSelected[technician.connectWiseMembersId]?.selected)
-      .map(technician => {
-        const additionalData = techniciansSelected[technician.connectWiseMembersId];
+      .filter(
+        (technician) =>
+          techniciansSelected[technician.connectWiseMembersId]?.selected
+      )
+      .map((technician) => {
+        const additionalData =
+          techniciansSelected[technician.connectWiseMembersId];
         return {
           ...technician,
           tier: additionalData?.tier,
-          role: additionalData?.role,
+          roleId: additionalData?.roleId,
           mspCustomDomain,
         };
       });
+
     try {
       const response = await fetch(
         `http://localhost:9019/${encodeURIComponent(
