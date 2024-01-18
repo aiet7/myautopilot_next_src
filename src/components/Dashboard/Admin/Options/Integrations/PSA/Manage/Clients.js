@@ -23,8 +23,8 @@ const Clients = () => {
 
   const filteredClients = clientsFilterType
     ? clients?.filter((client) =>
-        client.types?.some((type) => type.name === clientsFilterType)
-      )
+      client.types?.some((type) => type.name === clientsFilterType)
+    )
     : clients;
 
   const indexOfLastClient = activePage * activePerPage;
@@ -92,11 +92,10 @@ const Clients = () => {
                           Phone Number
                         </th>
                         <th className="p-2 border-t border-b border-r">
-                          <div className="flex flex-col items-start lg:flex-row lg:items-center">
-                            <span>Type</span>
-
+                          <div className="flex flex-col items-start lg:flex-row lg:items-center lg:gap-4">
+                            Type
                             <select
-                             
+                              className="text-xs  p-1 border rounded-lg"
                               onChange={(e) =>
                                 setClientsFilterType(e.target.value)
                               }
@@ -128,24 +127,27 @@ const Clients = () => {
                           phoneNumber,
                           status,
                           types,
+                          isInDB
                         } = client;
                         return (
-                          <tr key={connectWiseCompanyId}>
+                          <tr key={connectWiseCompanyId} className={`${isInDB ? "text-black/20" : ""}`}>
                             <td className="p-2 truncate border-l border-r border-b">
-                              <input
-                                checked={
-                                  clientsSelected[connectWiseCompanyId]
-                                    ?.selected || false
-                                }
-                                onChange={(e) =>
-                                  setSelectedClients(
-                                    connectWiseCompanyId,
-                                    e.target.checked
-                                  )
-                                }
-                                className="flex items-center justify-center w-full h-full"
-                                type="checkbox"
-                              />
+                              {!isInDB && (
+                                <input
+                                  checked={
+                                    clientsSelected[connectWiseCompanyId]
+                                      ?.selected || false
+                                  }
+                                  onChange={(e) =>
+                                    setSelectedClients(
+                                      connectWiseCompanyId,
+                                      e.target.checked
+                                    )
+                                  }
+                                  className="flex items-center justify-center w-full h-full"
+                                  type="checkbox"
+                                />
+                              )}
                             </td>
                             <td className="p-2 truncate  border-r border-b">
                               {name}

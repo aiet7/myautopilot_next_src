@@ -3,8 +3,11 @@ import useIntegrationsStore from "../integrationsStore";
 import useTechStore from "@/utils/store/user/techStore";
 import {
   handleGetManageTechnicians,
+  handleGetManageDBTechnicians,
   handleGetManageClients,
+  handleGetManageDBClients,
   handleGetManageContacts,
+  handleGetManageDBContacts,
   handleGetRoles,
 } from "@/utils/api/serverProps";
 
@@ -69,24 +72,28 @@ const useManageStore = create((set, get) => ({
 
   initializeManageTechnicians: async () => {
     const { activePerPage } = get();
-
     const techStore = useTechStore.getState();
     set({ technicians: null, techniciansRoleOptions: null });
+
     if (techStore.tech) {
       try {
-        const [newTechnicians, newRoles] = await Promise.all([
+        const [dbTechnicians, connectWiseTechnicians, newRoles] = await Promise.all([
+          handleGetManageDBTechnicians(techStore.tech.mspCustomDomain),
           handleGetManageTechnicians(techStore.tech.mspCustomDomain),
           handleGetRoles(techStore.tech.mspCustomDomain),
         ]);
 
-        const totalTechs = newTechnicians.length;
+        const markedTechnicians = connectWiseTechnicians.map(cwTech => ({
+          ...cwTech,
+          isInDB: dbTechnicians.some(dbTech => dbTech.connectWiseMembersId === cwTech.connectWiseMembersId),
+        }));
+
+        const totalTechs = markedTechnicians.length;
         const totalPages = Math.ceil(totalTechs / activePerPage);
+
         set({
-          activePageNumbers: Array.from(
-            { length: totalPages },
-            (_, i) => i + 1
-          ),
-          technicians: newTechnicians,
+          activePageNumbers: Array.from({ length: totalPages }, (_, i) => i + 1),
+          technicians: markedTechnicians,
           techniciansRoleOptions: newRoles,
         });
       } catch (e) {
@@ -101,17 +108,27 @@ const useManageStore = create((set, get) => ({
     set({ clients: null });
 
     if (techStore.tech) {
-      const newClients = await handleGetManageClients(
-        techStore.tech.mspCustomDomain
-      );
+      try {
+        const [dbClients, connectWiseClients] = await Promise.all([
+          handleGetManageDBClients(techStore.tech.mspCustomDomain),
+          handleGetManageClients(techStore.tech.mspCustomDomain),
+        ]);
 
-      const totalClients = newClients.length;
-      const totalPages = Math.ceil(totalClients / activePerPage);
+        const markedClients = connectWiseClients.map(cwClient => ({
+          ...cwClient,
+          isInDB: dbClients.some(dbClient => dbClient.connectWiseCompanyId === cwClient.connectWiseCompanyId),
+        }));
 
-      set({
-        activePageNumbers: Array.from({ length: totalPages }, (_, i) => i + 1),
-        clients: newClients,
-      });
+        const totalClients = markedClients.length;
+        const totalPages = Math.ceil(totalClients / activePerPage);
+
+        set({
+          activePageNumbers: Array.from({ length: totalPages }, (_, i) => i + 1),
+          clients: markedClients,
+        });
+      } catch (e) {
+        console.log(e);
+      }
     }
   },
 
@@ -121,15 +138,27 @@ const useManageStore = create((set, get) => ({
     set({ contacts: null });
 
     if (techStore.tech) {
-      const newContacts = await handleGetManageContacts(
-        techStore.tech.mspCustomDomain
-      );
-      const totalContacts = newContacts.length;
-      const totalPages = Math.ceil(totalContacts / activePerPage);
-      set({
-        activePageNumbers: Array.from({ length: totalPages }, (_, i) => i + 1),
-        contacts: newContacts,
-      });
+      try {
+        const [dbContacts, connectWiseContacts] = await Promise.all([
+          handleGetManageDBContacts(techStore.tech.mspCustomDomain),
+          handleGetManageContacts(techStore.tech.mspCustomDomain),
+        ]);
+
+        const markedContacts = connectWiseContacts.map(cwContact => ({
+          ...cwContact,
+          isInDB: dbContacts.some(dbContact => dbContact.connectWiseContactId === cwContact.connectWiseContactId),
+        }));
+
+        const totalContacts = markedContacts.length;
+        const totalPages = Math.ceil(totalContacts / activePerPage);
+
+        set({
+          activePageNumbers: Array.from({ length: totalPages }, (_, i) => i + 1),
+          contacts: markedContacts,
+        });
+      } catch (e) {
+        console.log(e);
+      }
     }
   },
 
@@ -174,17 +203,17 @@ const useManageStore = create((set, get) => ({
     set((prevState) =>
       type === "checkbox"
         ? {
-            integrationInputs: {
-              ...prevState.integrationInputs,
-              [field]: !prevState.integrationInputs[field],
-            },
-          }
+          integrationInputs: {
+            ...prevState.integrationInputs,
+            [field]: !prevState.integrationInputs[field],
+          },
+        }
         : {
-            integrationInputs: {
-              ...prevState.integrationInputs,
-              [field]: value,
-            },
-          }
+          integrationInputs: {
+            ...prevState.integrationInputs,
+            [field]: value,
+          },
+        }
     ),
 
   setBoardInputs: (categoryId, subCategoryId, field, id, name) =>

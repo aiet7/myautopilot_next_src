@@ -1,6 +1,7 @@
-import { handleGetTickets } from "@/utils/api/serverProps";
+import { handleGetMSPTickets } from "@/utils/api/serverProps";
 import useUserStore from "@/utils/store/user/userStore";
 import { create } from "zustand";
+import useTechStore from "../../user/techStore";
 
 const useTicketsStore = create((set, get) => ({
   tickets: [],
@@ -10,11 +11,11 @@ const useTicketsStore = create((set, get) => ({
   showTicket: null,
   activeTicketMode: "Default",
 
-  initializeTickets: async () => {
-    const userStore = useUserStore.getState();
+  initializeMSPTickets: async () => {
+    const techStore = useTechStore.getState();
     set({ tickets: [] });
-    if (userStore.user) {
-      const newTickets = await handleGetTickets(userStore.user.id);
+    if (techStore.tech) {
+      const newTickets = await handleGetMSPTickets(techStore.tech.mspCustomDomain);
       set({ tickets: newTickets });
     }
   },

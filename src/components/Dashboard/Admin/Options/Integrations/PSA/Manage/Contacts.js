@@ -27,7 +27,7 @@ const Contacts = () => {
   useEffect(() => {
     initializeManageContacts();
   }, [tech]);
-  
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex flex-col text-xl overflow-hidden">
@@ -88,7 +88,6 @@ const Contacts = () => {
                     <tbody>
                       {currentContacts?.map((contact) => {
                         const {
-                          id,
                           firstName,
                           lastName,
                           title,
@@ -99,20 +98,22 @@ const Contacts = () => {
                           connectWisePhoneNumber,
                           defaultPhoneNbr,
                           defaultPhoneType,
+                          isInDB
                         } = contact;
                         return (
-                          <tr key={connectWiseContactId}>
+                          <tr key={connectWiseContactId} className={`${isInDB ? "text-black/20" : ""}`}>
                             <td className="p-2 truncate border-l border-r border-b">
-                              <input
-                                checked={
-                                  contactsSelected[connectWiseContactId]?.selected || false
-                                }
-                                onChange={(e) =>
-                                  setSelectedContacts(connectWiseContactId, e.target.checked)
-                                }
-                                className="flex items-center justify-center w-full h-full"
-                                type="checkbox"
-                              />
+                              {!isInDB && (
+                                <input
+                                  checked={
+                                    contactsSelected[connectWiseContactId]?.selected || false
+                                  }
+                                  onChange={(e) =>
+                                    setSelectedContacts(connectWiseContactId, e.target.checked)
+                                  }
+                                  className="flex items-center justify-center w-full h-full"
+                                  type="checkbox"
+                                />)}
                             </td>
                             <td className="p-2 truncate  border-r border-b">
                               {firstName + " " + lastName}

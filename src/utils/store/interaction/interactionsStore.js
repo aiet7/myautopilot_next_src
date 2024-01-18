@@ -5,6 +5,7 @@ import useConversationStore from "./conversations/conversationsStore";
 import useRefStore from "./ref/refStore";
 import useDocConversationsStore from "./conversations/docConversationsStore";
 import useTicketConversationsStore from "./conversations/ticketConversationsStore";
+import useTechStore from "../user/techStore";
 
 const useInteractionStore = create((set, get) => ({
   userInput: "",
@@ -127,8 +128,8 @@ const useInteractionStore = create((set, get) => ({
   },
 
   handleCreateTicketMessage: async (message) => {
+    const techStore = useTechStore.getState();
     const { inputRef, messageIdRef } = useRefStore.getState();
-    const userStore = useUserStore.getState();
     const { handleAddUserMessage } = useTicketConversationsStore.getState();
     const { handleCreateTicketProcess } = useFormsStore.getState();
     if (message.trim() !== "") {
@@ -143,15 +144,16 @@ const useInteractionStore = create((set, get) => ({
 
       try {
         const response = await fetch(
-          "https://etech7-wf-etech7-support-service.azuremicroservices.io/ticketCategorize",
+          "http://localhost:9020/getTicketCategorization",
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              text: message,
-              userId: userStore.user.id,
+              userMessage: message,
+              userId: techStore.tech.id,
+              mspCustomDomain: techStore.tech.mspCustomDomain
             }),
           }
         );
