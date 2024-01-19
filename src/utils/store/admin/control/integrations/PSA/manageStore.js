@@ -37,7 +37,7 @@ const useManageStore = create((set, get) => ({
   activeConfigSteps: 1,
 
   activePage: 1,
-  activePerPage: 50,
+  activePerPage: 30,
   activePageNumbers: [],
 
   integrationInputs: {
