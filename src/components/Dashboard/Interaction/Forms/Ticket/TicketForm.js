@@ -4,25 +4,16 @@ import {
   categories,
   subCategories,
 } from "../../../../../utils/tickets/ticketCreation";
-import { useEffect } from "react";
 
 const TicketForm = ({ itemId }) => {
   const {
     loading,
     formError,
     ticket,
-    filteredSubCategories,
     setTicket,
-    setFilteredSubCategories,
     handleTicketConfirmation,
   } = useFormsStore();
 
-  useEffect(() => {
-    const filtered = subCategories.filter(
-      (subCategory) => subCategory.category === ticket.currentTicketCategory
-    );
-    setFilteredSubCategories(filtered);
-  }, [ticket.currentTicketCategory, subCategories]);
   return (
     <div>
       <div className="flex  flex-col gap-2">
@@ -47,47 +38,22 @@ const TicketForm = ({ itemId }) => {
           />
         </div>
         <div>
-          <span className="font-bold">Summary</span>
-          <input
-            maxLength={100}
-            className="h-[50px] border outline-blue-500 w-full px-4"
-            value={ticket.currentTicketSummary || ""}
-            onChange={(e) => setTicket("currentTicketSummary", e.target.value)}
-          />
-        </div>
-
-        <div>
           <span className="font-bold">Category</span>
-
-          <select
+          <input
+            disabled
+            className="h-[50px] border outline-blue-500 w-full px-4"
             value={ticket.currentTicketCategory || ""}
             onChange={(e) => setTicket("currentTicketCategory", e.target.value)}
-            className="h-[50px] border outline-blue-500 w-full px-4"
-          >
-            <option value="">Select a category</option>
-            {categories.map((category, index) => (
-              <option key={index} value={category.id}>
-                {category.title}
-              </option>
-            ))}
-          </select>
+          />
         </div>
         <div>
           <span className="font-bold">Subcategory</span>
-          <select
-            value={ticket.currentTicketSubCategory || ""}
-            onChange={(e) =>
-              setTicket("currentTicketSubCategory", e.target.value)
-            }
+          <input
+            disabled
             className="h-[50px] border outline-blue-500 w-full px-4"
-          >
-            <option value="">Select a subcategory</option>
-            {filteredSubCategories.map((subCategory, index) => (
-              <option key={index} value={subCategory.id}>
-                {subCategory.title}
-              </option>
-            ))}
-          </select>
+            value={ticket.currentTicketSubCategory || ""}
+            onChange={(e) => setTicket("currentTicketSubCategory", e.target.value)}
+          />
         </div>
         <div>
           <span className="font-bold">Priority</span>
@@ -96,6 +62,33 @@ const TicketForm = ({ itemId }) => {
             className="h-[50px] border outline-blue-500 w-full px-4"
             value={ticket.currentTicketPriority || ""}
             onChange={(e) => setTicket("currentTicketPriority", e.target.value)}
+          />
+        </div>
+        <div>
+          <span className="font-bold">Impact</span>
+          <input
+            disabled
+            className="h-[50px] border outline-blue-500 w-full px-4"
+            value={ticket.currentTicketImpact || ""}
+            onChange={(e) => setTicket("currentTicketImpact", e.target.value)}
+          />
+        </div>
+        <div>
+          <span className="font-bold">Severity</span>
+          <input
+            disabled
+            className="h-[50px] border outline-blue-500 w-full px-4"
+            value={ticket.currentTicketSeverity || ""}
+            onChange={(e) => setTicket("currentTicketSeverity", e.target.value)}
+          />
+        </div>
+        <div>
+          <span className="font-bold">Tier</span>
+          <input
+            disabled
+            className="h-[50px] border outline-blue-500 w-full px-4"
+            value={ticket.currentTicketTier || ""}
+            onChange={(e) => setTicket("currentTicketTier", e.target.value)}
           />
         </div>
         {ticket.currentTicketCategory === "TRAINING_OR_ONBOARDING" &&

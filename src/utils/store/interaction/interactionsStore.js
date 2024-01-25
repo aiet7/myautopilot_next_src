@@ -134,7 +134,6 @@ const useInteractionStore = create((set, get) => ({
     const { handleCreateTicketProcess } = useFormsStore.getState();
     if (message.trim() !== "") {
       inputRef.current.focus();
-
       handleAddUserMessage(message);
       set({
         isWaiting: true,
@@ -161,12 +160,7 @@ const useInteractionStore = create((set, get) => ({
         if (response.status === 200) {
           const responseBody = await response.json();
           messageIdRef.current = Date.now();
-          handleCreateTicketProcess(
-            JSON.parse(responseBody.msg),
-            responseBody.emailID,
-            responseBody.personName,
-            responseBody.phoneNumber
-          );
+          handleCreateTicketProcess(responseBody);
         } else if (response.status === 500) {
           set({
             isServerError: true,
