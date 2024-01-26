@@ -1,6 +1,4 @@
 import { create } from "zustand";
-import useUserStore from "../../user/userStore";
-
 import useTicketsStore from "../../interaction/tickets/ticketsStore";
 import { validateTicketForm } from "@/utils/formValidations";
 import useTicketConversationsStore from "../conversations/ticketConversationsStore";
@@ -17,16 +15,27 @@ const useFormsStore = create((set, get) => ({
 
   ticket: {
     currentTicketTitle: "",
+    currentTicketCWCompanyId: 250,
     currentTicketDescription: "",
+
     currentTicketCategory: "",
+    currentTicketCategoryId: null,
+
     currentTicketSubCategory: "",
+    currentTicketSubCategoryId: null,
+
     currentTicketPriority: "",
+    currentTicketPriorityId: null,
+
+    currentTicketDurationToResolve: null,
     currentTicketSeverity: "",
     currentTicketImpact: "",
     currentTicketTier: "",
     currentTicketName: "",
     currentTicketEmailId: "",
     currentTicketPhoneNumber: "",
+
+
     onBoarding: {
       currentTicketNewFirstName: "",
       currentTicketNewLastName: "",
@@ -44,11 +53,6 @@ const useFormsStore = create((set, get) => ({
     userCreatedInActiveDirectory: undefined,
     userEmailCreated: undefined,
   },
-
-
-
-
-
 
 
   setTicket: (fieldName, value) => {
@@ -96,7 +100,6 @@ const useFormsStore = create((set, get) => ({
   },
 
 
-
   handleCreateTicketProcess: (responseBody) => {
     const techStore = useTechStore.getState();
     const { handleAddForm } = useTicketConversationsStore.getState();
@@ -104,11 +107,15 @@ const useFormsStore = create((set, get) => ({
       title,
       description,
       priority,
+      priorityId,
       impact,
       severity,
       tier,
       categoryName,
+      categoryId,
       subCategoryName,
+      subCategoryId,
+      durationToResolve,
       emailId,
       name,
       phoneNumber
@@ -126,6 +133,10 @@ const useFormsStore = create((set, get) => ({
     set((state) => ({
       ticket: {
         ...state.ticket,
+        currentTicketCategoryId: categoryId || null,
+        currentTicketSubCategoryId: subCategoryId || null,
+        currentTicketPriorityId: priorityId || null,
+        currentTicketDurationToResolve: durationToResolve || null,
         currentTicketTitle: title || "",
         currentTicketDescription: description || "",
         currentTicketCategory: categoryName || "",
@@ -147,37 +158,55 @@ const useFormsStore = create((set, get) => ({
           currentTicketNewEmailId: emailId || "",
         },
       },
-      ticketStatus: {
-        ...state.ticketStatus,
-        ticketCreated: "pending",
-        ticketAssigned: "pending",
-        ticketClosed: "pending",
-        userCreatedInActiveDirectory: categoryName === "TRAINING_OR_ONBOARDING" && subCategoryName === "NEW_EMPLOYEE_ONBOARDING" ? "pending" : undefined,
-        userEmailCreated: categoryName === "TRAINING_OR_ONBOARDING" && subCategoryName === "NEW_EMPLOYEE_ONBOARDING" ? "pending" : undefined,
-      },
+
     }));
 
     handleAddForm("ticketForm");
+    if (categoryName === "TRAINING_OR_ONBOARDING" && subCategoryName === "NEW_EMPLOYEE_ONBOARDING") {
+      set({
+        ticketStatus: {
+          ticketCreated: "pending",
+          ticketAssigned: "pending",
+          ticketClosed: "pending",
+          userCreatedInActiveDirectory: "pending",
+          userEmailCreated: "pending",
+        },
+      })
+    } else {
+      set({
+        ticketStatus: {
+          ticketCreated: "pending",
+          ticketAssigned: "pending",
+          ticketClosed: "pending",
+        },
+      })
+    }
   },
 
 
   handleTicketConfirmation: async (isConfirmed, formId) => {
     const { ticket } = get();
     const techStore = useTechStore.getState();
+
     const { addTicket } = useTicketsStore.getState();
     const {
       currentTicketTitle,
+      currentTicketCWCompanyId,
       currentTicketDescription,
       currentTicketCategory,
+      currentTicketCategoryId,
       currentTicketSubCategory,
+      currentTicketSubCategoryId,
+      currentTicketDurationToResolve,
       currentTicketPriority,
+      currentTicketPriorityId,
       currentTicketImpact,
       currentTicketSeverity,
       currentTicketTier,
       currentTicketName,
       currentTicketEmailId,
       currentTicketPhoneNumber,
-    } = get().ticket;
+    } = ticket;
     const {
       currentTicketNewFirstName,
       currentTicketNewLastName,
@@ -185,7 +214,7 @@ const useFormsStore = create((set, get) => ({
       currentTicketEmailOwner,
       currentTicketNewPhoneNumber,
       currentTicketLicenseId,
-    } = get().ticket.onBoarding;
+    } = ticket.onBoarding;
     const { handleRemoveForm, handleAddAssistantMessage } =
       useTicketConversationsStore.getState();
 
@@ -202,9 +231,8 @@ const useFormsStore = create((set, get) => ({
       }));
       try {
         const encodedDomain = encodeURIComponent(techStore.tech.mspCustomDomain)
-        const encodedId = encodeURIComponent(techStore.tech.id)
         const ticketResponse = await fetch(
-          `http://localhost:9020/createTicket?mspCustomDomain=${encodedDomain}&userId=${encodedId}`,
+          `http://localhost:9020/createTicket?mspCustomDomain=${encodedDomain}`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -212,14 +240,20 @@ const useFormsStore = create((set, get) => ({
               title: currentTicketTitle,
               description: currentTicketDescription,
               categoryName: currentTicketCategory,
+              categoryId: currentTicketCategoryId,
               subCategoryName: currentTicketSubCategory,
+              subCategoryId: currentTicketSubCategoryId,
+              durationToResolve: currentTicketDurationToResolve,
               priority: currentTicketPriority,
+              priorityId: currentTicketPriorityId,
               impact: currentTicketImpact,
               severity: currentTicketSeverity,
               tier: currentTicketTier,
               name: currentTicketName,
-              emailID: currentTicketEmailId,
+              emailId: currentTicketEmailId,
               phoneNumber: currentTicketPhoneNumber,
+              connectWiseCompanyId: currentTicketCWCompanyId,
+              technicianId: techStore.tech.id
             }),
           }
         );
@@ -230,61 +264,62 @@ const useFormsStore = create((set, get) => ({
             ticketCreated,
             ticketAssigned,
             ticketClosed,
-
+            ticketDetails: { id }
           } = ticket;
           set((state) => ({
             ...state,
             ticketStatus: {
               ...state.ticketStatus,
-
+              ticketId: id,
               ticketCreated: ticketCreated && "done",
               ticketAssigned: ticketAssigned ? "done" : "pending",
               ticketClosed: ticketClosed ? "done" : "waiting",
             },
           }));
-          // if (
-          //   currentTicketCategory === "TRAINING_OR_ONBOARDING" &&
-          //   currentTicketSubCategory === "NEW_EMPLOYEE_ONBOARDING"
-          // ) {
-          //   const ticketOnboardingResponse = await fetch(
-          //     `https://etech7-wf-etech7-support-service.azuremicroservices.io/onboardUser`,
-          //     {
-          //       method: "POST",
-          //       headers: { "Content-Type": "application/json" },
-          //       body: JSON.stringify({
-          //         ticketId: id,
-          //         firstName: currentTicketNewFirstName,
-          //         lastName: currentTicketNewLastName,
-          //         emailId: currentTicketNewEmailId,
-          //         emailTicketOwner: currentTicketEmailOwner,
-          //         phoneNumber: currentTicketNewPhoneNumber,
-          //         licenseId: currentTicketLicenseId,
-          //       }),
-          //     }
-          //   );
-          //   if (ticketOnboardingResponse.status === 200) {
-          //     const ticketOnBoarding = await ticketOnboardingResponse.json();
-          //     const {
-          //       userCreatedInActiveDirectory,
-          //       userEmailCreated,
-          //       ticketClosed,
-          //     } = ticketOnBoarding;
-          //     set((state) => ({
-          //       ...state,
-          //       ticketStatus: {
-          //         ...state.ticketStatus,
-          //         userCreatedInActiveDirectory: userCreatedInActiveDirectory
-          //           ? "done"
-          //           : "pending",
-          //         userEmailCreated: userEmailCreated ? "done" : "pending",
-          //         ticketClosed: ticketClosed ? "done" : "pending",
-          //       },
-          //     }));
-          //   }
-          // }
-          const aiContent = `Ticket Created!\n\nTitle: ${currentTicketTitle}\n\nDescription: ${currentTicketDescription}\n\nCategory: ${currentTicketCategory}\n\nSubcategory: ${currentTicketSubCategory}\n\nPriority: ${currentTicketPriority}\n\nName: ${currentTicketName}\n\nEmail: ${currentTicketEmailId}\n\nPhone: ${currentTicketPhoneNumber}.`;
+          if (
+            currentTicketCategory === "TRAINING_OR_ONBOARDING" &&
+            currentTicketSubCategory === "NEW_EMPLOYEE_ONBOARDING"
+          ) {
+            const ticketOnboardingResponse = await fetch(
+              `https://etech7-wf-etech7-support-service.azuremicroservices.io/onboardUser`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  ticketId: id,
+                  firstName: currentTicketNewFirstName,
+                  lastName: currentTicketNewLastName,
+                  emailId: currentTicketNewEmailId,
+                  emailTicketOwner: currentTicketEmailOwner,
+                  phoneNumber: currentTicketNewPhoneNumber,
+                  licenseId: currentTicketLicenseId,
+                }),
+              }
+            );
+            if (ticketOnboardingResponse.status === 200) {
+              const ticketOnBoarding = await ticketOnboardingResponse.json();
+              const {
+                userCreatedInActiveDirectory,
+                userEmailCreated,
+                ticketClosed,
+              } = ticketOnBoarding;
+              set((state) => ({
+                ...state,
+                ticketStatus: {
+                  ...state.ticketStatus,
+                  userCreatedInActiveDirectory: userCreatedInActiveDirectory
+                    ? "done"
+                    : "pending",
+                  userEmailCreated: userEmailCreated ? "done" : "pending",
+                  ticketClosed: ticketClosed ? "done" : "pending",
+                },
+              }));
+            }
+          }
+          const aiContent = `Ticket Created!\n\nID: ${id}\n\nTitle: ${currentTicketTitle}\n\nDescription: ${currentTicketDescription}\n\nCategory: ${currentTicketCategory}\n\nSubcategory: ${currentTicketSubCategory}\n\nPriority: ${currentTicketPriority}\n\nSeverity: ${currentTicketSeverity}\n\nImpact: ${currentTicketImpact}\n\nTier: ${currentTicketTier}\n\nConnectWise Company ID: ${currentTicketCWCompanyId}\n\nName: ${currentTicketName}\n\nEmail: ${currentTicketEmailId}\n\nPhone: ${currentTicketPhoneNumber}.`;
           handleAddAssistantMessage(aiContent, "ticketForm");
           addTicket({
+            ticketId: id,
             description: currentTicketDescription,
             category: currentTicketCategory,
             subcategory: currentTicketSubCategory,
