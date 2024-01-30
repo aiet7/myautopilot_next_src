@@ -6,6 +6,8 @@ import useRefStore from "./ref/refStore";
 import useDocConversationsStore from "./conversations/docConversationsStore";
 import useTicketConversationsStore from "./conversations/ticketConversationsStore";
 import useTechStore from "../user/techStore";
+import { resolve } from "url";
+import { type } from "os";
 
 const useInteractionStore = create((set, get) => ({
   userInput: "",
@@ -152,7 +154,7 @@ const useInteractionStore = create((set, get) => ({
             body: JSON.stringify({
               userMessage: message,
               userId: techStore.tech.id,
-              mspCustomDomain: techStore.tech.mspCustomDomain
+              mspCustomDomain: techStore.tech.mspCustomDomain,
             }),
           }
         );
@@ -172,6 +174,38 @@ const useInteractionStore = create((set, get) => ({
         set({
           isWaiting: false,
         });
+      }
+    }
+  },
+
+  handleCreateTicketNote: async (ticketId, message) => {
+    const techStore = useTechStore.getState();
+    if (message.trim() !== "") {
+      set({ isWaiting: true, isServerError: false, userInput: "" });
+      const encodedDomain = encodeURIComponent(techStore.tech.mspCustomDomain);
+      const encodedTicketId = encodeURIComponent(ticketId);
+      try {
+        const response = await fetch(
+          `http://localhost:9020/addNoteToTicket?mspCustomDomain=${encodedDomain}&ticketId=${encodedTicketId}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              text: message,
+            }),
+          }
+        );
+
+        if (response.status === 200) {
+          const responseBody = await response.json();
+          console.log(responseBody);
+        }
+      } catch (e) {
+        console.log(e);
+      } finally {
+        set({ isWaiting: false });
       }
     }
   },

@@ -69,7 +69,7 @@ const Tickets = ({ }) => {
               (activeTicketButton === "Closed" && ticket.closed)
           )
           .map((ticket, index) => {
-            const { id, category, ticketId } = ticket;
+            const { id, category, subcategory, ticketId } = ticket;
             return (
               <div
                 onClick={() => handleTicketMode("Support", ticketId)}
@@ -78,12 +78,12 @@ const Tickets = ({ }) => {
               >
                 <div className="flex justify-between items-center">
                   <p className="break-words whitespace-pre-wrap">
-                    <span className="font-bold">STATUS:</span>{" "}
-                    {ticketStatus[ticketId]}
+                    <span className="font-bold">STATUS: </span>
+                    {ticketStatus && ticketStatus?.[ticketId]?.status.name}
                   </p>
                   <FiRefreshCcw
                     size={15}
-                    className={`${ticketStatusLoading[ticketId] && "animate-spin"
+                    className={`${ticketStatusLoading?.[ticketId] && "animate-spin"
                       } cursor-pointer`}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -98,6 +98,9 @@ const Tickets = ({ }) => {
 
                 <p className="break-words whitespace-pre-wrap">
                   <span className="font-bold">Category:</span> {category}
+                </p>
+                <p className="break-words whitespace-pre-wrap">
+                  <span className="font-bold">Subcategroy:</span> {subcategory}
                 </p>
               </div>
             );

@@ -85,7 +85,7 @@ const Employees = ({}) => {
                             defaultPhoneType,
                           } = employee;
                           return (
-                            <tr key={connectWiseCompanyId}>
+                            <tr key={connectWiseContactId}>
                               <td className="p-2 truncate border-l  border-r border-b">
                                 {firstName + " " + lastName}
                               </td>
