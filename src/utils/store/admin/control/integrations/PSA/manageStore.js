@@ -32,6 +32,8 @@ const useManageStore = create((set, get) => ({
 
   customBoard: false,
   customBoardTitle: "",
+  customBoardDepartment: "",
+  customBoardLocation: "",
   customBoardMerge: null,
 
   activeBoard: null,
@@ -262,19 +264,32 @@ const useManageStore = create((set, get) => ({
 
   setCustomBoardInputs: (categoryId, subCategoryId, field, value) => {
     set((prevState) => {
-      if (field === "boardTitle") {
-        return { ...prevState, customBoardTitle: value };
+      const customBoardInputs = { ...prevState.customBoardInputs };
+
+      if (categoryId === null) {
+        if (field === "boardTitle") {
+          return { ...prevState, customBoardTitle: value };
+        } else if (field === "department") {
+          return { ...prevState, customBoardDepartment: value };
+        } else if (field === "location") {
+          return { ...prevState, customBoardLocation: value };
+        }
+      } else {
+        if (!customBoardInputs[categoryId]) {
+          customBoardInputs[categoryId] = {};
+        }
+
+        if (subCategoryId === null) {
+          customBoardInputs[categoryId][field] = value;
+        } else {
+          if (!customBoardInputs[categoryId][subCategoryId]) {
+            customBoardInputs[categoryId][subCategoryId] = {};
+          }
+          customBoardInputs[categoryId][subCategoryId][field] = value;
+        }
       }
 
-      const customBoardInputs = { ...prevState.customBoardInputs };
-      if (!customBoardInputs[categoryId]) {
-        customBoardInputs[categoryId] = {};
-      }
-      if (!customBoardInputs[categoryId][subCategoryId]) {
-        customBoardInputs[categoryId][subCategoryId] = {};
-      }
-      customBoardInputs[categoryId][subCategoryId][field] = value;
-      return { customBoardInputs: customBoardInputs };
+      return { ...prevState, customBoardInputs };
     });
   },
 
@@ -458,24 +473,40 @@ const useManageStore = create((set, get) => ({
     const techStore = useTechStore.getState();
     const templateURL = `http://localhost:9019/default-et7-board-template/connectWiseManageDetails`;
     const prioritiesURL = `http://localhost:9020/getConnectWisePriorities?mspCustomDomain=${techStore.tech.mspCustomDomain}`;
+    const departmentsURL = `http://localhost:9020/getConnectWiseDepartments?mspCustomDomain=${techStore.tech.mspCustomDomain}`;
+    const locationsURL = `http://localhost:9020/getConnectWiseLocations?mspCustomDomain=${techStore.tech.mspCustomDomain}`;
 
     try {
-      const [templateResponse, prioritiesResponse] = await Promise.all([
+      const [
+        templateResponse,
+        prioritiesResponse,
+        departmentsResponse,
+        locationsResponse,
+      ] = await Promise.all([
         fetch(templateURL),
         fetch(prioritiesURL),
+        fetch(departmentsURL),
+        fetch(locationsURL),
       ]);
 
       if (
         templateResponse.status === 200 &&
-        prioritiesResponse.status === 200
+        prioritiesResponse.status === 200 &&
+        departmentsResponse.status === 200 &&
+        locationsResponse.status === 200
       ) {
         const customMerge = await templateResponse.json();
         const prioritiesList = await prioritiesResponse.json();
+        const departmentsList = await departmentsResponse.json();
+        const locationsList = await locationsResponse.json();
+
         set({
           customBoardMerge: {
             mspConnectWiseManageCategorizations:
               customMerge.mspConnectWiseManageCategorizations,
             prioritiesList: prioritiesList,
+            departmentsList: departmentsList,
+            locationsList: locationsList,
           },
           customBoard: true,
           customBoardTitle: "",
@@ -534,6 +565,8 @@ const useManageStore = create((set, get) => ({
       console.log(e);
     }
   },
+
+  handleSaveCustomBoard: async (mspCustomDomain) => {},
 
   handleAddManageTechnician: async (mspCustomDomain) => {
     const { techniciansSelected, technicians } = get();

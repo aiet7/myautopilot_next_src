@@ -10,7 +10,6 @@ const Board = () => {
   const { tech } = useTechStore();
 
   const {
-    customBoardInputs,
     successMessage,
     errorMessage,
     severityOptions,
@@ -19,7 +18,6 @@ const Board = () => {
     durationOptions,
     activeBoard,
     customBoard,
-    customBoardTitle,
     connectwiseBoards,
     loadingMerge,
     customBoardMerge,
@@ -34,9 +32,26 @@ const Board = () => {
 
   const boardData = customBoard ? customBoardMerge : connectwiseMerge;
 
-  console.log(customBoardInputs);
   return (
     <div className="flex flex-col gap-4 h-full overflow-hidden">
+      <div className="flex flex-col gap-8 pb-2 justify-between items-start text-xl font-semibold italic text-black/30 md:flex-row">
+        {loadingMerge ? (
+          <div className="flex items-center gap-2">
+            <p>Loading your board.</p>
+            <FaSpinner size={20} className="animate-spin" />
+          </div>
+        ) : customBoard ? (
+          <div className="flex items-center gap-2">
+            <p>Customize Your Own Board</p>
+            <FaClipboard size={20} />
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <p>Please select a board to view</p>
+            <FaClipboard size={20} />
+          </div>
+        )}
+      </div>
       {connectwiseBoards && (
         <div className="flex gap-2 items-center flex-wrap font-semibold ">
           {connectwiseBoards.map((board) => {
@@ -54,28 +69,19 @@ const Board = () => {
               </div>
             );
           })}
-          <AiOutlinePlus
+          <div
             onClick={handleCustomBoard}
-            size={25}
-            className="cursor-pointer"
-          />
+            className={`${
+              customBoard && "bg-green-800 text-white"
+            } border rounded-lg shadow-lg px-4 py-2 cursor-pointer `}
+          >
+            Custom
+          </div>
         </div>
       )}
-      <div className="flex flex-col gap-8 justify-between items-center text-xl font-semibold italic text-black/30 md:flex-row">
-        {loadingMerge ? (
-          <div className="flex items-center gap-2">
-            <p>Loading your board.</p>
-            <FaSpinner size={20} className="animate-spin" />
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <p>Please select a board to view</p>
-            <FaClipboard size={20} />
-          </div>
-        )}
-      </div>
+
       {customBoard && (
-        <div>
+        <div className="flex items-center gap-2">
           <input
             className="border p-1 rounded"
             placeholder="Enter Board Title"
@@ -83,6 +89,28 @@ const Board = () => {
               setCustomBoardInputs(null, null, "boardTitle", e.target.value)
             }
           />
+          <select
+            onChange={(e) =>
+              setCustomBoardInputs(null, null, "department", e.target.value)
+            }
+            className="p-1 border rounded w-[125px]"
+          >
+            {customBoardMerge.departmentsList.map((department) => {
+              const { id, name } = department;
+              return <option key={id}>{name}</option>;
+            })}
+          </select>
+          <select
+            onChange={(e) =>
+              setCustomBoardInputs(null, null, "location", e.target.value)
+            }
+            className="p-1 border rounded w-[150px]"
+          >
+            {customBoardMerge.locationsList.map((location) => {
+              const { id, name } = location;
+              return <option key={id}>{name}</option>;
+            })}
+          </select>
         </div>
       )}
       <div className="flex flex-col text-xl overflow-hidden">
@@ -92,7 +120,10 @@ const Board = () => {
               <thead className="sticky top-0 bg-white text-lg text-black/60">
                 <tr className="">
                   <th className="p-2 border-l border-t border-b border-r ">
-                    Category Name
+                    <div className="flex justify-between items-center">
+                      Category Name
+                      <AiOutlinePlus className="text-black" size={20} />
+                    </div>
                   </th>
                   <th className="p-2 border-t border-b border-r">
                     Sub-Categorizations
@@ -114,10 +145,9 @@ const Board = () => {
                     } = category;
                     return (
                       <tr key={categoryId}>
-                        <td className="p-2 truncate border-l border-r border-b">
+                        <td className="p-2 truncate border-l border-r border-b align-top">
                           {customBoard ? (
                             <input
-                              className="border p-1 rounded"
                               type="text"
                               placeholder={categoryName}
                               onChange={(e) =>
@@ -133,7 +163,7 @@ const Board = () => {
                             categoryName
                           )}
                         </td>
-                        <td className="p-2 truncate border-r border-b">
+                        <td className="p-2 truncate border-r border-b align-top">
                           {mspConnectWiseManageSubCategorizations.map(
                             (subCat) => {
                               const { subCategoryId, subCategoryName } = subCat;
@@ -141,7 +171,6 @@ const Board = () => {
                                 <div key={subCategoryId}>
                                   {customBoard ? (
                                     <input
-                                      className="border p-1 rounded my-1"
                                       type="text"
                                       placeholder={subCategoryName}
                                       onChange={(e) =>
@@ -163,11 +192,11 @@ const Board = () => {
                           {customBoard && (
                             <AiOutlinePlus
                               size={20}
-                              className="cursor-pointer"
+                              className="cursor-pointer mt-1"
                             />
                           )}
                         </td>
-                        <td className="p-2 border-r border-b">
+                        <td className="p-1 border-r border-b align-top">
                           {mspConnectWiseManageSubCategorizations.map(
                             (subCat) => {
                               const { subCategoryId } = subCat;
@@ -184,13 +213,22 @@ const Board = () => {
                                             priority.id ===
                                             parseInt(e.target.value)
                                         );
-                                      setBoardInputs(
-                                        categoryId,
-                                        subCategoryId,
-                                        "priority",
-                                        selectedPriority.id,
-                                        selectedPriority.name
-                                      );
+                                      if (customBoard) {
+                                        setCustomBoardInputs(
+                                          categoryId,
+                                          subCategoryId,
+                                          "priority",
+                                          selectedPriority.name
+                                        );
+                                      } else {
+                                        setBoardInputs(
+                                          categoryId,
+                                          subCategoryId,
+                                          "priority",
+                                          selectedPriority.id,
+                                          selectedPriority.name
+                                        );
+                                      }
                                     }}
                                   >
                                     {boardData.prioritiesList.map(
@@ -209,7 +247,7 @@ const Board = () => {
                             }
                           )}
                         </td>
-                        <td className="p-2 border-r border-b">
+                        <td className="p-1 border-r border-b align-top">
                           {mspConnectWiseManageSubCategorizations.map(
                             (subCat) => {
                               const { subCategoryId } = subCat;
@@ -220,13 +258,22 @@ const Board = () => {
                                 >
                                   <select
                                     onChange={(e) => {
-                                      setBoardInputs(
-                                        categoryId,
-                                        subCategoryId,
-                                        "severity",
-                                        e.target.value,
-                                        null
-                                      );
+                                      if (customBoard) {
+                                        setCustomBoardInputs(
+                                          categoryId,
+                                          subCategoryId,
+                                          "severity",
+                                          e.target.value
+                                        );
+                                      } else {
+                                        setBoardInputs(
+                                          categoryId,
+                                          subCategoryId,
+                                          "severity",
+                                          e.target.value,
+                                          null
+                                        );
+                                      }
                                     }}
                                   >
                                     {severityOptions.map((option) => (
@@ -240,7 +287,7 @@ const Board = () => {
                             }
                           )}
                         </td>
-                        <td className="p-2 border-r border-b">
+                        <td className="p-1 border-r border-b align-top">
                           {mspConnectWiseManageSubCategorizations.map(
                             (subCat) => {
                               const { subCategoryId } = subCat;
@@ -251,13 +298,22 @@ const Board = () => {
                                 >
                                   <select
                                     onChange={(e) => {
-                                      setBoardInputs(
-                                        categoryId,
-                                        subCategoryId,
-                                        "impact",
-                                        e.target.value,
-                                        null
-                                      );
+                                      if (customBoard) {
+                                        setCustomBoardInputs(
+                                          categoryId,
+                                          subCategoryId,
+                                          "impact",
+                                          e.target.value
+                                        );
+                                      } else {
+                                        setBoardInputs(
+                                          categoryId,
+                                          subCategoryId,
+                                          "impact",
+                                          e.target.value,
+                                          null
+                                        );
+                                      }
                                     }}
                                   >
                                     {impactOptions.map((option) => (
@@ -271,7 +327,7 @@ const Board = () => {
                             }
                           )}
                         </td>
-                        <td className="p-2 border-r border-b">
+                        <td className="p-1 border-r border-b align-top">
                           {mspConnectWiseManageSubCategorizations.map(
                             (subCat) => {
                               const { subCategoryId } = subCat;
@@ -282,13 +338,22 @@ const Board = () => {
                                 >
                                   <select
                                     onChange={(e) => {
-                                      setBoardInputs(
-                                        categoryId,
-                                        subCategoryId,
-                                        "tier",
-                                        e.target.value,
-                                        null
-                                      );
+                                      if (customBoard) {
+                                        setCustomBoardInputs(
+                                          categoryId,
+                                          subCategoryId,
+                                          "tier",
+                                          e.target.value
+                                        );
+                                      } else {
+                                        setBoardInputs(
+                                          categoryId,
+                                          subCategoryId,
+                                          "tier",
+                                          e.target.value,
+                                          null
+                                        );
+                                      }
                                     }}
                                   >
                                     {tierOptions.map((option) => (
@@ -300,7 +365,7 @@ const Board = () => {
                             }
                           )}
                         </td>
-                        <td className="p-2 border-r border-b">
+                        <td className="p-1 border-r border-b align-top">
                           {mspConnectWiseManageSubCategorizations.map(
                             (subCat) => {
                               const { subCategoryId } = subCat;
@@ -311,13 +376,22 @@ const Board = () => {
                                 >
                                   <select
                                     onChange={(e) => {
-                                      setBoardInputs(
-                                        categoryId,
-                                        subCategoryId,
-                                        "duration",
-                                        e.target.value,
-                                        null
-                                      );
+                                      if (customBoard) {
+                                        setCustomBoardInputs(
+                                          categoryId,
+                                          subCategoryId,
+                                          "duration",
+                                          e.target.value
+                                        );
+                                      } else {
+                                        setBoardInputs(
+                                          categoryId,
+                                          subCategoryId,
+                                          "duration",
+                                          e.target.value,
+                                          null
+                                        );
+                                      }
                                     }}
                                   >
                                     {durationOptions.map((option) => (
