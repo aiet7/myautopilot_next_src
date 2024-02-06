@@ -23,15 +23,28 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     const start = (url) => {
+      const isForgotPasswordFlow = url.match(
+        /\/[^/]+\/forgot(\/verification(\/createpassword)?)?$/
+      );
+      const isBaseMspCustomDomainRoute = url.match(/^\/[^/]+\/?$/);
+
       const isAuthRoute = router.pathname.includes("/auth/");
       const isTargetAuthRoute = url.includes("/auth/");
+
       if (
-        router.pathname === "/auth/login/tech" &&
-        url.includes("/dashboard/")
+        !isAuthRoute &&
+        !isTargetAuthRoute &&
+        !isForgotPasswordFlow &&
+        !isBaseMspCustomDomainRoute
       ) {
-        setIsLoading(true);
-      } else if (!isAuthRoute && !isTargetAuthRoute) {
-        setIsSmallLoading(true);
+        if (
+          router.pathname === "/auth/login/tech" &&
+          url.includes("/dashboard/")
+        ) {
+          setIsLoading(true);
+        } else {
+          setIsSmallLoading(true);
+        }
       }
     };
     const end = () => {

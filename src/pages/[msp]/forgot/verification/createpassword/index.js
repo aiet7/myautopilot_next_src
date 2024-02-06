@@ -1,12 +1,24 @@
 "use client";
-import Link from "next/link";
+import Image from "next/image";
+
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
+import Cookie from "js-cookie";
+import useAuthStore from "@/utils/store/auth/authStore.js";
+
 import useUiStore from "@/utils/store/ui/uiStore.js";
 
-const BusinessLoginPage = () => {
+const CreatepasswordPage = () => {
   const router = useRouter();
+  const { msp } = router.query;
   const { height, setHeight } = useUiStore();
+  const {
+    errorMessage,
+    setPassword,
+    setVerifyPassword,
+    handleCreateNewPassword,
+  } = useAuthStore();
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       setHeight(window.innerHeight);
@@ -36,47 +48,44 @@ const BusinessLoginPage = () => {
         >
           <form className="p-6 w-[450px] flex flex-col gap-10 items-start justify-center lg:shadow-lg  lg:rounded-lg lg:bg-white">
             <div className="text-black flex flex-col items-start">
-              <h1 className="text-2xl font-bold ">
-                Enter Your Business User Details.
-              </h1>
+              <h1 className="text-2xl font-bold ">Create A Password</h1>
               <p className="text-black/60">
                 Please fill out all of the required fields*
               </p>
+              <p className="text-red-500 text-sm">{errorMessage}</p>
             </div>
-            <div className="flex flex-col gap-4 w-full ">
+            <div className="flex flex-col gap-4 w-full text-sm">
               <input
-                
-                type="email"
-                placeholder="Enter your email"
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleCreateNewPassword(router.push);
+                  }
+                }}
+                type="password"
+                placeholder="Enter New Password"
                 className="w-full p-2 border border-gray-300 bg-white text-black"
               />
-
               <input
-            
+                onChange={(e) => setVerifyPassword(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleCreateNewPassword(router.push, msp);
+                  }
+                }}
                 type="password"
-                placeholder="Enter your password"
-                className="w-full p-2 border border-gray-300  bg-white text-black"
+                placeholder="Re-Enter New Password"
+                className="w-full p-2 border border-gray-300 bg-white text-black"
               />
               <button
-                onClick={() => handleLoginCredentialsAuth(router.push)}
+                onClick={() => handleCreateNewPassword(router.push, msp)}
                 type="button"
                 className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4"
               >
                 Continue
               </button>
-              <div className="flex flex-col gap-1">
-                <Link href={"/auth/login/users"}>
-                  <span className="text-sm text-blue-800 font-semibold">
-                    Back to login in
-                  </span>
-                </Link>
-                <Link href={"/auth/signup"}>
-                  <span className="text-sm text-blue-800 font-semibold">
-                    No Account? Sign up
-                  </span>
-                </Link>
-              </div>
-              
             </div>
           </form>
         </div>
@@ -85,4 +94,4 @@ const BusinessLoginPage = () => {
   );
 };
 
-export default BusinessLoginPage;
+export default CreatepasswordPage;

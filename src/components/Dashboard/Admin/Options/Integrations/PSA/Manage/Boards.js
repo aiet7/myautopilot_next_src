@@ -3,7 +3,6 @@
 import useManageStore from "@/utils/store/admin/control/integrations/PSA/manageStore";
 import useTechStore from "@/utils/store/user/techStore";
 import { FaClipboard, FaSpinner } from "react-icons/fa";
-import { SiOpenai } from "react-icons/si";
 import { AiOutlinePlus } from "react-icons/ai";
 
 const Board = () => {
@@ -31,14 +30,13 @@ const Board = () => {
     setNewCustomCategory,
     setNewCustomSubcategory,
     handleGetBoardDetails,
-    handleCustomBoardMetadata,
     handleSaveCustomBoardMetadata,
     handleSaveBoard,
     handleSaveCustomBoard,
   } = useManageStore();
 
   const boardData = customBoard ? customBoardMerge : connectwiseMerge;
-  console.log(boardData);
+
   return (
     <div className="flex flex-col gap-4 h-full overflow-hidden">
       <div className="flex flex-col gap-8 pb-2 justify-between items-start text-xl font-semibold italic text-black/30 md:flex-row">
@@ -60,35 +58,35 @@ const Board = () => {
         )}
       </div>
       {connectwiseBoards && (
-        <div className="flex gap-2 items-center flex-wrap font-semibold ">
-          {connectwiseBoards.map((board) => {
-            const { id, name } = board;
-
-            return (
-              <div
-                key={id}
-                onClick={() => handleGetBoardDetails(id, tech?.mspCustomDomain)}
-                className={`${
-                  activeBoard === id && "bg-blue-800 text-white"
-                } border rounded-lg shadow-lg px-4 py-2 cursor-pointer `}
-              >
-                {name}
-              </div>
-            );
-          })}
-          <div
-            onClick={handleCustomBoardMetadata}
-            className={`${
-              customBoardMetadata && "bg-green-800 text-white"
-            } border rounded-lg shadow-lg px-4 py-2 cursor-pointer `}
+        <div className="">
+          <select
+            onChange={(e) =>
+              handleGetBoardDetails(e.target.value, tech?.mspCustomDomain)
+            }
+            className="border rounded-lg shadow-lg p-2 cursor-pointer text-black"
           >
-            Custom
-          </div>
+            {connectwiseBoards &&
+              connectwiseBoards.map((board) => {
+                const { id, name } = board;
+                return (
+                  <option
+                    key={id}
+                    value={id}
+                    className={`${
+                      activeBoard === id ? "bg-blue-800 text-white" : ""
+                    }`}
+                  >
+                    {name}
+                  </option>
+                );
+              })}
+            <option value="custom">Custom</option>
+          </select>
         </div>
       )}
 
       {customBoardMetadata && (
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {customBoard ? (
             <div className="flex items-center gap-1 text-sm">
               <h2 className="font-bold">Title:</h2>
@@ -134,14 +132,15 @@ const Board = () => {
               }}
               className="p-1 border rounded w-[125px]"
             >
-              {customBoardMerge.departmentsList.map((department) => {
-                const { id, name } = department;
-                return (
-                  <option value={id} key={id}>
-                    {name}
-                  </option>
-                );
-              })}
+              {customBoardMerge &&
+                customBoardMerge.departmentsList.map((department) => {
+                  const { id, name } = department;
+                  return (
+                    <option value={id} key={id}>
+                      {name}
+                    </option>
+                  );
+                })}
             </select>
           )}
           {customBoard ? (
@@ -167,14 +166,15 @@ const Board = () => {
               }}
               className="p-1 border rounded w-[150px]"
             >
-              {customBoardMerge.locationsList.map((location) => {
-                const { id, name } = location;
-                return (
-                  <option value={id} key={id}>
-                    {name}
-                  </option>
-                );
-              })}
+              {customBoardMerge &&
+                customBoardMerge.locationsList.map((location) => {
+                  const { id, name } = location;
+                  return (
+                    <option value={id} key={id}>
+                      {name}
+                    </option>
+                  );
+                })}
             </select>
           )}
           {!customBoard && (

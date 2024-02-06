@@ -11,7 +11,7 @@ import useAuthStore from "@/utils/store/auth/authStore";
 const MSPPage = ({}) => {
   const { height, setHeight } = useUiStore();
   const { mspSubDomain, initializeSubDomain } = useInitializeAppStore();
-
+  
   const {
     current2FA,
     errorMessage,
@@ -168,7 +168,10 @@ const MSPPage = ({}) => {
               <span
                 onClick={() => {
                   clearMSPCredentials();
-                  handleShowForgotPassword(router.push);
+                  handleShowForgotPassword(
+                    router.push,
+                    mspSubDomain?.customDomain
+                  );
                 }}
                 className="text-sm text-blue-800 font-extrabold cursor-pointer"
               >

@@ -4,6 +4,8 @@ import { BsStars } from "react-icons/bs";
 
 const Support = () => {
   const { showTicket, ticketNotes, handleTicketMode } = useTicketsStore();
+
+
   return (
     <div className="flex-grow mx-auto">
       <div className="flex flex-col py-4 gap-6">

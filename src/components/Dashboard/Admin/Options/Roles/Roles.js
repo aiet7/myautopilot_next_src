@@ -42,99 +42,106 @@ const Roles = ({}) => {
     >
       {activeRole && <EditRole />}
       {createRole && <CreateRole />}
-      <div className="w-full h-full flex flex-col ">
-        <div className="dark:border-b-white/20 border-b p-4">
-          <h1 className="text-2xl">Roles</h1>
-        </div>
-        <div className="dark:shadow-white/40 dark:border-white/20 overflow-hidden flex flex-col lg:dark:shadow-white/40 lg:border lg:shadow lg:my-12 lg:mx-4">
-          <div className="flex flex-col gap-2 p-4">
-            <p className="dark:text-white/70 text-sm text-black/50">
-              Create roles and assign permissions
-            </p>
-            <div className="flex items-center gap-2 ">
-              <button
-                onClick={() => setCreateRole(true)}
-                className="dark:border-white/20 hover:bg-blue-500 border bg-blue-800 text-white py-1 px-3"
-              >
-                Create Role
-              </button>
-              <input
-                type="text"
-                placeholder="Search by name"
-                className="dark:border-white/20 p-1 border mr-2"
-              />
+      <div className="dark:border-b-white/20 border-b p-4">
+        <h1 className="text-2xl">Roles</h1>
+      </div>
+      <div className="flex flex-col h-full overflow-hidden">
+        <div className="flex flex-col text-xl overflow-hidden">
+          {roles?.length !== 0 ? (
+            <div className="flex flex-col gap-7 text-xl overflow-hidden">
+              {roles && (
+                <div className="flex  flex-col overflow-hidden px-4">
+                  <div className="flex items-center justify-start gap-2 py-4">
+                    <button
+                      onClick={() => setCreateRole(true)}
+                      className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+                    >
+                      Add Role
+                    </button>
+                  </div>
+                  <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
+                    <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
+                      <thead className="dark:text-white dark:bg-gray-700 sticky top-0 text-lg text-black/60 bg-[#F5F8FA]">
+                        <tr className="">
+                          <th className="p-2 border-l border-t border-b border-r"></th>
+                          <th className="p-2 border-t border-b border-r">
+                            Name
+                          </th>
+                          <th className="p-2 border-t border-b border-r">
+                            Date Created
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {roles?.map((role) => {
+                          const { id, custom, name, timeStamp } = role;
+                          return (
+                            <tr key={id}>
+                              <td className="p-2 truncate border-l  border-r border-b">
+                                <div className="flex gap-3">
+                                  <button
+                                    onClick={() =>
+                                      handleCloneRole(id, tech?.mspCustomDomain)
+                                    }
+                                    className="hover:underline text-blue-500"
+                                  >
+                                    Clone
+                                  </button>
+                                  {custom === true && (
+                                    <>
+                                      <button
+                                        onClick={() => setActiveEditRole(id)}
+                                        className="hover:underline text-blue-500"
+                                      >
+                                        Edit
+                                      </button>
+
+                                      <button
+                                        onClick={() =>
+                                          handleDeleteRole(
+                                            id,
+                                            tech?.mspCustomDomain
+                                          )
+                                        }
+                                        className="hover:underline text-blue-500"
+                                      >
+                                        Delete
+                                      </button>
+                                    </>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="p-2 truncate border-r border-b">
+                                {name} (Custom: {custom ? "True" : "False"})
+                              </td>
+                              <td className="p-2 truncate border-r border-b">
+                                {convertDate(timeStamp)}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                    {errorMessage.clone && (
+                      <p className="font-semibold text-red-500">
+                        Error Cloning Role!
+                      </p>
+                    )}
+
+                    {errorMessage.delete && (
+                      <p className="font-bold text-red-500">
+                        Error Deleting Role!
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-
-          <div className="px-4 pb-4 block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
-            <table className="dark:text-white/70 text-black/50 min-w-full table-fixed border-separate border-spacing-0 text-left">
-              <thead className="dark:bg-gray-700 sticky top-0 bg-[#F5F8FA]">
-                <tr className="">
-                  <th className="p-2 w-[44px] h-[44px] border"></th>
-                  <th className="p-2  truncate border-t border-b border-r cursor-pointer">
-                    Name
-                  </th>
-                  <th className="p-2  truncate border-t border-b border-r cursor-pointer">
-                    Date Created
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {roles?.map((role, index) => {
-                  const { id, custom, name, timeStamp } = role;
-                  return (
-                    <tr key={id} className="">
-                      <td className="p-2 border-r border-l border-b text-center">
-                        <div className="flex gap-3">
-                          <button
-                            onClick={() =>
-                              handleCloneRole(id, tech?.mspCustomDomain)
-                            }
-                            className="hover:underline text-blue-500"
-                          >
-                            Clone
-                          </button>
-                          {custom === true && (
-                            <>
-                              <button
-                                onClick={() => setActiveEditRole(id)}
-                                className="hover:underline text-blue-500"
-                              >
-                                Edit
-                              </button>
-
-                              <button
-                                onClick={() =>
-                                  handleDeleteRole(id, tech?.mspCustomDomain)
-                                }
-                                className="hover:underline text-blue-500"
-                              >
-                                Delete
-                              </button>
-                            </>
-                          )}
-                        </div>
-                      </td>
-                      <td className="p-2 truncate border-r border-b">
-                        {name} (Custom: {custom ? "True" : "False"})
-                      </td>
-                      <td className="p-2 truncate border-r border-b">
-                        {convertDate(timeStamp)}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-
-            {errorMessage.clone && (
-              <p className="font-semibold text-red-500">Error Cloning Role!</p>
-            )}
-
-            {errorMessage.delete && (
-              <p className="font-bold text-red-500">Error Deleting Role!</p>
-            )}
-          </div>
+          ) : (
+            <p className="text-xl font-bold text-black/20  w-full">
+              Currently Have No Roles Listed
+            </p>
+          )}
         </div>
       </div>
     </div>
@@ -142,23 +149,3 @@ const Roles = ({}) => {
 };
 
 export default Roles;
-
-// db.Roles.insertMany([
-//   {
-//     _id: ObjectId("654002b96a55f75b62a1b55b"),
-//     name: "regular",
-//     permissions: {
-//       clientBilling: false,
-//       mspBilling: false,
-//       clientUserManagement: false,
-//       technicianUserManagement: false,
-//       mspBranding: false,
-//       mspIntegrations: false,
-//       clientDocuments: false,
-//       mspDocuments: false,
-//     },
-//     mspCustomDomain: 5,
-//     custom: false,
-//     _class: "com.etech7.entity.Roles",
-//   },
-// ]);

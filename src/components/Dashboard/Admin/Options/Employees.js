@@ -42,73 +42,73 @@ const Employees = ({}) => {
                   </div>
                   <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
                     <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
-                      <thead className="sticky top-0 bg-white text-lg text-black/60">
+                      <thead className="dark:text-white dark:bg-gray-700 sticky top-0  text-lg text-black/60 bg-[#F5F8FA]">
                         <tr className="">
                           <th className="p-2 border-l border-t border-b border-r ">
                             Name
                           </th>
                           <th className="p-2 border-t border-b border-r ">
-                            Company
+                            Technician ID
                           </th>
                           <th className="p-2 border-t border-b border-r">
-                            Title
-                          </th>
-                          <th className="p-2 border-t border-b border-r">
-                            Company ID
-                          </th>
-                          <th className="p-2 border-t border-b border-r">
-                            Contact ID
-                          </th>
-                          <th className="p-2 border-t border-b border-r">
-                            Primary Email
+                            Identifier
                           </th>
                           <th className="p-2 border-t border-b border-r">
                             Phone Number
                           </th>
                           <th className="p-2 border-t border-b border-r">
-                            Default Phone Number
+                            Office Number
+                          </th>
+                          <th className="p-2 border-t border-b border-r">
+                            Primary Email
+                          </th>
+                          <th className="p-2 border-t border-b border-r">
+                            Office Email
+                          </th>
+                          <th className="p-2 border-t border-b border-r">
+                            Tier
                           </th>
                         </tr>
                       </thead>
                       <tbody>
                         {employees?.map((employee) => {
                           const {
+                            id,
                             firstName,
                             lastName,
-                            title,
-                            company,
-                            connectWiseEmailId,
-                            connectWiseCompanyId,
-                            connectWiseContactId,
-                            connectWisePhoneNumber,
-                            defaultPhoneNbr,
-                            defaultPhoneType,
+                            identifier,
+                            mobilePhone,
+                            connectWiseMembersId,
+                            officeEmail,
+                            officePhone,
+                            primaryEmail,
+                            tier,
                           } = employee;
                           return (
-                            <tr key={connectWiseContactId}>
+                            <tr key={id}>
                               <td className="p-2 truncate border-l  border-r border-b">
                                 {firstName + " " + lastName}
                               </td>
                               <td className="p-2 truncate border-r border-b">
-                                {company?.name}
+                                {connectWiseMembersId}
                               </td>
                               <td className="p-2 truncate border-r border-b">
-                                {title}
+                                {identifier}
                               </td>
                               <td className="p-2 truncate border-r border-b">
-                                {connectWiseCompanyId}
+                                {mobilePhone}
                               </td>
                               <td className="p-2 truncate border-r border-b">
-                                {connectWiseContactId}
+                                {officePhone}
                               </td>
                               <td className="p-2 truncate border-r border-b">
-                                {connectWiseEmailId}
+                                {primaryEmail}
                               </td>
                               <td className="p-2 truncate border-r border-b">
-                                {connectWisePhoneNumber}
+                                {officeEmail}
                               </td>
                               <td className="p-2 truncate border-r border-b">
-                                {defaultPhoneType + ": " + defaultPhoneNbr}
+                                {tier}
                               </td>
                             </tr>
                           );

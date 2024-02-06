@@ -16,13 +16,16 @@ const useManageStore = create((set, get) => ({
   techniciansTierOptions: ["Tier1", "Tier2", "Tier3", "NoTier"],
   techniciansRoleOptions: null,
   techniciansSelected: {},
+  loadingTechnicians: false,
 
   clients: null,
   clientsSelected: {},
   clientsFilterType: "",
+  loadingClients: false,
 
   contacts: null,
   contactsSelected: {},
+  loadingContacts: false,
 
   connectwiseBoards: null,
   loadingBoards: false,
@@ -55,6 +58,8 @@ const useManageStore = create((set, get) => ({
     companyId: "",
     publicKey: "",
     privateKey: "",
+    emailConnectorGmail: "",
+    emailConnectorAppPassword: "",
   },
 
   severityOptions: ["Low", "Medium", "High"],
@@ -78,7 +83,11 @@ const useManageStore = create((set, get) => ({
   initializeManageTechnicians: async () => {
     const { activePerPage } = get();
     const techStore = useTechStore.getState();
-    set({ technicians: null, techniciansRoleOptions: null });
+    set({
+      technicians: null,
+      techniciansRoleOptions: null,
+      loadingTechnicians: true,
+    });
 
     if (techStore.tech) {
       try {
@@ -107,6 +116,7 @@ const useManageStore = create((set, get) => ({
           ),
           technicians: markedTechnicians,
           techniciansRoleOptions: newRoles,
+          loadingTechnicians: false,
         });
       } catch (e) {
         console.log(e);
@@ -117,7 +127,7 @@ const useManageStore = create((set, get) => ({
   initializeManageClients: async () => {
     const { activePerPage } = get();
     const techStore = useTechStore.getState();
-    set({ clients: null });
+    set({ clients: null, loadingClients: true });
 
     if (techStore.tech) {
       try {
@@ -143,6 +153,7 @@ const useManageStore = create((set, get) => ({
             (_, i) => i + 1
           ),
           clients: markedClients,
+          loadingClients: false,
         });
       } catch (e) {
         console.log(e);
@@ -153,7 +164,7 @@ const useManageStore = create((set, get) => ({
   initializeManageContacts: async () => {
     const { activePerPage } = get();
     const techStore = useTechStore.getState();
-    set({ contacts: null });
+    set({ contacts: null, loadingContacts: true });
 
     if (techStore.tech) {
       try {
@@ -179,6 +190,7 @@ const useManageStore = create((set, get) => ({
             (_, i) => i + 1
           ),
           contacts: markedContacts,
+          loadingContacts: false,
         });
       } catch (e) {
         console.log(e);
@@ -474,6 +486,34 @@ const useManageStore = create((set, get) => ({
     }
   },
 
+  handleIntegrateEmailConnector: async () => {
+    const { integrationInputs } = get();
+    const { handleUpdateIntegrations } = useIntegrationsStore.getState();
+
+    if (integrationInputs.emailConnectorGmail.trim() !== "") {
+      const encodedEmail = encodeURIComponent(
+        integrationInputs.emailConnectorGmail
+      );
+
+      const encodedPassword = encodeURIComponent(
+        integrationInputs.emailConnectorAppPassword
+      );
+      try {
+        const response = await fetch(
+          `http://localhost:9008/testCredentials?email=${encodedEmail}&password=${encodedPassword}`
+        );
+
+        if (response.status === 200) {
+          console.log("EMAIL CONNECTOR CONNECTED");
+        } else {
+          console.log("EMAIL CONNECTOR FAILED");
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  },
+
   handleDisconnectManage: async (mspCustomDomain) => {
     const { handleUpdateIntegrations } = useIntegrationsStore.getState();
 
@@ -540,26 +580,39 @@ const useManageStore = create((set, get) => ({
   },
 
   handleGetBoardDetails: async (id, mspCustomDomain) => {
-    set({
-      connectwiseMerge: null,
-      loadingMerge: true,
-      activeBoard: id,
-      customBoard: false,
-      customBoardMetadata: false,
-    });
-    try {
-      const response = await fetch(
-        `http://localhost:9020/getMergedConnectWiseCategorizationWithoutGpt?mspCustomDomain=${mspCustomDomain}&boardId=${id}`
-      );
+    const { handleCustomBoardMetadata } = get();
 
-      if (response.status === 200) {
-        const merge = await response.json();
-        set({ connectwiseMerge: merge, loadingMerge: false });
-      } else {
-        console.log("Error");
+    if (id === "custom") {
+      set({
+        connectwiseMerge: null,
+        loadingMerge: false,
+        activeBoard: null,
+        customBoard: false,
+        customBoardMetadata: true,
+      });
+      await handleCustomBoardMetadata();
+    } else {
+      set({
+        connectwiseMerge: null,
+        loadingMerge: true,
+        activeBoard: id,
+        customBoard: false,
+        customBoardMetadata: false,
+      });
+      try {
+        const response = await fetch(
+          `http://localhost:9020/getMergedConnectWiseCategorizationWithoutGpt?mspCustomDomain=${mspCustomDomain}&boardId=${id}`
+        );
+
+        if (response.status === 200) {
+          const merge = await response.json();
+          set({ connectwiseMerge: merge, loadingMerge: false });
+        } else {
+          console.log("Error");
+        }
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.log(e);
     }
   },
 

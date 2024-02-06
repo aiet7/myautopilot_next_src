@@ -31,15 +31,19 @@ const useTicketsStore = create((set, get) => ({
     if (mode === "Support") {
       const { tickets, handleGetTicketStatus, handleGetTicketNotes } = get();
 
-      await Promise.all([
-        handleGetTicketStatus(ticketId),
-        handleGetTicketNotes(ticketId),
-      ]);
+      try {
+        await Promise.all([
+          handleGetTicketStatus(ticketId),
+          handleGetTicketNotes(ticketId),
+        ]);
 
-      const ticket = ticketId
-        ? tickets.find((t) => t.ticketId === ticketId)
-        : null;
-      set({ activeTicketMode: mode, showTicket: ticket });
+        const ticket = ticketId
+          ? tickets.find((t) => t.ticketId === ticketId)
+          : null;
+        set({ activeTicketMode: mode, showTicket: ticket });
+      } catch (e) {
+        console.log(e);
+      }
     } else {
       set({ activeTicketMode: mode, showTicket: null });
     }

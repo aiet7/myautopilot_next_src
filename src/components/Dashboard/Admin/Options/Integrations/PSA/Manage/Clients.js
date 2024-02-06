@@ -3,6 +3,7 @@
 import useManageStore from "@/utils/store/admin/control/integrations/PSA/manageStore";
 import useTechStore from "@/utils/store/user/techStore";
 import { useEffect } from "react";
+import { FaSpinner } from "react-icons/fa";
 
 const Clients = () => {
   const { tech } = useTechStore();
@@ -15,6 +16,7 @@ const Clients = () => {
     clients,
     clientsSelected,
     clientsFilterType,
+    loadingClients,
     setSelectedClients,
     setClientsFilterType,
     handleAddManageClients,
@@ -23,8 +25,8 @@ const Clients = () => {
 
   const filteredClients = clientsFilterType
     ? clients?.filter((client) =>
-      client.types?.some((type) => type.name === clientsFilterType)
-    )
+        client.types?.some((type) => type.name === clientsFilterType)
+      )
     : clients;
 
   const indexOfLastClient = activePage * activePerPage;
@@ -49,7 +51,15 @@ const Clients = () => {
       <div className="flex flex-col text-xl overflow-hidden">
         {currentClients?.length !== 0 ? (
           <div className="flex flex-col gap-7 text-xl overflow-hidden">
-            <p className="font-bold">Your Current Clients</p>
+            {loadingClients ? (
+              <div className="flex items-center gap-2">
+                <p className="font-bold">Loading your Clients</p>
+                <FaSpinner className="animate-spin" size={20} />
+              </div>
+            ) : (
+              <p className="font-bold">Your Current Clients</p>
+            )}
+
             {currentClients && (
               <div className="flex gap-2 flex-col overflow-hidden ">
                 <div className="flex items-center justify-start gap-2">
@@ -127,10 +137,13 @@ const Clients = () => {
                           phoneNumber,
                           status,
                           types,
-                          isInDB
+                          isInDB,
                         } = client;
                         return (
-                          <tr key={connectWiseCompanyId} className={`${isInDB ? "text-black/20" : ""}`}>
+                          <tr
+                            key={connectWiseCompanyId}
+                            className={`${isInDB ? "text-black/20" : ""}`}
+                          >
                             <td className="p-2 truncate border-l border-r border-b">
                               {!isInDB && (
                                 <input

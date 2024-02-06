@@ -6,7 +6,7 @@ import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
 import { FiRefreshCcw } from "react-icons/fi";
 import useTechStore from "@/utils/store/user/techStore";
 
-const Tickets = ({ }) => {
+const Tickets = ({}) => {
   const { openTickets } = useUiStore();
   const { tech } = useTechStore();
   const {
@@ -27,23 +27,26 @@ const Tickets = ({ }) => {
   return (
     <div
       className={`absolute z-10 top-0 bottom-0 left-0  
-      ${openTickets
+      ${
+        openTickets
           ? "translate-x-0 w-full md:w-[350px]"
           : "-translate-x-full w-full md:w-[350px]"
-        } dark:bg-[#111111] dark:border-white/10 bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease md:border-r md:border-black/10`}
+      } dark:bg-[#111111] dark:border-white/10 bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease md:border-r md:border-black/10`}
     >
       <div className="dark:bg-black dark:text-white dark:shadow-white/40 flex items-center w-full rounded-lg bg-white p-1 shadow-lg">
         <button
           onClick={() => setActiveTicketButton("Opened")}
-          className={`${activeTicketButton === "Opened" && "bg-blue-800 text-white"
-            } w-full rounded-lg py-4 `}
+          className={`${
+            activeTicketButton === "Opened" && "bg-blue-800 text-white"
+          } w-full rounded-lg py-4 `}
         >
           Open
         </button>
         <button
           onClick={() => setActiveTicketButton("Closed")}
-          className={`${activeTicketButton === "Closed" && "bg-blue-800 text-white"
-            } w-full rounded-lg py-4 `}
+          className={`${
+            activeTicketButton === "Closed" && "bg-blue-800 text-white"
+          } w-full rounded-lg py-4 `}
         >
           Closed
         </button>
@@ -84,8 +87,9 @@ const Tickets = ({ }) => {
                   </p>
                   <FiRefreshCcw
                     size={15}
-                    className={`${ticketStatusLoading?.[ticketId] && "animate-spin"
-                      } cursor-pointer`}
+                    className={`${
+                      ticketStatusLoading?.[ticketId] && "animate-spin"
+                    } cursor-pointer`}
                     onClick={(e) => {
                       e.stopPropagation();
                       handleGetTicketStatus(ticketId);

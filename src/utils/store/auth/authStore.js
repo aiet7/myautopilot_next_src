@@ -334,44 +334,46 @@ const useAuthStore = create((set, get) => ({
     }
   },
 
-  handleForgotPasswordEmailCheck: async (navigator) => {
+  handleForgotPasswordEmailCheck: async (navigator, mspCustomDomain) => {
     const { email } = get();
     if (isInputEmpty(email) || !isEmailInputValid(email)) {
       set({ errorMessage: "A valid email is required." });
+
       return;
     }
     const encodedClientUser = encodeURIComponent(email);
-
+    const encodedDomain = encodeURIComponent(mspCustomDomain);
     try {
       const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/forgotPassword?email=${encodedClientUser}`
+        `http://localhost:9019/${encodedDomain}/technicianUsers/forgotPassword?email=${encodedClientUser}`
       );
       set({ errorMessage: "" });
 
       if (response.ok) {
-        navigator("/auth/login/forgot/verification");
+        navigator(`/${mspCustomDomain}/forgot/verification`);
       }
     } catch (e) {
       console.log(e);
     }
   },
 
-  handleForgotPasswordVerifyCode: async (navigator) => {
+  handleForgotPasswordVerifyCode: async (navigator, mspCustomDomain) => {
     const { email, verificationCode } = get();
-    if (isInputEmpty(email)) {
-      set({ errorMessage: "A valid email is required." });
+    if (isInputEmpty(verificationCode)) {
+      set({ errorMessage: "A valid verification code required." });
       return;
     }
     const encodedClientUser = encodeURIComponent(email);
     const encodedVerificationCode = encodeURIComponent(verificationCode);
+    const encodedDomain = encodeURIComponent(mspCustomDomain);
 
     try {
       const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/validateResetToken?email=${encodedClientUser}&token=${encodedVerificationCode}`
+        `http://localhost:9019/${encodedDomain}/technicianUsers/validateResetToken?email=${encodedClientUser}&token=${encodedVerificationCode}`
       );
       set({ errorMessage: "", resentCodeMessage: "" });
       if (response.ok) {
-        navigator("/auth/login/forgot/verification/createpassword");
+        navigator(`/${mspCustomDomain}/forgot/verification/createpassword`);
       }
     } catch (e) {
       console.log(e);
@@ -384,7 +386,7 @@ const useAuthStore = create((set, get) => ({
     await handleForgotPasswordEmailCheck(null);
   },
 
-  handleCreateNewPassword: async (navigator) => {
+  handleCreateNewPassword: async (navigator, mspCustomDomain) => {
     const { email, verificationCode, password, verifyPassword } = get();
     if (isInputEmpty(password) || isInputEmpty(verifyPassword)) {
       set({ errorMessage: "A valid email is required." });
@@ -397,10 +399,11 @@ const useAuthStore = create((set, get) => ({
     }
 
     const encodedVerificationCode = encodeURIComponent(verificationCode);
+    const encodedDomain = encodeURIComponent(mspCustomDomain);
 
     try {
       const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/changePassword?token=${encodedVerificationCode}`,
+        `http://localhost:9019/${encodedDomain}/technicianUsers/changePassword?token=${encodedVerificationCode}`,
         {
           method: "POST",
           headers: {
@@ -414,7 +417,7 @@ const useAuthStore = create((set, get) => ({
       );
       set({ errorMessage: "" });
       if (response.ok) {
-        navigator("/auth/login");
+        navigator(`/${mspCustomDomain}`);
       }
     } catch (e) {
       console.log(e);
@@ -426,13 +429,13 @@ const useAuthStore = create((set, get) => ({
     set({ errorMessage: "", showSignupForm: false });
   },
 
-  handleShowForgotPassword: (navigator) => {
-    navigator("/auth/login/forgot");
+  handleShowLogin: (navigator) => {
+    navigator("/auth/login");
     set({ errorMessage: "", showSignupForm: false, companies: [] });
   },
 
-  handleShowLogin: (navigator) => {
-    navigator("/auth/login");
+  handleShowForgotPassword: (navigator, mspCustomDomain) => {
+    navigator(`/${mspCustomDomain}/forgot`);
     set({ errorMessage: "", showSignupForm: false, companies: [] });
   },
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useCompaniesStore from "@/utils/store/admin/control/companies/companiesStore";
 import useTechStore from "@/utils/store/user/techStore";
@@ -41,7 +41,7 @@ const Companies = () => {
                   </div>
                   <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
                     <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
-                      <thead className="sticky top-0 bg-white text-lg text-black/60">
+                      <thead className="dark:text-white dark:bg-gray-700 sticky top-0 text-lg text-black/60 bg-[#F5F8FA]">
                         <tr className="">
                           <th className="p-2 border-l border-t border-b border-r ">
                             Name
@@ -70,6 +70,7 @@ const Companies = () => {
                       <tbody>
                         {companies?.map((company) => {
                           const {
+                            id,
                             name,
                             connectWiseCompanyId,
                             addressLine1,
@@ -82,7 +83,7 @@ const Companies = () => {
                             types,
                           } = company;
                           return (
-                            <tr key={connectWiseCompanyId}>
+                            <tr key={id}>
                               <td className="p-2 truncate border-l  border-r border-b">
                                 {name}
                               </td>

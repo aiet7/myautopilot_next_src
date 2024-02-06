@@ -3,6 +3,7 @@
 import useManageStore from "@/utils/store/admin/control/integrations/PSA/manageStore";
 import useTechStore from "@/utils/store/user/techStore";
 import { useEffect } from "react";
+import { FaSpinner } from "react-icons/fa";
 
 const Technician = () => {
   const { tech } = useTechStore();
@@ -16,6 +17,7 @@ const Technician = () => {
     technicians,
     techniciansTierOptions,
     techniciansRoleOptions,
+    loadingTechnicians,
     setSelectedTechnicians,
     handleAddManageTechnician,
     initializeManageTechnicians,
@@ -28,13 +30,21 @@ const Technician = () => {
   useEffect(() => {
     initializeManageTechnicians();
   }, [tech]);
-  
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex flex-col text-xl overflow-hidden">
         {currentTechs?.length !== 0 ? (
           <div className="flex flex-col gap-7 text-xl overflow-hidden">
-            <p className="font-bold">Your Current Technicians</p>
+            {loadingTechnicians ? (
+              <div className="flex items-center gap-2">
+                <p className="font-bold">Loading your Technicians</p>
+                <FaSpinner className="animate-spin" size={20} />
+              </div>
+            ) : (
+              <p className="font-bold">Your Current Technicians</p>
+            )}
+
             {currentTechs && (
               <div className="flex gap-2 flex-col overflow-hidden ">
                 <div className="flex items-center justify-start gap-2">
@@ -93,11 +103,13 @@ const Technician = () => {
                           officeEmail,
                           officePhone,
                           primaryEmail,
-                          isInDB
+                          isInDB,
                         } = technician;
                         return (
-                          <tr key={connectWiseMembersId} className={`${isInDB ? "text-black/20" : ""}`}>
-
+                          <tr
+                            key={connectWiseMembersId}
+                            className={`${isInDB ? "text-black/20" : ""}`}
+                          >
                             <td className="p-2 truncate border-l border-r border-b">
                               {!isInDB && (
                                 <input
