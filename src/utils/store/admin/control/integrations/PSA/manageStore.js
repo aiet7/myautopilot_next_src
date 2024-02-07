@@ -486,25 +486,28 @@ const useManageStore = create((set, get) => ({
     }
   },
 
-  handleIntegrateEmailConnector: async () => {
+  handleIntegrateEmailConnector: async (mspCustomDomain) => {
     const { integrationInputs } = get();
     const { handleUpdateIntegrations } = useIntegrationsStore.getState();
 
     if (integrationInputs.emailConnectorGmail.trim() !== "") {
-      const encodedEmail = encodeURIComponent(
-        integrationInputs.emailConnectorGmail
-      );
-
-      const encodedPassword = encodeURIComponent(
-        integrationInputs.emailConnectorAppPassword
-      );
       try {
-        const response = await fetch(
-          `http://localhost:9008/testCredentials?email=${encodedEmail}&password=${encodedPassword}`
-        );
+        const response = await fetch(`http://localhost:9008/testCredentials`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: integrationInputs.emailConnectorGmail,
+            password: integrationInputs.emailConnectorAppPassword,
+            mspCustomDomain: mspCustomDomain,
+          }),
+        });
 
         if (response.status === 200) {
-          console.log("EMAIL CONNECTOR CONNECTED");
+          const updatedIntegrations = await response.json();
+          handleUpdateIntegrations(updatedIntegrations);
+          console.log("EMAIL CONNECTOR INTEGRATED");
         } else {
           console.log("EMAIL CONNECTOR FAILED");
         }
@@ -529,12 +532,45 @@ const useManageStore = create((set, get) => ({
             mspCustomDomain: mspCustomDomain,
             connectWiseManageIntegration: {
               connectWiseManageIntegrator: false,
-              microsoftGraphIntegrator: false,
-              emailIntegrator: false,
               clientId: "",
               companyId: "",
               publicKey: "",
               privateKey: "",
+            },
+          }),
+        }
+      );
+
+      if (response.status === 200) {
+        const updatedIntegrations = await response.json();
+        handleUpdateIntegrations(updatedIntegrations);
+        set({ errorMessage: false, successMessage: true });
+        console.log("MANAGE INTEGRATED");
+      } else {
+        set({ errorMessage: true, successMessage: false });
+        console.log("FAILED INTEGRATION");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleDisconnectEmailIntegrator: async (mspCustomDomain) => {
+    const { handleUpdateIntegrations } = useIntegrationsStore.getState();
+    try {
+      const response = await fetch(
+        `http://localhost:9019/${mspCustomDomain}/integrations/update`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            mspCustomDomain: mspCustomDomain,
+            connectWiseManageIntegration: {
+              emailIntegrator: false,
+              emailId: "",
+              password: "",
             },
           }),
         }
