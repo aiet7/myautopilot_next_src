@@ -79,7 +79,7 @@ const Configuration = () => {
           </div>
           {renderComponent()}
           {activeConfigSteps !== 4 && (
-            <div className="flex justify-between font-bold py-2">
+            <div className="flex justify-center font-bold py-2 gap-2">
               {activePageNumbers.map((page) => (
                 <button
                   className={`${

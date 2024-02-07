@@ -3,6 +3,7 @@
 import useManageStore from "@/utils/store/admin/control/integrations/PSA/manageStore";
 import useTechStore from "@/utils/store/user/techStore";
 import { useEffect } from "react";
+import { FaSpinner } from "react-icons/fa";
 
 const Technician = () => {
   const { tech } = useTechStore();
@@ -16,6 +17,7 @@ const Technician = () => {
     technicians,
     techniciansTierOptions,
     techniciansRoleOptions,
+    loadingTechnicians,
     setSelectedTechnicians,
     handleAddManageTechnician,
     initializeManageTechnicians,
@@ -24,17 +26,25 @@ const Technician = () => {
   const indexOfLastTech = activePage * activePerPage;
   const indexOfFirstTech = indexOfLastTech - activePerPage;
   const currentTechs = technicians?.slice(indexOfFirstTech, indexOfLastTech);
-  
+
   useEffect(() => {
     initializeManageTechnicians();
-  }, [tech]);
+  }, [initializeManageTechnicians, tech]);
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex flex-col text-xl overflow-hidden">
         {currentTechs?.length !== 0 ? (
           <div className="flex flex-col gap-7 text-xl overflow-hidden">
-            <p className="font-bold">Your Current Technicians</p>
+            {loadingTechnicians ? (
+              <div className="flex items-center gap-2">
+                <p className="font-bold">Loading your Technicians</p>
+                <FaSpinner className="animate-spin" size={20} />
+              </div>
+            ) : (
+              <p className="font-bold">Your Current Technicians</p>
+            )}
+
             {currentTechs && (
               <div className="flex gap-2 flex-col overflow-hidden ">
                 <div className="flex items-center justify-start gap-2">
@@ -55,7 +65,7 @@ const Technician = () => {
                     <p className="text-red-500">Error Saving Technicians</p>
                   )}
                 </div>
-                <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full ">
+                <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
                   <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
                     <thead className="sticky top-0 bg-white text-lg text-black/60">
                       <tr className="">
@@ -85,7 +95,7 @@ const Technician = () => {
                     <tbody>
                       {currentTechs?.map((technician) => {
                         const {
-                          id,
+                          connectWiseMembersId,
                           firstName,
                           lastName,
                           mobilePhone,
@@ -93,24 +103,31 @@ const Technician = () => {
                           officeEmail,
                           officePhone,
                           primaryEmail,
+                          isInDB,
                         } = technician;
                         return (
-                          <tr key={id}>
+                          <tr
+                            key={connectWiseMembersId}
+                            className={`${isInDB ? "text-black/20" : ""}`}
+                          >
                             <td className="p-2 truncate border-l border-r border-b">
-                              <input
-                                checked={
-                                  techniciansSelected[id]?.selected || false
-                                }
-                                onChange={(e) =>
-                                  setSelectedTechnicians(
-                                    id,
-                                    "selected",
-                                    e.target.checked
-                                  )
-                                }
-                                className="flex items-center justify-center w-full h-full"
-                                type="checkbox"
-                              />
+                              {!isInDB && (
+                                <input
+                                  checked={
+                                    techniciansSelected[connectWiseMembersId]
+                                      ?.selected || false
+                                  }
+                                  onChange={(e) =>
+                                    setSelectedTechnicians(
+                                      connectWiseMembersId,
+                                      "selected",
+                                      e.target.checked
+                                    )
+                                  }
+                                  className="flex items-center justify-center w-full h-full"
+                                  type="checkbox"
+                                />
+                              )}
                             </td>
                             <td className="p-2 truncate  border-r border-b">
                               {firstName + " " + lastName}
@@ -135,7 +152,7 @@ const Technician = () => {
                                 <select
                                   onChange={(e) =>
                                     setSelectedTechnicians(
-                                      id,
+                                      connectWiseMembersId,
                                       "tier",
                                       e.target.value
                                     )
@@ -154,16 +171,16 @@ const Technician = () => {
                                 <select
                                   onChange={(e) =>
                                     setSelectedTechnicians(
-                                      id,
-                                      "role",
+                                      connectWiseMembersId,
+                                      "roleId",
                                       e.target.value
                                     )
                                   }
                                 >
                                   {techniciansRoleOptions.map((role) => {
-                                    const { name } = role;
+                                    const { id, name } = role;
                                     return (
-                                      <option key={name} value={name}>
+                                      <option key={name} value={id}>
                                         {name}
                                       </option>
                                     );

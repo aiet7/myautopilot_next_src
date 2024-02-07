@@ -10,17 +10,17 @@ import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
 const Input = () => {
   const { documentConversationHistories, currentDocumentConversationIndex } =
     useDocConversationsStore();
-
   const {
     textAreaHeight,
     userInput,
     handleTextAreaChange,
     handleCreateTicketMessage,
+    handleCreateTicketNote,
     handleSendDocumentMessage,
     handleSendMessage,
   } = useInteractionStore();
   const { activeUIAssistantTab } = useAssistantStore();
-  const { activeTicketMode } = useTicketsStore();
+  const { showTicket, activeTicketMode } = useTicketsStore();
 
   const { inputRef } = useRefStore();
 
@@ -76,7 +76,7 @@ const Input = () => {
               if (e.key === "Enter") {
                 e.preventDefault();
                 if (activeTicketMode === "Support") {
-                  console.log("Test onKeyDown");
+                  handleCreateTicketNote(showTicket?.ticketId, userInput);
                 } else {
                   handleCreateTicketMessage(userInput);
                 }
@@ -85,7 +85,7 @@ const Input = () => {
             value={userInput}
             placeholder={
               activeTicketMode === "Support"
-                ? "Leave Note For A Tech"
+                ? "Leave Note..."
                 : "Describe Your Issue..."
             }
             className="dark:border-white/30 dark:shadow-white/30 dark:bg-black border-black/10 shadow-xl shadow-black/30  outline-none bg-white border w-full p-4 pr-32 resize-none no-scrollbar"
@@ -100,7 +100,7 @@ const Input = () => {
               size={25}
               onClick={() => {
                 if (activeTicketMode === "Support") {
-                  console.log("Test OnClick");
+                  handleCreateTicketNote(showTicket?.ticketId, userInput);
                 } else {
                   handleCreateTicketMessage(userInput);
                 }

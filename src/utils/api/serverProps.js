@@ -14,27 +14,51 @@ export const handleGetIntegrations = async (msp) => {
   return response.json();
 };
 
+
 export const handleGetManageTechnicians = async (msp) => {
   const response = await fetch(
-    `http://localhost:9019/${encodeURIComponent(msp)}/connectWiseMembers`
+    `http://localhost:9020/getConnectWiseMembers?mspCustomDomain=${encodeURIComponent(msp)}`
   );
   return response.json();
 };
+
+export const handleGetManageDBTechnicians = async (msp) => {
+  const response = await fetch(
+    `http://localhost:9019/${encodeURIComponent(msp)}/connectWiseMembers`
+  )
+  return response.json()
+}
+
 
 export const handleGetManageClients = async (msp) => {
   const response = await fetch(
-    `http://localhost:9019/${encodeURIComponent(msp)}/connectWiseClients`
+    `http://localhost:9020/getConnectWiseClients?mspCustomDomain=${encodeURIComponent(msp)}`
   );
-
   return response.json();
 };
+
+export const handleGetManageDBClients = async (msp) => {
+  const response = await fetch(
+    `http://localhost:9019/${encodeURIComponent(msp)}/connectWiseClients`
+  )
+  return response.json()
+}
+
 
 export const handleGetManageContacts = async (msp) => {
   const response = await fetch(
-    `http://localhost:9019/${encodeURIComponent(msp)}/connectWiseContacts`
+    `http://localhost:9020/getConnectWiseContacts?mspCustomDomain=${encodeURIComponent(msp)}`
   );
   return response.json();
 };
+
+export const handleGetManageDBContacts = async (msp) => {
+  const response = await fetch(
+    `http://localhost:9019/${encodeURIComponent(msp)}/connectWiseContacts`
+  )
+  return response.json()
+}
+
 
 export const handleGetRoles = async (msp) => {
   const response = await fetch(
@@ -116,9 +140,9 @@ export const handleGetNotes = async (conversationId) => {
   return response.json();
 };
 
-export const handleGetTickets = async (clientId) => {
+export const handleGetMSPTickets = async (msp) => {
   const response = await fetch(
-    `https://etech7-wf-etech7-db-service.azuremicroservices.io/getSupportTickets?userId=${clientId}`
+    `http://localhost:9019/supportTickets/byMspCustomDomain?mspCustomDomain=${encodeURIComponent(msp)}`
   );
 
   return response.json();

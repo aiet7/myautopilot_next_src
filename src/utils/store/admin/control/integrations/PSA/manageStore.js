@@ -3,8 +3,11 @@ import useIntegrationsStore from "../integrationsStore";
 import useTechStore from "@/utils/store/user/techStore";
 import {
   handleGetManageTechnicians,
+  handleGetManageDBTechnicians,
   handleGetManageClients,
+  handleGetManageDBClients,
   handleGetManageContacts,
+  handleGetManageDBContacts,
   handleGetRoles,
 } from "@/utils/api/serverProps";
 
@@ -13,18 +16,29 @@ const useManageStore = create((set, get) => ({
   techniciansTierOptions: ["Tier1", "Tier2", "Tier3", "NoTier"],
   techniciansRoleOptions: null,
   techniciansSelected: {},
+  loadingTechnicians: false,
 
   clients: null,
   clientsSelected: {},
+  clientsFilterType: "",
+  loadingClients: false,
 
   contacts: null,
   contactsSelected: {},
+  loadingContacts: false,
 
   connectwiseBoards: null,
   loadingBoards: false,
 
   connectwiseMerge: null,
   loadingMerge: false,
+
+  customBoardMetadata: false,
+  customBoard: false,
+  customBoardTitle: "",
+  customBoardDepartment: null,
+  customBoardLocation: null,
+  customBoardMerge: null,
 
   activeBoard: null,
 
@@ -44,9 +58,9 @@ const useManageStore = create((set, get) => ({
     companyId: "",
     publicKey: "",
     privateKey: "",
+    emailConnectorGmail: "",
+    emailConnectorAppPassword: "",
   },
-
-  boardInputs: {},
 
   severityOptions: ["Low", "Medium", "High"],
   impactOptions: ["Low", "Medium", "High"],
@@ -68,17 +82,31 @@ const useManageStore = create((set, get) => ({
 
   initializeManageTechnicians: async () => {
     const { activePerPage } = get();
-
     const techStore = useTechStore.getState();
-    set({ technicians: null, techniciansRoleOptions: null });
+    set({
+      technicians: null,
+      techniciansRoleOptions: null,
+      loadingTechnicians: true,
+    });
+
     if (techStore.tech) {
       try {
-        const [newTechnicians, newRoles] = await Promise.all([
-          handleGetManageTechnicians(techStore.tech.mspCustomDomain),
-          handleGetRoles(techStore.tech.mspCustomDomain),
-        ]);
+        const [dbTechnicians, connectWiseTechnicians, newRoles] =
+          await Promise.all([
+            handleGetManageDBTechnicians(techStore.tech.mspCustomDomain),
+            handleGetManageTechnicians(techStore.tech.mspCustomDomain),
+            handleGetRoles(techStore.tech.mspCustomDomain),
+          ]);
 
-        const totalTechs = newTechnicians.length;
+        const markedTechnicians = connectWiseTechnicians.map((cwTech) => ({
+          ...cwTech,
+          isInDB: dbTechnicians.some(
+            (dbTech) =>
+              dbTech.connectWiseMembersId === cwTech.connectWiseMembersId
+          ),
+        }));
+
+        const totalTechs = markedTechnicians.length;
         const totalPages = Math.ceil(totalTechs / activePerPage);
 
         set({
@@ -86,8 +114,9 @@ const useManageStore = create((set, get) => ({
             { length: totalPages },
             (_, i) => i + 1
           ),
-          technicians: newTechnicians,
+          technicians: markedTechnicians,
           techniciansRoleOptions: newRoles,
+          loadingTechnicians: false,
         });
       } catch (e) {
         console.log(e);
@@ -98,43 +127,83 @@ const useManageStore = create((set, get) => ({
   initializeManageClients: async () => {
     const { activePerPage } = get();
     const techStore = useTechStore.getState();
-    set({ clients: null });
+    set({ clients: null, loadingClients: true });
 
     if (techStore.tech) {
-      const newClients = await handleGetManageClients(
-        techStore.tech.mspCustomDomain
-      );
-      const totalClients = newClients.length;
-      const totalPages = Math.ceil(totalClients / activePerPage);
+      try {
+        const [dbClients, connectWiseClients] = await Promise.all([
+          handleGetManageDBClients(techStore.tech.mspCustomDomain),
+          handleGetManageClients(techStore.tech.mspCustomDomain),
+        ]);
 
-      set({
-        activePageNumbers: Array.from({ length: totalPages }, (_, i) => i + 1),
-        clients: newClients,
-      });
+        const markedClients = connectWiseClients.map((cwClient) => ({
+          ...cwClient,
+          isInDB: dbClients.some(
+            (dbClient) =>
+              dbClient.connectWiseCompanyId === cwClient.connectWiseCompanyId
+          ),
+        }));
+
+        const totalClients = markedClients.length;
+        const totalPages = Math.ceil(totalClients / activePerPage);
+
+        set({
+          activePageNumbers: Array.from(
+            { length: totalPages },
+            (_, i) => i + 1
+          ),
+          clients: markedClients,
+          loadingClients: false,
+        });
+      } catch (e) {
+        console.log(e);
+      }
     }
   },
 
   initializeManageContacts: async () => {
     const { activePerPage } = get();
     const techStore = useTechStore.getState();
-    set({ contacts: null });
+    set({ contacts: null, loadingContacts: true });
 
     if (techStore.tech) {
-      const newContacts = await handleGetManageContacts(
-        techStore.tech.mspCustomDomain
-      );
+      try {
+        const [dbContacts, connectWiseContacts] = await Promise.all([
+          handleGetManageDBContacts(techStore.tech.mspCustomDomain),
+          handleGetManageContacts(techStore.tech.mspCustomDomain),
+        ]);
 
-      const totalContacts = newContacts.length;
-      const totalPages = Math.ceil(totalContacts / activePerPage);
+        const markedContacts = connectWiseContacts.map((cwContact) => ({
+          ...cwContact,
+          isInDB: dbContacts.some(
+            (dbContact) =>
+              dbContact.connectWiseContactId === cwContact.connectWiseContactId
+          ),
+        }));
 
-      set({
-        activePageNumbers: Array.from({ length: totalPages }, (_, i) => i + 1),
-        contacts: newContacts,
-      });
+        const totalContacts = markedContacts.length;
+        const totalPages = Math.ceil(totalContacts / activePerPage);
+
+        set({
+          activePageNumbers: Array.from(
+            { length: totalPages },
+            (_, i) => i + 1
+          ),
+          contacts: markedContacts,
+          loadingContacts: false,
+        });
+      } catch (e) {
+        console.log(e);
+      }
     }
   },
 
-  setConnectwiseBoard: (board) => set({ connectwiseBoards: board }),
+  setConnectwiseBoard: (board) =>
+    set({
+      connectwiseBoards: board,
+      errorMessage: false,
+      successMessage: false,
+    }),
 
   setActiveConfig: (config) =>
     set({
@@ -188,24 +257,145 @@ const useManageStore = create((set, get) => ({
           }
     ),
 
-  setBoardInputs: (categoryId, subCategoryId, field, id, name) =>
+  setBoardInputs: (categoryId, subCategoryId, field, id, name) => {
     set((prevState) => {
-      const boardInputs = { ...prevState.boardInputs };
-      if (!boardInputs[categoryId]) {
-        boardInputs[categoryId] = {};
-      }
-      if (!boardInputs[categoryId][subCategoryId]) {
-        boardInputs[categoryId][subCategoryId] = {};
+      const updatedConnectwiseMerge = { ...prevState.connectwiseMerge };
+
+      updatedConnectwiseMerge.mspConnectWiseManageCategorizations =
+        updatedConnectwiseMerge.mspConnectWiseManageCategorizations.map(
+          (category) => {
+            if (category.categoryId === categoryId) {
+              category.mspConnectWiseManageSubCategorizations =
+                category.mspConnectWiseManageSubCategorizations.map(
+                  (subCategory) => {
+                    if (subCategory.subCategoryId === subCategoryId) {
+                      if (field === "priority") {
+                        subCategory["priorityId"] = id;
+                        subCategory["priority"] = name;
+                      } else {
+                        subCategory[field] = id;
+                      }
+                    }
+                    return subCategory;
+                  }
+                );
+            }
+            return category;
+          }
+        );
+
+      return { connectwiseMerge: updatedConnectwiseMerge };
+    });
+  },
+
+  setCustomBoardInputs: (categoryId, subCategoryId, field, value, id, name) => {
+    set((prevState) => {
+      if (categoryId === null && subCategoryId === null) {
+        if (field === "boardTitle") {
+          return { ...prevState, customBoardTitle: value };
+        } else if (field === "department") {
+          const departmentId = parseInt(id);
+          return {
+            ...prevState,
+            customBoardDepartment: { id: departmentId, name },
+          };
+        } else if (field === "location") {
+          const locationId = parseInt(id);
+          return {
+            ...prevState,
+            customBoardLocation: { id: locationId, name },
+          };
+        }
       }
 
-      if (field === "priority") {
-        boardInputs[categoryId][subCategoryId]["priorityId"] = id;
-        boardInputs[categoryId][subCategoryId]["priority"] = name;
-      } else {
-        boardInputs[categoryId][subCategoryId][field] = id;
-      }
+      const updatedCategorizations =
+        prevState.customBoardMerge.mspConnectWiseManageCategorizations.map(
+          (category) => {
+            if (category.categoryId === categoryId) {
+              if (subCategoryId === null) {
+                return { ...category, [field]: value };
+              } else {
+                const updatedSubCats =
+                  category.mspConnectWiseManageSubCategorizations.map(
+                    (subCat) => {
+                      if (subCat.subCategoryId === subCategoryId) {
+                        return { ...subCat, [field]: value };
+                      }
+                      return subCat;
+                    }
+                  );
+                return {
+                  ...category,
+                  mspConnectWiseManageSubCategorizations: updatedSubCats,
+                };
+              }
+            }
+            return category;
+          }
+        );
 
-      return { boardInputs };
+      return {
+        ...prevState,
+        customBoardMerge: {
+          ...prevState.customBoardMerge,
+          mspConnectWiseManageCategorizations: updatedCategorizations,
+        },
+      };
+    });
+  },
+
+  setNewCustomCategory: () =>
+    set((prevState) => {
+      const newCategory = {
+        categoryId: Date.now(),
+        categoryName: "",
+        mspConnectWiseManageSubCategorizations: [],
+      };
+
+      return {
+        ...prevState,
+        customBoardMerge: {
+          ...prevState.customBoardMerge,
+          mspConnectWiseManageCategorizations: [
+            ...prevState.customBoardMerge.mspConnectWiseManageCategorizations,
+            newCategory,
+          ],
+        },
+      };
+    }),
+
+  setNewCustomSubcategory: (categoryId) =>
+    set((prevState) => {
+      const categoryIndex =
+        prevState.customBoardMerge.mspConnectWiseManageCategorizations.findIndex(
+          (category) => category.categoryId === categoryId
+        );
+
+      if (categoryIndex === -1) return prevState;
+
+      const newSubcategory = {
+        subCategoryId: Date.now(),
+        subCategoryName: "",
+      };
+
+      const updatedCategories = [
+        ...prevState.customBoardMerge.mspConnectWiseManageCategorizations,
+      ];
+
+      updatedCategories[categoryIndex].mspConnectWiseManageSubCategorizations =
+        [
+          ...updatedCategories[categoryIndex]
+            .mspConnectWiseManageSubCategorizations,
+          newSubcategory,
+        ];
+
+      return {
+        ...prevState,
+        customBoardMerge: {
+          ...prevState.customBoardMerge,
+          mspConnectWiseManageCategorizations: updatedCategories,
+        },
+      };
     }),
 
   setSelectedTechnicians: (technicianId, field, value) =>
@@ -215,7 +405,7 @@ const useManageStore = create((set, get) => ({
         techniciansSelected[technicianId] = {
           selected: false,
           tier: "",
-          role: "",
+          roleId: "",
         };
       }
       techniciansSelected[technicianId][field] = value;
@@ -234,6 +424,10 @@ const useManageStore = create((set, get) => ({
       clientsSelected[clientId].selected = value;
       return { clientsSelected };
     }),
+
+  setClientsFilterType: (filter) => {
+    set({ clientsFilterType: filter });
+  },
 
   setSelectedContacts: (clientId, value) =>
     set((prevState) => {
@@ -289,6 +483,34 @@ const useManageStore = create((set, get) => ({
       }
     } catch (e) {
       console.log(e);
+    }
+  },
+
+  handleIntegrateEmailConnector: async () => {
+    const { integrationInputs } = get();
+    const { handleUpdateIntegrations } = useIntegrationsStore.getState();
+
+    if (integrationInputs.emailConnectorGmail.trim() !== "") {
+      const encodedEmail = encodeURIComponent(
+        integrationInputs.emailConnectorGmail
+      );
+
+      const encodedPassword = encodeURIComponent(
+        integrationInputs.emailConnectorAppPassword
+      );
+      try {
+        const response = await fetch(
+          `http://localhost:9008/testCredentials?email=${encodedEmail}&password=${encodedPassword}`
+        );
+
+        if (response.status === 200) {
+          console.log("EMAIL CONNECTOR CONNECTED");
+        } else {
+          console.log("EMAIL CONNECTOR FAILED");
+        }
+      } catch (e) {
+        console.log(e);
+      }
     }
   },
 
@@ -358,17 +580,115 @@ const useManageStore = create((set, get) => ({
   },
 
   handleGetBoardDetails: async (id, mspCustomDomain) => {
-    set({ connectwiseMerge: null, loadingMerge: true, activeBoard: id });
-    try {
-      const response = await fetch(
-        `http://localhost:9020/getMergedConnectWiseCategorizationWithoutGpt?mspCustomDomain=${mspCustomDomain}&boardId=${id}`
-      );
+    const { handleCustomBoardMetadata } = get();
 
-      if (response.status === 200) {
-        const merge = await response.json();
-        set({ connectwiseMerge: merge, loadingMerge: false });
+    if (id === "custom") {
+      set({
+        connectwiseMerge: null,
+        loadingMerge: false,
+        activeBoard: null,
+        customBoard: false,
+        customBoardMetadata: true,
+      });
+      await handleCustomBoardMetadata();
+    } else {
+      set({
+        connectwiseMerge: null,
+        loadingMerge: true,
+        activeBoard: id,
+        customBoard: false,
+        customBoardMetadata: false,
+      });
+      try {
+        const response = await fetch(
+          `http://localhost:9020/getMergedConnectWiseCategorizationWithoutGpt?mspCustomDomain=${mspCustomDomain}&boardId=${id}`
+        );
+
+        if (response.status === 200) {
+          const merge = await response.json();
+          set({ connectwiseMerge: merge, loadingMerge: false });
+        } else {
+          console.log("Error");
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  },
+
+  handleCustomBoardMetadata: async () => {
+    const techStore = useTechStore.getState();
+    const departmentsURL = `http://localhost:9020/getConnectWiseDepartments?mspCustomDomain=${techStore.tech.mspCustomDomain}`;
+    const locationsURL = `http://localhost:9020/getConnectWiseLocations?mspCustomDomain=${techStore.tech.mspCustomDomain}`;
+
+    try {
+      const [departmentsResponse, locationsResponse] = await Promise.all([
+        fetch(departmentsURL),
+        fetch(locationsURL),
+      ]);
+
+      if (
+        departmentsResponse.status === 200 &&
+        locationsResponse.status === 200
+      ) {
+        const departmentsList = await departmentsResponse.json();
+        const locationsList = await locationsResponse.json();
+
+        set({
+          customBoardMerge: {
+            departmentsList: departmentsList,
+            locationsList: locationsList,
+          },
+          connectwiseMerge: null,
+          customBoardMetadata: true,
+          customBoardTitle: "",
+          customBoardDepartment: null,
+          customBoardLocation: null,
+          activeBoard: null,
+          errorMessage: false,
+          successMessage: false,
+        });
       } else {
-        console.log("Error");
+        console.log("Failed to fetch metadata.");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleCustomBoard: async () => {
+    const techStore = useTechStore.getState();
+    const templateURL = `http://localhost:9019/default-et7-board-template/connectWiseManageDetails`;
+    const prioritiesURL = `http://localhost:9020/getConnectWisePriorities?mspCustomDomain=${techStore.tech.mspCustomDomain}`;
+
+    try {
+      const [templateResponse, prioritiesResponse] = await Promise.all([
+        fetch(templateURL),
+        fetch(prioritiesURL),
+      ]);
+
+      if (
+        templateResponse.status === 200 &&
+        prioritiesResponse.status === 200
+      ) {
+        const customMerge = await templateResponse.json();
+        const prioritiesList = await prioritiesResponse.json();
+
+        set((prevState) => ({
+          ...prevState,
+          customBoardMerge: {
+            ...prevState.customBoardMerge,
+            mspConnectWiseManageCategorizations:
+              customMerge.mspConnectWiseManageCategorizations,
+            prioritiesList: prioritiesList,
+          },
+          customBoard: true,
+          activeBoard: null,
+          errorMessage: false,
+          successMessage: false,
+        }));
+      } else {
+        console.log("Failed to fetch custom");
       }
     } catch (e) {
       console.log(e);
@@ -376,24 +696,12 @@ const useManageStore = create((set, get) => ({
   },
 
   handleSaveBoard: async (mspCustomDomain) => {
-    const { boardInputs, connectwiseMerge, connectwiseBoards, activeBoard } =
-      get();
+    const { connectwiseMerge, connectwiseBoards, activeBoard } = get();
+
     const activeBoardDetails = connectwiseBoards.find(
       (board) => board.id === activeBoard
     );
-    const updatedCategorizations =
-      connectwiseMerge.mspConnectWiseManageCategorizations.map((category) => {
-        return {
-          ...category,
-          mspConnectWiseManageSubCategorizations:
-            category.mspConnectWiseManageSubCategorizations.map((subCat) => {
-              return {
-                ...subCat,
-                ...boardInputs[category.categoryId]?.[subCat.subCategoryId],
-              };
-            }),
-        };
-      });
+
     try {
       const response = await fetch(
         `http://localhost:9019/${mspCustomDomain}/connectWiseManageDetails/update`,
@@ -406,7 +714,8 @@ const useManageStore = create((set, get) => ({
             mspCustomDomain: mspCustomDomain,
             boardId: activeBoardDetails.id,
             boardName: activeBoardDetails.name,
-            mspConnectWiseManageCategorizations: updatedCategorizations,
+            mspConnectWiseManageCategorizations:
+              connectwiseMerge.mspConnectWiseManageCategorizations,
           }),
         }
       );
@@ -417,6 +726,92 @@ const useManageStore = create((set, get) => ({
         set({ errorMessage: true, successMessage: false });
       }
     } catch (error) {
+      console.error(error);
+      set({ errorMessage: true, successMessage: false });
+    }
+  },
+
+  handleSaveCustomBoardMetadata: async (mspCustomDomain) => {
+    const {
+      customBoardTitle,
+      customBoardLocation,
+      customBoardDepartment,
+      handleCustomBoard,
+    } = get();
+    if (customBoardTitle.trim() !== "") {
+      try {
+        const response = await fetch(
+          `http://localhost:9020/createConnectWiseBoard?mspCustomDomain=${mspCustomDomain}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: customBoardTitle,
+              location: customBoardLocation,
+              department: customBoardDepartment,
+            }),
+          }
+        );
+
+        if (response.status === 200) {
+          const newBoard = await response.json();
+          set((prevState) => ({
+            ...prevState,
+            connectwiseBoards: [...prevState.connectwiseBoards, newBoard],
+            customBoardMerge: {
+              ...prevState.customBoardMerge,
+              boardId: newBoard.id,
+            },
+          }));
+          await handleCustomBoard();
+        } else {
+          console.log("Error Saving Custom Metadata");
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  },
+
+  handleSaveCustomBoard: async (mspCustomDomain) => {
+    const { customBoardMerge } = get();
+
+    const boardSetupRequest = {
+      mspConnectWiseManageCategorizations:
+        customBoardMerge.mspConnectWiseManageCategorizations
+          .map((category) => ({
+            ...category,
+            mspConnectWiseManageSubCategorizations:
+              category.mspConnectWiseManageSubCategorizations.map(
+                (subCategory) => {
+                  const { subCategoryId, ...cleanedSubcategory } = subCategory;
+                  return cleanedSubcategory;
+                }
+              ),
+          }))
+          .map(({ categoryId, ...cleanedCategory }) => cleanedCategory),
+    };
+
+    try {
+      const response = await fetch(
+        `http://localhost:9020/createDefaultBoardSetup?boardId=${customBoardMerge.boardId}&mspCustomDomain=${mspCustomDomain}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(boardSetupRequest),
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("CUSTOM BOARD SAVED!");
+      } else {
+        console.log("ERROR SAVING CUSTOM BOARD");
+      }
+    } catch (e) {
       console.log(e);
     }
   },
@@ -424,14 +819,21 @@ const useManageStore = create((set, get) => ({
   handleAddManageTechnician: async (mspCustomDomain) => {
     const { techniciansSelected, technicians } = get();
 
-    const selectedTechniciansPayload = Object.entries(techniciansSelected)
-      .filter(([_, techData]) => techData.selected)
-      .map(([id, { tier, role }]) => ({
-        ...technicians.find((t) => t.id === id),
-        tier,
-        role,
-        mspCustomDomain,
-      }));
+    const selectedTechniciansPayload = technicians
+      .filter(
+        (technician) =>
+          techniciansSelected[technician.connectWiseMembersId]?.selected
+      )
+      .map((technician) => {
+        const additionalData =
+          techniciansSelected[technician.connectWiseMembersId];
+        return {
+          ...technician,
+          tier: additionalData?.tier,
+          roleId: additionalData?.roleId,
+          mspCustomDomain,
+        };
+      });
 
     try {
       const response = await fetch(
@@ -464,12 +866,13 @@ const useManageStore = create((set, get) => ({
     }
   },
 
-  handleAddManageClient: async (mspCustomDomain) => {
+  handleAddManageClients: async (mspCustomDomain) => {
     const { clientsSelected, clients } = get();
 
     const selectedClientsPayload = clients.filter(
-      (client) => clientsSelected[client.id]?.selected
+      (client) => clientsSelected[client.connectWiseCompanyId]?.selected
     );
+
     try {
       const response = await fetch(
         `http://localhost:9019/${encodeURIComponent(
@@ -504,8 +907,9 @@ const useManageStore = create((set, get) => ({
   handleAddManageContacts: async (mspCustomDomain) => {
     const { contactsSelected, contacts } = get();
     const selectedContactsPayload = contacts.filter(
-      (contact) => contactsSelected[contact.id]?.selected
+      (contact) => contactsSelected[contact.connectWiseContactId]?.selected
     );
+
     try {
       const response = await fetch(
         `http://localhost:9019/${encodeURIComponent(

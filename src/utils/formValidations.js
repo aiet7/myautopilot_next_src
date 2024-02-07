@@ -71,19 +71,22 @@ export const validateField = (field, value) => {
 };
 
 export const validateTicketForm = (ticket) => {
-  const properties = Object.values(ticket).filter(
-    (item) => typeof item !== "object"
-  );
+  const requiredFields = [
+    'currentTicketTitle',
+    'currentTicketDescription',
+    'currentTicketName',
+    'currentTicketEmailId',
+    'currentTicketPhoneNumber',
+  ];
 
-  if (
-    ticket.currentTicketCategory === "TRAINING_OR_ONBOARDING" &&
-    ticket.currentTicketSubCategory === "NEW_EMPLOYEE_ONBOARDING"
-  ) {
-    const onBoardingProperties = Object.values(ticket.onBoarding);
-    properties.push(...onBoardingProperties);
+  for (const field of requiredFields) {
+    const value = ticket[field];
+    if (typeof value === 'string' && isInputEmpty(value)) {
+      return false; 
+    }
   }
 
-  return !properties.some(isInputEmpty);
+  return true;
 };
 
 export const isInputEmpty = (input) => {

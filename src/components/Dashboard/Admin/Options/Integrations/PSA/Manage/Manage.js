@@ -10,6 +10,7 @@ import Configuration from "./Configuration";
 
 import Link from "next/link";
 import { convertHideIntegrationKeys } from "@/utils/conversions";
+import { FcGoogle } from "react-icons/fc";
 
 const Manage = () => {
   const { tech } = useTechStore();
@@ -19,10 +20,11 @@ const Manage = () => {
     integrationInputs,
     setIntegrationInputs,
     handleIntegrateManage,
+    handleIntegrateEmailConnector,
     handleDisconnectManage,
     handleCheckManageKeys,
   } = useManageStore();
-  
+
   const { integrations, handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
 
@@ -76,6 +78,13 @@ const Manage = () => {
                     className="hover:underline text-sm text-blue-800"
                   >
                     Creating a Public Key
+                  </a>
+                  <a
+                    target="_blank"
+                    href="https://support.google.com/mail/answer/185833?hl=en"
+                    className="hover:underline text-sm text-blue-800"
+                  >
+                    Creating a Gmail App Password
                   </a>
                 </div>
               </div>
@@ -197,7 +206,59 @@ const Manage = () => {
                     )}
                   </div>
                 </div>
+                <div className="border-b" />
+                <h2 className="text-lg">Email Connector (Optional)</h2>
+                <div className="flex flex-col gap-6 lg:flex-row">
+                  <div className="flex flex-col w-full gap-1">
+                    <p>Gmail Address</p>
+                    <p className="dark:text-white/60 text-black/60">
+                      Your Gmail address that you want to connect
+                    </p>
+
+                    <input
+                      value={integrationInputs.emailConnectorGmail}
+                      onChange={(e) =>
+                        setIntegrationInputs(
+                          "text",
+                          "emailConnectorGmail",
+                          e.target.value
+                        )
+                      }
+                      className="border p-1"
+                    />
+                  </div>
+                  <div className="flex flex-col w-full gap-1">
+                    <p>App Password</p>
+                    <p className="dark:text-white/60 text-black/60">
+                      Your App Password you set in Gmail settings
+                    </p>
+
+                    <input
+                      value={integrationInputs.emailConnectorAppPassword}
+                      onChange={(e) =>
+                        setIntegrationInputs(
+                          "text",
+                          "emailConnectorAppPassword",
+                          e.target.value
+                        )
+                      }
+                      type="password"
+                      className="border p-1"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleIntegrateEmailConnector}
+                  className="hover:bg-blue-500 flex items-center gap-1 self-start bg-blue-800 text-white px-3 py-1"
+                >
+                  Connect
+                  <div className="flex items-center">
+                    <FcGoogle /> mail
+                  </div>
+                </button>
               </div>
+
               <div className="p-4 flex items-center justify-end gap-4">
                 {integrations?.connectWiseManageIntegrator && (
                   <button

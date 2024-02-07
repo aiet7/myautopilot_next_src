@@ -3,9 +3,11 @@
 import useManageStore from "@/utils/store/admin/control/integrations/PSA/manageStore";
 import useTechStore from "@/utils/store/user/techStore";
 import { useEffect } from "react";
+import { FaSpinner } from "react-icons/fa";
 
 const Clients = () => {
   const { tech } = useTechStore();
+
   const {
     activePage,
     activePerPage,
@@ -13,41 +15,69 @@ const Clients = () => {
     errorMessage,
     clients,
     clientsSelected,
+    clientsFilterType,
+    loadingClients,
     setSelectedClients,
-    handleAddManageClient,
+    setClientsFilterType,
+    handleAddManageClients,
     initializeManageClients,
   } = useManageStore();
 
+  const filteredClients = clientsFilterType
+    ? clients?.filter((client) =>
+        client.types?.some((type) => type.name === clientsFilterType)
+      )
+    : clients;
+
   const indexOfLastClient = activePage * activePerPage;
   const indexOfFirstClient = indexOfLastClient - activePerPage;
-  const currentClients = clients?.slice(indexOfFirstClient, indexOfLastClient);
+  const currentClients = filteredClients?.slice(
+    indexOfFirstClient,
+    indexOfLastClient
+  );
+
+  const filteredClientTypes = Array.from(
+    new Set(
+      clients?.flatMap((client) => client.types?.map((type) => type.name))
+    )
+  );
 
   useEffect(() => {
     initializeManageClients();
-  }, [tech]);
+  }, [initializeManageClients, tech]);
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex flex-col text-xl overflow-hidden">
         {currentClients?.length !== 0 ? (
           <div className="flex flex-col gap-7 text-xl overflow-hidden">
-            <p className="font-bold">Your Current Clients</p>
+            {loadingClients ? (
+              <div className="flex items-center gap-2">
+                <p className="font-bold">Loading your Clients</p>
+                <FaSpinner className="animate-spin" size={20} />
+              </div>
+            ) : (
+              <p className="font-bold">Your Current Clients</p>
+            )}
+
             {currentClients && (
               <div className="flex gap-2 flex-col overflow-hidden ">
                 <div className="flex items-center justify-start gap-2">
                   <button
-                    onClick={() => handleAddManageClient(tech?.mspCustomDomain)}
+                    onClick={() =>
+                      handleAddManageClients(tech?.mspCustomDomain)
+                    }
                     className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
                   >
                     Bulk Save
                   </button>
                   {successMessage && (
                     <p className="text-emerald-500">
-                      Saved Technicians Successfully!
+                      Saved Clients Successfully!
                     </p>
                   )}
                   {errorMessage && (
-                    <p className="text-red-500">Error Saving Technicians</p>
+                    <p className="text-red-500">Error Saving Clients</p>
                   )}
                 </div>
                 <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full ">
@@ -71,7 +101,24 @@ const Clients = () => {
                         <th className="p-2 border-t border-b border-r">
                           Phone Number
                         </th>
-                        <th className="p-2 border-t border-b border-r">Type</th>
+                        <th className="p-2 border-t border-b border-r">
+                          <div className="flex flex-col items-start lg:flex-row lg:items-center lg:gap-4">
+                            Type
+                            <select
+                              className="text-xs  p-1 border rounded-lg"
+                              onChange={(e) =>
+                                setClientsFilterType(e.target.value)
+                              }
+                            >
+                              <option value="">All Types</option>
+                              {filteredClientTypes?.map((type) => (
+                                <option key={type} value={type}>
+                                  {type}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </th>
                         <th className="p-2 border-t border-b border-r">
                           Status
                         </th>
@@ -80,7 +127,6 @@ const Clients = () => {
                     <tbody>
                       {currentClients?.map((client) => {
                         const {
-                          id,
                           name,
                           connectWiseCompanyId,
                           addressLine1,
@@ -91,18 +137,30 @@ const Clients = () => {
                           phoneNumber,
                           status,
                           types,
+                          isInDB,
                         } = client;
                         return (
-                          <tr key={id}>
+                          <tr
+                            key={connectWiseCompanyId}
+                            className={`${isInDB ? "text-black/20" : ""}`}
+                          >
                             <td className="p-2 truncate border-l border-r border-b">
-                              <input
-                                checked={clientsSelected[id]?.selected || false}
-                                onChange={(e) =>
-                                  setSelectedClients(id, e.target.checked)
-                                }
-                                className="flex items-center justify-center w-full h-full"
-                                type="checkbox"
-                              />
+                              {!isInDB && (
+                                <input
+                                  checked={
+                                    clientsSelected[connectWiseCompanyId]
+                                      ?.selected || false
+                                  }
+                                  onChange={(e) =>
+                                    setSelectedClients(
+                                      connectWiseCompanyId,
+                                      e.target.checked
+                                    )
+                                  }
+                                  className="flex items-center justify-center w-full h-full"
+                                  type="checkbox"
+                                />
+                              )}
                             </td>
                             <td className="p-2 truncate  border-r border-b">
                               {name}

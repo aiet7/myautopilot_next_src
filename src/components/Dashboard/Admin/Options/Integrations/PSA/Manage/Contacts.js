@@ -3,6 +3,7 @@
 import useTechStore from "@/utils/store/user/techStore";
 import useManageStore from "@/utils/store/admin/control/integrations/PSA/manageStore";
 import { useEffect } from "react";
+import { FaSpinner } from "react-icons/fa";
 
 const Contacts = () => {
   const { tech } = useTechStore();
@@ -13,6 +14,7 @@ const Contacts = () => {
     errorMessage,
     contacts,
     contactsSelected,
+    loadingContacts,
     setSelectedContacts,
     handleAddManageContacts,
     initializeManageContacts,
@@ -26,14 +28,21 @@ const Contacts = () => {
   );
   useEffect(() => {
     initializeManageContacts();
-  }, [tech]);
+  }, [initializeManageContacts, tech]);
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex flex-col text-xl overflow-hidden">
         {currentContacts?.length !== 0 ? (
           <div className="flex flex-col gap-7 text-xl overflow-hidden">
-            <p className="font-bold">Your Current Contacts</p>
+            {loadingContacts ? (
+              <div className="flex items-center gap-2">
+                <p className="font-bold">Loading your Contacts</p>
+                <FaSpinner className="animate-spin" size={20} />
+              </div>
+            ) : (
+              <p className="font-bold">Your Current Contacts</p>
+            )}
             {currentContacts && (
               <div className="flex gap-2 flex-col overflow-hidden ">
                 <div className="flex items-center justify-start gap-2">
@@ -88,7 +97,6 @@ const Contacts = () => {
                     <tbody>
                       {currentContacts?.map((contact) => {
                         const {
-                          id,
                           firstName,
                           lastName,
                           title,
@@ -99,20 +107,30 @@ const Contacts = () => {
                           connectWisePhoneNumber,
                           defaultPhoneNbr,
                           defaultPhoneType,
+                          isInDB,
                         } = contact;
                         return (
-                          <tr key={id}>
+                          <tr
+                            key={connectWiseContactId}
+                            className={`${isInDB ? "text-black/20" : ""}`}
+                          >
                             <td className="p-2 truncate border-l border-r border-b">
-                              <input
-                                checked={
-                                  contactsSelected[id]?.selected || false
-                                }
-                                onChange={(e) =>
-                                  setSelectedContacts(id, e.target.checked)
-                                }
-                                className="flex items-center justify-center w-full h-full"
-                                type="checkbox"
-                              />
+                              {!isInDB && (
+                                <input
+                                  checked={
+                                    contactsSelected[connectWiseContactId]
+                                      ?.selected || false
+                                  }
+                                  onChange={(e) =>
+                                    setSelectedContacts(
+                                      connectWiseContactId,
+                                      e.target.checked
+                                    )
+                                  }
+                                  className="flex items-center justify-center w-full h-full"
+                                  type="checkbox"
+                                />
+                              )}
                             </td>
                             <td className="p-2 truncate  border-r border-b">
                               {firstName + " " + lastName}

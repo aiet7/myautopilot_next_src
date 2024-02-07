@@ -116,12 +116,6 @@ const TechLoginPage = () => {
                   </span>
                 </Link>
               </div>
-              <span
-                onClick={() => handleShowForgotPassword(router.push)}
-                className="text-sm text-blue-800 font-extrabold cursor-pointer"
-              >
-                Forgot password?
-              </span>
             </div>
           </form>
         </div>
