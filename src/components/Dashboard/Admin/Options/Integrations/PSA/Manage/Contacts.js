@@ -28,7 +28,7 @@ const Contacts = () => {
   );
   useEffect(() => {
     initializeManageContacts();
-  }, [tech]);
+  }, [initializeManageContacts, tech]);
 
   return (
     <div className="flex flex-col h-full overflow-hidden">

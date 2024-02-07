@@ -20,9 +20,11 @@ const Tickets = ({}) => {
     initializeMSPTickets,
   } = useTicketsStore();
 
+  
+
   useEffect(() => {
     initializeMSPTickets();
-  }, [tech]);
+  }, [initializeMSPTickets, tech]);
 
   return (
     <div

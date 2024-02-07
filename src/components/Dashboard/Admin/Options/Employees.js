@@ -12,7 +12,7 @@ const Employees = ({}) => {
 
   useEffect(() => {
     initializeEmployees();
-  }, [tech]);
+  }, [initializeEmployees, tech]);
 
 
   return (

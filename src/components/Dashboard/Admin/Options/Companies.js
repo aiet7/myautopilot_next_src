@@ -12,7 +12,7 @@ const Companies = () => {
 
   useEffect(() => {
     initializeCompanies();
-  }, [tech]);
+  }, [initializeCompanies, tech]);
 
   return (
     <div
