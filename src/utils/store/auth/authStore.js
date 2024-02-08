@@ -31,7 +31,9 @@ const useAuthStore = create((set, get) => ({
   loading: false,
   smallLoading: false,
   companies: [],
+  showPassword: false,
 
+  setShowPassword: (show) => set({ showPassword: show }),
   setEmail: (email) => set({ email }),
   setPassword: (password) => set({ password }),
   setVerifyPassword: (verifyPassword) => set({ verifyPassword }),

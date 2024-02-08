@@ -1,15 +1,11 @@
 "use client";
 import Link from "next/link";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import useUiStore from "@/utils/store/ui/uiStore.js";
-import useAuthStore from "@/utils/store/auth/authStore.js";
 import useMspStore from "@/utils/store/auth/msp/mspStore";
 
 const TechLoginPage = () => {
-  const router = useRouter();
   const { height, setHeight } = useUiStore();
-  const { handleShowForgotPassword } = useAuthStore();
 
   const {
     mspDomains,
@@ -59,13 +55,15 @@ const TechLoginPage = () => {
             <div className="flex flex-col gap-4 w-full ">
               {mspDomains ? (
                 <>
-                  <h2 className="text-lg font-semibold">List of domains.</h2>
+                  <h2 className="text-lg font-semibold text-black">
+                    List of domains.
+                  </h2>
                   {mspDomains.map((msp) => {
                     const { id, mspCustomDomain } = msp;
                     return (
                       <div key={id} className="rounded-lg shadow p-4">
                         <Link href={`/${mspCustomDomain}`}>
-                          <h2 className="font-bold text-lg">
+                          <h2 className="font-bold text-lg text-black">
                             {mspCustomDomain}
                           </h2>
                         </Link>

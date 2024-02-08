@@ -44,7 +44,7 @@ const Clients = () => {
 
   useEffect(() => {
     initializeManageClients();
-  }, [initializeManageClients, tech]);
+  }, [tech]);
 
   return (
     <div className="flex flex-col h-full overflow-hidden">

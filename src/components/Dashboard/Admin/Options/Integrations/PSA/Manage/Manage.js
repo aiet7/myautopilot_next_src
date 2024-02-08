@@ -28,7 +28,7 @@ const Manage = () => {
 
   const { integrations, handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
-  console.log(integrations);
+  
   return (
     <div
       onClick={() => {

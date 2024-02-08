@@ -13,7 +13,7 @@ const useTicketsStore = create((set, get) => ({
 
   initializeMSPTickets: async () => {
     const techStore = useTechStore.getState();
-    set({ tickets: [] });
+    set({ tickets: []});
     if (techStore.tech) {
       const newTickets = await handleGetMSPTickets(
         techStore.tech.mspCustomDomain
@@ -109,6 +109,8 @@ const useTicketsStore = create((set, get) => ({
       console.log(e);
     }
   },
+
+  clearTickets: () => set({ tickets: [] }),
 }));
 
 export default useTicketsStore;

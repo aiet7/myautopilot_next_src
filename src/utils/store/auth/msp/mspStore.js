@@ -1,8 +1,10 @@
 import { create } from "zustand";
 import Cookie from "js-cookie";
+import useTechStore from "../../user/techStore";
 
 const useMspStore = create((set, get) => ({
   mspDomains: null,
+  technician: null,
   currentStep: 1,
   signupInputs: {
     mspCustomDomain: "",
@@ -30,12 +32,17 @@ const useMspStore = create((set, get) => ({
   },
 
   errorMessage: {
+    techSignup: false,
     emptyFields: false,
     emailCheck: false,
   },
   successMessage: false,
 
+  showPassword: false,
+
   setCurrentStep: (step) => set({ currentStep: step }),
+
+  setShowPassword: (show) => set({ showPassword: show }),
 
   setSignupInputs: (section, field, value) =>
     set((prevState) => ({
@@ -88,7 +95,11 @@ const useMspStore = create((set, get) => ({
       );
 
       if (response.ok) {
-        return await response.json();
+        const technician = await response.json();
+        set({
+          technician: technician,
+        });
+        return technician;
       } else {
         console.log("ERROR SAVING TECH");
       }
@@ -127,6 +138,7 @@ const useMspStore = create((set, get) => ({
 
   handleSignupProgression: async (navigator) => {
     const {
+      technician,
       errorMessage,
       signupInputs,
       currentStep,
@@ -147,35 +159,47 @@ const useMspStore = create((set, get) => ({
       });
       return;
     }
-    if (currentStep === 1) {
-      set({
-        currentStep: 2,
-        errorMessage: {
-          ...errorMessage,
-          emptyFields: false,
-          emailCheck: false,
-        },
-      });
-    } else {
-      const [msp, tech] = await Promise.all([
-        handleSignupMSP(),
-        handleSignupTechnician(),
-      ]);
 
-      set({
-        currentStep: 1,
-        errorMessage: {
-          ...errorMessage,
-          emptyFields: false,
-          emailCheck: false,
-        },
-        successMessage: true,
-      });
-      navigator(
-        `/${msp?.customDomain}/dashboard/${tech?.id}/admin/integrations`
-      );
-      Cookie.set("session_token", tech?.id, { expires: 7 });
-      Cookie.set("client_id", tech?.id, { expires: 7 });
+    if (currentStep === 1) {
+      const tech = await handleSignupTechnician();
+      if (tech && tech.id) {
+        set({
+          currentStep: 2,
+          errorMessage: {
+            ...errorMessage,
+            emptyFields: false,
+            emailCheck: false,
+            techSignup: false,
+          },
+        });
+      } else {
+        set({
+          errorMessage: {
+            ...errorMessage,
+            techSignup: true,
+          },
+        });
+        return;
+      }
+    } else {
+      const msp = await handleSignupMSP();
+      if (msp && msp.id) {
+        set({
+          currentStep: 1,
+          errorMessage: {
+            ...errorMessage,
+            techSignup: false,
+            emptyFields: false,
+            emailCheck: false,
+          },
+          successMessage: true,
+        });
+        navigator(
+          `/${msp.customDomain}/dashboard/${technician.id}/admin/integrations`
+        );
+        Cookie.set("session_token", technician.id, { expires: 7 });
+        Cookie.set("client_id", technician.id, { expires: 7 });
+      }
     }
   },
 
@@ -279,6 +303,8 @@ const useMspStore = create((set, get) => ({
   handleTechnician2FALogin: async (navigator, mspCustomDomain) => {
     const { loginInputs, errorMessage } = get();
     const { techInfo } = loginInputs;
+
+
     if (techInfo.login2FA === "") {
       set({
         errorMessage: { ...errorMessage, emptyFields: true, emailCheck: false },

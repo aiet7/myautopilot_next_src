@@ -67,6 +67,11 @@ const MSPSignupPage = () => {
               {errorMessage?.emptyFields && (
                 <p className="text-red-500">Please fill out required field*.</p>
               )}
+              {errorMessage?.techSignup && (
+                <p className="text-red-500">
+                  Custom Domain or Technician already exists*.
+                </p>
+              )}
               {successMessage && (
                 <p className="text-emerald-500">
                   Redirecting you to Integrations Page...
