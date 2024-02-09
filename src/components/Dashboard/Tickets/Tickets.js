@@ -17,7 +17,6 @@ const Tickets = ({}) => {
     initializeMSPTickets,
   } = useTicketsStore();
 
-
   return (
     <div
       className={`absolute z-10 top-0 bottom-0 left-0  
