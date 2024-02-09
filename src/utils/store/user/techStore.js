@@ -5,6 +5,7 @@ import useLocalStorageStore from "../localstorage/localStorageStore";
 import useCookiesStore from "../cookies/cookiesStore";
 import useTicketConversationsStore from "../interaction/conversations/ticketConversationsStore";
 import useEngineerStore from "../assistant/sections/iternal/engineer/engineerStore";
+import useTicketsStore from "../interaction/tickets/ticketsStore";
 
 const useTechStore = create((set, get) => ({
   tech: null,
@@ -31,6 +32,7 @@ const useTechStore = create((set, get) => ({
     const { clearCookies } = useCookiesStore.getState();
     const { clearInteraction } = useTicketConversationsStore.getState();
     const { clearEngineer } = useEngineerStore.getState();
+    const { clearTickets } = useTicketsStore.getState();
     set({ tech: null });
 
     clearMSPCredentials();
@@ -38,6 +40,7 @@ const useTechStore = create((set, get) => ({
     clearCookies();
     clearInteraction();
     clearEngineer();
+    clearTickets();
   },
 }));
 

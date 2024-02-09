@@ -27,7 +27,7 @@ const Roles = ({}) => {
 
   useEffect(() => {
     initializeRoles();
-  }, [initializeRoles, tech]);
+  }, [tech]);
 
   return (
     <div

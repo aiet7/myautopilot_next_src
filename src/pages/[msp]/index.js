@@ -8,10 +8,12 @@ import useInitializeAppStore from "@/utils/store/init/initializeAppStore";
 import useMspStore from "@/utils/store/auth/msp/mspStore";
 import useAuthStore from "@/utils/store/auth/authStore";
 
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+
 const MSPPage = ({}) => {
   const { height, setHeight } = useUiStore();
   const { mspSubDomain, initializeSubDomain } = useInitializeAppStore();
-  
+
   const {
     current2FA,
     errorMessage,
@@ -21,7 +23,8 @@ const MSPPage = ({}) => {
     clearMSPCredentials,
   } = useMspStore();
 
-  const { handleShowForgotPassword } = useAuthStore();
+  const { showPassword, setShowPassword, handleShowForgotPassword } =
+    useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
@@ -130,20 +133,37 @@ const MSPPage = ({}) => {
                     placeholder="Enter your email"
                     className="w-full p-2 border border-gray-300 bg-white text-black"
                   />
-                  <input
-                    onChange={(e) =>
-                      setLoginInputs("techInfo", "password", e.target.value)
-                    }
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        handleTechnicianLogin(mspSubDomain?.customDomain);
+                  <div className="flex items-center gap-2">
+                    <input
+                      onChange={(e) =>
+                        setLoginInputs("techInfo", "password", e.target.value)
                       }
-                    }}
-                    type="password"
-                    placeholder="Enter your password"
-                    className="w-full p-2 border border-gray-300  bg-white text-black"
-                  />
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleTechnicianLogin(mspSubDomain?.customDomain);
+                        }
+                      }}
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter your password"
+                      className="w-full p-2 border border-gray-300  bg-white text-black"
+                    />
+                    <>
+                      {showPassword ? (
+                        <FaRegEyeSlash
+                          onClick={() => setShowPassword(false)}
+                          className="cursor-pointer"
+                          size={20}
+                        />
+                      ) : (
+                        <FaRegEye
+                          onClick={() => setShowPassword(true)}
+                          size={20}
+                          className="cursor-pointer"
+                        />
+                      )}
+                    </>
+                  </div>
                   <button
                     onClick={() =>
                       handleTechnicianLogin(mspSubDomain?.customDomain)

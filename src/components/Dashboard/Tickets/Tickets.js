@@ -20,11 +20,9 @@ const Tickets = ({}) => {
     initializeMSPTickets,
   } = useTicketsStore();
 
-  
-
   useEffect(() => {
     initializeMSPTickets();
-  }, [initializeMSPTickets, tech]);
+  }, [tech]);
 
   return (
     <div
@@ -53,28 +51,34 @@ const Tickets = ({}) => {
           Closed
         </button>
       </div>
+      <div onClick={initializeMSPTickets} className="pt-4 flex justify-end ">
+        <div className="flex items-center gap-2 cursor-pointer">
+          <p className="text-sm italic">Refresh your tickets</p>
+          <FiRefreshCcw size={15} />
+        </div>
+      </div>
       <div className="overflow-y-auto h-full scrollbar-thin mt-4">
         {activeTicketButton === "Opened" &&
-          tickets.filter((ticket) => !ticket.closed).length === 0 && (
+          tickets?.filter((ticket) => !ticket.closed).length === 0 && (
             <p className="dark:text-white/40 text-black/40 italic">
               You currently have no open tickets. If you would like to create
               one, please use our chat interface to open a ticket.
             </p>
           )}
         {activeTicketButton === "Closed" &&
-          tickets.filter((ticket) => ticket.closed).length === 0 && (
+          tickets?.filter((ticket) => ticket.closed).length === 0 && (
             <p className="dark:text-white/40 text-black/40 italic">
               You currently have no closed tickets.
             </p>
           )}
 
         {tickets
-          .filter(
+          ?.filter(
             (ticket) =>
               (activeTicketButton === "Opened" && !ticket.closed) ||
               (activeTicketButton === "Closed" && ticket.closed)
           )
-          .map((ticket, index) => {
+          ?.map((ticket, index) => {
             const { id, category, subcategory, ticketId } = ticket;
             return (
               <div

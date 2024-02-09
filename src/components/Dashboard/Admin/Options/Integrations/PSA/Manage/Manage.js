@@ -22,12 +22,13 @@ const Manage = () => {
     handleIntegrateManage,
     handleIntegrateEmailConnector,
     handleDisconnectManage,
+    handleDisconnectEmailIntegrator,
     handleCheckManageKeys,
   } = useManageStore();
 
   const { integrations, handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
-
+  
   return (
     <div
       onClick={() => {
@@ -214,47 +215,74 @@ const Manage = () => {
                     <p className="dark:text-white/60 text-black/60">
                       Your Gmail address that you want to connect
                     </p>
-
-                    <input
-                      value={integrationInputs.emailConnectorGmail}
-                      onChange={(e) =>
-                        setIntegrationInputs(
-                          "text",
-                          "emailConnectorGmail",
-                          e.target.value
-                        )
-                      }
-                      className="border p-1"
-                    />
+                    {integrations?.emailConnectorIntegration?.emailId ? (
+                      <p>
+                        {convertHideIntegrationKeys(
+                          integrations?.emailConnectorIntegration?.emailId
+                        )}
+                      </p>
+                    ) : (
+                      <input
+                        value={integrationInputs.emailConnectorGmail}
+                        onChange={(e) =>
+                          setIntegrationInputs(
+                            "text",
+                            "emailConnectorGmail",
+                            e.target.value
+                          )
+                        }
+                        className="border p-1"
+                      />
+                    )}
                   </div>
-                  <div className="flex flex-col w-full gap-1">
-                    <p>App Password</p>
-                    <p className="dark:text-white/60 text-black/60">
-                      Your App Password you set in Gmail settings
-                    </p>
-
-                    <input
-                      value={integrationInputs.emailConnectorAppPassword}
-                      onChange={(e) =>
-                        setIntegrationInputs(
-                          "text",
-                          "emailConnectorAppPassword",
-                          e.target.value
-                        )
-                      }
-                      type="password"
-                      className="border p-1"
-                    />
-                  </div>
+                  {!integrations?.emailConnectorIntegration?.password && (
+                    <div className="flex flex-col w-full gap-1">
+                      <p>App Password</p>
+                      <p className="dark:text-white/60 text-black/60">
+                        Your App Password you set in Gmail settings
+                      </p>
+                      <input
+                        value={integrationInputs.emailConnectorAppPassword}
+                        onChange={(e) =>
+                          setIntegrationInputs(
+                            "text",
+                            "emailConnectorAppPassword",
+                            e.target.value
+                          )
+                        }
+                        type="password"
+                        className="border p-1"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <button
-                  onClick={handleIntegrateEmailConnector}
-                  className="hover:bg-blue-500 flex items-center gap-1 self-start bg-blue-800 text-white px-3 py-1"
+                  onClick={() => {
+                    integrations?.emailIntegrator
+                      ? handleDisconnectEmailIntegrator(tech?.mspCustomDomain)
+                      : handleIntegrateEmailConnector(tech?.mspCustomDomain);
+                  }}
+                  className="hover:bg-blue-500  self-start bg-blue-800 text-white px-3 py-1"
                 >
-                  Connect
-                  <div className="flex items-center">
-                    <FcGoogle /> mail
+                  <div className="flex items-center gap-1">
+                    {integrations?.emailIntegrator ? (
+                      <>
+                        <span>Disconnect</span>
+                        <div className="flex items-center">
+                          <FcGoogle />
+                          <span>mail</span>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <span>Connect</span>
+                        <div className="flex items-center">
+                          <FcGoogle />
+                          <span>mail</span>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </button>
               </div>
