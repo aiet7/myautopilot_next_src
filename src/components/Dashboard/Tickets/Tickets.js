@@ -1,14 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
 import { FiRefreshCcw } from "react-icons/fi";
-import useTechStore from "@/utils/store/user/techStore";
 
 const Tickets = ({}) => {
   const { openTickets } = useUiStore();
-  const { tech } = useTechStore();
   const {
     tickets,
     ticketStatus,
@@ -20,9 +17,6 @@ const Tickets = ({}) => {
     initializeMSPTickets,
   } = useTicketsStore();
 
-  useEffect(() => {
-    initializeMSPTickets();
-  }, [tech]);
 
   return (
     <div

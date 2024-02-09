@@ -21,8 +21,10 @@ import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import Link from "next/link";
 import useTechStore from "@/utils/store/user/techStore";
 import useAdminStore from "@/utils/store/admin/adminStore";
+import { useRouter } from "next/router";
 
 const TabNavRail = ({}) => {
+  const router = useRouter();
   const { tech, handleLogout } = useTechStore();
 
   const { activeUIAssistantTab } = useAssistantStore();
@@ -125,15 +127,13 @@ const TabNavRail = ({}) => {
                 )}
                 <span>{theme === "light" ? "Dark" : "Light"}</span>
               </div>
-              <Link href={`/auth/login`}>
-                <div
-                  onClick={handleLogout}
-                  className="dark:hover:bg-white/20 hover:bg-black/10  w-full text-lg flex items-center gap-3 px-6 py-3"
-                >
-                  <AiOutlinePoweroff />
-                  <span>Log out</span>
-                </div>
-              </Link>
+              <div
+                onClick={() => handleLogout(router.push)}
+                className="dark:hover:bg-white/20 hover:bg-black/10  w-full text-lg flex items-center gap-3 px-6 py-3"
+              >
+                <AiOutlinePoweroff />
+                <span>Log out</span>
+              </div>
               <div className="dark:border-white/40 font-bold border-t border-black/10 w-full text-lg flex flex-col items-start gap-3 px-6 py-3">
                 <span>{tech?.firstName + " " + tech?.lastName}</span>
                 <span>{tech?.mspCustomDomain}</span>

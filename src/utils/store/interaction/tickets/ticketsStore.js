@@ -3,7 +3,7 @@ import { create } from "zustand";
 import useTechStore from "../../user/techStore";
 
 const useTicketsStore = create((set, get) => ({
-  tickets: [],
+  tickets: null,
   ticketStatus: null,
   ticketNotes: null,
   ticketStatusLoading: {},
@@ -13,8 +13,9 @@ const useTicketsStore = create((set, get) => ({
 
   initializeMSPTickets: async () => {
     const techStore = useTechStore.getState();
-    set({ tickets: []});
+
     if (techStore.tech) {
+      set({ tickets: null });
       const newTickets = await handleGetMSPTickets(
         techStore.tech.mspCustomDomain
       );
@@ -110,7 +111,10 @@ const useTicketsStore = create((set, get) => ({
     }
   },
 
-  clearTickets: () => set({ tickets: [] }),
+  clearTickets: async () => {
+    set({ tickets: null });
+    console.log("tickets set to null");
+  },
 }));
 
 export default useTicketsStore;
