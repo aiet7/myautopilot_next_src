@@ -1,6 +1,9 @@
+const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
+const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
+
 export const handleGetTech = async (msp, techId) => {
   const response = await fetch(
-    `http://localhost:9019/${encodeURIComponent(
+    `${dbServiceUrl}/${encodeURIComponent(
       msp
     )}/technicianUsers/getById?id=${encodeURIComponent(techId)}`
   );
@@ -9,132 +12,69 @@ export const handleGetTech = async (msp, techId) => {
 
 export const handleGetIntegrations = async (msp) => {
   const response = await fetch(
-    `http://localhost:9019/${encodeURIComponent(msp)}/integrations`
+    `${dbServiceUrl}/${encodeURIComponent(msp)}/integrations`
   );
   return response.json();
 };
 
-
 export const handleGetManageTechnicians = async (msp) => {
   const response = await fetch(
-    `http://localhost:9020/getConnectWiseMembers?mspCustomDomain=${encodeURIComponent(msp)}`
+    `${connectWiseServiceUrl}/getConnectWiseMembers?mspCustomDomain=${encodeURIComponent(
+      msp
+    )}`
   );
   return response.json();
 };
 
 export const handleGetManageDBTechnicians = async (msp) => {
   const response = await fetch(
-    `http://localhost:9019/${encodeURIComponent(msp)}/connectWiseMembers`
-  )
-  return response.json()
-}
-
+    `${dbServiceUrl}/${encodeURIComponent(msp)}/connectWiseMembers`
+  );
+  return response.json();
+};
 
 export const handleGetManageClients = async (msp) => {
   const response = await fetch(
-    `http://localhost:9020/getConnectWiseClients?mspCustomDomain=${encodeURIComponent(msp)}`
+    `${connectWiseServiceUrl}/getConnectWiseClients?mspCustomDomain=${encodeURIComponent(
+      msp
+    )}`
   );
   return response.json();
 };
 
 export const handleGetManageDBClients = async (msp) => {
   const response = await fetch(
-    `http://localhost:9019/${encodeURIComponent(msp)}/connectWiseClients`
-  )
-  return response.json()
-}
-
+    `${dbServiceUrl}/${encodeURIComponent(msp)}/connectWiseClients`
+  );
+  return response.json();
+};
 
 export const handleGetManageContacts = async (msp) => {
   const response = await fetch(
-    `http://localhost:9020/getConnectWiseContacts?mspCustomDomain=${encodeURIComponent(msp)}`
+    `${connectWiseServiceUrl}/getConnectWiseContacts?mspCustomDomain=${encodeURIComponent(
+      msp
+    )}`
   );
   return response.json();
 };
 
 export const handleGetManageDBContacts = async (msp) => {
   const response = await fetch(
-    `http://localhost:9019/${encodeURIComponent(msp)}/connectWiseContacts`
-  )
-  return response.json()
-}
-
-
-export const handleGetRoles = async (msp) => {
-  const response = await fetch(
-    `http://localhost:9019/${encodeURIComponent(msp)}/roles/all`
+    `${dbServiceUrl}/${encodeURIComponent(msp)}/connectWiseContacts`
   );
   return response.json();
 };
 
-export const handleGetUser = async (clientId) => {
+export const handleGetRoles = async (msp) => {
   const response = await fetch(
-    `https://etech7-wf-etech7-db-service.azuremicroservices.io/getClientById?id=${clientId}`
+    `${dbServiceUrl}/${encodeURIComponent(msp)}/roles/all`
   );
   return response.json();
 };
 
 export const handleGetConversations = async (clientId) => {
   const response = await fetch(
-    // `https://etech7-wf-etech7-db-service.azuremicroservices.io/getConversations?userId=${clientId}`
-    `http://localhost:9019/conversations/getConversations?userId=${clientId}`
-  );
-
-  return response.json();
-};
-
-export const handleGetDocumentConversations = async (clientId) => {
-  const response = await fetch(
-    `https://etech7-wf-etech7-db-service.azuremicroservices.io/getDocumentConversations?userId=${clientId}`
-  );
-  return response.json();
-};
-
-export const handleGetAgents = async () => {
-  const response = await fetch(
-    "https://etech7-wf-etech7-db-service.azuremicroservices.io/getAgents"
-  );
-  return response.json();
-};
-
-export const handleGetRooms = async (userId) => {
-  const response = await fetch(
-    `https://etech7-wf-etech7-db-service.azuremicroservices.io/getRooms?userId=${userId}`
-  );
-  return response.json();
-};
-
-export const handleGetMessages = async (conversationId) => {
-  const response = await fetch(
-    `https://etech7-wf-etech7-db-service.azuremicroservices.io/getMessages?conversationId=${conversationId}`
-  );
-  return response.json();
-};
-
-export const handleGetDocumentMessages = async (documentConversationId) => {
-  const response = await fetch(
-    `https://etech7-wf-etech7-db-service.azuremicroservices.io/getDocumentMessages?documentConversationID=${documentConversationId}`
-  );
-  return response.json();
-};
-
-export const handleGetRoomMessages = async (roomId) => {
-  const response = await fetch(
-    `https://etech7-wf-etech7-db-service.azuremicroservices.io/getRoomMessages?roomId=${roomId}`
-  );
-  return response.json();
-};
-
-export const handleGetTasks = async (userId) => {
-  const response = await fetch(
-    `https://etech7-wf-etech7-db-service.azuremicroservices.io/getTasks?userId=${userId}`
-  );
-  return response.json();
-};
-
-export const handleGetNotes = async (conversationId) => {
-  const response = await fetch(
-    `https://etech7-wf-etech7-db-service.azuremicroservices.io/getNotes?conversationID=${conversationId}`
+    `${dbServiceUrl}/conversations/getConversations?userId=${clientId}`
   );
 
   return response.json();
@@ -142,29 +82,95 @@ export const handleGetNotes = async (conversationId) => {
 
 export const handleGetMSPTickets = async (msp) => {
   const response = await fetch(
-    `http://localhost:9019/supportTickets/byMspCustomDomain?mspCustomDomain=${encodeURIComponent(msp)}`
+    `${dbServiceUrl}/supportTickets/byMspCustomDomain?mspCustomDomain=${encodeURIComponent(
+      msp
+    )}`
   );
 
-  return response.json();
-};
-
-export const handleGetReports = async () => {
-  const response = await fetch(
-    "https://etech7-wf-etech7-support-service.azuremicroservices.io/getReports"
-  );
-  return response.json();
-};
-
-export const handleGetProjects = async () => {
-  const response = await fetch(
-    "https://etech7-wf-etech7-support-service.azuremicroservices.io/getProjects"
-  );
   return response.json();
 };
 
 export const handleGetMSPs = async (customDomain) => {
   const response = await fetch(
-    `http://localhost:9019/msp?customDomain=${customDomain}`
+    `${dbServiceUrl}/msp?customDomain=${customDomain}`
   );
   return response.json();
 };
+
+export const handleGetAgents = async (msp) => {
+  const response = await fetch(
+    `${dbServiceUrl}/${encodeURIComponent(msp)}/agents/getAgents`
+  );
+  return response.json();
+};
+
+// export const handleGetUser = async (clientId) => {
+//   const response = await fetch(
+//     `https://etech7-wf-etech7-db-service.azuremicroservices.io/getClientById?id=${clientId}`
+//   );
+//   return response.json();
+// };
+
+// export const handleGetDocumentConversations = async (clientId) => {
+//   const response = await fetch(
+//     `https://etech7-wf-etech7-db-service.azuremicroservices.io/getDocumentConversations?userId=${clientId}`
+//   );
+//   return response.json();
+// };
+
+// export const handleGetRooms = async (userId) => {
+//   const response = await fetch(
+//     `https://etech7-wf-etech7-db-service.azuremicroservices.io/getRooms?userId=${userId}`
+//   );
+//   return response.json();
+// };
+
+// export const handleGetMessages = async (conversationId) => {
+//   const response = await fetch(
+//     `https://etech7-wf-etech7-db-service.azuremicroservices.io/getMessages?conversationId=${conversationId}`
+//   );
+//   return response.json();
+// };
+
+// export const handleGetDocumentMessages = async (documentConversationId) => {
+//   const response = await fetch(
+//     `https://etech7-wf-etech7-db-service.azuremicroservices.io/getDocumentMessages?documentConversationID=${documentConversationId}`
+//   );
+//   return response.json();
+// };
+
+// export const handleGetRoomMessages = async (roomId) => {
+//   const response = await fetch(
+//     `https://etech7-wf-etech7-db-service.azuremicroservices.io/getRoomMessages?roomId=${roomId}`
+//   );
+//   return response.json();
+// };
+
+// export const handleGetTasks = async (userId) => {
+//   const response = await fetch(
+//     `https://etech7-wf-etech7-db-service.azuremicroservices.io/getTasks?userId=${userId}`
+//   );
+//   return response.json();
+// };
+
+// export const handleGetNotes = async (conversationId) => {
+//   const response = await fetch(
+//     `https://etech7-wf-etech7-db-service.azuremicroservices.io/getNotes?conversationID=${conversationId}`
+//   );
+
+//   return response.json();
+// };
+
+// export const handleGetReports = async () => {
+//   const response = await fetch(
+//     "https://etech7-wf-etech7-support-service.azuremicroservices.io/getReports"
+//   );
+//   return response.json();
+// };
+
+// export const handleGetProjects = async () => {
+//   const response = await fetch(
+//     "https://etech7-wf-etech7-support-service.azuremicroservices.io/getProjects"
+//   );
+//   return response.json();
+// };

@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import Cookie from "js-cookie";
-import useTechStore from "../../user/techStore";
+
+const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
+const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 
 const useMspStore = create((set, get) => ({
   mspDomains: null,
@@ -82,7 +84,7 @@ const useMspStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `http://localhost:9019/${encodeURIComponent(
+        `${dbServiceUrl}/${encodeURIComponent(
           mspCustomDomain
         )}/technicianUsers/add`,
         {
@@ -118,7 +120,7 @@ const useMspStore = create((set, get) => ({
     };
 
     try {
-      const response = await fetch(`http://localhost:9019/msp`, {
+      const response = await fetch(`${dbServiceUrl}/msp`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -215,18 +217,15 @@ const useMspStore = create((set, get) => ({
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:9019/technicianUsers/signin`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            emailId: techInfo.email,
-          }),
-        }
-      );
+      const response = await fetch(`${dbServiceUrl}/technicianUsers/signin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          emailId: techInfo.email,
+        }),
+      });
 
       if (response.ok) {
         const mspList = await response.json();
@@ -263,7 +262,7 @@ const useMspStore = create((set, get) => ({
     }
     try {
       const response = await fetch(
-        `http://localhost:9019/${mspCustomDomain}/technicianUsers/signin`,
+        `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/signin`,
         {
           method: "POST",
           headers: {
@@ -304,7 +303,6 @@ const useMspStore = create((set, get) => ({
     const { loginInputs, errorMessage } = get();
     const { techInfo } = loginInputs;
 
-
     if (techInfo.login2FA === "") {
       set({
         errorMessage: { ...errorMessage, emptyFields: true, emailCheck: false },
@@ -317,7 +315,7 @@ const useMspStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `http://localhost:9019/${mspCustomDomain}/technicianUsers/validateResetToken?email=${encodedEmail}&token=${encodedToken}`
+        `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/validateResetToken?email=${encodedEmail}&token=${encodedToken}`
       );
 
       if (response.ok) {

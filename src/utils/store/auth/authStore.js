@@ -7,6 +7,9 @@ import {
   isEmailInputValid,
 } from "../../../utils/formValidations.js";
 
+const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
+const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
+
 const useAuthStore = create((set, get) => ({
   email: "",
   password: "",
@@ -347,7 +350,7 @@ const useAuthStore = create((set, get) => ({
     const encodedDomain = encodeURIComponent(mspCustomDomain);
     try {
       const response = await fetch(
-        `http://localhost:9019/${encodedDomain}/technicianUsers/forgotPassword?email=${encodedClientUser}`
+        `${dbServiceUrl}/${encodedDomain}/technicianUsers/forgotPassword?email=${encodedClientUser}`
       );
       set({ errorMessage: "" });
 
@@ -371,7 +374,7 @@ const useAuthStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `http://localhost:9019/${encodedDomain}/technicianUsers/validateResetToken?email=${encodedClientUser}&token=${encodedVerificationCode}`
+        `${dbServiceUrl}/${encodedDomain}/technicianUsers/validateResetToken?email=${encodedClientUser}&token=${encodedVerificationCode}`
       );
       set({ errorMessage: "", resentCodeMessage: "" });
       if (response.ok) {
@@ -405,7 +408,7 @@ const useAuthStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `http://localhost:9019/${encodedDomain}/technicianUsers/changePassword?token=${encodedVerificationCode}`,
+        `${dbServiceUrl}/${encodedDomain}/technicianUsers/changePassword?token=${encodedVerificationCode}`,
         {
           method: "POST",
           headers: {

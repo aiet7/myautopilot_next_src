@@ -31,9 +31,9 @@ const Companies = () => {
       <div className="flex flex-col h-full overflow-hidden">
         <div className="flex flex-col text-xl overflow-hidden">
           {companies?.length !== 0 ? (
-            <div className="flex flex-col gap-7 text-xl overflow-hidden ">
+            <div className="flex flex-col gap-7 text-xl overflow-hidden">
               {companies && (
-                <div className="flex  flex-col overflow-hidden px-4">
+                <div className="flex flex-col overflow-hidden px-4">
                   <div className="flex items-center justify-start gap-2 py-4">
                     <button className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1">
                       Add Company
@@ -43,7 +43,7 @@ const Companies = () => {
                     <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
                       <thead className="dark:text-white dark:bg-gray-700 sticky top-0 text-lg text-black/60 bg-[#F5F8FA]">
                         <tr className="">
-                          <th className="p-2 border-l border-t border-b border-r ">
+                          <th className="p-2 border-l border-t border-b border-r">
                             Name
                           </th>
                           <th className="p-2 border-t border-b border-r">

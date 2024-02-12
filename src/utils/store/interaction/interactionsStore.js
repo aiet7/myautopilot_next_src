@@ -6,8 +6,10 @@ import useRefStore from "./ref/refStore";
 import useDocConversationsStore from "./conversations/docConversationsStore";
 import useTicketConversationsStore from "./conversations/ticketConversationsStore";
 import useTechStore from "../user/techStore";
-import { resolve } from "url";
-import { type } from "os";
+
+
+const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
+const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 
 const useInteractionStore = create((set, get) => ({
   userInput: "",
@@ -145,7 +147,7 @@ const useInteractionStore = create((set, get) => ({
 
       try {
         const response = await fetch(
-          "http://localhost:9020/getTicketCategorization",
+          `${connectWiseServiceUrl}/getTicketCategorization`,
           {
             method: "POST",
             headers: {
@@ -186,7 +188,7 @@ const useInteractionStore = create((set, get) => ({
       const encodedTicketId = encodeURIComponent(ticketId);
       try {
         const response = await fetch(
-          `http://localhost:9020/addNoteToTicket?mspCustomDomain=${encodedDomain}&ticketId=${encodedTicketId}`,
+          `${connectWiseServiceUrl}/addNoteToTicket?mspCustomDomain=${encodedDomain}&ticketId=${encodedTicketId}`,
           {
             method: "POST",
             headers: {

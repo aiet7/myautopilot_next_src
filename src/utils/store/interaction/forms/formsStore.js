@@ -4,6 +4,9 @@ import { validateTicketForm } from "@/utils/formValidations";
 import useTicketConversationsStore from "../conversations/ticketConversationsStore";
 import useTechStore from "../../user/techStore";
 
+const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
+const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
+
 const useFormsStore = create((set, get) => ({
   isFormOpen: {},
   isServerError: false,
@@ -35,7 +38,6 @@ const useFormsStore = create((set, get) => ({
     currentTicketEmailId: "",
     currentTicketPhoneNumber: "",
 
-
     onBoarding: {
       currentTicketNewFirstName: "",
       currentTicketNewLastName: "",
@@ -53,7 +55,6 @@ const useFormsStore = create((set, get) => ({
     userCreatedInActiveDirectory: undefined,
     userEmailCreated: undefined,
   },
-
 
   setTicket: (fieldName, value) => {
     set((state) => {
@@ -83,8 +84,6 @@ const useFormsStore = create((set, get) => ({
   setFilteredSubCategories: (filtered) =>
     set((state) => ({ ...state, filteredSubCategories: filtered })),
 
-
-
   handleClearTicketProgress: () => {
     set((state) => ({
       ...state,
@@ -98,7 +97,6 @@ const useFormsStore = create((set, get) => ({
       },
     }));
   },
-
 
   handleCreateTicketProcess: (responseBody) => {
     const techStore = useTechStore.getState();
@@ -118,7 +116,7 @@ const useFormsStore = create((set, get) => ({
       durationToResolve,
       emailId,
       name,
-      phoneNumber
+      phoneNumber,
     } = responseBody;
 
     let newEmployeeFirstName = "";
@@ -145,7 +143,8 @@ const useFormsStore = create((set, get) => ({
         currentTicketImpact: impact || "",
         currentTicketSeverity: severity || "",
         currentTicketTier: tier || "",
-        currentTicketName: techStore.tech.firstName + " " + techStore.tech.lastName || "",
+        currentTicketName:
+          techStore.tech.firstName + " " + techStore.tech.lastName || "",
         currentTicketEmailId: techStore.tech.email || "",
         currentTicketPhoneNumber: techStore.tech.phoneNumber || "",
 
@@ -158,11 +157,13 @@ const useFormsStore = create((set, get) => ({
           currentTicketNewEmailId: emailId || "",
         },
       },
-
     }));
 
     handleAddForm("ticketForm");
-    if (categoryName === "TRAINING_OR_ONBOARDING" && subCategoryName === "NEW_EMPLOYEE_ONBOARDING") {
+    if (
+      categoryName === "TRAINING_OR_ONBOARDING" &&
+      subCategoryName === "NEW_EMPLOYEE_ONBOARDING"
+    ) {
       set({
         ticketStatus: {
           ticketCreated: "pending",
@@ -171,7 +172,7 @@ const useFormsStore = create((set, get) => ({
           userCreatedInActiveDirectory: "pending",
           userEmailCreated: "pending",
         },
-      })
+      });
     } else {
       set({
         ticketStatus: {
@@ -179,10 +180,9 @@ const useFormsStore = create((set, get) => ({
           ticketAssigned: "pending",
           ticketClosed: "pending",
         },
-      })
+      });
     }
   },
-
 
   handleTicketConfirmation: async (isConfirmed, formId) => {
     const { ticket } = get();
@@ -230,9 +230,11 @@ const useFormsStore = create((set, get) => ({
         },
       }));
       try {
-        const encodedDomain = encodeURIComponent(techStore.tech.mspCustomDomain)
+        const encodedDomain = encodeURIComponent(
+          techStore.tech.mspCustomDomain
+        );
         const ticketResponse = await fetch(
-          `http://localhost:9020/createTicket?mspCustomDomain=${encodedDomain}`,
+          `${connectWiseServiceUrl}/createTicket?mspCustomDomain=${encodedDomain}`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -253,7 +255,7 @@ const useFormsStore = create((set, get) => ({
               emailId: currentTicketEmailId,
               phoneNumber: currentTicketPhoneNumber,
               connectWiseCompanyId: currentTicketCWCompanyId,
-              technicianId: techStore.tech.id
+              technicianId: techStore.tech.id,
             }),
           }
         );
@@ -264,7 +266,7 @@ const useFormsStore = create((set, get) => ({
             ticketCreated,
             ticketAssigned,
             ticketClosed,
-            ticketDetails: { id }
+            ticketDetails: { id },
           } = ticket;
           set((state) => ({
             ...state,
@@ -357,8 +359,6 @@ const useFormsStore = create((set, get) => ({
       }));
     }
   },
-
-
 }));
 
 export default useFormsStore;

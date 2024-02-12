@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import useUiStore from "../ui/uiStore";
 import { handleGetAgents, handleGetMSPs } from "@/utils/api/serverProps";
+import useTechStore from "../user/techStore";
 
 const useInitializeAppStore = create((set, get) => ({
   mspSubDomain: null,
@@ -8,20 +9,25 @@ const useInitializeAppStore = create((set, get) => ({
   setSelectedAgent: (id) => set({ selectedAgent: id }),
 
   initializeApp: async () => {
+    const techStore = useTechStore.getState();
     const { activeTab } = useUiStore.getState();
     const { setSelectedAgent } = get();
 
     set({ selectedAgent: null });
 
     if (activeTab === "iTAgent") {
-      const initialAgents = await handleGetAgents();
-      const iTAgent = initialAgents.find(
-        (agent) => agent.agentName === "IT Jarvis Agent"
-      );
-      if (iTAgent) {
-        setSelectedAgent(iTAgent.id);
-      } else {
-        console.log("Not found");
+      if (techStore.tech) {
+        const initialAgents = await handleGetAgents(
+          techStore.tech.mspCustomDomain
+        );
+        const iTAgent = initialAgents.find(
+          (agent) => agent.agentName === "IT Agent"
+        );
+        if (iTAgent) {
+          setSelectedAgent(iTAgent.id);
+        } else {
+          console.log("Not found");
+        }
       }
     }
   },

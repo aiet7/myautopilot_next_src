@@ -2,6 +2,9 @@ import { handleGetRoles } from "@/utils/api/serverProps";
 import useTechStore from "@/utils/store/user/techStore";
 import { create } from "zustand";
 
+const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
+const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
+
 const useRolesStore = create((set, get) => ({
   roles: null,
 
@@ -125,7 +128,7 @@ const useRolesStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `http://localhost:9019/${mspCustomDomain}/roles/create`,
+        `${dbServiceUrl}/${mspCustomDomain}/roles/create`,
         {
           method: "POST",
           headers: {
@@ -171,7 +174,7 @@ const useRolesStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `http://localhost:9019/${mspCustomDomain}/roles/create`,
+        `${dbServiceUrl}/${mspCustomDomain}/roles/create`,
         {
           method: "POST",
           headers: {
@@ -233,7 +236,7 @@ const useRolesStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `http://localhost:9019/${mspCustomDomain}/roles/create`,
+        `${dbServiceUrl}/${mspCustomDomain}/roles/create`,
         {
           method: "POST",
           headers: {
@@ -275,7 +278,7 @@ const useRolesStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `http://localhost:9019/${mspCustomDomain}/roles/delete?id=${roletoDelete.id}`
+        `${dbServiceUrl}/${mspCustomDomain}/roles/delete?id=${roletoDelete.id}`
       );
 
       if (response.status === 200) {

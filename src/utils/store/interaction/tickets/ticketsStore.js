@@ -2,6 +2,9 @@ import { handleGetMSPTickets } from "@/utils/api/serverProps";
 import { create } from "zustand";
 import useTechStore from "../../user/techStore";
 
+const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
+const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
+
 const useTicketsStore = create((set, get) => ({
   tickets: null,
   ticketStatus: null,
@@ -67,7 +70,7 @@ const useTicketsStore = create((set, get) => ({
         ticketStatusLoading: { ...state.ticketStatusLoading, [ticketId]: true },
       }));
       const ticketStatusResponse = await fetch(
-        `http://localhost:9020/getTicketsById?mspCustomDomain=${encodedDomain}&ticketId=${ticketId}`
+        `${connectWiseServiceUrl}/getTicketsById?mspCustomDomain=${encodedDomain}&ticketId=${ticketId}`
       );
       if (ticketStatusResponse.status === 200) {
         const ticketStatus = await ticketStatusResponse.json();
@@ -93,7 +96,7 @@ const useTicketsStore = create((set, get) => ({
     const encodedDomain = encodeURIComponent(techStore.tech.mspCustomDomain);
     try {
       const ticketNotesResponse = await fetch(
-        `http://localhost:9020/getConnectWiseTicketNotesById?mspCustomDomain=${encodedDomain}&ticketId=${ticketId}`
+        `${connectWiseServiceUrl}/getConnectWiseTicketNotesById?mspCustomDomain=${encodedDomain}&ticketId=${ticketId}`
       );
       if (ticketNotesResponse.status === 200) {
         const ticketNotes = await ticketNotesResponse.json();

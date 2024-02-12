@@ -10,6 +10,9 @@ import {
 import useTicketConversationsStore from "./ticketConversationsStore";
 import useTechStore from "../../user/techStore";
 
+const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
+const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
+
 const useConversationStore = create((set, get) => ({
   conversationHistories: [],
   currentConversationIndex: 0,
@@ -25,7 +28,6 @@ const useConversationStore = create((set, get) => ({
     set((state) => ({ ...state, deleting: isDeleting })),
 
   initializeConversations: async () => {
-    // const userStore = useUserStore.getState();
     const techStore = useTechStore.getState();
     set({ conversationHistories: [] });
 
@@ -200,7 +202,6 @@ const useConversationStore = create((set, get) => ({
   },
 
   handleNewConversation: async (index) => {
-    // const userStore = useUserStore.getState();
     const techStore = useTechStore.getState();
 
     const { selectedAgent } = useInitializeAppStore.getState();
@@ -213,7 +214,7 @@ const useConversationStore = create((set, get) => ({
     try {
       const response = await fetch(
         // `https://etech7-wf-etech7-db-service.azuremicroservices.io/addConversation`//
-        `http://localhost:9019/conversations/addConversation`,
+        `${dbServiceUrl}/conversations/addConversation`,
         {
           method: "POST",
           headers: {
@@ -250,7 +251,7 @@ const useConversationStore = create((set, get) => ({
       try {
         const response = await fetch(
           // `https://etech7-wf-etech7-db-service.azuremicroservices.io/deleteConversation?conversationId=${conversationToDelete.id}`
-          `http://localhost:9019/conversations/deleteConversation?conversationId=${conversationToDelete.id}`
+          `${dbServiceUrl}/conversations/deleteConversation?conversationId=${conversationToDelete.id}`
         );
 
         if (response.ok) {

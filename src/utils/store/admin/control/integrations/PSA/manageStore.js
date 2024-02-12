@@ -11,6 +11,9 @@ import {
   handleGetRoles,
 } from "@/utils/api/serverProps";
 
+const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
+const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
+
 const useManageStore = create((set, get) => ({
   technicians: null,
   techniciansTierOptions: ["Tier1", "Tier2", "Tier3", "NoTier"],
@@ -455,7 +458,7 @@ const useManageStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `http://localhost:9019/${mspCustomDomain}/integrations/update`,
+        `${dbServiceUrl}/${mspCustomDomain}/integrations/update`,
         {
           method: "POST",
           headers: {
@@ -522,7 +525,7 @@ const useManageStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `http://localhost:9019/${mspCustomDomain}/integrations/update`,
+        `${dbServiceUrl}/${mspCustomDomain}/integrations/update`,
         {
           method: "POST",
           headers: {
@@ -559,7 +562,7 @@ const useManageStore = create((set, get) => ({
     const { handleUpdateIntegrations } = useIntegrationsStore.getState();
     try {
       const response = await fetch(
-        `http://localhost:9019/${mspCustomDomain}/integrations/update`,
+        `${dbServiceUrl}/${mspCustomDomain}/integrations/update`,
         {
           method: "POST",
           headers: {
@@ -593,7 +596,7 @@ const useManageStore = create((set, get) => ({
   handleCheckManageKeys: async (mspCustomDomain) => {
     try {
       const response = await fetch(
-        `http://localhost:9020/getConnectWiseBoards?mspCustomDomain=${mspCustomDomain}`
+        `${connectWiseServiceUrl}/getConnectWiseBoards?mspCustomDomain=${mspCustomDomain}`
       );
 
       if (response.status === 200) {
@@ -637,7 +640,7 @@ const useManageStore = create((set, get) => ({
       });
       try {
         const response = await fetch(
-          `http://localhost:9020/getMergedConnectWiseCategorizationWithoutGpt?mspCustomDomain=${mspCustomDomain}&boardId=${id}`
+          `${connectWiseServiceUrl}/getMergedConnectWiseCategorizationWithoutGpt?mspCustomDomain=${mspCustomDomain}&boardId=${id}`
         );
 
         if (response.status === 200) {
@@ -654,8 +657,8 @@ const useManageStore = create((set, get) => ({
 
   handleCustomBoardMetadata: async () => {
     const techStore = useTechStore.getState();
-    const departmentsURL = `http://localhost:9020/getConnectWiseDepartments?mspCustomDomain=${techStore.tech.mspCustomDomain}`;
-    const locationsURL = `http://localhost:9020/getConnectWiseLocations?mspCustomDomain=${techStore.tech.mspCustomDomain}`;
+    const departmentsURL = `${connectWiseServiceUrl}/getConnectWiseDepartments?mspCustomDomain=${techStore.tech.mspCustomDomain}`;
+    const locationsURL = `${connectWiseServiceUrl}/getConnectWiseLocations?mspCustomDomain=${techStore.tech.mspCustomDomain}`;
 
     try {
       const [departmentsResponse, locationsResponse] = await Promise.all([
@@ -694,8 +697,8 @@ const useManageStore = create((set, get) => ({
 
   handleCustomBoard: async () => {
     const techStore = useTechStore.getState();
-    const templateURL = `http://localhost:9019/default-et7-board-template/connectWiseManageDetails`;
-    const prioritiesURL = `http://localhost:9020/getConnectWisePriorities?mspCustomDomain=${techStore.tech.mspCustomDomain}`;
+    const templateURL = `${dbServiceUrl}/default-et7-board-template/connectWiseManageDetails`;
+    const prioritiesURL = `${connectWiseServiceUrl}/getConnectWisePriorities?mspCustomDomain=${techStore.tech.mspCustomDomain}`;
 
     try {
       const [templateResponse, prioritiesResponse] = await Promise.all([
@@ -740,7 +743,7 @@ const useManageStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `http://localhost:9019/${mspCustomDomain}/connectWiseManageDetails/update`,
+        `${dbServiceUrl}/${mspCustomDomain}/connectWiseManageDetails/update`,
         {
           method: "POST",
           headers: {
@@ -777,7 +780,7 @@ const useManageStore = create((set, get) => ({
     if (customBoardTitle.trim() !== "") {
       try {
         const response = await fetch(
-          `http://localhost:9020/createConnectWiseBoard?mspCustomDomain=${mspCustomDomain}`,
+          `${connectWiseServiceUrl}/createConnectWiseBoard?mspCustomDomain=${mspCustomDomain}`,
           {
             method: "POST",
             headers: {
@@ -832,7 +835,7 @@ const useManageStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `http://localhost:9020/createDefaultBoardSetup?boardId=${customBoardMerge.boardId}&mspCustomDomain=${mspCustomDomain}`,
+        `${connectWiseServiceUrl}/createDefaultBoardSetup?boardId=${customBoardMerge.boardId}&mspCustomDomain=${mspCustomDomain}`,
         {
           method: "POST",
           headers: {
@@ -873,7 +876,7 @@ const useManageStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `http://localhost:9019/${encodeURIComponent(
+        `${dbServiceUrl}/${encodeURIComponent(
           mspCustomDomain
         )}/addConnectWiseMembers`,
         {
@@ -911,7 +914,7 @@ const useManageStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `http://localhost:9019/${encodeURIComponent(
+        `${dbServiceUrl}/${encodeURIComponent(
           mspCustomDomain
         )}/addConnectWiseClients`,
         {
@@ -948,7 +951,7 @@ const useManageStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `http://localhost:9019/${encodeURIComponent(
+        `${dbServiceUrl}/${encodeURIComponent(
           mspCustomDomain
         )}/addConnectWiseContacts`,
         {
