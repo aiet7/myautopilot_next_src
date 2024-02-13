@@ -25,6 +25,7 @@ import { useRouter } from "next/router";
 
 const TabNavRail = ({}) => {
   const router = useRouter();
+
   const { tech, handleLogout } = useTechStore();
 
   const { activeUIAssistantTab } = useAssistantStore();

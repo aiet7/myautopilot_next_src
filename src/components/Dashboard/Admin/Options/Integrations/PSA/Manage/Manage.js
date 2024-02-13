@@ -16,6 +16,10 @@ const Manage = () => {
   const { tech } = useTechStore();
 
   const {
+    successManageIntegration,
+    errorManageIntegration,
+    successManageDisconnect,
+    errorManageDisconnect,
     activeConfig,
     integrationInputs,
     setIntegrationInputs,
@@ -28,7 +32,7 @@ const Manage = () => {
 
   const { integrations, handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
-  
+
   return (
     <div
       onClick={() => {
@@ -288,6 +292,22 @@ const Manage = () => {
               </div>
 
               <div className="p-4 flex items-center justify-end gap-4">
+                {successManageIntegration && (
+                  <p className="text-emerald-500">
+                    Successfully Integration Manage!
+                  </p>
+                )}
+                {errorManageIntegration && (
+                  <p className="text-red-500">Error Integration Manage!</p>
+                )}
+                {successManageDisconnect && (
+                  <p className="text-emerald-500">
+                    Successfully Disconnected Manage!
+                  </p>
+                )}
+                {errorManageDisconnect && (
+                  <p className="text-red-500">Error Disconnecting Manage!</p>
+                )}
                 {integrations?.connectWiseManageIntegrator && (
                   <button
                     onClick={() => handleCheckManageKeys(tech?.mspCustomDomain)}

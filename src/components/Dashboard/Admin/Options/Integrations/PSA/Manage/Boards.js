@@ -36,7 +36,7 @@ const Board = () => {
   } = useManageStore();
 
   const boardData = customBoard ? customBoardMerge : connectwiseMerge;
-  
+
   return (
     <div className="flex flex-col gap-4 h-full overflow-hidden">
       <div className="flex flex-col gap-8 pb-2 justify-between items-start text-xl font-semibold italic text-black/30 md:flex-row">
@@ -65,6 +65,10 @@ const Board = () => {
             }
             className="border rounded-lg shadow-lg p-2 cursor-pointer text-black"
           >
+            <option value="" disabled selected>
+              Select Board
+            </option>
+
             {connectwiseBoards &&
               connectwiseBoards.map((board) => {
                 const { id, name } = board;
@@ -132,6 +136,10 @@ const Board = () => {
               }}
               className="p-1 border rounded w-[125px]"
             >
+              <option value="" disabled selected>
+                Select Department
+              </option>
+
               {customBoardMerge &&
                 customBoardMerge.departmentsList.map((department) => {
                   const { id, name } = department;
@@ -166,6 +174,10 @@ const Board = () => {
               }}
               className="p-1 border rounded w-[150px]"
             >
+              <option value="" disabled selected>
+                Select Location
+              </option>
+
               {customBoardMerge &&
                 customBoardMerge.locationsList.map((location) => {
                   const { id, name } = location;

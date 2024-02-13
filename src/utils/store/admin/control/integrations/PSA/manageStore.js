@@ -80,6 +80,11 @@ const useManageStore = create((set, get) => ({
     "4 Hours",
   ],
 
+  successManageIntegration: false,
+  successManageDisconnect: false,
+  errorManageIntegration: false,
+  errorManageDisconnect: false,
+
   successMessage: false,
   errorMessage: false,
 
@@ -222,25 +227,61 @@ const useManageStore = create((set, get) => ({
       successMessage: false,
       errorMessage: false,
       activePage: 1,
+      activePageNumbers: [],
     });
   },
 
   setActiveConfigPreviousStep: () => {
     const { activeConfigSteps } = get();
     if (activeConfigSteps > 1) {
-      set({ activeConfigSteps: activeConfigSteps - 1, activePage: 1 });
+      set({
+        successMessage: false,
+        errorMessage: false,
+        activeConfigSteps: activeConfigSteps - 1,
+        activePage: 1,
+        activePageNumbers: [],
+      });
     }
   },
 
   setActiveConfigNextStep: () => {
     const { activeConfigSteps } = get();
     if (activeConfigSteps < 4) {
-      set({ activeConfigSteps: activeConfigSteps + 1, activePage: 1 });
+      set({
+        successMessage: false,
+        errorMessage: false,
+        activeConfigSteps: activeConfigSteps + 1,
+        activePage: 1,
+        activePageNumbers: [],
+      });
     }
   },
 
   setActivePage: (page) => {
     set({ activePage: page });
+  },
+
+  setCloseConfiguration: () => {
+    set({
+      technicians: null,
+      clients: null,
+      contacts: null,
+
+      connectwiseBoards: null,
+      connectwiseMerge: null,
+      customBoard: null,
+      customBoardMerge: null,
+      customBoardMetadata: false,
+
+      successManageIntegration: false,
+      errorManageIntegration: false,
+      errorMessage: false,
+      successMessage: false,
+      activeConfig: false,
+      activeConfigSteps: 1,
+      activePage: 1,
+      activePageNumbers: [],
+    });
   },
 
   setIntegrationInputs: (type, field, value) =>
@@ -476,12 +517,19 @@ const useManageStore = create((set, get) => ({
         const updatedIntegrations = await response.json();
         handleUpdateIntegrations(updatedIntegrations);
         set({
-          errorMessage: false,
-          successMessage: true,
+          successManageIntegration: true,
+          errorManageIntegration: false,
+          successManageDisconnect: false,
+          errorManageDisconnect: false,
         });
         console.log("MANAGE INTEGRATED");
       } else {
-        set({ errorMessage: true, successMessage: false });
+        set({
+          errorManageIntegration: true,
+          successManageIntegration: false,
+          successManageDisconnect: false,
+          errorManageDisconnect: false,
+        });
         console.log("FAILED INTEGRATION");
       }
     } catch (e) {
@@ -547,11 +595,32 @@ const useManageStore = create((set, get) => ({
       if (response.status === 200) {
         const updatedIntegrations = await response.json();
         handleUpdateIntegrations(updatedIntegrations);
-        set({ errorMessage: false, successMessage: true });
-        console.log("MANAGE INTEGRATED");
+        set({
+          technicians: null,
+          clients: null,
+          contacts: null,
+          connectwiseBoards: null,
+          connectwiseMerge: null,
+          customBoard: null,
+          customBoardMerge: null,
+          customBoardMetadata: false,
+          successManageDisconnect: true,
+          errorManageDisconnect: false,
+          successManageIntegration: false,
+          errorManageIntegration: false,
+          activeConfig: false,
+          activeConfigSteps: 1,
+          activePage: 1,
+        });
+        console.log("MANAGE DISCONNECTED");
       } else {
-        set({ errorMessage: true, successMessage: false });
-        console.log("FAILED INTEGRATION");
+        set({
+          successManageDisconnect: false,
+          errorManageDisconnect: true,
+          successManageIntegration: false,
+          errorManageIntegration: false,
+        });
+        console.log("FAILED DISCONNECTION");
       }
     } catch (e) {
       console.log(e);

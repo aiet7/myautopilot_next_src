@@ -8,6 +8,7 @@ import Contacts from "./Contacts";
 
 const Configuration = () => {
   const {
+    
     activePage,
     activePageNumbers,
     setActivePage,
@@ -15,7 +16,7 @@ const Configuration = () => {
     setActiveConfigPreviousStep,
     setActiveConfigNextStep,
     setActiveConfigStep,
-    setActiveConfig,
+    setCloseConfiguration,
   } = useManageStore();
 
   const renderComponent = () => {
@@ -36,11 +37,7 @@ const Configuration = () => {
         <AiOutlineClose
           className="cursor-pointer"
           size={20}
-          onClick={() => {
-            setActiveConfig(false);
-            setActiveConfigStep(1);
-            setActivePage(1);
-          }}
+          onClick={setCloseConfiguration}
         />
         <div className="flex flex-col gap-4 overflow-hidden w-full h-full">
           <div className="flex gap-2 py-2 text-center font-bold ">

@@ -28,7 +28,7 @@ const useTechStore = create((set, get) => ({
 
   initializeTech: async (msp, id) => {
     const { getUser, saveUser } = useLocalStorageStore.getState();
-    const { initializeMSPTickets } = useTicketsStore.getState(); 
+    const { initializeMSPTickets } = useTicketsStore.getState();
 
     let techData = null;
 
@@ -69,7 +69,6 @@ const useTechStore = create((set, get) => ({
     clearCookies();
     clearInteraction();
     clearEngineer();
-
     navigator("/auth/login");
   },
 }));
