@@ -26,6 +26,9 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
+        env:
+          NEXT_PUBLIC_DB_SERVICE_URL: ${{ secrets.NEXT_PUBLIC_DB_SERVICE_URL }}
+          NEXT_PUBLIC_CONNECTWISE_SERVICE_URL: ${{ secrets.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL }}
 
       - name: Upload build artifact for deployment job
         uses: actions/upload-artifact@v3
