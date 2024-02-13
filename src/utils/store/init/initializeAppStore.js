@@ -23,6 +23,7 @@ const useInitializeAppStore = create((set, get) => ({
         const iTAgent = initialAgents.find(
           (agent) => agent.agentName === "IT Agent"
         );
+
         if (iTAgent) {
           setSelectedAgent(iTAgent.id);
         } else {

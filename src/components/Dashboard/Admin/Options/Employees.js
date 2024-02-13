@@ -120,7 +120,7 @@ const Employees = ({}) => {
               )}
             </div>
           ) : (
-            <p className="text-xl font-bold text-black/20  w-full">
+            <p className="text-xl font-bold text-black/20 p-4 w-full">
               Currently Have No Employees Listed
             </p>
           )}

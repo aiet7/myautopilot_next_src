@@ -99,7 +99,7 @@ export const handleGetMSPs = async (customDomain) => {
 
 export const handleGetAgents = async (msp) => {
   const response = await fetch(
-    `${dbServiceUrl}/${encodeURIComponent(msp)}/agents/getAgents`
+    `${dbServiceUrl}/getAgents`
   );
   return response.json();
 };
