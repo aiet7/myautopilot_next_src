@@ -19,7 +19,7 @@ import useInteractionStore from "@/utils/store/interaction/interactionsStore";
 import useTechStore from "@/utils/store/user/techStore";
 
 const Default = () => {
-  const { tech } = useTechStore()
+  const { tech } = useTechStore();
   const { openDocs, openHistory, openAssistant } = useUiStore();
   const { messages } = useTicketConversationsStore();
   const { conversationHistories, currentConversationIndex } =
@@ -51,6 +51,8 @@ const Default = () => {
     }
   })();
 
+  console.log(conversationHistories);
+
   return (
     <div
       className="flex-grow overflow-auto scrollbar-thin"
@@ -68,26 +70,30 @@ const Default = () => {
         return (
           <div
             key={item.id}
-            className={`px-4 py-4 text-md w-full ${item.role === "user"
-              ? "dark:border-white/40 bg-black/5 border-b"
-              : "dark:bg-white/10 dark:border-white/40 border-b"
-              }`}
+            className={`px-4 py-4 text-md w-full ${
+              item.role === "user"
+                ? "dark:border-white/40 bg-black/5 border-b"
+                : "dark:bg-white/10 dark:border-white/40 border-b"
+            }`}
             ref={index === arr.length - 1 ? latestMessageRef : null}
           >
             <div
               className={`
-         ${!openHistory && activeUIAssistantTab !== "Tickets" && "max-w-[700px]"
-                } 
-         ${!openAssistant &&
-                activeUIAssistantTab !== "Tickets" &&
-                "max-w-[700px]"
-                }
+         ${
+           !openHistory && activeUIAssistantTab !== "Tickets" && "max-w-[700px]"
+         } 
+         ${
+           !openAssistant &&
+           activeUIAssistantTab !== "Tickets" &&
+           "max-w-[700px]"
+         }
          ${!openDocs && activeUIAssistantTab !== "Tickets" && "max-w-[700px]"}
         
-         ${activeUIAssistantTab === "Tickets"
-                  ? "max-w-[1250px]"
-                  : "max-w-[450px] 2xl:max-w-[700px]"
-                } flex items-start gap-4 mx-auto`}
+         ${
+           activeUIAssistantTab === "Tickets"
+             ? "max-w-[1250px]"
+             : "max-w-[450px] 2xl:max-w-[700px]"
+         } flex items-start gap-4 mx-auto`}
             >
               <span>
                 {item.role === "user" ? (
@@ -109,7 +115,7 @@ const Default = () => {
                 )}
               </span>
 
-              <div className="flex-grow min-w-[0]">
+              <div className="flex-grow min-w-[0] ">
                 <Switch item={item} itemId={item.id} />
               </div>
             </div>

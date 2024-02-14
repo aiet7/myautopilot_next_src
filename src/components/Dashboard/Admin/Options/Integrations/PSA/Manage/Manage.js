@@ -160,7 +160,7 @@ const Manage = () => {
                 </div>
                 <div className="flex flex-col gap-6 lg:flex-row">
                   <div className="flex flex-col w-full gap-1">
-                    <p>Comapany ID</p>
+                    <p>Company ID</p>
                     <p className="dark:text-white/60 text-black/60">
                       Your Company ID that is assigned to you from ConnectWise
                     </p>

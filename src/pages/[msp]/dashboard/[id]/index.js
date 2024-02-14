@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import Layout from "@/components/Layouts/Layout.js";
@@ -37,7 +36,6 @@ const DashboardPage = ({}) => {
   const { currentDocumentConversationIndex } = useDocConversationsStore();
   const { activeTab } = useUiStore();
   const { activeAssistantTab, activeUIAssistantTab } = useAssistantStore();
-
 
   useEffect(() => {
     if (router.isReady) {

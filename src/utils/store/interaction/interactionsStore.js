@@ -7,9 +7,9 @@ import useDocConversationsStore from "./conversations/docConversationsStore";
 import useTicketConversationsStore from "./conversations/ticketConversationsStore";
 import useTechStore from "../user/techStore";
 
-
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
+const gptServiceUrl = process.env.NEXT_PUBLIC_GPT_SERVICE_URL;
 
 const useInteractionStore = create((set, get) => ({
   userInput: "",
@@ -214,7 +214,7 @@ const useInteractionStore = create((set, get) => ({
 
   handleSendMessage: async (message) => {
     const { inputRef, messageIdRef } = useRefStore.getState();
-    const userStore = useUserStore.getState();
+    const techStore = useTechStore.getState();
     const {
       handleIfConversationExists,
       handleAddJarvisUserMessage,
@@ -231,25 +231,22 @@ const useInteractionStore = create((set, get) => ({
         userInput: "",
       });
       try {
-        const response = await fetch(
-          `https://etech7-wf-etech7-clu-service.azuremicroservices.io/jarvisITAgentFacade`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              text: message,
-              conversationId: currentConversation.id,
-              userId: userStore.user.id,
-            }),
-          }
-        );
+        const response = await fetch(`${gptServiceUrl}/jarvis`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            text: message,
+            conversationId: currentConversation.id,
+            technicianId: techStore.tech.id,
+          }),
+        });
 
         if (response.status === 200) {
           const responseBody = await response.json();
           messageIdRef.current = responseBody.id;
-          handleAddJarvisAssistantMessage(responseBody.message, null);
+          handleAddJarvisAssistantMessage(responseBody.aiContent, null);
         }
       } catch (e) {
         console.log(e);
