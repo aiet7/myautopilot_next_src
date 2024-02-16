@@ -31,6 +31,9 @@ const useManageStore = create((set, get) => ({
   loadingContacts: false,
 
   connectwiseBoards: null,
+  connectwiseOpenStatuses: null,
+  connectwiseClosedStatuses: null,
+
   loadingBoards: false,
 
   connectwiseMerge: null,
@@ -213,16 +216,17 @@ const useManageStore = create((set, get) => ({
       successMessage: false,
     }),
 
-  setActiveConfig: (config) =>
-    set({
-      activeConfig: config,
-      activeConfigSteps: 1,
-      successMessage: false,
-      errorMessage: false,
-    }),
-
   setActiveConfigStep: (step) => {
     set({
+      technicians: null,
+      clients: null,
+      contacts: null,
+      customMerge: null,
+      connectwiseMerge: null,
+      connectwiseOpenStatuses: null,
+      connectwiseClosedStatuses: null,
+      customBoardMetadata: false,
+      customBoard: false,
       activeConfigSteps: step,
       successMessage: false,
       errorMessage: false,
@@ -235,6 +239,15 @@ const useManageStore = create((set, get) => ({
     const { activeConfigSteps } = get();
     if (activeConfigSteps > 1) {
       set({
+        technicians: null,
+        clients: null,
+        contacts: null,
+        customMerge: null,
+        connectwiseMerge: null,
+        connectwiseOpenStatuses: null,
+        connectwiseClosedStatuses: null,
+        customBoardMetadata: false,
+        customBoard: false,
         successMessage: false,
         errorMessage: false,
         activeConfigSteps: activeConfigSteps - 1,
@@ -248,6 +261,15 @@ const useManageStore = create((set, get) => ({
     const { activeConfigSteps } = get();
     if (activeConfigSteps < 4) {
       set({
+        technicians: null,
+        clients: null,
+        contacts: null,
+        customMerge: null,
+        connectwiseMerge: null,
+        connectwiseOpenStatuses: null,
+        connectwiseClosedStatuses: null,
+        customBoardMetadata: false,
+        customBoard: false,
         successMessage: false,
         errorMessage: false,
         activeConfigSteps: activeConfigSteps + 1,
@@ -267,9 +289,11 @@ const useManageStore = create((set, get) => ({
       clients: null,
       contacts: null,
 
+      connectwiseOpenStatuses: null,
+      connectwiseClosedStatuses: null,
       connectwiseBoards: null,
       connectwiseMerge: null,
-      customBoard: null,
+      customBoard: false,
       customBoardMerge: null,
       customBoardMetadata: false,
 
@@ -304,6 +328,14 @@ const useManageStore = create((set, get) => ({
   setBoardInputs: (categoryId, subCategoryId, field, id, name) => {
     set((prevState) => {
       const updatedConnectwiseMerge = { ...prevState.connectwiseMerge };
+
+      if (
+        categoryId === null &&
+        subCategoryId === null &&
+        (field === "openStatus" || field === "closedStatus")
+      ) {
+        updatedConnectwiseMerge[field] = { id: parseInt(id), name };
+      }
 
       updatedConnectwiseMerge.mspConnectWiseManageCategorizations =
         updatedConnectwiseMerge.mspConnectWiseManageCategorizations.map(
@@ -601,7 +633,9 @@ const useManageStore = create((set, get) => ({
           contacts: null,
           connectwiseBoards: null,
           connectwiseMerge: null,
-          customBoard: null,
+          connectwiseOpenStatuses: null,
+          connectwiseClosedStatuses: null,
+          customBoard: false,
           customBoardMerge: null,
           customBoardMetadata: false,
           successManageDisconnect: true,
@@ -688,8 +722,7 @@ const useManageStore = create((set, get) => ({
   },
 
   handleGetBoardDetails: async (id, mspCustomDomain) => {
-    const { handleCustomBoardMetadata } = get();
-
+    const { handleCustomBoardMetadata, handleGetBoardStatuses } = get();
     if (id === "custom") {
       set({
         connectwiseMerge: null,
@@ -699,6 +732,7 @@ const useManageStore = create((set, get) => ({
         customBoardMetadata: true,
       });
       await handleCustomBoardMetadata();
+      await handleGetBoardStatuses(id, mspCustomDomain);
     } else {
       set({
         connectwiseMerge: null,
@@ -713,6 +747,7 @@ const useManageStore = create((set, get) => ({
         );
 
         if (response.status === 200) {
+          await handleGetBoardStatuses(id, mspCustomDomain);
           const merge = await response.json();
           set({ connectwiseMerge: merge, loadingMerge: false });
         } else {
@@ -721,6 +756,26 @@ const useManageStore = create((set, get) => ({
       } catch (e) {
         console.log(e);
       }
+    }
+  },
+
+  handleGetBoardStatuses: async (id, mspCustomDomain) => {
+    try {
+      const response = await fetch(
+        `${connectWiseServiceUrl}/getConnectWiseStatuses?boardId=${id}&mspCustomDomain=${mspCustomDomain}`
+      );
+
+      if (response.status === 200) {
+        const statuses = await response.json();
+        set({
+          connectwiseOpenStatuses: statuses,
+          connectwiseClosedStatuses: statuses,
+        });
+      } else {
+        console.log("Failed loading statuses");
+      }
+    } catch (e) {
+      console.log(e);
     }
   },
 
@@ -807,7 +862,7 @@ const useManageStore = create((set, get) => ({
     const { connectwiseMerge, connectwiseBoards, activeBoard } = get();
 
     const activeBoardDetails = connectwiseBoards.find(
-      (board) => board.id === activeBoard
+      (board) => board.id === parseInt(activeBoard)
     );
 
     try {
@@ -824,6 +879,10 @@ const useManageStore = create((set, get) => ({
             boardName: activeBoardDetails.name,
             mspConnectWiseManageCategorizations:
               connectwiseMerge.mspConnectWiseManageCategorizations,
+            newCreatingTicketStatusId: connectwiseMerge.openStatus.id,
+            newCreatingTicketStatus: connectwiseMerge.openStatus.name,
+            closingTicketStatusId: connectwiseMerge.closedStatus.id,
+            closingTicketStatus: connectwiseMerge.closedStatus.name,
           }),
         }
       );

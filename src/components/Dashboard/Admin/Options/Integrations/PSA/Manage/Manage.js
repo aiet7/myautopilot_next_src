@@ -32,7 +32,7 @@ const Manage = () => {
 
   const { integrations, handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
-
+  
   return (
     <div
       onClick={() => {
@@ -267,7 +267,7 @@ const Manage = () => {
                       ? handleDisconnectEmailIntegrator(tech?.mspCustomDomain)
                       : handleIntegrateEmailConnector(tech?.mspCustomDomain);
                   }}
-                  className="hover:bg-blue-500  self-start bg-blue-800 text-white px-3 py-1"
+                  className="hover:bg-blue-500  self-start bg-blue-800 text-white rounded-lg px-3 py-1"
                 >
                   <div className="flex items-center gap-1">
                     {integrations?.emailIntegrator ? (
@@ -311,7 +311,7 @@ const Manage = () => {
                 {integrations?.connectWiseManageIntegrator && (
                   <button
                     onClick={() => handleCheckManageKeys(tech?.mspCustomDomain)}
-                    className="hover:bg-blue-500 bg-blue-800 text-white px-3 py-1"
+                    className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg px-3 py-1"
                   >
                     Configuration
                   </button>
@@ -322,7 +322,7 @@ const Manage = () => {
                       ? handleDisconnectManage(tech?.mspCustomDomain)
                       : handleIntegrateManage(tech?.mspCustomDomain)
                   }
-                  className="hover:bg-blue-500 bg-blue-800 text-white px-3 py-1"
+                  className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg px-3 py-1"
                 >
                   {integrations?.connectWiseManageIntegrator
                     ? "Disconnect"

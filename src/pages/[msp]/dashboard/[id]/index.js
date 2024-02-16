@@ -29,14 +29,14 @@ const DashboardPage = ({}) => {
   const session = Cookies.get("session_token");
   const router = useRouter();
   const { initializeApp } = useInitializeAppStore();
-  const { initializeTech } = useTechStore();
+  const { tech, initializeTech } = useTechStore();
   const { getStorage, setStorage } = useLocalStorageStore();
 
   const { currentConversationIndex } = useConversationStore();
   const { currentDocumentConversationIndex } = useDocConversationsStore();
   const { activeTab } = useUiStore();
   const { activeAssistantTab, activeUIAssistantTab } = useAssistantStore();
-
+  
   useEffect(() => {
     if (router.isReady) {
       const currentPath = router.asPath;

@@ -9,6 +9,8 @@ const Board = () => {
   const { tech } = useTechStore();
 
   const {
+    connectwiseOpenStatuses,
+    connectwiseClosedStatuses,
     successMessage,
     errorMessage,
     severityOptions,
@@ -58,14 +60,14 @@ const Board = () => {
         )}
       </div>
       {connectwiseBoards && (
-        <div className="">
+        <div className="flex flex-wrap gap-2 items-center text-xs ">
           <select
             onChange={(e) =>
               handleGetBoardDetails(e.target.value, tech?.mspCustomDomain)
             }
             className="border rounded-lg shadow-lg p-2 cursor-pointer text-black"
           >
-            <option value="" disabled selected>
+            <option value="Select Board" disabled selected>
               Select Board
             </option>
 
@@ -86,11 +88,70 @@ const Board = () => {
               })}
             <option value="custom">Custom</option>
           </select>
+          {connectwiseOpenStatuses && (
+            <select
+              onChange={(e) => {
+                const selectedOpenStatus = connectwiseOpenStatuses.find(
+                  (status) => status.id.toString() === e.target.value
+                );
+
+                setBoardInputs(
+                  null,
+                  null,
+                  "openStatus",
+                  selectedOpenStatus.id,
+                  selectedOpenStatus.name
+                );
+              }}
+              className="border rounded-lg shadow-lg p-2 cursor-pointer text-black"
+            >
+              <option value="Select Open Status" disabled selected>
+                Select Open Status
+              </option>
+              {connectwiseOpenStatuses.map((open) => {
+                const { id, name } = open;
+                return (
+                  <option value={id} key={id}>
+                    {name}
+                  </option>
+                );
+              })}
+            </select>
+          )}
+          {connectwiseClosedStatuses && (
+            <select
+              onChange={(e) => {
+                const selectedClosedStatus = connectwiseClosedStatuses.find(
+                  (status) => status.id.toString() === e.target.value
+                );
+                setBoardInputs(
+                  null,
+                  null,
+                  "closedStatus",
+                  selectedClosedStatus.id,
+                  selectedClosedStatus.name
+                );
+              }}
+              className="border rounded-lg shadow-lg p-2 cursor-pointer text-black"
+            >
+              <option value="Select Closed Status" disabled selected>
+                Select Closed Status
+              </option>
+              {connectwiseClosedStatuses.map((closed) => {
+                const { id, name } = closed;
+                return (
+                  <option value={id} key={id}>
+                    {name}
+                  </option>
+                );
+              })}
+            </select>
+          )}
         </div>
       )}
 
       {customBoardMetadata && (
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 text-xs">
           {customBoard ? (
             <div className="flex items-center gap-1 text-sm">
               <h2 className="font-bold">Title:</h2>
@@ -98,7 +159,7 @@ const Board = () => {
             </div>
           ) : (
             <input
-              className="border p-1 rounded"
+              className="border p-2 rounded"
               placeholder="Enter Board Title"
               onChange={(e) =>
                 setCustomBoardInputs(
@@ -134,7 +195,7 @@ const Board = () => {
                   selectedDepartment.name
                 );
               }}
-              className="p-1 border rounded w-[125px]"
+              className="border rounded-lg shadow-lg p-2 cursor-pointer text-black"
             >
               <option value="" disabled selected>
                 Select Department
@@ -172,7 +233,7 @@ const Board = () => {
                   selectedLocation.name
                 );
               }}
-              className="p-1 border rounded w-[150px]"
+              className="border rounded-lg shadow-lg p-2 cursor-pointer text-black"
             >
               <option value="" disabled selected>
                 Select Location
@@ -194,7 +255,7 @@ const Board = () => {
               onClick={() =>
                 handleSaveCustomBoardMetadata(tech?.mspCustomDomain)
               }
-              className="hover:bg-blue-500 bg-blue-800 text-white px-6 py-1 rounded-lg "
+              className="hover:bg-blue-500 bg-blue-800 text-white px-6 py-2 rounded-lg "
             >
               SAVE METADATA
             </button>
@@ -552,7 +613,7 @@ const Board = () => {
             }
             className="hover:bg-blue-500 bg-blue-800 text-white px-6 py-2 rounded-lg "
           >
-            SAVE
+            {customBoard ? "Save Custom Board" : "Save Board"}
           </button>
         )}
       </div>

@@ -80,6 +80,13 @@ export const handleGetConversations = async (clientId) => {
   return response.json();
 };
 
+export const handleGetMessages = async (conversationId) => {
+  const response = await fetch(
+    `${dbServiceUrl}/getMessages?conversationId=${conversationId}`
+  );
+  return response.json();
+};
+
 export const handleGetMSPTickets = async (msp) => {
   const response = await fetch(
     `${dbServiceUrl}/supportTickets/byMspCustomDomain?mspCustomDomain=${encodeURIComponent(
@@ -98,9 +105,7 @@ export const handleGetMSPs = async (customDomain) => {
 };
 
 export const handleGetAgents = async () => {
-  const response = await fetch(
-    `${dbServiceUrl}/getAgents`
-  );
+  const response = await fetch(`${dbServiceUrl}/getAgents`);
   return response.json();
 };
 
@@ -121,13 +126,6 @@ export const handleGetAgents = async () => {
 // export const handleGetRooms = async (userId) => {
 //   const response = await fetch(
 //     `https://etech7-wf-etech7-db-service.azuremicroservices.io/getRooms?userId=${userId}`
-//   );
-//   return response.json();
-// };
-
-// export const handleGetMessages = async (conversationId) => {
-//   const response = await fetch(
-//     `https://etech7-wf-etech7-db-service.azuremicroservices.io/getMessages?conversationId=${conversationId}`
 //   );
 //   return response.json();
 // };

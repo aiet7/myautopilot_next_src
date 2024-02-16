@@ -28,6 +28,8 @@ const useConversationStore = create((set, get) => ({
     set((state) => ({ ...state, deleting: isDeleting })),
 
   initializeConversations: async () => {
+    console.log("firing off")
+    const { initializeMessages } = get();
     const techStore = useTechStore.getState();
     set({ conversationHistories: [] });
 
@@ -35,7 +37,13 @@ const useConversationStore = create((set, get) => ({
       const initialConversations = await handleGetConversations(
         techStore.tech.id
       );
-      set({ conversationHistories: initialConversations });
+      set({
+        conversationHistories: initialConversations,
+      });
+
+      if (initialConversations.length > 0) {
+        await initializeMessages(null, initialConversations);
+      }
     }
   },
 
@@ -57,40 +65,44 @@ const useConversationStore = create((set, get) => ({
             parsedSavedConversationIndex?.currentConversationIndex
           ]?.id
         : null);
-    if (!convoId) return;
+    if (!convoId) {
+      return;
+    }
     const messages = await handleGetMessages(convoId);
 
-    set((state) => {
-      const updatedHistories = [...state.conversationHistories];
-      const conversationToUpdateIndex = updatedHistories.findIndex(
-        (convo) => convo.id === convoId
-      );
+    if (messages) {
+      set((state) => {
+        const updatedHistories = [...state.conversationHistories];
+        const conversationToUpdateIndex = updatedHistories.findIndex(
+          (convo) => convo.id === convoId
+        );
 
-      if (conversationToUpdateIndex > -1) {
-        const updatedMessages = messages
-          .flatMap((message) => [
-            {
-              id: message.id + "-user",
-              content: message.userContent,
-              role: "user",
-              timeStamp: message.timeStamp,
-            },
-            {
-              id: message.id + "-ai",
-              content: message.aiContent,
-              role: "assistant",
-              timeStamp: message.timeStamp,
-            },
-          ])
-          .sort((a, b) => new Date(a.timeStamp) - new Date(b.timeStamp));
+        if (conversationToUpdateIndex > -1) {
+          const updatedMessages = messages
+            .flatMap((message) => [
+              {
+                id: message.id + "-user",
+                content: message.userContent,
+                role: "user",
+                timeStamp: message.timeStamp,
+              },
+              {
+                id: message.id + "-ai",
+                content: message.aiContent,
+                role: "assistant",
+                timeStamp: message.timeStamp,
+              },
+            ])
+            .sort((a, b) => new Date(a.timeStamp) - new Date(b.timeStamp));
 
-        updatedHistories[conversationToUpdateIndex] = {
-          ...updatedHistories[conversationToUpdateIndex],
-          messages: updatedMessages,
-        };
-      }
-      return { conversationHistories: updatedHistories };
-    });
+          updatedHistories[conversationToUpdateIndex] = {
+            ...updatedHistories[conversationToUpdateIndex],
+            messages: updatedMessages,
+          };
+        }
+        return { conversationHistories: updatedHistories };
+      });
+    }
   },
 
   handleSaveConversationTitle: async (id, userID) => {

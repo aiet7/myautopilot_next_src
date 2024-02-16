@@ -51,7 +51,6 @@ const Default = () => {
     }
   })();
 
-  console.log(conversationHistories);
 
   return (
     <div

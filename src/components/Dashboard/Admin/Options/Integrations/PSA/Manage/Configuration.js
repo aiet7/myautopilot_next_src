@@ -40,7 +40,7 @@ const Configuration = () => {
           onClick={setCloseConfiguration}
         />
         <div className="flex flex-col gap-4 overflow-hidden w-full h-full">
-          <div className="flex gap-2 py-2 text-center font-bold ">
+          <div className="flex flex-wrap gap-2 py-2 text-center font-bold text-xs md:flex-nowrap">
             <button
               onClick={() => setActiveConfigStep(1)}
               className={`${
