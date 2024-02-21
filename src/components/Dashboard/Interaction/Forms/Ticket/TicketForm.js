@@ -1,9 +1,7 @@
 import useFormsStore from "@/utils/store/interaction/forms/formsStore";
 import TicketOnboarding from "./TicketOnboarding";
-import {
-  categories,
-  subCategories,
-} from "../../../../../utils/tickets/ticketCreation";
+
+import { useEffect } from "react";
 
 const TicketForm = ({ itemId }) => {
   const {
@@ -11,8 +9,14 @@ const TicketForm = ({ itemId }) => {
     formError,
     ticket,
     setTicket,
+    handleCreateTicketCategories,
     handleTicketConfirmation,
   } = useFormsStore();
+
+  useEffect(() => {
+    handleCreateTicketCategories();
+  }, []);
+
 
   return (
     <div>
@@ -23,7 +27,20 @@ const TicketForm = ({ itemId }) => {
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
             value={ticket.currentTicketTitle || ""}
-            onChange={(e) => setTicket("currentTicketTitle", e.target.value)}
+            onChange={(e) =>
+              setTicket(
+                "currentTicketTitle",
+                e.target.value,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              )
+            }
           />
         </div>
         <div>
@@ -33,35 +50,117 @@ const TicketForm = ({ itemId }) => {
             className="h-[50px] border outline-blue-500 w-full px-4"
             value={ticket.currentTicketDescription || ""}
             onChange={(e) =>
-              setTicket("currentTicketDescription", e.target.value)
+              setTicket(
+                "currentTicketDescription",
+                e.target.value,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              )
             }
           />
         </div>
         <div>
           <span className="font-bold">Category</span>
-          <input
-            disabled
-            className="h-[50px] border outline-blue-500 w-full px-4"
-            value={ticket.currentTicketCategory || ""}
-            onChange={(e) => setTicket("currentTicketCategory", e.target.value)}
-          />
+          <select
+            className="h-[50px] border outline-blue-500 w-full px-3"
+            value={ticket.currentTicketCategoryId || ""}
+            onChange={(e) => {
+              const selectedCategory =
+                ticket.categories.mspConnectWiseManageCategorizations.find(
+                  (category) =>
+                    category.categoryId === parseInt(e.target.value, 10)
+                );
+
+              setTicket(
+                "currentTicketCategoryId",
+                selectedCategory.categoryId,
+                selectedCategory.categoryId,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              );
+            }}
+          >
+            {ticket.categories?.mspConnectWiseManageCategorizations.map(
+              (category) => {
+                const { categoryId, categoryName } = category;
+                return (
+                  <option key={categoryId} value={categoryId}>
+                    {categoryName}
+                  </option>
+                );
+              }
+            )}
+          </select>
         </div>
+
         <div>
           <span className="font-bold">Subcategory</span>
-          <input
-            disabled
-            className="h-[50px] border outline-blue-500 w-full px-4"
-            value={ticket.currentTicketSubCategory || ""}
-            onChange={(e) => setTicket("currentTicketSubCategory", e.target.value)}
-          />
+          <select
+            className="h-[50px] border outline-blue-500 w-full px-3"
+            value={ticket.currentTicketSubCategoryId || ""}
+            onChange={(e) => {
+              const selectedSubcategory =
+                ticket.categories.mspConnectWiseManageCategorizations
+                  .find(
+                    (category) =>
+                      category.categoryId === ticket.currentTicketCategoryId
+                  )
+                  ?.mspConnectWiseManageSubCategorizations.find(
+                    (sub) => sub.subCategoryId === parseInt(e.target.value, 10)
+                  );
+
+              setTicket(
+                "currentTicketSubCategoryId",
+                selectedSubcategory.subCategoryName,
+                ticket.currentTicketCategoryId,
+                selectedSubcategory.subCategoryId,
+                selectedSubcategory.priority,
+                selectedSubcategory.priorityId,
+                selectedSubcategory.impact,
+                selectedSubcategory.severity,
+                selectedSubcategory.tier,
+                selectedSubcategory.durationToResolve
+              );
+            }}
+          >
+            <option value="" disabled selected>
+              {ticket.currentTicketCategoryId && "Please select a subcategory"}
+            </option>
+
+            {ticket.currentTicketCategoryId &&
+              ticket.categories?.mspConnectWiseManageCategorizations
+                .find(
+                  (category) =>
+                    category.categoryId === ticket.currentTicketCategoryId
+                )
+                ?.mspConnectWiseManageSubCategorizations.map((subCategory) => {
+                  const { subCategoryId, subCategoryName } = subCategory;
+                  return (
+                    <option key={subCategoryId} value={subCategoryId}>
+                      {subCategoryName}
+                    </option>
+                  );
+                })}
+          </select>
         </div>
+
         <div>
           <span className="font-bold">Priority</span>
           <input
             disabled
             className="h-[50px] border outline-blue-500 w-full px-4"
             value={ticket.currentTicketPriority || ""}
-            onChange={(e) => setTicket("currentTicketPriority", e.target.value)}
           />
         </div>
         <div>
@@ -70,7 +169,6 @@ const TicketForm = ({ itemId }) => {
             disabled
             className="h-[50px] border outline-blue-500 w-full px-4"
             value={ticket.currentTicketImpact || ""}
-            onChange={(e) => setTicket("currentTicketImpact", e.target.value)}
           />
         </div>
         <div>
@@ -79,7 +177,6 @@ const TicketForm = ({ itemId }) => {
             disabled
             className="h-[50px] border outline-blue-500 w-full px-4"
             value={ticket.currentTicketSeverity || ""}
-            onChange={(e) => setTicket("currentTicketSeverity", e.target.value)}
           />
         </div>
         <div>
@@ -88,9 +185,9 @@ const TicketForm = ({ itemId }) => {
             disabled
             className="h-[50px] border outline-blue-500 w-full px-4"
             value={ticket.currentTicketTier || ""}
-            onChange={(e) => setTicket("currentTicketTier", e.target.value)}
           />
         </div>
+
         {ticket.currentTicketCategory === "TRAINING_OR_ONBOARDING" &&
           ticket.currentTicketSubCategory === "NEW_EMPLOYEE_ONBOARDING" && (
             <TicketOnboarding />
@@ -100,7 +197,20 @@ const TicketForm = ({ itemId }) => {
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
             value={ticket.currentTicketName || ""}
-            onChange={(e) => setTicket("currentTicketName", e.target.value)}
+            onChange={(e) =>
+              setTicket(
+                "currentTicketName",
+                e.target.value,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              )
+            }
           />
         </div>
         <div>
@@ -108,7 +218,20 @@ const TicketForm = ({ itemId }) => {
           <input
             className="h-[50px] border outline-blue-500 w-full px-4"
             value={ticket.currentTicketEmailId || ""}
-            onChange={(e) => setTicket("currentTicketEmailId", e.target.value)}
+            onChange={(e) =>
+              setTicket(
+                "currentTicketEmailId",
+                e.target.value,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              )
+            }
           />
         </div>
         <div>
@@ -117,7 +240,18 @@ const TicketForm = ({ itemId }) => {
             className="h-[50px] border outline-blue-500 w-full px-4"
             value={ticket.currentTicketPhoneNumber || ""}
             onChange={(e) =>
-              setTicket("currentTicketPhoneNumber", e.target.value)
+              setTicket(
+                "currentTicketPhoneNumber",
+                e.target.value,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              )
             }
           />
         </div>

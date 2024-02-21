@@ -23,6 +23,7 @@ const useFormsStore = create((set, get) => ({
 
     currentTicketCategory: "",
     currentTicketCategoryId: null,
+    categories: null,
 
     currentTicketSubCategory: "",
     currentTicketSubCategoryId: null,
@@ -56,28 +57,69 @@ const useFormsStore = create((set, get) => ({
     userEmailCreated: undefined,
   },
 
-  setTicket: (fieldName, value) => {
+  setTicket: (
+    field,
+    value,
+    categoryId,
+    subCategoryId,
+    priority,
+    priorityId,
+    impact,
+    severity,
+    tier,
+    durationToResolve
+  ) => {
     set((state) => {
-      if (fieldName.startsWith("onBoarding.")) {
-        const nestedFieldName = fieldName.split(".")[1];
-        return {
-          ...state,
-          ticket: {
-            ...state.ticket,
-            onBoarding: {
-              ...state.ticket.onBoarding,
-              [nestedFieldName]: value,
-            },
-          },
-        };
+      const updatedTicket = { ...state.ticket };
+
+      if (field.startsWith("onBoarding.")) {
+        const nestedFieldName = field.split(".")[1];
+        updatedTicket.onBoarding[nestedFieldName] = value;
+      } else {
+        updatedTicket[field] = value;
       }
-      return {
-        ...state,
-        ticket: {
-          ...state.ticket,
-          [fieldName]: value,
-        },
-      };
+
+      if (categoryId !== null) {
+        updatedTicket.currentTicketCategoryId = categoryId;
+        updatedTicket.currentTicketCategory =
+          state.ticket.categories.mspConnectWiseManageCategorizations.find(
+            (category) => category.categoryId === categoryId
+          )?.categoryName || "";
+
+        updatedTicket.currentTicketSubCategoryId = null;
+        updatedTicket.currentTicketSubCategory = "";
+        updatedTicket.currentTicketPriority = "";
+        updatedTicket.currentTicketPriorityId = null;
+        updatedTicket.currentTicketImpact = "";
+        updatedTicket.currentTicketSeverity = "";
+        updatedTicket.currentTicketTier = "";
+      }
+
+      if (subCategoryId !== null) {
+        const selectedCategory =
+          state.ticket.categories.mspConnectWiseManageCategorizations.find(
+            (category) => category.categoryId === categoryId
+          );
+        if (selectedCategory) {
+          updatedTicket.currentTicketSubCategoryId = subCategoryId;
+          updatedTicket.currentTicketSubCategory =
+            selectedCategory.mspConnectWiseManageSubCategorizations.find(
+              (sub) => sub.subCategoryId === subCategoryId
+            )?.subCategoryName || "";
+        }
+      }
+
+      if (priority !== null) updatedTicket.currentTicketPriority = priority;
+      if (priorityId !== null)
+        updatedTicket.currentTicketPriorityId = priorityId;
+
+      if (impact !== null) updatedTicket.currentTicketImpact = impact;
+      if (severity !== null) updatedTicket.currentTicketSeverity = severity;
+      if (tier !== null) updatedTicket.currentTicketTier = tier;
+      if (durationToResolve !== null)
+        updatedTicket.currentTicketDurationToResolve = durationToResolve;
+
+      return { ...state, ticket: updatedTicket };
     });
   },
 
@@ -96,6 +138,26 @@ const useFormsStore = create((set, get) => ({
         userEmailCreated: undefined,
       },
     }));
+  },
+
+  handleCreateTicketCategories: async () => {
+    const techStore = useTechStore.getState();
+
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/${techStore.tech.mspCustomDomain}/connectWiseManageDetails`
+      );
+      if (response.status === 200) {
+        const ticketMerge = await response.json();
+        set((state) => ({
+          ticket: { ...state.ticket, categories: ticketMerge },
+        }));
+      } else {
+        console.log("failed fetching details");
+      }
+    } catch (e) {
+      console.log(e);
+    }
   },
 
   handleCreateTicketProcess: (responseBody) => {
@@ -358,6 +420,51 @@ const useFormsStore = create((set, get) => ({
         formError: "",
       }));
     }
+  },
+
+  clearTicketForms: () => {
+    set({
+      ticket: {
+        currentTicketTitle: "",
+        currentTicketCWCompanyId: 250,
+        currentTicketDescription: "",
+
+        currentTicketCategory: "",
+        currentTicketCategoryId: null,
+        categories: null,
+
+        currentTicketSubCategory: "",
+        currentTicketSubCategoryId: null,
+
+        currentTicketPriority: "",
+        currentTicketPriorityId: null,
+
+        currentTicketDurationToResolve: null,
+        currentTicketSeverity: "",
+        currentTicketImpact: "",
+        currentTicketTier: "",
+        currentTicketName: "",
+        currentTicketEmailId: "",
+        currentTicketPhoneNumber: "",
+
+        onBoarding: {
+          currentTicketNewFirstName: "",
+          currentTicketNewLastName: "",
+          currentTicketNewEmailId: "",
+          currentTicketEmailOwner: "",
+          currentTicketNewPhoneNumber: "",
+          currentTicketLicenseId: "E3",
+        },
+      },
+      ticketStatus: {
+        ticketId: undefined,
+        ticketCreated: undefined,
+        ticketAssigned: undefined,
+        ticketClosed: undefined,
+        userCreatedInActiveDirectory: undefined,
+        userEmailCreated: undefined,
+      },
+    });
   },
 }));
 

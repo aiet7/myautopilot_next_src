@@ -6,6 +6,14 @@ import useCookiesStore from "../cookies/cookiesStore";
 import useTicketConversationsStore from "../interaction/conversations/ticketConversationsStore";
 import useEngineerStore from "../assistant/sections/iternal/engineer/engineerStore";
 import useTicketsStore from "../interaction/tickets/ticketsStore";
+import useConversationStore from "../interaction/conversations/conversationsStore";
+import useDocConversationsStore from "../interaction/conversations/docConversationsStore";
+import useFormsStore from "../interaction/forms/formsStore";
+import useManageStore from "../admin/control/integrations/PSA/manageStore";
+import useIntegrationsStore from "../admin/control/integrations/integrationsStore";
+import useEmployeesStore from "../admin/control/employees/employeesStore";
+import useCompaniesStore from "../admin/control/companies/companiesStore";
+import useRolesStore from "../admin/control/roles/rolesStore";
 
 const useTechStore = create((set, get) => ({
   tech: null,
@@ -56,9 +64,17 @@ const useTechStore = create((set, get) => ({
     const { clearMSPCredentials } = useMspStore.getState();
     const { clearStorage } = useLocalStorageStore.getState();
     const { clearCookies } = useCookiesStore.getState();
-    const { clearInteraction } = useTicketConversationsStore.getState();
+    const { clearTicketConversation } = useTicketConversationsStore.getState();
     const { clearEngineer } = useEngineerStore.getState();
     const { clearTickets } = useTicketsStore.getState();
+    const { clearConversation } = useConversationStore.getState();
+    const { clearDocConversation } = useDocConversationsStore.getState();
+    const { clearTicketForms } = useFormsStore.getState();
+    const { clearManage } = useManageStore.getState();
+    const { clearIntegration } = useIntegrationsStore.getState();
+    const { clearEmployees } = useEmployeesStore.getState();
+    const { clearCompanies } = useCompaniesStore.getState();
+    const { clearRoles } = useRolesStore.getState();
 
     await clearTickets();
 
@@ -67,8 +83,17 @@ const useTechStore = create((set, get) => ({
     clearMSPCredentials();
     clearStorage();
     clearCookies();
-    clearInteraction();
+    clearTicketConversation();
+    clearDocConversation();
+    clearConversation();
     clearEngineer();
+    clearTicketForms();
+    clearManage();
+    clearIntegration();
+    clearEmployees();
+    clearCompanies();
+    clearRoles();
+
     navigator("/auth/login");
   },
 }));

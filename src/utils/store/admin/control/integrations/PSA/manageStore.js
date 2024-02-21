@@ -1107,6 +1107,71 @@ const useManageStore = create((set, get) => ({
       console.log(e);
     }
   },
+
+  clearManage: () => {
+    set({
+      technicians: null,
+      techniciansTierOptions: ["Tier1", "Tier2", "Tier3", "NoTier"],
+      techniciansRoleOptions: null,
+      techniciansSelected: {},
+      loadingTechnicians: false,
+
+      clients: null,
+      clientsSelected: {},
+      clientsFilterType: "",
+      loadingClients: false,
+
+      contacts: null,
+      contactsSelected: {},
+      loadingContacts: false,
+
+      connectwiseBoards: null,
+      connectwiseOpenStatuses: null,
+      connectwiseClosedStatuses: null,
+
+      loadingBoards: false,
+
+      connectwiseMerge: null,
+      loadingMerge: false,
+
+      customBoardMetadata: false,
+      customBoard: false,
+      customBoardTitle: "",
+      customBoardDepartment: null,
+      customBoardLocation: null,
+      customBoardMerge: null,
+
+      activeBoard: null,
+
+      activeConfig: false,
+
+      activeConfigSteps: 1,
+
+      activePage: 1,
+      activePerPage: 30,
+      activePageNumbers: [],
+
+      integrationInputs: {
+        connectWiseManageIntegrator: false,
+        microsoftGraphIntegrator: false,
+        emailIntegrator: false,
+        clientId: "",
+        companyId: "",
+        publicKey: "",
+        privateKey: "",
+        emailConnectorGmail: "",
+        emailConnectorAppPassword: "",
+      },
+
+      successManageIntegration: false,
+      successManageDisconnect: false,
+      errorManageIntegration: false,
+      errorManageDisconnect: false,
+
+      successMessage: false,
+      errorMessage: false,
+    });
+  },
 }));
 
 export default useManageStore;

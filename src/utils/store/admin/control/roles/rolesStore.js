@@ -302,6 +302,42 @@ const useRolesStore = create((set, get) => ({
       console.log(e);
     }
   },
+
+  clearRoles: () => {
+    set({
+      roles: null,
+
+      roleInputs: {
+        roleTitle: "",
+        selectedPermissions: {
+          clientBilling: false,
+          mspBilling: false,
+          clientUserManagement: false,
+          technicianUserManagement: false,
+          mspBranding: false,
+          mspIntegrations: false,
+          clientDocuments: false,
+          mspDocuments: false,
+        },
+      },
+      activeRole: null,
+
+      createRole: false,
+
+      successMessage: {
+        edit: false,
+        create: false,
+        clone: false,
+        delete: false,
+      },
+      errorMessage: {
+        edit: false,
+        create: false,
+        clone: false,
+        delete: false,
+      },
+    });
+  },
 }));
 
 export default useRolesStore;

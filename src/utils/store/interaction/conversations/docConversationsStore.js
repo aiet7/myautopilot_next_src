@@ -39,21 +39,22 @@ const useDocConversationsStore = create((set, get) => ({
   ) => {
     const { documentConversationHistories } = get();
 
-    const savedConvoOnInitialLoad = passedConvoHistory || documentConversationHistories;
+    const savedConvoOnInitialLoad =
+      passedConvoHistory || documentConversationHistories;
 
     const savedConversationIndex = localStorage.getItem("lastConvoIndex");
 
     const parsedSavedConversationIndex = JSON.parse(savedConversationIndex);
 
     const convoId =
-    passedConvoId ||
-    (parsedSavedConversationIndex?.currentDocumentConversationIndex !== null
-      ? savedConvoOnInitialLoad[
-          parsedSavedConversationIndex?.currentDocumentConversationIndex
-        ]?.id
-      : null);
+      passedConvoId ||
+      (parsedSavedConversationIndex?.currentDocumentConversationIndex !== null
+        ? savedConvoOnInitialLoad[
+            parsedSavedConversationIndex?.currentDocumentConversationIndex
+          ]?.id
+        : null);
 
-  if (!convoId) return;
+    if (!convoId) return;
 
     const documentMessages = await handleGetDocumentMessages(convoId);
 
@@ -282,6 +283,13 @@ const useDocConversationsStore = create((set, get) => ({
         timeStamp: new Date().toISOString(),
       });
       return { documentConversationHistories: newHistories };
+    });
+  },
+
+  clearDocConversation: () => {
+    set({
+      documentConversationHistories: [],
+      currentDocumentConversationIndex: 0,
     });
   },
 }));

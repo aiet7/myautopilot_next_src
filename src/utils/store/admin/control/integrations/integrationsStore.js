@@ -137,6 +137,15 @@ const useIntegrationsStore = create((set, get) => ({
   handleUpdateIntegrations: (updatedIntegrations) => {
     set({ integrations: updatedIntegrations });
   },
+
+  clearIntegration: () => {
+    set({
+      integrations: null,
+      selectedCategory: null,
+      activeIntegrationsCard: "cards",
+      filteredCards: [],
+    });
+  },
 }));
 
 export default useIntegrationsStore;

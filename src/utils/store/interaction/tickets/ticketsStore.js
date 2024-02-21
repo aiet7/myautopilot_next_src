@@ -115,7 +115,13 @@ const useTicketsStore = create((set, get) => ({
   },
 
   clearTickets: async () => {
-    set({ tickets: null });
+    set({
+      tickets: null,
+      ticketStatus: null,
+      ticketNotes: null,
+      ticketStatusLoading: {},
+      showTicket: null,
+    });
     console.log("tickets set to null");
   },
 }));

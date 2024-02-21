@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import useUserStore from "../../user/userStore";
 import useFormsStore from "../forms/formsStore";
 import useRefStore from "../ref/refStore";
 import useInitializeAppStore from "../../init/initializeAppStore";
@@ -28,7 +27,6 @@ const useConversationStore = create((set, get) => ({
     set((state) => ({ ...state, deleting: isDeleting })),
 
   initializeConversations: async () => {
-    console.log("firing off")
     const { initializeMessages } = get();
     const techStore = useTechStore.getState();
     set({ conversationHistories: [] });
@@ -105,7 +103,7 @@ const useConversationStore = create((set, get) => ({
     }
   },
 
-  handleSaveConversationTitle: async (id, userID) => {
+  handleSaveConversationTitle: async (id, userId) => {
     const { selectedAgent } = useInitializeAppStore.getState();
 
     const {
@@ -123,24 +121,21 @@ const useConversationStore = create((set, get) => ({
     currentConversation.customPrompt = tempPrompt;
 
     try {
-      const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/addConversation`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: id,
-            userID: userID,
-            agentID: selectedAgent,
-            conversationName: currentConversation.conversationName,
-            customPrompt: currentConversation.customPrompt,
-            timeStamp: Date.now(),
-            deleted: false,
-          }),
-        }
-      );
+      const response = await fetch(`${dbServiceUrl}/conversations/addConversation`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: id,
+          userId: userId,
+          agentID: selectedAgent,
+          conversationName: currentConversation.conversationName,
+          customPrompt: currentConversation.customPrompt,
+          timeStamp: Date.now(),
+          deleted: false,
+        }),
+      });
 
       if (response.status === 200) {
         set((state) => {
@@ -225,7 +220,6 @@ const useConversationStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        // `https://etech7-wf-etech7-db-service.azuremicroservices.io/addConversation`//
         `${dbServiceUrl}/conversations/addConversation`,
         {
           method: "POST",
@@ -262,7 +256,6 @@ const useConversationStore = create((set, get) => ({
     if (conversationToDelete) {
       try {
         const response = await fetch(
-          // `https://etech7-wf-etech7-db-service.azuremicroservices.io/deleteConversation?conversationId=${conversationToDelete.id}`
           `${dbServiceUrl}/conversations/deleteConversation?conversationId=${conversationToDelete.id}`
         );
 
@@ -324,6 +317,13 @@ const useConversationStore = create((set, get) => ({
       });
 
       return { conversationHistories: newConversations };
+    });
+  },
+
+  clearConversation: () => {
+    set({
+      conversationHistories: [],
+      currentConversationIndex: 0,
     });
   },
 }));

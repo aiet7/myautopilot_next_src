@@ -16,6 +16,12 @@ const useEmployeesStore = create((set, get) => ({
       set({ employees: newEmployees });
     }
   },
+
+  clearEmployees: () => {
+    set({
+      employees: null,
+    });
+  },
 }));
 
 export default useEmployeesStore;

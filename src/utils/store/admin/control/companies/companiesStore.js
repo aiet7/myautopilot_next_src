@@ -16,6 +16,10 @@ const useCompaniesStore = create((set, get) => ({
       set({ companies: newCompanies });
     }
   },
+
+  clearCompanies: () => {
+    set({ companies: null });
+  },
 }));
 
 export default useCompaniesStore;

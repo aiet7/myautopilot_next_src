@@ -18,7 +18,6 @@ const AssistantRail = ({}) => {
     handleAssistantTabChange,
   } = useAssistantStore();
 
-
   return (
     <div
       className={`${
@@ -26,7 +25,6 @@ const AssistantRail = ({}) => {
       }  dark:bg-[#373737] dark:border-white/10 relative  bg-[#eaf1fb] px-1 py-7 flex flex-col gap-4 items-center  transition-all duration-300 ease border-r border-l border-black/10`}
     >
       <IoTicketSharp
-        data-tooltip-id="Tickets"
         className={`${
           activeAssistantTab === "Tickets" && "text-blue-800"
         } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
@@ -38,19 +36,13 @@ const AssistantRail = ({}) => {
       />
 
       <BsFiletypeDoc
-        data-tooltip-id="Document"
-        className={`${
+        className={`dark:text-white/10 text-black/20 ${
           activeAssistantTab === "Document" && "text-blue-800"
-        } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
+        }  rounded-full px-2 outline-none`}
         size={35}
-        onClick={() => {
-          handleAssistantTabChange("Document");
-          handleUIAssistantTabChange("Document");
-        }}
       />
 
       <SiOpenai
-        data-tooltip-id="Engineer"
         className={`${
           activeAssistantTab === "Engineer" && "text-blue-800"
         } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
@@ -64,7 +56,6 @@ const AssistantRail = ({}) => {
       <div className="dark:border-white/20 border-black/10 border w-full" />
 
       <MdScreenShare
-        data-tooltip-id="Remote Access"
         className={`${
           activeAssistantTab === "Remote Access" && "text-blue-800"
         } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
@@ -73,7 +64,6 @@ const AssistantRail = ({}) => {
       />
 
       <MdPassword
-        data-tooltip-id="Passwords"
         className={`${
           activeAssistantTab === "Passwords" && "text-blue-800"
         } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
@@ -82,7 +72,6 @@ const AssistantRail = ({}) => {
       />
 
       <FaMoneyBillAlt
-        data-tooltip-id="Billing"
         className={`${
           activeAssistantTab === "Billing" && "text-blue-800"
         } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
@@ -91,7 +80,6 @@ const AssistantRail = ({}) => {
       />
 
       <AiFillTool
-        data-tooltip-id="Tools"
         className={`${
           activeAssistantTab === "Tools" && "text-blue-800"
         } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
@@ -100,7 +88,6 @@ const AssistantRail = ({}) => {
       />
 
       <MdPolicy
-        data-tooltip-id="Policies"
         className={`${
           activeAssistantTab === "Policies" && "text-blue-800"
         } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}

@@ -65,7 +65,7 @@ const History = ({}) => {
       </button>
       <div className="overflow-y-auto h-full scrollbar-thin mt-4">
         {conversationHistories.map((conversation, index) => {
-          const { id, userID, conversationName, customPrompt } = conversation;
+          const { id, userId, conversationName, customPrompt } = conversation;
           return (
             <div key={index} className="flex flex-col items-start my-1">
               <div
@@ -104,7 +104,7 @@ const History = ({}) => {
                         size={20}
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleSaveConversationTitle(id, userID);
+                          handleSaveConversationTitle(id, userId);
                         }}
                       />
                       <AiOutlineClose

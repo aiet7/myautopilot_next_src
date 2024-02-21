@@ -123,7 +123,7 @@ const useTicketConversationsStore = create((set, get) => ({
     });
   },
 
-  clearInteraction: () => {
+  clearTicketConversation: () => {
     set({ messages: [] });
   },
 }));
