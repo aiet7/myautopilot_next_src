@@ -4,14 +4,13 @@ import { BsStars } from "react-icons/bs";
 
 const Support = () => {
   const { showTicket, ticketNotes, handleTicketMode } = useTicketsStore();
-
-
   return (
-    <div className="flex-grow mx-auto">
-      <div className="flex flex-col py-4 gap-6">
+    
+    <div className="flex-grow p-4">
+      <div className="flex flex-col  gap-6 max-w-[700px] mx-auto">
         <button
           onClick={() => handleTicketMode("Default", null)}
-          className="dark:border-white hover:bg-blue-800 hover:text-white flex items-center justify-center border border-black px-12 py-2 rounded-lg font-bold "
+          className="dark:border-white hover:bg-blue-800 hover:text-white  flex items-center justify-center border border-black px-12 py-2 rounded-lg font-bold "
         >
           <BsStars size={15} />
           <span>Create Ticket</span>
@@ -19,7 +18,7 @@ const Support = () => {
         {showTicket && (
           <div className="text-lg lg:text-2xl">
             <h2>
-              <strong>{showTicket?.closed ? "Closed" : "New"}</strong>
+              <strong>Status:</strong> {showTicket?.closed ? "Closed" : "New"}
             </h2>
             <p>
               <strong>Ticket ID: </strong>
@@ -47,9 +46,9 @@ const Support = () => {
             </p>
           </div>
         )}
-      </div>
-      <div className="flex flex-col py-4">
-        <h2 className="font-bold">Ticket Notes</h2>
+        <div className="flex flex-col py-4">
+          <h2 className="font-bold">Ticket Notes</h2>
+        </div>
       </div>
     </div>
   );

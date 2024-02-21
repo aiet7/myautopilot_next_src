@@ -13,6 +13,7 @@ import {
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
+const emailConnectorUrl = process.env.NEXT_PUBLIC_EMAILCONNECTOR_URL;
 
 const useManageStore = create((set, get) => ({
   technicians: null,
@@ -572,10 +573,12 @@ const useManageStore = create((set, get) => ({
   handleIntegrateEmailConnector: async (mspCustomDomain) => {
     const { integrationInputs } = get();
     const { handleUpdateIntegrations } = useIntegrationsStore.getState();
-
+    console.log("firing");
+    console.log(integrationInputs);
     if (integrationInputs.emailConnectorGmail.trim() !== "") {
+      console.log("working");
       try {
-        const response = await fetch(`http://localhost:9008/testCredentials`, {
+        const response = await fetch(`${emailConnectorUrl}/testCredentials`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -586,7 +589,6 @@ const useManageStore = create((set, get) => ({
             mspCustomDomain: mspCustomDomain,
           }),
         });
-
         if (response.status === 200) {
           const updatedIntegrations = await response.json();
           handleUpdateIntegrations(updatedIntegrations);
@@ -686,10 +688,10 @@ const useManageStore = create((set, get) => ({
         const updatedIntegrations = await response.json();
         handleUpdateIntegrations(updatedIntegrations);
         set({ errorMessage: false, successMessage: true });
-        console.log("MANAGE INTEGRATED");
+        console.log("EMAILCONNECTOR DISCONNECTED");
       } else {
         set({ errorMessage: true, successMessage: false });
-        console.log("FAILED INTEGRATION");
+        console.log("FAILED EMAILCONNECTOR DISCONNECTION");
       }
     } catch (e) {
       console.log(e);
