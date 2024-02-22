@@ -86,6 +86,7 @@ const useManageStore = create((set, get) => ({
 
   successManageIntegration: false,
   successManageDisconnect: false,
+
   errorManageIntegration: false,
   errorManageDisconnect: false,
 
@@ -300,12 +301,22 @@ const useManageStore = create((set, get) => ({
 
       successManageIntegration: false,
       errorManageIntegration: false,
+
+      successManageDisconnect: false,
+      errorManageDisconnect: false,
+
       errorMessage: false,
       successMessage: false,
       activeConfig: false,
       activeConfigSteps: 1,
       activePage: 1,
       activePageNumbers: [],
+    });
+  },
+
+  setActiveConfig: (config) => {
+    set({
+      activeConfig: config,
     });
   },
 
@@ -519,7 +530,7 @@ const useManageStore = create((set, get) => ({
       return { contactsSelected };
     }),
 
-  handleIntegrateManage: async (mspCustomDomain) => {
+  handleSaveManageKeys: async (mspCustomDomain) => {
     const { integrationInputs } = get();
     const { handleUpdateIntegrations } = useIntegrationsStore.getState();
 
@@ -529,6 +540,49 @@ const useManageStore = create((set, get) => ({
       emailIntegrator,
       ...connectWiseManageIntegration
     } = integrationInputs;
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/${mspCustomDomain}/integrations/update`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            mspCustomDomain: mspCustomDomain,
+            connectWiseManageIntegration: connectWiseManageIntegration,
+          }),
+        }
+      );
+
+      if (response.status === 200) {
+        const updatedIntegrations = await response.json();
+        handleUpdateIntegrations(updatedIntegrations);
+        set({
+          successManageIntegration: false,
+          successManageDisconnect: false,
+
+          errorManageIntegration: false,
+          errorManageDisconnect: false,
+        });
+        console.log("MANAGE KEYS SAVED");
+      } else {
+        set({
+          successManageDisconnect: false,
+          successManageIntegration: false,
+
+          errorManageIntegration: false,
+          errorManageDisconnect: false,
+        });
+        console.log("MANAGE KEYS FAILED TO SAVE");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleRemoveManageKeys: async (mspCustomDomain) => {
+    const { handleUpdateIntegrations } = useIntegrationsStore.getState();
 
     try {
       const response = await fetch(
@@ -540,8 +594,12 @@ const useManageStore = create((set, get) => ({
           },
           body: JSON.stringify({
             mspCustomDomain: mspCustomDomain,
-            connectWiseManageIntegrator: true,
-            connectWiseManageIntegration: connectWiseManageIntegration,
+            connectWiseManageIntegration: {
+              clientId: "",
+              companyId: "",
+              publicKey: "",
+              privateKey: "",
+            },
           }),
         }
       );
@@ -550,57 +608,115 @@ const useManageStore = create((set, get) => ({
         const updatedIntegrations = await response.json();
         handleUpdateIntegrations(updatedIntegrations);
         set({
-          successManageIntegration: true,
-          errorManageIntegration: false,
           successManageDisconnect: false,
+          successManageIntegration: false,
+
+          errorManageIntegration: false,
           errorManageDisconnect: false,
         });
-        console.log("MANAGE INTEGRATED");
+
+        console.log("MANAGE KEYS REMOVED");
       } else {
         set({
-          errorManageIntegration: true,
-          successManageIntegration: false,
           successManageDisconnect: false,
+          successManageIntegration: false,
+
+          errorManageIntegration: false,
           errorManageDisconnect: false,
         });
-        console.log("FAILED INTEGRATION");
+        console.log("MANAGE KEYS FAILED TO REMOVE");
       }
     } catch (e) {
       console.log(e);
     }
   },
 
-  handleIntegrateEmailConnector: async (mspCustomDomain) => {
-    const { integrationInputs } = get();
+  handleIntegrateManage: async (mspCustomDomain) => {
     const { handleUpdateIntegrations } = useIntegrationsStore.getState();
-    console.log("firing");
-    console.log(integrationInputs);
-    if (integrationInputs.emailConnectorGmail.trim() !== "") {
-      console.log("working");
-      try {
-        const response = await fetch(`${emailConnectorUrl}/testCredentials`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: integrationInputs.emailConnectorGmail,
-            password: integrationInputs.emailConnectorAppPassword,
-            mspCustomDomain: mspCustomDomain,
-          }),
-        });
-        if (response.status === 200) {
-          const updatedIntegrations = await response.json();
+
+    try {
+      const response = await fetch(
+        `${connectWiseServiceUrl}/getConnectWiseBoards?mspCustomDomain=${mspCustomDomain}`
+      );
+
+      if (response.status === 200) {
+        const boards = await response.json();
+        const updatedResponse = await fetch(
+          `${dbServiceUrl}/${mspCustomDomain}/integrations/updateConnectWiseManageIntegrator?status=${true}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (updatedResponse.status === 200) {
+          const updatedIntegrations = await updatedResponse.json();
           handleUpdateIntegrations(updatedIntegrations);
-          console.log("EMAIL CONNECTOR INTEGRATED");
+          set({
+            connectwiseBoards: boards,
+            successManageIntegration: true,
+            successManageDisconnect: false,
+
+            errorManageIntegration: false,
+            errorManageDisconnect: false,
+          });
         } else {
-          console.log("EMAIL CONNECTOR FAILED");
+          set({
+            connectwiseBoards: null,
+            successManageIntegration: false,
+            successManageDisconnect: false,
+
+            errorManageIntegration: true,
+            errorManageDisconnect: false,
+          });
         }
-      } catch (e) {
-        console.log(e);
+      } else {
+        set({
+          connectwiseBoards: null,
+
+          successManageIntegration: false,
+          successManageDisconnect: false,
+
+          errorManageIntegration: true,
+          errorManageDisconnect: false,
+        });
       }
+    } catch (e) {
+      console.log(e);
     }
   },
+
+  // handleIntegrateEmailConnector: async (mspCustomDomain) => {
+  //   const { integrationInputs } = get();
+  //   const { handleUpdateIntegrations } = useIntegrationsStore.getState();
+
+  //   if (integrationInputs.emailConnectorGmail.trim() !== "") {
+  //     try {
+  //       const response = await fetch(`${emailConnectorUrl}/testCredentials`, {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           email: integrationInputs.emailConnectorGmail,
+  //           password: integrationInputs.emailConnectorAppPassword,
+  //           mspCustomDomain: mspCustomDomain,
+  //         }),
+  //       });
+  //       if (response.status === 200) {
+  //         const updatedIntegrations = await response.json();
+  //         handleUpdateIntegrations(updatedIntegrations);
+  //         console.log("EMAIL CONNECTOR INTEGRATED");
+  //       } else {
+  //         console.log("EMAIL CONNECTOR FAILED");
+  //       }
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   }
+  // },
 
   handleDisconnectManage: async (mspCustomDomain) => {
     const { handleUpdateIntegrations } = useIntegrationsStore.getState();
@@ -616,7 +732,6 @@ const useManageStore = create((set, get) => ({
           body: JSON.stringify({
             mspCustomDomain: mspCustomDomain,
             connectWiseManageIntegration: {
-              connectWiseManageIntegrator: false,
               clientId: "",
               companyId: "",
               publicKey: "",
@@ -627,7 +742,17 @@ const useManageStore = create((set, get) => ({
       );
 
       if (response.status === 200) {
-        const updatedIntegrations = await response.json();
+        const updatedResponse = await fetch(
+          `${dbServiceUrl}/${mspCustomDomain}/integrations/updateConnectWiseManageIntegrator?status=${false}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const updatedIntegrations = await updatedResponse.json();
+
         handleUpdateIntegrations(updatedIntegrations);
         set({
           technicians: null,
@@ -640,10 +765,13 @@ const useManageStore = create((set, get) => ({
           customBoard: false,
           customBoardMerge: null,
           customBoardMetadata: false,
+
           successManageDisconnect: true,
-          errorManageDisconnect: false,
           successManageIntegration: false,
+
           errorManageIntegration: false,
+          errorManageDisconnect: false,
+
           activeConfig: false,
           activeConfigSteps: 1,
           activePage: 1,
@@ -652,9 +780,10 @@ const useManageStore = create((set, get) => ({
       } else {
         set({
           successManageDisconnect: false,
-          errorManageDisconnect: true,
           successManageIntegration: false,
+
           errorManageIntegration: false,
+          errorManageDisconnect: true,
         });
         console.log("FAILED DISCONNECTION");
       }
@@ -663,65 +792,40 @@ const useManageStore = create((set, get) => ({
     }
   },
 
-  handleDisconnectEmailIntegrator: async (mspCustomDomain) => {
-    const { handleUpdateIntegrations } = useIntegrationsStore.getState();
-    try {
-      const response = await fetch(
-        `${dbServiceUrl}/${mspCustomDomain}/integrations/update`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            mspCustomDomain: mspCustomDomain,
-            connectWiseManageIntegration: {
-              emailIntegrator: false,
-              emailId: "",
-              password: "",
-            },
-          }),
-        }
-      );
+  // handleDisconnectEmailIntegrator: async (mspCustomDomain) => {
+  //   const { handleUpdateIntegrations } = useIntegrationsStore.getState();
+  //   try {
+  //     const response = await fetch(
+  //       `${dbServiceUrl}/${mspCustomDomain}/integrations/update`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           mspCustomDomain: mspCustomDomain,
+  //           connectWiseManageIntegration: {
+  //             emailIntegrator: false,
+  //             emailId: "",
+  //             password: "",
+  //           },
+  //         }),
+  //       }
+  //     );
 
-      if (response.status === 200) {
-        const updatedIntegrations = await response.json();
-        handleUpdateIntegrations(updatedIntegrations);
-        set({ errorMessage: false, successMessage: true });
-        console.log("EMAILCONNECTOR DISCONNECTED");
-      } else {
-        set({ errorMessage: true, successMessage: false });
-        console.log("FAILED EMAILCONNECTOR DISCONNECTION");
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  },
-
-  handleCheckManageKeys: async (mspCustomDomain) => {
-    try {
-      const response = await fetch(
-        `${connectWiseServiceUrl}/getConnectWiseBoards?mspCustomDomain=${mspCustomDomain}`
-      );
-
-      if (response.status === 200) {
-        const boards = await response.json();
-        set({
-          connectwiseBoards: boards,
-          activeConfig: true,
-          errorMessage: false,
-        });
-      } else {
-        set({
-          connectwiseBoards: null,
-          activeConfig: false,
-          errorMessage: true,
-        });
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  },
+  //     if (response.status === 200) {
+  //       const updatedIntegrations = await response.json();
+  //       handleUpdateIntegrations(updatedIntegrations);
+  //       set({ errorMessage: false, successMessage: true });
+  //       console.log("EMAILCONNECTOR DISCONNECTED");
+  //     } else {
+  //       set({ errorMessage: true, successMessage: false });
+  //       console.log("FAILED EMAILCONNECTOR DISCONNECTION");
+  //     }
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // },
 
   handleGetBoardDetails: async (id, mspCustomDomain) => {
     const { handleCustomBoardMetadata, handleGetBoardStatuses } = get();

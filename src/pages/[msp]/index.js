@@ -178,10 +178,10 @@ const MSPPage = ({}) => {
               <div className="flex flex-col w-full">
                 <Link
                   onClick={() => clearMSPCredentials()}
-                  href={"/auth/signup"}
+                  href={`/${mspSubDomain?.customDomain}/activate`}
                 >
                   <span className="text-sm text-blue-800 font-semibold">
-                    No Account? Sign up
+                    Activate Account
                   </span>
                 </Link>
               </div>

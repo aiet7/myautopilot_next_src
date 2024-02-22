@@ -48,12 +48,12 @@ const LoginPage = () => {
                   </div>
                 </div>
               </Link>
-              <Link href={"/auth/login/users"}>
+              <Link href={"/auth/login/client"}>
                 <div className="hover:shadow-blue-500 flex flex-col  justify-center items-center w-full shadow-xl rounded-lg  cursor-pointer lg:w-[275px]">
                   <h2 className="flex items-center justify-center text-2xl font-bold  bg-black/5 rounded-tr-lg rounded-tl-lg w-full p-3 lg:h-[100px]">
-                    Users
+                    Client
                   </h2>
-                  <p className=" text-black/60 py-2 px-4 h-[100px] lg:h-[175px] lg:pt-8">
+                  <p className="text-black/60 py-2 px-4 h-[100px] lg:h-[175px] lg:pt-8">
                     Perfect for businesses of all sizes seeking robust IT
                     solutions. Enhance your operational efficiency and
                     streamline workflows.

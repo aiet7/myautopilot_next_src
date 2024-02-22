@@ -17,22 +17,23 @@ const Manage = () => {
 
   const {
     successManageIntegration,
-    errorManageIntegration,
     successManageDisconnect,
     errorManageDisconnect,
+    errorManageIntegration,
     activeConfig,
     integrationInputs,
     setIntegrationInputs,
+    setActiveConfig,
+    handleSaveManageKeys,
+    handleRemoveManageKeys,
     handleIntegrateManage,
-    handleIntegrateEmailConnector,
     handleDisconnectManage,
-    handleDisconnectEmailIntegrator,
-    handleCheckManageKeys,
   } = useManageStore();
 
   const { integrations, handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
-  
+  console.log(integrations);
+
   return (
     <div
       onClick={() => {
@@ -112,7 +113,7 @@ const Manage = () => {
                       Your Client ID that is assigned to you from ConnectWise
                     </p>
                     {integrations?.connectWiseManageIntegration?.clientId ? (
-                      <p>
+                      <p className="p-1">
                         {convertHideIntegrationKeys(
                           integrations?.connectWiseManageIntegration?.clientId
                         )}
@@ -127,7 +128,7 @@ const Manage = () => {
                             e.target.value
                           )
                         }
-                        className="border p-1"
+                        className="outline outline-1 p-1 "
                       />
                     )}
                   </div>
@@ -138,7 +139,7 @@ const Manage = () => {
                       Manager
                     </p>
                     {integrations?.connectWiseManageIntegration?.publicKey ? (
-                      <p>
+                      <p className="p-1">
                         {convertHideIntegrationKeys(
                           integrations?.connectWiseManageIntegration?.publicKey
                         )}
@@ -153,7 +154,7 @@ const Manage = () => {
                             e.target.value
                           )
                         }
-                        className="border p-1"
+                        className="outline outline-1 p-1 "
                       />
                     )}
                   </div>
@@ -165,7 +166,7 @@ const Manage = () => {
                       Your Company ID that is assigned to you from ConnectWise
                     </p>
                     {integrations?.connectWiseManageIntegration?.companyId ? (
-                      <p>
+                      <p className="p-1">
                         {convertHideIntegrationKeys(
                           integrations?.connectWiseManageIntegration?.companyId
                         )}
@@ -180,7 +181,7 @@ const Manage = () => {
                             e.target.value
                           )
                         }
-                        className="border p-1"
+                        className="outline outline-1 p-1 "
                       />
                     )}
                   </div>
@@ -191,7 +192,7 @@ const Manage = () => {
                       ConnectWise Manager
                     </p>
                     {integrations?.connectWiseManageIntegration?.privateKey ? (
-                      <p>
+                      <p className="p-1">
                         {convertHideIntegrationKeys(
                           integrations?.connectWiseManageIntegration?.privateKey
                         )}
@@ -206,12 +207,36 @@ const Manage = () => {
                             e.target.value
                           )
                         }
-                        className="border p-1"
+                        className="outline outline-1 p-1 "
                       />
                     )}
                   </div>
                 </div>
-                <div className="border-b" />
+                {!integrations?.connectWiseManageIntegrator && (
+                  <>
+                    {integrations?.connectWiseManageIntegration?.clientId ? (
+                      <button
+                        onClick={() =>
+                          handleRemoveManageKeys(tech?.mspCustomDomain)
+                        }
+                        className="hover:bg-blue-500 self-start bg-blue-800 text-white rounded-lg px-3 py-1"
+                      >
+                        Remove Keys
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() =>
+                          handleSaveManageKeys(tech?.mspCustomDomain)
+                        }
+                        className="hover:bg-blue-500 self-start bg-blue-800 text-white rounded-lg px-3 py-1"
+                      >
+                        Save Keys
+                      </button>
+                    )}
+                  </>
+                )}
+
+                {/* <div className="border-b" />
                 <h2 className="text-lg">Email Connector (Optional)</h2>
                 <div className="flex flex-col gap-6 lg:flex-row">
                   <div className="flex flex-col w-full gap-1">
@@ -220,7 +245,7 @@ const Manage = () => {
                       Your Gmail address that you want to connect
                     </p>
                     {integrations?.emailConnectorIntegration?.emailId ? (
-                      <p>
+                      <p className="p-1">
                         {convertHideIntegrationKeys(
                           integrations?.emailConnectorIntegration?.emailId
                         )}
@@ -235,7 +260,7 @@ const Manage = () => {
                             e.target.value
                           )
                         }
-                        className="border p-1"
+                        className="outline outline-1 p-1 "
                       />
                     )}
                   </div>
@@ -255,7 +280,7 @@ const Manage = () => {
                           )
                         }
                         type="password"
-                        className="border p-1"
+                        className="outline outline-1 p-1 "
                       />
                     </div>
                   )}
@@ -288,17 +313,17 @@ const Manage = () => {
                       </>
                     )}
                   </div>
-                </button>
+                    </button>*/}
               </div>
 
               <div className="p-4 flex items-center justify-end gap-4">
                 {successManageIntegration && (
                   <p className="text-emerald-500">
-                    Successfully Integration Manage!
+                    Successfully Integrated Manage!
                   </p>
                 )}
                 {errorManageIntegration && (
-                  <p className="text-red-500">Error Integration Manage!</p>
+                  <p className="text-red-500">Error Integrating Manage!</p>
                 )}
                 {successManageDisconnect && (
                   <p className="text-emerald-500">
@@ -308,26 +333,29 @@ const Manage = () => {
                 {errorManageDisconnect && (
                   <p className="text-red-500">Error Disconnecting Manage!</p>
                 )}
+
                 {integrations?.connectWiseManageIntegrator && (
                   <button
-                    onClick={() => handleCheckManageKeys(tech?.mspCustomDomain)}
+                    onClick={() => setActiveConfig(true)}
                     className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg px-3 py-1"
                   >
                     Configuration
                   </button>
                 )}
-                <button
-                  onClick={() =>
-                    integrations?.connectWiseManageIntegrator
-                      ? handleDisconnectManage(tech?.mspCustomDomain)
-                      : handleIntegrateManage(tech?.mspCustomDomain)
-                  }
-                  className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg px-3 py-1"
-                >
-                  {integrations?.connectWiseManageIntegrator
-                    ? "Disconnect"
-                    : "Authenticate"}
-                </button>
+                {
+                  <button
+                    onClick={() =>
+                      integrations?.connectWiseManageIntegrator
+                        ? handleDisconnectManage(tech?.mspCustomDomain)
+                        : handleIntegrateManage(tech?.mspCustomDomain)
+                    }
+                    className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg px-3 py-1"
+                  >
+                    {integrations?.connectWiseManageIntegrator
+                      ? "Disconnect"
+                      : "Authenticate"}
+                  </button>
+                }
               </div>
             </div>
           </div>

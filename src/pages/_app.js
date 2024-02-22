@@ -26,12 +26,15 @@ function MyApp({ Component, pageProps }) {
       const isForgotPasswordFlow = url.match(
         /\/[^/]+\/forgot(\/verification(\/createpassword)?)?$/
       );
+
       const isBaseMspCustomDomainRoute = url.match(/^\/[^/]+\/?$/);
+      const isActivateRoute = url.match(/^\/[^/]+\/activate\/?$/);
 
       const isAuthRoute = router.pathname.includes("/auth/");
       const isTargetAuthRoute = url.includes("/auth/");
 
       if (
+        !isActivateRoute &&
         !isAuthRoute &&
         !isTargetAuthRoute &&
         !isForgotPasswordFlow &&

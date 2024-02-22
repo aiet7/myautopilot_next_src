@@ -1,40 +1,23 @@
 "use client";
-
-import Link from "next/link";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-
-import { UsaStates } from "usa-states";
-import useAuthStore from "@/utils/store/auth/authStore.js";
 import useUiStore from "@/utils/store/ui/uiStore.js";
-import { FaNetworkWired, FaBusinessTime, FaRegUser } from "react-icons/fa";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import useMspStore from "@/utils/store/auth/msp/mspStore";
 
-const SignupPage = () => {
-  // const usStates = new UsaStates();
+const MSPSignupPage = () => {
   const router = useRouter();
   const { height, setHeight } = useUiStore();
-
-  // const {
-  //   firstName,
-  //   lastName,
-  //   companyId,
-  //   phoneNumber,
-  //   companyAddress,
-  //   errorMessage,
-  //   showSignupForm,
-  //   companies,
-  //   setEmail,
-  //   setPassword,
-  //   setFirstName,
-  //   setLastName,
-  //   setCompanyId,
-  //   setCompanyName,
-  //   setPhoneNumber,
-  //   setCompanyAddress,
-  //   handleSignupEmailCheck,
-  //   handleSignupCredentialsAuth,
-  //   handleShowLogin,
-  // } = useAuthStore();
+  const {
+    successMessage,
+    errorMessage,
+    currentStep,
+    signupInputs,
+    setCurrentStep,
+    setSignupInputs,
+    handleSignupProgression,
+    clearMSPCredentials,
+  } = useMspStore();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -47,7 +30,6 @@ const SignupPage = () => {
       };
     }
   }, []);
-
   return (
     <>
       {height && (
@@ -55,324 +37,161 @@ const SignupPage = () => {
           className="relative z-[99]  bg-gradient-to-b from-white via-white to-gray-400 h-full flex justify-center items-center"
           style={{ height: `calc(${height}px - 1px)` }}
         >
-          <div className="flex flex-col gap-6 p-4">
-            <h1 className="text-black text-4xl font-bold text-left lg:text-center">
-              Sign up
-            </h1>
-            <div className="text-black flex flex-col gap-3 items-center justify-center lg:flex-row lg:gap-6">
-              <Link href={"/auth/signup/msp"}>
-                <div className="hover:shadow-blue-500  flex flex-col  justify-center items-center w-full shadow-xl rounded-lg  cursor-pointer lg:w-[275px]">
-                  <h2 className="flex items-center justify-center text-2xl font-bold  bg-black/5 rounded-tr-lg rounded-tl-lg w-full p-3 lg:h-[100px]">
-                    MSP
-                  </h2>
-                  <p className="text-black/60 py-2 px-4 h-[100px] lg:h-[175px] lg:pt-8">
-                    Ideal for IT service providers offering managed services.
-                    Get tailored solutions to manage your clients IT
-                    infrastructure efficiently.
-                  </p>
-                  <div className="p-2 h-full">
-                    <FaNetworkWired size={25} />
+          <form className="p-6 w-[450px]  flex flex-col gap-10 items-start  justify-center  lg:shadow-lg  lg:rounded-lg lg:bg-white">
+            <div className="flex justify-center w-full  items-center text-2xl font-bold">
+              <div
+                className={`${
+                  currentStep >= 1 && "bg-blue-800 text-white"
+                } w-16 h-16 border rounded-full flex items-center justify-center`}
+              >
+                1
+              </div>
+              <div className="border w-44" />
+              <div
+                className={`${
+                  currentStep >= 2 ? "bg-blue-800 text-white" : "text-black/10"
+                } w-16 h-16 border rounded-full flex items-center justify-center`}
+              >
+                2
+              </div>
+            </div>
+            <div className="flex flex-col items-start">
+              <h1 className="text-2xl font-bold text-black">
+                {currentStep === 1
+                  ? "Enter Your Technician Details."
+                  : "Enter Your MSP Details."}
+              </h1>
+              {errorMessage?.emailCheck && (
+                <p className="text-red-500">Email does not exist.</p>
+              )}
+              {errorMessage?.emptyFields && (
+                <p className="text-red-500">Please fill out required field*.</p>
+              )}
+              {errorMessage?.techSignup && (
+                <p className="text-red-500">
+                  Custom Domain or Technician already exists*.
+                </p>
+              )}
+              {successMessage && (
+                <p className="text-emerald-500">
+                  Redirecting you to Integrations Page...
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col gap-4 w-full ">
+              <input
+                value={signupInputs.mspCustomDomain}
+                onChange={(e) =>
+                  setSignupInputs("", "mspCustomDomain", e.target.value)
+                }
+                type="text"
+                placeholder="Custom domain name*"
+                className=" rounded w-full p-2 border border-gray-300  bg-white text-black"
+              />
+              {currentStep === 1 ? (
+                <>
+                  <div className="flex gap-2">
+                    <input
+                      value={signupInputs.techInfo.firstName}
+                      onChange={(e) =>
+                        setSignupInputs("techInfo", "firstName", e.target.value)
+                      }
+                      type="text"
+                      placeholder="First name"
+                      className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                    />
+                    <input
+                      value={signupInputs.techInfo.lastName}
+                      onChange={(e) =>
+                        setSignupInputs("techInfo", "lastName", e.target.value)
+                      }
+                      type="text"
+                      placeholder="Last name"
+                      className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                    />
                   </div>
-                </div>
-              </Link>
-              <Link href={"/auth/signup/business"}>
-                <div className="hover:shadow-blue-500 flex flex-col  justify-center items-center w-full shadow-xl rounded-lg  cursor-pointer lg:w-[275px]">
-                  <h2 className="flex items-center justify-center text-2xl font-bold  bg-black/5 rounded-tr-lg rounded-tl-lg w-full p-3 lg:h-[100px]">
-                    Businesses
-                  </h2>
-                  <p className="text-black/60 py-2 px-4 h-[100px] lg:h-[175px] lg:pt-8">
-                    Perfect for businesses of all sizes seeking robust IT
-                    solutions. Enhance your operational efficiency and
-                    streamline workflows.
-                  </p>
-                  <div className="flex p-2">
-                    <FaBusinessTime size={25} />
-                  </div>
-                </div>
-              </Link>
-              <Link href={"/auth/signup/personal"}>
-                <div className="hover:shadow-blue-500 flex flex-col justify-center items-center w-full shadow-xl rounded-lg cursor-pointer lg:w-[275px] ">
-                  <h2 className="flex items-center justify-center text-2xl font-bold  bg-black/5 rounded-tr-lg rounded-tl-lg w-full p-3 lg:h-[100px]">
-                    Personal
-                  </h2>
-                  <p className="text-black/60 py-2 px-4 h-[100px] lg:h-[175px] lg:pt-8">
-                    Designed for individuals and freelancers needing reliable
-                    and efficient IT tools for personal projects or home use.
-                  </p>
-                  <div className="p-2">
-                    <FaRegUser size={25} />
-                  </div>
-                </div>
+                  <input
+                    value={signupInputs.techInfo.email}
+                    onChange={(e) =>
+                      setSignupInputs("techInfo", "email", e.target.value)
+                    }
+                    type="email"
+                    placeholder="Email address"
+                    className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                  />
+                  <input
+                    value={signupInputs.techInfo.phoneNumber}
+                    onChange={(e) =>
+                      setSignupInputs("techInfo", "phoneNumber", e.target.value)
+                    }
+                    type="text"
+                    placeholder="Phone number"
+                    className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                  />
+                  <input
+                    value={signupInputs.techInfo.password}
+                    onChange={(e) =>
+                      setSignupInputs("techInfo", "password", e.target.value)
+                    }
+                    type="password"
+                    placeholder="Password"
+                    className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                  />
+                </>
+              ) : (
+                <>
+                  <input
+                    value={signupInputs.mspInfo.mspName}
+                    onChange={(e) =>
+                      setSignupInputs("mspInfo", "mspName", e.target.value)
+                    }
+                    type="text"
+                    placeholder="MSP name"
+                    className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                  />
+                  <input
+                    value={signupInputs.mspInfo.brandLogoUrl}
+                    onChange={(e) =>
+                      setSignupInputs("mspInfo", "brandLogoUrl", e.target.value)
+                    }
+                    type="text"
+                    placeholder="Brand Logo URL"
+                    className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                  />
+                </>
+              )}
+            </div>
+            <div className="flex flex-col gap-2 w-full">
+              <button
+                type="button"
+                onClick={() => handleSignupProgression(router.push)}
+                className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4"
+              >
+                {currentStep === 1 ? "Next" : "Sign up"}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setCurrentStep(1)}
+                className={`${
+                  currentStep === 1 ? "opacity-0" : "opacity-100"
+                } hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4`}
+              >
+                Back
+              </button>
+            </div>
+            <div className="flex flex-col gap-1">
+              <Link onClick={() => clearMSPCredentials()} href={"/auth/login"}>
+                <span className="text-sm text-blue-800 font-semibold">
+                  Have An Account? Log in
+                </span>
               </Link>
             </div>
-            <Link href={"/auth/login"}>
-              <span className="text-sm text-blue-800 font-semibold">
-                Have an account? Login in
-              </span>
-            </Link>
-          </div>
-
-          {/* <form className="w-[300px] flex flex-col items-center gap-4">
-            <Image
-              priority={true}
-              src="/images/etech7_logo_auth.webp"
-              alt="Etech7_Signup_Logo"
-              width={50}
-              height={50}
-            />
-            <h1 className="text-xl font-bold text-black text-center">
-              Create your account
-            </h1>
-            <p className="text-center text-black text-sm">
-              Please note that all of the fields are required for account
-              creation.
-            </p>
-            <p className="text-red-500 text-sm">{errorMessage}</p>
-
-            {!showSignupForm && (
-              <>
-                <input
-                  onChange={(e) => setEmail(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleSignupEmailCheck();
-                    }
-                  }}
-                  type="email"
-                  placeholder="Enter your email"
-                  className="w-full p-2 border border-gray-300  bg-white text-black"
-                />
-                <button
-                  onClick={handleSignupEmailCheck}
-                  type="button"
-                  className="hover:bg-blue-500 w-full py-2 bg-[#00AEEE] text-white font-bold rounded-sm"
-                >
-                  Continue
-                </button>
-              </>
-            )}
-            {showSignupForm && (
-              <>
-                <select
-                  onChange={(e) => {
-                    const selectedCompany = companies.find(
-                      (c) => c.companyName === e.target.value
-                    );
-                    if (selectedCompany) {
-                      setFirstName(selectedCompany.firstName || "");
-                      setLastName(selectedCompany.lastName || "");
-                      setCompanyName(
-                        selectedCompany.companyName ||
-                          selectedCompany.company?.name ||
-                          ""
-                      );
-                      setCompanyId(
-                        selectedCompany.companyId ||
-                          selectedCompany.company?.id ||
-                          ""
-                      );
-                      setPhoneNumber(
-                        selectedCompany.phoneNumber ||
-                          selectedCompany.defaultPhoneNbr ||
-                          ""
-                      );
-                      setCompanyAddress(
-                        "street",
-                        selectedCompany.companyAddress?.street || ""
-                      );
-                      setCompanyAddress(
-                        "city",
-                        selectedCompany.companyAddress?.city || ""
-                      );
-                      setCompanyAddress(
-                        "state",
-                        selectedCompany.companyAddress?.state || ""
-                      );
-                      setCompanyAddress(
-                        "zipcode",
-                        selectedCompany.companyAddress?.zipcode || ""
-                      );
-                    }
-                  }}
-                >
-                  {Array.isArray(companies) &&
-                    companies.map((company) => (
-                      <option
-                        key={company.companyId}
-                        value={company.companyName}
-                      >
-                        {company.companyName}
-                      </option>
-                    ))}
-                </select>
-
-                <div className="flex gap-2">
-                  <input
-                    value={firstName || ""}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        handleSignupCredentialsAuth(router.push);
-                      }
-                    }}
-                    type="text"
-                    placeholder="First name"
-                    className="w-full p-2 border border-gray-300 bg-white text-black"
-                  />
-                  <input
-                    value={lastName || ""}
-                    onChange={(e) => setLastName(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        handleSignupCredentialsAuth(router.push);
-                      }
-                    }}
-                    type="text"
-                    placeholder="Last name"
-                    className="w-full p-2 border border-gray-300 bg-white text-black"
-                  />
-                </div>
-                <input
-                  disabled
-                  value={companyId || ""}
-                  onChange={(e) => setCompanyId(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleSignupCredentialsAuth(router.push);
-                    }
-                  }}
-                  type="text"
-                  placeholder="Company Id"
-                  className="w-full p-2 border border-gray-300 bg-white text-black"
-                />
-
-                <div className="flex gap-2">
-                  <input
-                    value={companyAddress.street || ""}
-                    onChange={(e) =>
-                      setCompanyAddress("street", e.target.value)
-                    }
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        handleSignupCredentialsAuth(router.push);
-                      }
-                    }}
-                    type="text"
-                    placeholder="Street"
-                    className="w-full p-2 border border-gray-300 bg-white text-black"
-                  />
-
-                  <input
-                    value={companyAddress.city || ""}
-                    onChange={(e) => setCompanyAddress("city", e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        handleSignupCredentialsAuth(router.push);
-                      }
-                    }}
-                    type="text"
-                    placeholder="City "
-                    className="w-full p-2 border border-gray-300 bg-white text-black"
-                  />
-                </div>
-                <div className="w-full flex gap-2">
-                  <input
-                    value={companyAddress.zipcode || ""}
-                    maxLength={5}
-                    onChange={(e) =>
-                      setCompanyAddress("zipcode", e.target.value)
-                    }
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        handleSignupCredentialsAuth(router.push);
-                      }
-                    }}
-                    type="text"
-                    placeholder="Zipcode"
-                    className="w-full p-2 border border-gray-300 bg-white text-black"
-                  />
-                  <select
-                    value={companyAddress.state || ""}
-                    onChange={(e) => setCompanyAddress("state", e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        handleSignupCredentialsAuth(router.push);
-                      }
-                    }}
-                    className={`w-full p-2 border rounded-none border-gray-300  ${
-                      companyAddress.state
-                        ? "bg-white text-black"
-                        : "bg-white text-gray-400"
-                    }`}
-                  >
-                    <option value="">State</option>
-                    {usStates.states.map((state) => (
-                      <option
-                        key={state.abbreviation}
-                        value={state.abbreviation}
-                      >
-                        {state.abbreviation}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <input
-                  value={phoneNumber || ""}
-                  maxLength={10}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleSignupCredentialsAuth(router.push);
-                    }
-                  }}
-                  type="text"
-                  placeholder="Phone number"
-                  className="w-full p-2 border border-gray-300 bg-white text-black"
-                />
-                <input
-                  onChange={(e) => setPassword(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleSignupCredentialsAuth(router.push);
-                    }
-                  }}
-                  type="password"
-                  placeholder="Password"
-                  className="w-full p-2 border border-gray-300 bg-white text-black"
-                />
-                <button
-                  onClick={() => handleSignupCredentialsAuth(router.push)}
-                  type="button"
-                  className="hover:bg-blue-500 w-full  py-2 bg-[#00AEEE] text-white font-bold rounded-sm"
-                >
-                  Continue
-                </button>
-              </>
-            )}
-            <p className="w-full text-black">
-              Already have an account?{" "}
-              <span
-                onClick={() => handleShowLogin(router.push)}
-                className="text-[#00AEEE]  cursor-pointer"
-              >
-                Login
-              </span>
-            </p>
-          </form> */}
+          </form>
         </div>
       )}
     </>
   );
 };
 
-export default SignupPage;
+export default MSPSignupPage;

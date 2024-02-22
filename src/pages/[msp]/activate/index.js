@@ -1,10 +1,17 @@
 "use client";
 import useUiStore from "@/utils/store/ui/uiStore.js";
-import { useEffect } from "react";
+import { UsaStates } from "usa-states";
 import Link from "next/link";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import useMspStore from "@/utils/store/auth/msp/mspStore";
 
-const PersonalSignupPage = () => {
+const ActivatePage = () => {
+  const router = useRouter();
+
+  const { msp } = router.query;
   const { height, setHeight } = useUiStore();
+  const { activeFormTab, setFormChange } = useMspStore();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -17,6 +24,7 @@ const PersonalSignupPage = () => {
       };
     }
   }, []);
+
   return (
     <>
       {height && (
@@ -26,29 +34,43 @@ const PersonalSignupPage = () => {
         >
           <div className="p-4 flex flex-col items-center w-full justify-center h-full ">
             <form className=" p-6 w-[450px]  flex flex-col gap-10 items-start justify-center lg:shadow-lg  lg:rounded-lg lg:bg-white ">
+              <div className="dark:bg-black dark:text-white dark:shadow-white/40 flex items-center gap-2 w-full rounded-lg bg-white p-1 shadow-lg ">
+                <button
+                  type="button"
+                  onClick={() => setFormChange("Technician")}
+                  className={`${
+                    activeFormTab === "Technician" && "bg-blue-800 text-white"
+                  } font-bold w-full rounded-lg py-4`}
+                >
+                  Technician
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormChange("Client")}
+                  className={`${
+                    activeFormTab === "Client" && "bg-blue-800 text-white"
+                  } font-bold w-full rounded-lg py-4`}
+                >
+                  Client
+                </button>
+              </div>
               <div className="text-black flex flex-col items-start">
                 <h1 className="text-2xl font-bold ">
-                  Enter Your Personal Details
+                  {activeFormTab === "Technician"
+                    ? "Enter Your Technician Details."
+                    : "Enter Your Client Details."}
                 </h1>
                 <p className="text-black/60">
                   Please fill out all of the required fields*
                 </p>
               </div>
-              <div className="flex flex-col gap-4 w-full overflow-auto scrollbar-thin pr-2">
-                <input
-                  type="email"
-                  placeholder="Email Address"
-                  className="rounded w-full p-2 border border-gray-300  bg-white text-black"
-                />
-
-                <input
-                  type="password"
-                  placeholder="Password"
-                  className=" rounded w-full p-2 border border-gray-300  bg-white text-black"
-                />
-              </div>
+              <input
+                type="email"
+                placeholder="Email address"
+                className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+              />
               <button className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4">
-                Sign up
+                Continue
               </button>
               <div className="flex flex-col gap-1">
                 <Link href={"/auth/signup"}>
@@ -56,7 +78,7 @@ const PersonalSignupPage = () => {
                     Back to sign up
                   </span>
                 </Link>
-                <Link href={"/auth/login"}>
+                <Link href={`/${msp}`}>
                   <span className="text-sm text-blue-800 font-semibold">
                     Have An Account? Log in
                   </span>
@@ -70,4 +92,4 @@ const PersonalSignupPage = () => {
   );
 };
 
-export default PersonalSignupPage;
+export default ActivatePage;

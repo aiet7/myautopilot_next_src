@@ -41,6 +41,11 @@ const useMspStore = create((set, get) => ({
   successMessage: false,
 
   showPassword: false,
+  activeFormTab: "Technician",
+
+  setFormChange: (tab) => {
+    set({ activeFormTab: tab });
+  },
 
   setCurrentStep: (step) => set({ currentStep: step }),
 
