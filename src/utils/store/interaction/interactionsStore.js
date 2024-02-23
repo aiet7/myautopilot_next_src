@@ -1,11 +1,10 @@
 import { create } from "zustand";
 import useFormsStore from "./forms/formsStore";
-import useUserStore from "../user/userStore";
 import useConversationStore from "./conversations/conversationsStore";
 import useRefStore from "./ref/refStore";
 import useDocConversationsStore from "./conversations/docConversationsStore";
 import useTicketConversationsStore from "./conversations/ticketConversationsStore";
-import useTechStore from "../user/techStore";
+import useUserStore from "../user/userStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
@@ -132,7 +131,7 @@ const useInteractionStore = create((set, get) => ({
   },
 
   handleCreateTicketMessage: async (message) => {
-    const techStore = useTechStore.getState();
+    const userStore = useUserStore.getState();
     const { inputRef, messageIdRef } = useRefStore.getState();
     const { handleAddUserMessage } = useTicketConversationsStore.getState();
     const { handleCreateTicketProcess } = useFormsStore.getState();
@@ -155,8 +154,8 @@ const useInteractionStore = create((set, get) => ({
             },
             body: JSON.stringify({
               userMessage: message,
-              userId: techStore.tech.id,
-              mspCustomDomain: techStore.tech.mspCustomDomain,
+              userId: userStore.user.id,
+              mspCustomDomain: userStore.user.mspCustomDomain,
             }),
           }
         );
@@ -181,10 +180,10 @@ const useInteractionStore = create((set, get) => ({
   },
 
   handleCreateTicketNote: async (ticketId, message) => {
-    const techStore = useTechStore.getState();
+    const userStore = useUserStore.getState();
     if (message.trim() !== "") {
       set({ isWaiting: true, isServerError: false, userInput: "" });
-      const encodedDomain = encodeURIComponent(techStore.tech.mspCustomDomain);
+      const encodedDomain = encodeURIComponent(userStore.user.mspCustomDomain);
       const encodedTicketId = encodeURIComponent(ticketId);
       try {
         const response = await fetch(
@@ -214,7 +213,7 @@ const useInteractionStore = create((set, get) => ({
 
   handleSendMessage: async (message) => {
     const { inputRef, messageIdRef } = useRefStore.getState();
-    const techStore = useTechStore.getState();
+    const userStore = useUserStore.getState();
     const {
       handleIfConversationExists,
       handleAddJarvisUserMessage,
@@ -239,7 +238,7 @@ const useInteractionStore = create((set, get) => ({
           body: JSON.stringify({
             text: message,
             conversationId: currentConversation.id,
-            technicianId: techStore.tech.id,
+            technicianId: userStore.user.id,
           }),
         });
 

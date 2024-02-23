@@ -7,10 +7,10 @@ import { MdOutlineBrandingWatermark, MdBusinessCenter } from "react-icons/md";
 import useAdminStore from "@/utils/store/admin/adminStore";
 
 import Link from "next/link";
-import useTechStore from "@/utils/store/user/techStore";
+import useUserStore from "@/utils/store/user/userStore";
 
 const Nav = ({}) => {
-  const { tech } = useTechStore();
+  const { user } = useUserStore();
   const { openAdmin } = useUiStore();
   const { options, currentOption, handleOptionSelected } = useAdminStore();
 
@@ -46,7 +46,7 @@ const Nav = ({}) => {
           return (
             <Link
               key={option}
-              href={`/${tech?.mspCustomDomain}/dashboard/${tech?.id}/admin/${option}`}
+              href={`/${user?.mspCustomDomain}/dashboard/${user?.id}/admin/${option}`}
             >
               <div
                 onClick={() => handleOptionSelected(option)}

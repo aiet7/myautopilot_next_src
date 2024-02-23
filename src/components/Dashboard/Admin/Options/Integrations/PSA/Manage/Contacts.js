@@ -1,12 +1,12 @@
 "use client";
 
-import useTechStore from "@/utils/store/user/techStore";
+import useUserStore from "@/utils/store/user/userStore";
 import useManageStore from "@/utils/store/admin/control/integrations/PSA/manageStore";
 import { useEffect } from "react";
 import { FaSpinner } from "react-icons/fa";
 
 const Contacts = () => {
-  const { tech } = useTechStore();
+  const { user } = useUserStore();
   const {
     activePage,
     activePerPage,
@@ -28,7 +28,7 @@ const Contacts = () => {
   );
   useEffect(() => {
     initializeManageContacts();
-  }, [tech]);
+  }, [user]);
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
@@ -48,7 +48,7 @@ const Contacts = () => {
                 <div className="flex items-center justify-start gap-2">
                   <button
                     onClick={() =>
-                      handleAddManageContacts(tech?.mspCustomDomain)
+                      handleAddManageContacts(user?.mspCustomDomain)
                     }
                     className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
                   >

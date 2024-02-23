@@ -2,17 +2,17 @@
 
 import useEmployeesStore from "@/utils/store/admin/control/employees/employeesStore";
 import useUiStore from "@/utils/store/ui/uiStore";
-import useTechStore from "@/utils/store/user/techStore";
+import useUserStore from "@/utils/store/user/userStore";
 import { useEffect } from "react";
 
 const Employees = ({}) => {
-  const { tech } = useTechStore();
+  const { user } = useUserStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
   const { employees, initializeEmployees } = useEmployeesStore();
 
   useEffect(() => {
     initializeEmployees();
-  }, [tech]);
+  }, [user]);
 
 
   return (

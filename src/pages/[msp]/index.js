@@ -15,9 +15,12 @@ const MSPPage = ({}) => {
   const { mspSubDomain, initializeSubDomain } = useInitializeAppStore();
 
   const {
+    userType,
     current2FA,
     errorMessage,
     setLoginInputs,
+    handleClientLogin,
+    handleClient2FALogin,
     handleTechnicianLogin,
     handleTechnician2FALogin,
     clearMSPCredentials,
@@ -49,6 +52,8 @@ const MSPPage = ({}) => {
       };
     }
   }, []);
+
+  console.log(userType);
 
   return (
     <>
@@ -89,15 +94,27 @@ const MSPPage = ({}) => {
                 <>
                   <input
                     onChange={(e) =>
-                      setLoginInputs("techInfo", "login2FA", e.target.value)
+                      setLoginInputs(
+                        userType === "tech" ? "techInfo" : "clientInfo",
+                        "login2FA",
+                        e.target.value
+                      )
                     }
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        handleTechnician2FALogin(
-                          router.push,
-                          mspSubDomain?.customDomain
-                        );
+
+                        if (userType === "tech") {
+                          handleTechnician2FALogin(
+                            router.push,
+                            mspSubDomain?.customDomain
+                          );
+                        } else {
+                          handleClient2FALogin(
+                            router.push,
+                            mspSubDomain?.customDomain
+                          );
+                        }
                       }
                     }}
                     type="text"
@@ -105,12 +122,19 @@ const MSPPage = ({}) => {
                     className="w-full p-2 border border-gray-300 bg-white text-black"
                   />
                   <button
-                    onClick={() =>
-                      handleTechnician2FALogin(
-                        router.push,
-                        mspSubDomain?.customDomain
-                      )
-                    }
+                    onClick={() => {
+                      if (userType === "tech") {
+                        handleTechnician2FALogin(
+                          router.push,
+                          mspSubDomain?.customDomain
+                        );
+                      } else {
+                        handleClient2FALogin(
+                          router.push,
+                          mspSubDomain?.customDomain
+                        );
+                      }
+                    }}
                     type="button"
                     className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4"
                   >
@@ -121,12 +145,20 @@ const MSPPage = ({}) => {
                 <>
                   <input
                     onChange={(e) =>
-                      setLoginInputs("techInfo", "email", e.target.value)
+                      setLoginInputs(
+                        userType === "tech" ? "techInfo" : "clientInfo",
+                        "email",
+                        e.target.value
+                      )
                     }
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        handleTechnicianLogin(mspSubDomain?.customDomain);
+                        if (userType === "tech") {
+                          handleTechnicianLogin(mspSubDomain?.customDomain);
+                        } else {
+                          handleClientLogin(mspSubDomain?.customDomain);
+                        }
                       }
                     }}
                     type="email"
@@ -136,12 +168,20 @@ const MSPPage = ({}) => {
                   <div className="flex items-center gap-2">
                     <input
                       onChange={(e) =>
-                        setLoginInputs("techInfo", "password", e.target.value)
+                        setLoginInputs(
+                          userType === "tech" ? "techInfo" : "clientInfo",
+                          "password",
+                          e.target.value
+                        )
                       }
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
                           e.preventDefault();
-                          handleTechnicianLogin(mspSubDomain?.customDomain);
+                          if (userType === "tech") {
+                            handleTechnicianLogin(mspSubDomain?.customDomain);
+                          } else {
+                            handleClientLogin(mspSubDomain?.customDomain);
+                          }
                         }
                       }}
                       type={showPassword ? "text" : "password"}
@@ -165,9 +205,13 @@ const MSPPage = ({}) => {
                     </>
                   </div>
                   <button
-                    onClick={() =>
-                      handleTechnicianLogin(mspSubDomain?.customDomain)
-                    }
+                    onClick={() => {
+                      if (userType === "tech") {
+                        handleTechnicianLogin(mspSubDomain?.customDomain);
+                      } else {
+                        handleClientLogin(mspSubDomain?.customDomain);
+                      }
+                    }}
                     type="button"
                     className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4"
                   >

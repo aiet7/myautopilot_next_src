@@ -1,5 +1,5 @@
 import { handleGetRoles } from "@/utils/api/serverProps";
-import useTechStore from "@/utils/store/user/techStore";
+import useUserStore from "@/utils/store/user/userStore";
 import { create } from "zustand";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
@@ -51,11 +51,11 @@ const useRolesStore = create((set, get) => ({
   },
 
   initializeRoles: async () => {
-    const techUser = useTechStore.getState();
+    const userStore = useUserStore.getState();
     set({ roles: null });
 
-    if (techUser.tech) {
-      const newRoles = await handleGetRoles(techUser.tech.mspCustomDomain);
+    if (userStore.user) {
+      const newRoles = await handleGetRoles(userStore.user.mspCustomDomain);
       set({ roles: newRoles });
     }
   },

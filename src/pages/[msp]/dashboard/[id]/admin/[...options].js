@@ -6,7 +6,7 @@ import Layout from "@/components/Layouts/Layout";
 import useUiStore from "@/utils/store/ui/uiStore";
 import Cookies from "js-cookie";
 import useLocalStorageStore from "@/utils/store/localstorage/localStorageStore";
-import useTechStore from "@/utils/store/user/techStore";
+import useUserStore from "@/utils/store/user/userStore";
 import useAdminStore from "@/utils/store/admin/adminStore";
 
 const Branding = dynamic(() =>
@@ -25,12 +25,11 @@ const Roles = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Roles/Roles")
 );
 
-
 const OptionPages = () => {
   const session = Cookies.get("session_token");
   const router = useRouter();
 
-  const { initializeTech } = useTechStore();
+  const { initializeUser } = useUserStore();
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
   const { currentOption } = useAdminStore();
@@ -44,7 +43,7 @@ const OptionPages = () => {
 
       getStorage(currentPath, options[0]);
       if (msp && id && session) {
-        initializeTech(msp, id);
+        initializeUser(msp, id);
       } else {
         router.push("/auth/login");
       }

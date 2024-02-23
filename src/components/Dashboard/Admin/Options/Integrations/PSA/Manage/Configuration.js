@@ -8,7 +8,6 @@ import Contacts from "./Contacts";
 
 const Configuration = () => {
   const {
-    
     activePage,
     activePageNumbers,
     setActivePage,

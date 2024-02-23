@@ -1,11 +1,11 @@
 "use client";
 
 import useRolesStore from "@/utils/store/admin/control/roles/rolesStore";
-import useTechStore from "@/utils/store/user/techStore";
+import useUserStore from "@/utils/store/user/userStore";
 import { AiOutlineClose } from "react-icons/ai";
 
 const CreateRole = () => {
-  const { tech } = useTechStore();
+  const { user } = useUserStore();
   const {
     successMessage,
     errorMessage,
@@ -79,7 +79,7 @@ const CreateRole = () => {
               <p className="font-bold text-red-500">Error Creating Role!</p>
             )}
             <button
-              onClick={() => handleCreateRole(tech?.mspCustomDomain)}
+              onClick={() => handleCreateRole(user?.mspCustomDomain)}
               className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg py-2 px-20 font-bold"
             >
               Create

@@ -10,6 +10,16 @@ export const handleGetTech = async (msp, techId) => {
   return response.json();
 };
 
+export const handleGetClient = async (msp, clientId) => {
+  const response = await fetch(
+    `${dbServiceUrl}/${encodeURIComponent(
+      msp
+    )}/clientUsers/getById?id=${encodeURIComponent(clientId)}`
+  );
+
+  return response.json();
+};
+
 export const handleGetIntegrations = async (msp) => {
   const response = await fetch(
     `${dbServiceUrl}/${encodeURIComponent(msp)}/integrations`

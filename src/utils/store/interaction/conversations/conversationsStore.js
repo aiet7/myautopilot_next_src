@@ -7,7 +7,7 @@ import {
   handleGetMessages,
 } from "@/utils/api/serverProps";
 import useTicketConversationsStore from "./ticketConversationsStore";
-import useTechStore from "../../user/techStore";
+import useUserStore from "../../user/userStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
@@ -28,12 +28,12 @@ const useConversationStore = create((set, get) => ({
 
   initializeConversations: async () => {
     const { initializeMessages } = get();
-    const techStore = useTechStore.getState();
+    const userStore = useUserStore.getState();
     set({ conversationHistories: [] });
 
-    if (techStore.tech) {
+    if (userStore.user) {
       const initialConversations = await handleGetConversations(
-        techStore.tech.id
+        userStore.user.id
       );
       set({
         conversationHistories: initialConversations,
@@ -209,11 +209,11 @@ const useConversationStore = create((set, get) => ({
   },
 
   handleNewConversation: async (index) => {
-    const techStore = useTechStore.getState();
+    const userStore = useUserStore.getState();
 
     const { selectedAgent } = useInitializeAppStore.getState();
     const newConversation = {
-      userId: techStore.tech.id,
+      userId: userStore.user.id,
       conversationName: `Chat ${index + 1}`,
       agentID: selectedAgent,
     };

@@ -8,7 +8,7 @@ import Layout from "@/components/Layouts/Layout";
 
 import Cookies from "js-cookie";
 import useLocalStorageStore from "@/utils/store/localstorage/localStorageStore";
-import useTechStore from "@/utils/store/user/techStore";
+import useUserStore from "@/utils/store/user/userStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useIntegrationsStore from "@/utils/store/admin/control/integrations/integrationsStore";
 import useAdminStore from "@/utils/store/admin/adminStore";
@@ -48,7 +48,7 @@ const SoftwareIntegratePages = () => {
   const session = Cookies.get("session_token");
 
   const router = useRouter();
-  const { initializeTech } = useTechStore();
+  const { initializeUser } = useUserStore();
   const { initializeIntegrations } = useIntegrationsStore();
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
@@ -62,7 +62,7 @@ const SoftwareIntegratePages = () => {
       const { msp, id } = router.query;
       getStorage(currentPath, "integrations");
       if (msp && id && session) {
-        initializeTech(msp, id);
+        initializeUser(msp, id);
         initializeIntegrations(msp);
       } else {
         router.push("/auth/login");

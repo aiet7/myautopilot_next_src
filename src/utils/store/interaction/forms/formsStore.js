@@ -2,7 +2,7 @@ import { create } from "zustand";
 import useTicketsStore from "../../interaction/tickets/ticketsStore";
 import { validateTicketForm } from "@/utils/formValidations";
 import useTicketConversationsStore from "../conversations/ticketConversationsStore";
-import useTechStore from "../../user/techStore";
+import useUserStore from "../../user/userStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
@@ -141,11 +141,11 @@ const useFormsStore = create((set, get) => ({
   },
 
   handleCreateTicketCategories: async () => {
-    const techStore = useTechStore.getState();
+    const userStore = useUserStore.getState();
 
     try {
       const response = await fetch(
-        `${dbServiceUrl}/${techStore.tech.mspCustomDomain}/connectWiseManageDetails`
+        `${dbServiceUrl}/${userStore.user.mspCustomDomain}/connectWiseManageDetails`
       );
       if (response.status === 200) {
         const ticketMerge = await response.json();
@@ -161,7 +161,7 @@ const useFormsStore = create((set, get) => ({
   },
 
   handleCreateTicketProcess: (responseBody) => {
-    const techStore = useTechStore.getState();
+    const userStore = useUserStore.getState();
     const { handleAddForm } = useTicketConversationsStore.getState();
     const {
       title,
@@ -206,15 +206,15 @@ const useFormsStore = create((set, get) => ({
         currentTicketSeverity: severity || "",
         currentTicketTier: tier || "",
         currentTicketName:
-          techStore.tech.firstName + " " + techStore.tech.lastName || "",
-        currentTicketEmailId: techStore.tech.email || "",
-        currentTicketPhoneNumber: techStore.tech.phoneNumber || "",
+          userStore.user.firstName + " " + userStore.user.lastName || "",
+        currentTicketEmailId: userStore.user.email || "",
+        currentTicketPhoneNumber: userStore.user.phoneNumber || "",
 
         onBoarding: {
           ...state.ticket.onBoarding,
           currentTicketNewFirstName: newEmployeeFirstName,
           currentTicketNewLastName: newEmployeeLastName,
-          currentTicketEmailOwner: techStore.tech.email || "",
+          currentTicketEmailOwner: userStore.user.email || "",
           currentTicketNewPhoneNumber: phoneNumber || "",
           currentTicketNewEmailId: emailId || "",
         },
@@ -248,7 +248,7 @@ const useFormsStore = create((set, get) => ({
 
   handleTicketConfirmation: async (isConfirmed, formId) => {
     const { ticket } = get();
-    const techStore = useTechStore.getState();
+    const userStore = useUserStore.getState();
 
     const { addTicket } = useTicketsStore.getState();
     const {
@@ -293,7 +293,7 @@ const useFormsStore = create((set, get) => ({
       }));
       try {
         const encodedDomain = encodeURIComponent(
-          techStore.tech.mspCustomDomain
+          userStore.user.mspCustomDomain
         );
         const ticketResponse = await fetch(
           `${connectWiseServiceUrl}/createTicket?mspCustomDomain=${encodedDomain}`,
@@ -317,7 +317,7 @@ const useFormsStore = create((set, get) => ({
               emailId: currentTicketEmailId,
               phoneNumber: currentTicketPhoneNumber,
               connectWiseCompanyId: currentTicketCWCompanyId,
-              technicianId: techStore.tech.id,
+              technicianId: userStore.user.id,
             }),
           }
         );

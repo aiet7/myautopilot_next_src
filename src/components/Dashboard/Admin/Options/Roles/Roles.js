@@ -2,14 +2,14 @@
 
 import useRolesStore from "@/utils/store/admin/control/roles/rolesStore";
 import useUiStore from "@/utils/store/ui/uiStore";
-import useTechStore from "@/utils/store/user/techStore";
+import useUserStore from "@/utils/store/user/userStore";
 import { useEffect } from "react";
 import { convertDate } from "@/utils/conversions";
 import EditRole from "./EditRole";
 import CreateRole from "./CreateRole";
 
 const Roles = ({}) => {
-  const { tech } = useTechStore();
+  const { user } = useUserStore();
 
   const {
     errorMessage,
@@ -27,7 +27,7 @@ const Roles = ({}) => {
 
   useEffect(() => {
     initializeRoles();
-  }, [tech]);
+  }, [user]);
 
   return (
     <div
@@ -81,7 +81,7 @@ const Roles = ({}) => {
                                 <div className="flex gap-3">
                                   <button
                                     onClick={() =>
-                                      handleCloneRole(id, tech?.mspCustomDomain)
+                                      handleCloneRole(id, user?.mspCustomDomain)
                                     }
                                     className="hover:underline text-blue-500"
                                   >
@@ -100,7 +100,7 @@ const Roles = ({}) => {
                                         onClick={() =>
                                           handleDeleteRole(
                                             id,
-                                            tech?.mspCustomDomain
+                                            user?.mspCustomDomain
                                           )
                                         }
                                         className="hover:underline text-blue-500"

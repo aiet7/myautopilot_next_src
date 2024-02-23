@@ -3,7 +3,7 @@
 import useManageStore from "@/utils/store/admin/control/integrations/PSA/manageStore";
 import useIntegrationsStore from "@/utils/store/admin/control/integrations/integrationsStore";
 import useUiStore from "@/utils/store/ui/uiStore";
-import useTechStore from "@/utils/store/user/techStore";
+import useUserStore from "@/utils/store/user/userStore";
 
 import Image from "next/image";
 import Configuration from "./Configuration";
@@ -13,7 +13,7 @@ import { convertHideIntegrationKeys } from "@/utils/conversions";
 import { FcGoogle } from "react-icons/fc";
 
 const Manage = () => {
-  const { tech } = useTechStore();
+  const { user } = useUserStore();
 
   const {
     successManageIntegration,
@@ -29,10 +29,8 @@ const Manage = () => {
     handleIntegrateManage,
     handleDisconnectManage,
   } = useManageStore();
-
   const { integrations, handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
-  console.log(integrations);
 
   return (
     <div
@@ -64,7 +62,7 @@ const Manage = () => {
               </div>
               <div className="flex flex-col">
                 <Link
-                  href={`/${tech?.mspCustomDomain}/dashboard/${tech?.id}/admin/integrations`}
+                  href={`/${user?.mspCustomDomain}/dashboard/${user?.id}/admin/integrations`}
                 >
                   <button
                     onClick={() => handleIntegrationsCard("cards")}
@@ -217,7 +215,7 @@ const Manage = () => {
                     {integrations?.connectWiseManageIntegration?.clientId ? (
                       <button
                         onClick={() =>
-                          handleRemoveManageKeys(tech?.mspCustomDomain)
+                          handleRemoveManageKeys(user?.mspCustomDomain)
                         }
                         className="hover:bg-blue-500 self-start bg-blue-800 text-white rounded-lg px-3 py-1"
                       >
@@ -226,7 +224,7 @@ const Manage = () => {
                     ) : (
                       <button
                         onClick={() =>
-                          handleSaveManageKeys(tech?.mspCustomDomain)
+                          handleSaveManageKeys(user?.mspCustomDomain)
                         }
                         className="hover:bg-blue-500 self-start bg-blue-800 text-white rounded-lg px-3 py-1"
                       >
@@ -336,7 +334,7 @@ const Manage = () => {
 
                 {integrations?.connectWiseManageIntegrator && (
                   <button
-                    onClick={() => setActiveConfig(true)}
+                    onClick={() => setActiveConfig(true, user?.mspCustomDomain)}
                     className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg px-3 py-1"
                   >
                     Configuration
@@ -346,8 +344,8 @@ const Manage = () => {
                   <button
                     onClick={() =>
                       integrations?.connectWiseManageIntegrator
-                        ? handleDisconnectManage(tech?.mspCustomDomain)
-                        : handleIntegrateManage(tech?.mspCustomDomain)
+                        ? handleDisconnectManage(user?.mspCustomDomain)
+                        : handleIntegrateManage(user?.mspCustomDomain)
                     }
                     className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg px-3 py-1"
                   >

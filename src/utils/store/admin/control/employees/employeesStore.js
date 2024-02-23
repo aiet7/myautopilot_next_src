@@ -1,17 +1,17 @@
 import { create } from "zustand";
-import useTechStore from "@/utils/store/user/techStore";
+import useUserStore from "@/utils/store/user/userStore";
 import { handleGetManageDBTechnicians } from "@/utils/api/serverProps";
 
 const useEmployeesStore = create((set, get) => ({
   employees: null,
 
   initializeEmployees: async () => {
-    const techStore = useTechStore.getState();
+    const userStore = useUserStore.getState();
     set({ employees: null });
 
-    if (techStore.tech) {
+    if (userStore.user) {
       const newEmployees = await handleGetManageDBTechnicians(
-        techStore.tech.mspCustomDomain
+        userStore.user.mspCustomDomain
       );
       set({ employees: newEmployees });
     }

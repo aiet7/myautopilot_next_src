@@ -12,7 +12,7 @@ import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore.js";
 import useDocConversationsStore from "@/utils/store/interaction/conversations/docConversationsStore.js";
 import Cookies from "js-cookie";
-import useTechStore from "@/utils/store/user/techStore";
+import useUserStore from "@/utils/store/user/userStore";
 
 const Interaction = dynamic(() =>
   import("@/components/Dashboard/Interaction/Interaction.js")
@@ -29,14 +29,14 @@ const DashboardPage = ({}) => {
   const session = Cookies.get("session_token");
   const router = useRouter();
   const { initializeApp } = useInitializeAppStore();
-  const { tech, initializeTech } = useTechStore();
+  const { initializeUser } = useUserStore();
   const { getStorage, setStorage } = useLocalStorageStore();
 
   const { currentConversationIndex } = useConversationStore();
   const { currentDocumentConversationIndex } = useDocConversationsStore();
   const { activeTab } = useUiStore();
   const { activeAssistantTab, activeUIAssistantTab } = useAssistantStore();
-  
+
   useEffect(() => {
     if (router.isReady) {
       const currentPath = router.asPath;
@@ -44,7 +44,7 @@ const DashboardPage = ({}) => {
       getStorage(currentPath, null);
       if (msp && id && session) {
         initializeApp();
-        initializeTech(msp, id);
+        initializeUser(msp, id);
       }
     }
   }, [router.isReady, router.asPath]);

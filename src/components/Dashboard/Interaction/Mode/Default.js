@@ -16,10 +16,10 @@ import useRefStore from "@/utils/store/interaction/ref/refStore";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import useTicketConversationsStore from "@/utils/store/interaction/conversations/ticketConversationsStore";
 import useInteractionStore from "@/utils/store/interaction/interactionsStore";
-import useTechStore from "@/utils/store/user/techStore";
+import useUserStore from "@/utils/store/user/userStore";
 
 const Default = () => {
-  const { tech } = useTechStore();
+  const { user } = useUserStore();
   const { openDocs, openHistory, openAssistant } = useUiStore();
   const { messages } = useTicketConversationsStore();
   const { conversationHistories, currentConversationIndex } =
@@ -50,7 +50,6 @@ const Default = () => {
         return messages;
     }
   })();
-
 
   return (
     <div
@@ -97,7 +96,7 @@ const Default = () => {
               <span>
                 {item.role === "user" ? (
                   <div className="w-7 h-7 text-sm bg-blue-800  flex justify-center items-center text-white">
-                    {tech?.firstName[0]}
+                    {user?.firstName[0]}
                   </div>
                 ) : (
                   <>

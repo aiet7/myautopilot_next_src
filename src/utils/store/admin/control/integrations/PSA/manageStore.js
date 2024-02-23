@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import useIntegrationsStore from "../integrationsStore";
-import useTechStore from "@/utils/store/user/techStore";
+import useUserStore from "@/utils/store/user/userStore";
 import {
   handleGetManageTechnicians,
   handleGetManageDBTechnicians,
@@ -95,20 +95,20 @@ const useManageStore = create((set, get) => ({
 
   initializeManageTechnicians: async () => {
     const { activePerPage } = get();
-    const techStore = useTechStore.getState();
+    const userStore = useUserStore.getState();
     set({
       technicians: null,
       techniciansRoleOptions: null,
       loadingTechnicians: true,
     });
 
-    if (techStore.tech) {
+    if (userStore.user) {
       try {
         const [dbTechnicians, connectWiseTechnicians, newRoles] =
           await Promise.all([
-            handleGetManageDBTechnicians(techStore.tech.mspCustomDomain),
-            handleGetManageTechnicians(techStore.tech.mspCustomDomain),
-            handleGetRoles(techStore.tech.mspCustomDomain),
+            handleGetManageDBTechnicians(userStore.user.mspCustomDomain),
+            handleGetManageTechnicians(userStore.user.mspCustomDomain),
+            handleGetRoles(userStore.user.mspCustomDomain),
           ]);
 
         const markedTechnicians = connectWiseTechnicians.map((cwTech) => ({
@@ -139,14 +139,14 @@ const useManageStore = create((set, get) => ({
 
   initializeManageClients: async () => {
     const { activePerPage } = get();
-    const techStore = useTechStore.getState();
+    const userStore = useUserStore.getState();
     set({ clients: null, loadingClients: true });
 
-    if (techStore.tech) {
+    if (userStore.user) {
       try {
         const [dbClients, connectWiseClients] = await Promise.all([
-          handleGetManageDBClients(techStore.tech.mspCustomDomain),
-          handleGetManageClients(techStore.tech.mspCustomDomain),
+          handleGetManageDBClients(userStore.user.mspCustomDomain),
+          handleGetManageClients(userStore.user.mspCustomDomain),
         ]);
 
         const markedClients = connectWiseClients.map((cwClient) => ({
@@ -176,14 +176,14 @@ const useManageStore = create((set, get) => ({
 
   initializeManageContacts: async () => {
     const { activePerPage } = get();
-    const techStore = useTechStore.getState();
+    const userStore = useUserStore.getState();
     set({ contacts: null, loadingContacts: true });
 
-    if (techStore.tech) {
+    if (userStore.user) {
       try {
         const [dbContacts, connectWiseContacts] = await Promise.all([
-          handleGetManageDBContacts(techStore.tech.mspCustomDomain),
-          handleGetManageContacts(techStore.tech.mspCustomDomain),
+          handleGetManageDBContacts(userStore.user.mspCustomDomain),
+          handleGetManageContacts(userStore.user.mspCustomDomain),
         ]);
 
         const markedContacts = connectWiseContacts.map((cwContact) => ({
@@ -293,7 +293,6 @@ const useManageStore = create((set, get) => ({
 
       connectwiseOpenStatuses: null,
       connectwiseClosedStatuses: null,
-      connectwiseBoards: null,
       connectwiseMerge: null,
       customBoard: false,
       customBoardMerge: null,
@@ -314,7 +313,9 @@ const useManageStore = create((set, get) => ({
     });
   },
 
-  setActiveConfig: (config) => {
+  setActiveConfig: async (config, mspCustomDomain) => {
+    const { handleGetBoards } = get();
+    await handleGetBoards(mspCustomDomain);
     set({
       activeConfig: config,
     });
@@ -633,7 +634,6 @@ const useManageStore = create((set, get) => ({
 
   handleIntegrateManage: async (mspCustomDomain) => {
     const { handleUpdateIntegrations } = useIntegrationsStore.getState();
-
     try {
       const response = await fetch(
         `${connectWiseServiceUrl}/getConnectWiseBoards?mspCustomDomain=${mspCustomDomain}`
@@ -641,6 +641,9 @@ const useManageStore = create((set, get) => ({
 
       if (response.status === 200) {
         const boards = await response.json();
+        set({
+          connectwiseBoards: boards,
+        });
         const updatedResponse = await fetch(
           `${dbServiceUrl}/${mspCustomDomain}/integrations/updateConnectWiseManageIntegrator?status=${true}`,
           {
@@ -655,7 +658,6 @@ const useManageStore = create((set, get) => ({
           const updatedIntegrations = await updatedResponse.json();
           handleUpdateIntegrations(updatedIntegrations);
           set({
-            connectwiseBoards: boards,
             successManageIntegration: true,
             successManageDisconnect: false,
 
@@ -827,6 +829,23 @@ const useManageStore = create((set, get) => ({
   //   }
   // },
 
+  handleGetBoards: async (mspCustomDomain) => {
+    try {
+      const response = await fetch(
+        `${connectWiseServiceUrl}/getConnectWiseBoards?mspCustomDomain=${mspCustomDomain}`
+      );
+
+      if (response.status === 200) {
+        const boards = await response.json();
+        set({
+          connectwiseBoards: boards,
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
   handleGetBoardDetails: async (id, mspCustomDomain) => {
     const { handleCustomBoardMetadata, handleGetBoardStatuses } = get();
     if (id === "custom") {
@@ -886,9 +905,9 @@ const useManageStore = create((set, get) => ({
   },
 
   handleCustomBoardMetadata: async () => {
-    const techStore = useTechStore.getState();
-    const departmentsURL = `${connectWiseServiceUrl}/getConnectWiseDepartments?mspCustomDomain=${techStore.tech.mspCustomDomain}`;
-    const locationsURL = `${connectWiseServiceUrl}/getConnectWiseLocations?mspCustomDomain=${techStore.tech.mspCustomDomain}`;
+    const userStore = useUserStore.getState();
+    const departmentsURL = `${connectWiseServiceUrl}/getConnectWiseDepartments?mspCustomDomain=${userStore.user.mspCustomDomain}`;
+    const locationsURL = `${connectWiseServiceUrl}/getConnectWiseLocations?mspCustomDomain=${userStore.user.mspCustomDomain}`;
 
     try {
       const [departmentsResponse, locationsResponse] = await Promise.all([
@@ -926,9 +945,9 @@ const useManageStore = create((set, get) => ({
   },
 
   handleCustomBoard: async () => {
-    const techStore = useTechStore.getState();
+    const userStore = useUserStore.getState();
     const templateURL = `${dbServiceUrl}/default-et7-board-template/connectWiseManageDetails`;
-    const prioritiesURL = `${connectWiseServiceUrl}/getConnectWisePriorities?mspCustomDomain=${techStore.tech.mspCustomDomain}`;
+    const prioritiesURL = `${connectWiseServiceUrl}/getConnectWisePriorities?mspCustomDomain=${userStore.user.mspCustomDomain}`;
 
     try {
       const [templateResponse, prioritiesResponse] = await Promise.all([

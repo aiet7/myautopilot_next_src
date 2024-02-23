@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import useLocalStorageStore from "@/utils/store/localstorage/localStorageStore";
-import useTechStore from "@/utils/store/user/techStore";
+import useUserStore from "@/utils/store/user/userStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useAdminStore from "@/utils/store/admin/adminStore";
 
@@ -18,7 +18,7 @@ const IntegrationsPage = () => {
   const session = Cookies.get("session_token");
   const router = useRouter();
 
-  const { initializeTech } = useTechStore();
+  const { initializeUser } = useUserStore();
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
   const { currentOption } = useAdminStore();
@@ -30,7 +30,7 @@ const IntegrationsPage = () => {
       getStorage(currentPath, "integrations");
 
       if (msp && id && session) {
-        initializeTech(msp, id);
+        initializeUser(msp, id);
       } else {
         router.push("/auth/login");
       }

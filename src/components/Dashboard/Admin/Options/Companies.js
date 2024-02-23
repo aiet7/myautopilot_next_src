@@ -3,16 +3,16 @@
 import { useEffect } from "react";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useCompaniesStore from "@/utils/store/admin/control/companies/companiesStore";
-import useTechStore from "@/utils/store/user/techStore";
+import useUserStore from "@/utils/store/user/userStore";
 
 const Companies = () => {
-  const { tech } = useTechStore();
+  const { user } = useUserStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
   const { companies, initializeCompanies } = useCompaniesStore();
 
   useEffect(() => {
     initializeCompanies();
-  }, [tech]);
+  }, [user]);
 
   return (
     <div

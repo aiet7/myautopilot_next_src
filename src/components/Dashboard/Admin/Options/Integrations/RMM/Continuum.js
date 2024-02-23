@@ -2,14 +2,12 @@
 
 import useIntegrationsStore from "@/utils/store/admin/control/integrations/integrationsStore";
 import useUiStore from "@/utils/store/ui/uiStore";
-import useUserStore from "@/utils/store/user/userStore";
 import Image from "next/image";
-import useTechStore from "@/utils/store/user/techStore";
-
+import useUserStore from "@/utils/store/user/userStore";
 import Link from "next/link";
 
 const Continuum = () => {
-  const { tech } = useTechStore();
+  const { user } = useUserStore();
 
   const { handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
@@ -42,7 +40,7 @@ const Continuum = () => {
               </div>
               <div className="flex flex-col">
                 <Link
-                  href={`/${tech?.mspCustomDomain}/dashboard/${tech?.id}/admin/integrations`}
+                  href={`/${user?.mspCustomDomain}/dashboard/${user?.id}/admin/integrations`}
                 >
                   <button
                     onClick={() => handleIntegrationsCard("cards")}

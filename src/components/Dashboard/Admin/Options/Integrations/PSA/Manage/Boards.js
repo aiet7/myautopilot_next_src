@@ -1,12 +1,12 @@
 "use client";
 
 import useManageStore from "@/utils/store/admin/control/integrations/PSA/manageStore";
-import useTechStore from "@/utils/store/user/techStore";
+import useUserStore from "@/utils/store/user/userStore";
 import { FaClipboard, FaSpinner } from "react-icons/fa";
 import { AiOutlinePlus } from "react-icons/ai";
 
 const Board = () => {
-  const { tech } = useTechStore();
+  const { user } = useUserStore();
 
   const {
     connectwiseOpenStatuses,
@@ -39,6 +39,7 @@ const Board = () => {
 
   const boardData = customBoard ? customBoardMerge : connectwiseMerge;
 
+
   return (
     <div className="flex flex-col gap-4 h-full overflow-hidden">
       <div className="flex flex-col gap-8 pb-2 justify-between items-start text-xl font-semibold italic text-black/30 md:flex-row">
@@ -63,7 +64,7 @@ const Board = () => {
         <div className="flex flex-wrap gap-2 items-center text-xs ">
           <select
             onChange={(e) =>
-              handleGetBoardDetails(e.target.value, tech?.mspCustomDomain)
+              handleGetBoardDetails(e.target.value, user?.mspCustomDomain)
             }
             className="border rounded-lg shadow-lg p-2 cursor-pointer text-black"
           >
@@ -253,7 +254,7 @@ const Board = () => {
           {!customBoard && (
             <button
               onClick={() =>
-                handleSaveCustomBoardMetadata(tech?.mspCustomDomain)
+                handleSaveCustomBoardMetadata(user?.mspCustomDomain)
               }
               className="hover:bg-blue-500 bg-blue-800 text-white px-6 py-2 rounded-lg "
             >
@@ -608,8 +609,8 @@ const Board = () => {
           <button
             onClick={() =>
               customBoard
-                ? handleSaveCustomBoard(tech?.mspCustomDomain)
-                : handleSaveBoard(tech?.mspCustomDomain)
+                ? handleSaveCustomBoard(user?.mspCustomDomain)
+                : handleSaveBoard(user?.mspCustomDomain)
             }
             className="hover:bg-blue-500 bg-blue-800 text-white px-6 py-2 rounded-lg "
           >

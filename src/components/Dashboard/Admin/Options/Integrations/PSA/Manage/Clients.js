@@ -1,12 +1,12 @@
 "use client";
 
 import useManageStore from "@/utils/store/admin/control/integrations/PSA/manageStore";
-import useTechStore from "@/utils/store/user/techStore";
+import useUserStore from "@/utils/store/user/userStore";
 import { useEffect } from "react";
 import { FaSpinner } from "react-icons/fa";
 
 const Clients = () => {
-  const { tech } = useTechStore();
+  const { user } = useUserStore();
 
   const {
     activePage,
@@ -44,7 +44,7 @@ const Clients = () => {
 
   useEffect(() => {
     initializeManageClients();
-  }, [tech]);
+  }, [user]);
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
@@ -65,7 +65,7 @@ const Clients = () => {
                 <div className="flex items-center justify-start gap-2">
                   <button
                     onClick={() =>
-                      handleAddManageClients(tech?.mspCustomDomain)
+                      handleAddManageClients(user?.mspCustomDomain)
                     }
                     className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
                   >

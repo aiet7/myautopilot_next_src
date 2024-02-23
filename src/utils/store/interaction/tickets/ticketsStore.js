@@ -1,6 +1,6 @@
 import { handleGetMSPTickets } from "@/utils/api/serverProps";
 import { create } from "zustand";
-import useTechStore from "../../user/techStore";
+import useUserStore from "../../user/userStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
@@ -15,12 +15,12 @@ const useTicketsStore = create((set, get) => ({
   activeTicketMode: "Default",
 
   initializeMSPTickets: async () => {
-    const techStore = useTechStore.getState();
+    const userStore = useUserStore.getState();
 
-    if (techStore.tech) {
+    if (userStore.user) {
       set({ tickets: null });
       const newTickets = await handleGetMSPTickets(
-        techStore.tech.mspCustomDomain
+        userStore.user.mspCustomDomain
       );
       set({ tickets: newTickets });
     }
@@ -62,8 +62,8 @@ const useTicketsStore = create((set, get) => ({
   },
 
   handleGetTicketStatus: async (ticketId) => {
-    const techStore = useTechStore.getState();
-    const encodedDomain = encodeURIComponent(techStore.tech.mspCustomDomain);
+    const userStore = useUserStore.getState();
+    const encodedDomain = encodeURIComponent(userStore.user.mspCustomDomain);
     try {
       set((state) => ({
         ...state,
@@ -92,8 +92,8 @@ const useTicketsStore = create((set, get) => ({
   },
 
   handleGetTicketNotes: async (ticketId) => {
-    const techStore = useTechStore.getState();
-    const encodedDomain = encodeURIComponent(techStore.tech.mspCustomDomain);
+    const userStore = useUserStore.getState();
+    const encodedDomain = encodeURIComponent(userStore.user.mspCustomDomain);
     try {
       const ticketNotesResponse = await fetch(
         `${connectWiseServiceUrl}/getConnectWiseTicketNotesById?mspCustomDomain=${encodedDomain}&ticketId=${ticketId}`

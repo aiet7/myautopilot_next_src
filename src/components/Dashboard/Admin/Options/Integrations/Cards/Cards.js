@@ -5,10 +5,10 @@ import useIntegrationsStore from "@/utils/store/admin/control/integrations/integ
 import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import useTechStore from "@/utils/store/user/techStore";
+import useUserStore from "@/utils/store/user/userStore";
 
 const Cards = () => {
-  const { tech } = useTechStore();
+  const { user } = useUserStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
 
   const {
@@ -75,8 +75,8 @@ const Cards = () => {
               return (
                 <Link
                   key={view}
-                  href={`/${tech?.mspCustomDomain}/dashboard/${
-                    tech?.id
+                  href={`/${user?.mspCustomDomain}/dashboard/${
+                    user?.id
                   }/admin/integrations/${view.toLowerCase()}`}
                 >
                   <div

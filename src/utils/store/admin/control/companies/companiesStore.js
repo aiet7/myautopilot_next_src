@@ -1,17 +1,17 @@
 import { handleGetManageDBClients } from "@/utils/api/serverProps";
-import useTechStore from "@/utils/store/user/techStore";
+import useUserStore from "@/utils/store/user/userStore";
 import { create } from "zustand";
 
 const useCompaniesStore = create((set, get) => ({
   companies: null,
 
   initializeCompanies: async () => {
-    const techStore = useTechStore.getState();
+    const userStore = useUserStore.getState();
     set({ companies: null });
 
-    if (techStore.tech) {
+    if (userStore.user) {
       const newCompanies = await handleGetManageDBClients(
-        techStore.tech.mspCustomDomain
+        userStore.user.mspCustomDomain
       );
       set({ companies: newCompanies });
     }

@@ -1,289 +1,107 @@
+import { handleGetTech, handleGetClient } from "@/utils/api/serverProps";
 import { create } from "zustand";
+import useMspStore from "../auth/msp/mspStore";
 import useLocalStorageStore from "../localstorage/localStorageStore";
 import useCookiesStore from "../cookies/cookiesStore";
-import { googleLogout } from "@react-oauth/google";
-import { validateField } from "../../../utils/formValidations";
-import { handleGetUser } from "@/utils/api/serverProps";
-import useAuthStore from "../auth/authStore";
 import useTicketConversationsStore from "../interaction/conversations/ticketConversationsStore";
 import useEngineerStore from "../assistant/sections/iternal/engineer/engineerStore";
+import useTicketsStore from "../interaction/tickets/ticketsStore";
+import useConversationStore from "../interaction/conversations/conversationsStore";
+import useDocConversationsStore from "../interaction/conversations/docConversationsStore";
+import useFormsStore from "../interaction/forms/formsStore";
+import useManageStore from "../admin/control/integrations/PSA/manageStore";
+import useIntegrationsStore from "../admin/control/integrations/integrationsStore";
+import useEmployeesStore from "../admin/control/employees/employeesStore";
+import useCompaniesStore from "../admin/control/companies/companiesStore";
+import useRolesStore from "../admin/control/roles/rolesStore";
 
 const useUserStore = create((set, get) => ({
+  // tech: null,
+  // client: null,
+
   user: null,
-  addressFields: ["street", "city", "zipcode", "state"],
-  editing: {},
-  deleting: false,
-  confirmationEmail: "",
-  errorMessage: "",
-  userInputs: {},
-  userPasswords: {
-    oldPassword: "",
-    newPassword: "",
-  },
-  passwordError: false,
 
-  setDeleting: (value) => set({ deleting: value }),
-  setConfirmationEmail: (value) => set({ confirmationEmail: value }),
-  setPasswordError: (value) => set({ passwordError: value }),
-  setUserPasswords: (field, value) => {
-    const { userPasswords } = get();
-    const updatedPasswords = userPasswords;
-    updatedPasswords[field] = value;
-    set({ userPasswords: updatedPasswords });
-  },
+  // initializeTech: async (msp, id) => {
+  //   const { getUser, saveUser } = useLocalStorageStore.getState();
 
-  initializeUser: async (id) => {
+  //   const storedTech = getUser();
+
+  //   if (storedTech && storedTech.id === id) {
+  //     set({ tech: storedTech });
+  //   } else if (msp && id) {
+  //     const initialTech = await handleGetTech(msp, id);
+  //     set({
+  //       tech: initialTech,
+  //     });
+  //     saveUser(initialTech);
+  //   }
+  // },
+
+  initializeUser: async (msp, id) => {
+    const { userType } = useMspStore.getState();
     const { getUser, saveUser } = useLocalStorageStore.getState();
+    const { initializeMSPTickets } = useTicketsStore.getState();
+
+    let userData = null;
+
     const storedUser = getUser();
 
     if (storedUser && storedUser.id === id) {
-      set({ user: storedUser });
-    } else if (id) {
-      const initialUser = await handleGetUser(id);
-      set({
-        user: initialUser,
-        userInputs: {
-          ...initialUser,
-          companyAddress: {
-            ...initialUser.companyAddress,
-          },
-        },
-      });
-      saveUser(initialUser);
-    }
-  },
-
-  handleAddFavoriteToUser: (newFavorite) => {
-    set((state) => ({
-      user: {
-        ...state.user,
-        favorite: [...(state.user.favorite || []), newFavorite],
-      },
-    }));
-  },
-
-  handleRemoveFavoriteFromuser: (favoriteToRemove) => {
-    set((state) => ({
-      user: {
-        ...state.user,
-        favorite: (state.user.favorite || []).filter(
-          (fav) => fav !== favoriteToRemove
-        ),
-      },
-    }));
-  },
-
-  handleStartEdit: (field) => {
-    set((state) => ({
-      editing: {
-        ...state.editing,
-        [field]: true,
-      },
-    }));
-  },
-  handleCancelEdit: (field) => {
-    const { user, addressFields } = get();
-    if (addressFields.includes(field)) {
-      set((state) => ({
-        userInputs: {
-          ...state.userInputs,
-          companyAddress: {
-            ...state.userInputs.companyAddress,
-            [field]: user.companyAddress[field],
-          },
-        },
-        editing: {
-          ...state.editing,
-          [field]: false,
-        },
-      }));
-    } else {
-      set((state) => ({
-        userInputs: {
-          ...state.userInputs,
-          [field]: user[field],
-        },
-        editing: {
-          ...state.editing,
-          [field]: false,
-        },
-      }));
-    }
-  },
-
-  handlePasswordChange: (field, value) => {
-    set((state) => ({
-      userPasswords: {
-        ...state.userPasswords,
-        [field]: value,
-      },
-    }));
-  },
-
-  handleResetPassword: async () => {
-    const { editing, userInputs, userPasswords } = get();
-
-    try {
-      const response = await fetch(
-        "https://etech7-wf-etech7-db-service.azuremicroservices.io/resetPassword",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            emailId: userInputs.email,
-            password: userPasswords.oldPassword,
-            newPassword: userPasswords.newPassword,
-          }),
-        }
-      );
-      if (!response.ok) {
-        set({ passwordError: true });
-      } else {
-        console.log("Password Changed!");
-        set({
-          passwordError: false,
-          userPasswords: { oldPassword: "", newPassword: "" },
-          editing: { ...editing, password: false },
-        });
+      userData = storedUser;
+    } else if (msp && id) {
+      const fetchUser = userType === "tech" ? handleGetTech : handleGetClient;
+      const fetchedUser = await fetchUser(msp, id);
+      if (fetchedUser) {
+        saveUser(fetchedUser);
+        userData = fetchedUser;
       }
-    } catch (e) {
-      console.log(e);
-    }
-  },
-
-  handleEditOnChange: (field, value) => {
-    const { addressFields } = get();
-
-    if (addressFields.includes(field)) {
-      set((state) => ({
-        userInputs: {
-          ...state.userInputs,
-          companyAddress: {
-            ...state.userInputs.companyAddress,
-            [field]: value,
-          },
-        },
-      }));
-    } else {
-      set((state) => ({
-        userInputs: {
-          ...state.userInputs,
-          [field]: value,
-        },
-      }));
-    }
-  },
-
-  handleSaveChanges: async (field, input) => {
-    const { userInputs, addressFields } = get();
-
-    const validationError = validateField(field, input);
-    if (validationError) {
-      set({ errorMessage: validationError });
-      return;
     }
 
-    let updatedData = {
-      email: userInputs.email,
-    };
-
-    if (addressFields.includes(field)) {
-      updatedData.companyAddress = {
-        ...userInputs.companyAddress,
-        [field]: input,
-      };
-    } else {
-      updatedData[field] = input;
-    }
-
-    try {
-      const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/editClientUserProfile`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedData),
-        }
-      );
-
-      if (!response.ok) {
-        console.log("Error Saving");
-      } else {
-        set((state) => ({
-          user: {
-            ...state.user,
-            ...updatedData,
-          },
-          editing: {
-            ...state.editing,
-            [field]: false,
-          },
-          userInputs: {
-            ...state.userInputs,
-            ...(addressFields.includes(field)
-              ? { companyAddress: updatedData.companyAddress }
-              : { [field]: updatedData[field] }),
-          },
-        }));
+    if (userData) {
+      set({ user: userData });
+      if (userType === "tech") {
+        await initializeMSPTickets();
       }
-    } catch (e) {
-      console.log(e);
+    } else {
+      console.error("Failed to initialize tech information.");
     }
   },
 
-  handleDeleteUser: async (navigate) => {
-    const { setShowLoginForm, setShowSignupForm } = useAuthStore.getState();
+  handleLogout: async (navigator) => {
+    const { clearMSPCredentials } = useMspStore.getState();
     const { clearStorage } = useLocalStorageStore.getState();
     const { clearCookies } = useCookiesStore.getState();
-    const { user, confirmationEmail } = get();
-    if (confirmationEmail !== user.businessEmail) {
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `https://etech7-wf-etech7-db-service.azuremicroservices.io/deleteUser?id=${id}`
-      );
-      if (response.ok) {
-        clearStorage();
-
-        clearCookies();
-
-        googleLogout();
-
-        navigate("/auth/login");
-        setShowLoginForm(false);
-        setShowSignupForm(false);
-      } else {
-        console.log("Error Deleting");
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  },
-
-  handleLogout: async () => {
-    const { setShowLoginForm, setShowSignupForm } = useAuthStore.getState();
-    const { clearStorage } = useLocalStorageStore.getState();
-    const { clearCookies } = useCookiesStore.getState();
-    const { clearCredentials } = useAuthStore.getState();
-    const { clearInteraction } = useTicketConversationsStore.getState();
+    const { clearTicketConversation } = useTicketConversationsStore.getState();
     const { clearEngineer } = useEngineerStore.getState();
+    const { clearTickets } = useTicketsStore.getState();
+    const { clearConversation } = useConversationStore.getState();
+    const { clearDocConversation } = useDocConversationsStore.getState();
+    const { clearTicketForms } = useFormsStore.getState();
+    const { clearManage } = useManageStore.getState();
+    const { clearIntegration } = useIntegrationsStore.getState();
+    const { clearEmployees } = useEmployeesStore.getState();
+    const { clearCompanies } = useCompaniesStore.getState();
+    const { clearRoles } = useRolesStore.getState();
 
-    set({ user: null});
+    await clearTickets();
 
+    set({ user: null });
+
+    clearMSPCredentials();
     clearStorage();
     clearCookies();
-    clearCredentials();
-    clearInteraction();
+    clearTicketConversation();
+    clearDocConversation();
+    clearConversation();
     clearEngineer();
-    // navigate("/auth/login");
-    setShowLoginForm(false);
-    setShowSignupForm(false);
+    clearTicketForms();
+    clearManage();
+    clearIntegration();
+    clearEmployees();
+    clearCompanies();
+    clearRoles();
+
+    navigator("/auth/login");
   },
 }));
 

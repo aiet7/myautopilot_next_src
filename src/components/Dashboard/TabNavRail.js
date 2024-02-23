@@ -19,14 +19,14 @@ import useUiStore from "@/utils/store/ui/uiStore.js";
 
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import Link from "next/link";
-import useTechStore from "@/utils/store/user/techStore";
+import useUserStore from "@/utils/store/user/userStore";
 import useAdminStore from "@/utils/store/admin/adminStore";
 import { useRouter } from "next/router";
 
 const TabNavRail = ({}) => {
   const router = useRouter();
 
-  const { tech, handleLogout } = useTechStore();
+  const { user, handleLogout } = useUserStore();
 
   const { activeUIAssistantTab } = useAssistantStore();
 
@@ -62,7 +62,7 @@ const TabNavRail = ({}) => {
           />
         </>
       )}
-      <Link href={`/${tech?.mspCustomDomain}/dashboard/${tech?.id}`}>
+      <Link href={`/${user?.mspCustomDomain}/dashboard/${user?.id}`}>
         <div
           onClick={() => {
             handleTabChange("iTAgent");
@@ -78,9 +78,9 @@ const TabNavRail = ({}) => {
           />
         </div>
       </Link>
-      {tech?.roleId === "653ff2126a55f75b62a1b558" && (
+      {user?.roleId === "653ff2126a55f75b62a1b558" && (
         <Link
-          href={`/${tech?.mspCustomDomain}/dashboard/${tech?.id}/admin/employees`}
+          href={`/${user?.mspCustomDomain}/dashboard/${user?.id}/admin/employees`}
         >
           <div
             onClick={() => {
@@ -105,7 +105,7 @@ const TabNavRail = ({}) => {
         className="flex flex-col items-center cursor-pointer  lg:absolute lg:bottom-0 lg:py-3"
       >
         <div className="w-7 h-7 bg-blue-800 text-sm flex justify-center items-center text-white">
-          {tech?.firstName?.[0]}
+          {user?.firstName?.[0]}
         </div>
         {openSettings && (
           <div className="dark:bg-black dark:border-white/40 dark:border rounded-lg bg-white border border-black/10 absolute z-[99] bottom-[52px] right-0 w-full lg:bottom-0 lg:left-[37px] lg:w-[351px]">
@@ -136,8 +136,8 @@ const TabNavRail = ({}) => {
                 <span>Log out</span>
               </div>
               <div className="dark:border-white/40 font-bold border-t border-black/10 w-full text-lg flex flex-col items-start gap-3 px-6 py-3">
-                <span>{tech?.firstName + " " + tech?.lastName}</span>
-                <span>{tech?.mspCustomDomain}</span>
+                <span>{user?.firstName + " " + user?.lastName}</span>
+                <span>{user?.mspCustomDomain}</span>
               </div>
             </div>
           </div>

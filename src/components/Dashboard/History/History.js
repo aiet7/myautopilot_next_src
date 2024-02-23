@@ -11,10 +11,10 @@ import { IoChatboxOutline } from "react-icons/io5";
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
-import useTechStore from "@/utils/store/user/techStore";
+import useUserStore from "@/utils/store/user/userStore";
 
 const History = ({}) => {
-  const { tech } = useTechStore();
+  const { user } = useUserStore();
   const {
     editing,
     deleting,
@@ -42,7 +42,7 @@ const History = ({}) => {
     if (activeUIAssistantTab === "Engineer") {
       initializeConversations();
     }
-  }, [tech, activeUIAssistantTab]);
+  }, [user, activeUIAssistantTab]);
 
   return (
     <div

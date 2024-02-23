@@ -3,10 +3,10 @@
 import useRolesStore from "@/utils/store/admin/control/roles/rolesStore";
 import { AiOutlineClose } from "react-icons/ai";
 import { convertDate } from "@/utils/conversions";
-import useTechStore from "@/utils/store/user/techStore";
+import useUserStore from "@/utils/store/user/userStore";
 
 const EditRole = () => {
-  const { tech } = useTechStore();
+  const { user } = useUserStore();
   const {
     roleInputs,
     successMessage,
@@ -91,7 +91,7 @@ const EditRole = () => {
                         )}
                         <button
                           onClick={() => {
-                            handleSaveEditedRole(id, tech?.mspCustomDomain);
+                            handleSaveEditedRole(id, user?.mspCustomDomain);
                           }}
                           className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg py-2 px-20 font-bold"
                         >

@@ -7,6 +7,7 @@ const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 const useMspStore = create((set, get) => ({
   mspDomains: null,
   technician: null,
+  client: null,
   currentStep: 1,
   signupInputs: {
     mspCustomDomain: "",
@@ -31,10 +32,18 @@ const useMspStore = create((set, get) => ({
       password: "",
       login2FA: "",
     },
+    clientInfo: {
+      email: "",
+      password: "",
+      login2FA: "",
+    },
   },
+
+  userType: null,
 
   errorMessage: {
     techSignup: false,
+
     emptyFields: false,
     emailCheck: false,
   },
@@ -235,6 +244,54 @@ const useMspStore = create((set, get) => ({
       if (response.ok) {
         const mspList = await response.json();
         set({
+          userType: "tech",
+          mspDomains: mspList,
+          errorMessage: {
+            ...errorMessage,
+            emptyFields: false,
+            emailCheck: false,
+          },
+        });
+      } else {
+        set({
+          errorMessage: {
+            ...errorMessage,
+            emailCheck: true,
+            emptyFields: false,
+          },
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleClientCheck: async () => {
+    const { loginInputs, errorMessage } = get();
+    const { clientInfo } = loginInputs;
+
+    if (clientInfo.email === "") {
+      set({
+        errorMessage: { ...errorMessage, emptyFields: true, emailCheck: false },
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch(`${dbServiceUrl}/clientUsers/signin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          emailId: clientInfo.email,
+        }),
+      });
+
+      if (response.ok) {
+        const mspList = await response.json();
+        set({
+          userType: "client",
           mspDomains: mspList,
           errorMessage: {
             ...errorMessage,
@@ -282,6 +339,56 @@ const useMspStore = create((set, get) => ({
 
       if (response.ok) {
         set({
+          userType: "tech",
+          current2FA: true,
+          errorMessage: {
+            ...errorMessage,
+            emailCheck: false,
+            emptyFields: false,
+          },
+        });
+      } else {
+        set({
+          current2FA: false,
+          errorMessage: {
+            ...errorMessage,
+            emailCheck: true,
+            emptyFields: false,
+          },
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleClientLogin: async (mspCustomDomain) => {
+    const { loginInputs, errorMessage } = get();
+    const { clientInfo } = loginInputs;
+    if (clientInfo.email === "" || clientInfo.password === "") {
+      set({
+        errorMessage: { ...errorMessage, emptyFields: true, emailCheck: false },
+      });
+      return;
+    }
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/${mspCustomDomain}/clientUsers/signin`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            emailId: clientInfo.email,
+            password: clientInfo.password,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        set({
+          userType: "client",
           current2FA: true,
           errorMessage: {
             ...errorMessage,
@@ -349,6 +456,51 @@ const useMspStore = create((set, get) => ({
     }
   },
 
+  handleClient2FALogin: async (navigator, mspCustomDomain) => {
+    const { loginInputs, errorMessage } = get();
+    const { clientInfo } = loginInputs;
+
+    if (clientInfo.login2FA === "") {
+      set({
+        errorMessage: { ...errorMessage, emptyFields: true, emailCheck: false },
+      });
+      return;
+    }
+
+    const encodedEmail = encodeURIComponent(clientInfo.email);
+    const encodedToken = encodeURIComponent(clientInfo.login2FA);
+
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/${mspCustomDomain}/clientUsers/validateResetToken?email=${encodedEmail}&token=${encodedToken}`
+      );
+
+      if (response.ok) {
+        const client = await response.json();
+        set({
+          errorMessage: {
+            ...errorMessage,
+            emailCheck: false,
+            emptyFields: false,
+          },
+        });
+        navigator(`/${client?.mspCustomDomain}/dashboard/${client?.id}`);
+        Cookie.set("session_token", client?.id, { expires: 7 });
+        Cookie.set("client_id", client?.id, { expires: 7 });
+      } else {
+        set({
+          errorMessage: {
+            ...errorMessage,
+            emailCheck: true,
+            emptyFields: false,
+          },
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
   clearMSPCredentials: () => {
     const { errorMessage } = get();
     set({
@@ -375,6 +527,11 @@ const useMspStore = create((set, get) => ({
       loginInputs: {
         mspCustomDomain: "",
         techInfo: {
+          email: "",
+          password: "",
+          login2FA: "",
+        },
+        clientInfo: {
           email: "",
           password: "",
           login2FA: "",

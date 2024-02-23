@@ -11,7 +11,7 @@ const ClientLoginPage = () => {
     mspDomains,
     errorMessage,
     setLoginInputs,
-    handleTechnicianCheck,
+    handleClientCheck,
     clearMSPCredentials,
   } = useMspStore();
 
@@ -74,11 +74,21 @@ const ClientLoginPage = () => {
               ) : (
                 <>
                   <input
+                    onChange={(e) =>
+                      setLoginInputs("clientInfo", "email", e.target.value)
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleClientCheck();
+                      }
+                    }}
                     type="email"
                     placeholder="Enter your email"
                     className="w-full p-2 border border-gray-300 bg-white text-black"
                   />
                   <button
+                    onClick={() => handleClientCheck()}
                     type="button"
                     className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4"
                   >
@@ -87,12 +97,12 @@ const ClientLoginPage = () => {
                 </>
               )}
               <div className="flex flex-col gap-1">
-                <Link href="/auth/login">
+                <Link onClick={() => clearMSPCredentials()} href="/auth/login">
                   <span className="text-sm text-blue-800 font-semibold">
                     Back to login in
                   </span>
                 </Link>
-                <Link href="/auth/signup">
+                <Link onClick={() => clearMSPCredentials()} href="/auth/signup">
                   <span className="text-sm text-blue-800 font-semibold">
                     No Account? Sign up
                   </span>
