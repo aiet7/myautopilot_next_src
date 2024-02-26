@@ -10,7 +10,7 @@ import useAuthStore from "@/utils/store/auth/authStore";
 
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
-const MSPPage = ({}) => {
+const MSPPage = ({ }) => {
   const { height, setHeight } = useUiStore();
   const { mspSubDomain, initializeSubDomain } = useInitializeAppStore();
 
@@ -23,7 +23,7 @@ const MSPPage = ({}) => {
     handleClient2FALogin,
     handleTechnicianLogin,
     handleTechnician2FALogin,
-    clearMSPCredentials,
+    clearMSPCredentials, initializeUserType
   } = useMspStore();
 
   const { showPassword, setShowPassword, handleShowForgotPassword } =
@@ -53,7 +53,9 @@ const MSPPage = ({}) => {
     }
   }, []);
 
-  console.log(userType);
+  useEffect(() => {
+    initializeUserType()
+  }, [])
 
   return (
     <>

@@ -76,6 +76,7 @@ const useLocalStorageStore = create((set, get) => ({
 
   clearStorage: () => {
     localStorage.removeItem("lastActiveDirectory");
+    localStorage.removeItem("lastActiveUserType")
     localStorage.removeItem("lastUI");
     localStorage.removeItem("lastConvoIndex");
   },

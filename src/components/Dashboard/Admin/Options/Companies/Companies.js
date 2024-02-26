@@ -4,11 +4,12 @@ import { useEffect } from "react";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useCompaniesStore from "@/utils/store/admin/control/companies/companiesStore";
 import useUserStore from "@/utils/store/user/userStore";
+import ViewWorkers from "./ViewDetails";
 
 const Companies = () => {
   const { user } = useUserStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
-  const { companies, initializeCompanies } = useCompaniesStore();
+  const { companies, viewDetails, handleViewDetails, initializeCompanies } = useCompaniesStore();
 
   useEffect(() => {
     initializeCompanies();
@@ -21,10 +22,10 @@ const Companies = () => {
           openAdmin && handleHistoryMenu(false);
         }
       }}
-      className={`relative flex flex-col h-full w-full ${
-        openAdmin && "lg:opacity-100 opacity-5 xl:ml-[350px]"
-      }  dark:bg-black transition-all duration-300 ease bg-white `}
+      className={`relative flex flex-col h-full w-full ${openAdmin && "lg:opacity-100 opacity-5 xl:ml-[350px]"
+        }  dark:bg-black transition-all duration-300 ease bg-white `}
     >
+      {viewDetails && <ViewWorkers />}
       <div className="dark:border-b-white/20 border-b p-4">
         <h1 className="text-2xl">Companies</h1>
       </div>
@@ -59,12 +60,7 @@ const Companies = () => {
                           <th className="p-2 border-t border-b border-r">
                             Phone Number
                           </th>
-                          <th className="p-2 border-t border-b border-r">
-                            Type
-                          </th>
-                          <th className="p-2 border-t border-b border-r">
-                            Status
-                          </th>
+
                         </tr>
                       </thead>
                       <tbody>
@@ -79,11 +75,10 @@ const Companies = () => {
                             zip,
                             defaultContact,
                             phoneNumber,
-                            status,
-                            types,
+
                           } = company;
                           return (
-                            <tr key={id}>
+                            <tr  className="dark:hover:bg-blue-950 hover:bg-blue-50 cursor-pointer" key={id} onClick={() => handleViewDetails(user?.mspCustomDomain, id)}>
                               <td className="p-2 truncate border-l  border-r border-b">
                                 {name}
                               </td>
@@ -105,18 +100,7 @@ const Companies = () => {
                               <td className="p-2 truncate border-r border-b">
                                 {phoneNumber}
                               </td>
-                              <td className="p-2 truncate border-r border-b">
-                                <div className="flex flex-col gap-1">
-                                  {types?.map((type) => {
-                                    const { id, name } = type;
-                                    return <p key={id}>{name}</p>;
-                                  })}
-                                </div>
-                              </td>
 
-                              <td className="p-2 truncate border-r border-b">
-                                {status?.name}
-                              </td>
                             </tr>
                           );
                         })}

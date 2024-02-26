@@ -5,6 +5,7 @@ const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 
 const useMspStore = create((set, get) => ({
+  userType: null,
   mspDomains: null,
   technician: null,
   client: null,
@@ -39,7 +40,6 @@ const useMspStore = create((set, get) => ({
     },
   },
 
-  userType: null,
 
   errorMessage: {
     techSignup: false,
@@ -51,6 +51,13 @@ const useMspStore = create((set, get) => ({
 
   showPassword: false,
   activeFormTab: "Technician",
+
+  initializeUserType: async () => {
+    const lastActiveUserType = localStorage.getItem("lastActiveUserType")
+    set({
+      userType: lastActiveUserType
+    })
+  },
 
   setFormChange: (tab) => {
     set({ activeFormTab: tab });
@@ -64,33 +71,44 @@ const useMspStore = create((set, get) => ({
     set((prevState) => ({
       signupInputs: section
         ? {
-            ...prevState.signupInputs,
-            [section]: {
-              ...prevState.signupInputs[section],
-              [field]: value,
-            },
-          }
-        : {
-            ...prevState.signupInputs,
+          ...prevState.signupInputs,
+          [section]: {
+            ...prevState.signupInputs[section],
             [field]: value,
           },
+        }
+        : {
+          ...prevState.signupInputs,
+          [field]: value,
+        },
     })),
 
   setLoginInputs: (section, field, value) =>
     set((prevState) => ({
       loginInputs: section
         ? {
-            ...prevState.loginInputs,
-            [section]: {
-              ...prevState.loginInputs[section],
-              [field]: value,
-            },
-          }
-        : {
-            ...prevState.loginInputs,
+          ...prevState.loginInputs,
+          [section]: {
+            ...prevState.loginInputs[section],
             [field]: value,
           },
+        }
+        : {
+          ...prevState.loginInputs,
+          [field]: value,
+        },
     })),
+
+  handleNavigateTechnicianPage: (navigator) => {
+    navigator("/auth/login/tech")
+    localStorage.setItem("lastActiveUserType", "tech")
+  },
+
+  handleNavigateClientPage: (navigator) => {
+    navigator("/auth/login/client")
+    localStorage.setItem("lastActiveUserType", "client")
+
+  },
 
   handleSignupTechnician: async () => {
     const { signupInputs } = get();
@@ -244,7 +262,6 @@ const useMspStore = create((set, get) => ({
       if (response.ok) {
         const mspList = await response.json();
         set({
-          userType: "tech",
           mspDomains: mspList,
           errorMessage: {
             ...errorMessage,
@@ -291,7 +308,6 @@ const useMspStore = create((set, get) => ({
       if (response.ok) {
         const mspList = await response.json();
         set({
-          userType: "client",
           mspDomains: mspList,
           errorMessage: {
             ...errorMessage,
@@ -314,6 +330,7 @@ const useMspStore = create((set, get) => ({
   },
 
   handleTechnicianLogin: async (mspCustomDomain) => {
+
     const { loginInputs, errorMessage } = get();
     const { techInfo } = loginInputs;
     if (techInfo.email === "" || techInfo.password === "") {
@@ -339,7 +356,6 @@ const useMspStore = create((set, get) => ({
 
       if (response.ok) {
         set({
-          userType: "tech",
           current2FA: true,
           errorMessage: {
             ...errorMessage,
@@ -388,7 +404,6 @@ const useMspStore = create((set, get) => ({
 
       if (response.ok) {
         set({
-          userType: "client",
           current2FA: true,
           errorMessage: {
             ...errorMessage,
@@ -396,6 +411,7 @@ const useMspStore = create((set, get) => ({
             emptyFields: false,
           },
         });
+
       } else {
         set({
           current2FA: false,

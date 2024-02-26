@@ -5,15 +5,24 @@ import useUiStore from "@/utils/store/ui/uiStore";
 import useUserStore from "@/utils/store/user/userStore";
 import { useEffect } from "react";
 
-const Employees = ({}) => {
+const Employees = ({ }) => {
   const { user } = useUserStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
-  const { employees, initializeEmployees } = useEmployeesStore();
+  const {
+    successMessage,
+    errorMessage,
+    employees,
+    employeesTierOptions,
+    employeesRoleOptions,
+    setSelectedEmployee,
+    handleSaveEmployee,
+    initializeEmployees,
+  } = useEmployeesStore();
+
 
   useEffect(() => {
     initializeEmployees();
   }, [user]);
-
 
   return (
     <div
@@ -22,9 +31,8 @@ const Employees = ({}) => {
           openAdmin && handleHistoryMenu(false);
         }
       }}
-      className={`relative flex flex-col h-full w-full ${
-        openAdmin && "lg:opacity-100 opacity-5 xl:ml-[350px]"
-      }  dark:bg-black transition-all duration-300 ease bg-white`}
+      className={`relative flex flex-col h-full w-full ${openAdmin && "lg:opacity-100 opacity-5 xl:ml-[350px]"
+        }  dark:bg-black transition-all duration-300 ease bg-white`}
     >
       <div className="dark:border-b-white/20 border-b p-4">
         <h1 className="text-2xl">Employees</h1>
@@ -39,34 +47,41 @@ const Employees = ({}) => {
                     <button className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1">
                       Add Employee
                     </button>
+                    {successMessage && (
+                      <p className="font-semibold text-emerald-500">
+                        Successfully Updated Employee!
+                      </p>
+                    )}
+                    {errorMessage && (
+                      <p className="font-bold text-red-500">Error Updating Employee!</p>
+                    )}
                   </div>
                   <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
                     <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
                       <thead className="dark:text-white dark:bg-gray-700 sticky top-0  text-lg text-black/60 bg-[#F5F8FA]">
                         <tr className="">
+                          <th className="p-2 border-l border-t border-b  ">
+
+                          </th>
                           <th className="p-2 border-l border-t border-b border-r ">
                             Name
                           </th>
                           <th className="p-2 border-t border-b border-r ">
+                            Email Address
+                          </th>
+                          <th className="p-2 border-t border-b border-r ">
                             Technician ID
                           </th>
-                          <th className="p-2 border-t border-b border-r">
-                            Identifier
-                          </th>
+
                           <th className="p-2 border-t border-b border-r">
                             Phone Number
                           </th>
-                          <th className="p-2 border-t border-b border-r">
-                            Office Number
-                          </th>
-                          <th className="p-2 border-t border-b border-r">
-                            Primary Email
-                          </th>
-                          <th className="p-2 border-t border-b border-r">
-                            Office Email
-                          </th>
+
                           <th className="p-2 border-t border-b border-r">
                             Tier
+                          </th>
+                          <th className="p-2 border-t border-b border-r">
+                            Roles
                           </th>
                         </tr>
                       </thead>
@@ -74,41 +89,57 @@ const Employees = ({}) => {
                         {employees?.map((employee) => {
                           const {
                             id,
+                            email,
                             firstName,
                             lastName,
-                            identifier,
-                            mobilePhone,
-                            connectWiseMembersId,
-                            officeEmail,
-                            officePhone,
-                            primaryEmail,
-                            tier,
+                            phoneNumber,
+                            connectWiseTechnicanId,
+                            tierLevel,
+                            roleId
                           } = employee;
                           return (
                             <tr key={id}>
+                              <td className="p-2 truncate border-l  border-b">
+                                <button onClick={() => handleSaveEmployee(user?.mspCustomDomain, id)} className="hover:underline text-blue-500">Save</button>
+                              </td>
                               <td className="p-2 truncate border-l  border-r border-b">
                                 {firstName + " " + lastName}
                               </td>
                               <td className="p-2 truncate border-r border-b">
-                                {connectWiseMembersId}
+                                {email}
                               </td>
                               <td className="p-2 truncate border-r border-b">
-                                {identifier}
+                                {connectWiseTechnicanId}
+                              </td>
+
+                              <td className="p-2 truncate border-r border-b">
+                                {phoneNumber}
+                              </td>
+
+                              <td className="p-2 truncate border-r border-b">
+                                <div className="flex flex-col">
+                                  <select value={tierLevel} onChange={(e) => setSelectedEmployee(id, "tierLevel", e.target.value)}>
+                                    {employeesTierOptions.map((tier) => (
+                                      <option key={tier} value={tier}>
+                                        {tier}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
                               </td>
                               <td className="p-2 truncate border-r border-b">
-                                {mobilePhone}
-                              </td>
-                              <td className="p-2 truncate border-r border-b">
-                                {officePhone}
-                              </td>
-                              <td className="p-2 truncate border-r border-b">
-                                {primaryEmail}
-                              </td>
-                              <td className="p-2 truncate border-r border-b">
-                                {officeEmail}
-                              </td>
-                              <td className="p-2 truncate border-r border-b">
-                                {tier}
+                                <div className="flex flex-col">
+                                  <select value={roleId} onChange={(e) => setSelectedEmployee(id, "roleId", e.target.value)}>
+                                    {employeesRoleOptions.map((role) => {
+                                      const { id, name } = role;
+                                      return (
+                                        <option key={id} value={id}>
+                                          {name}
+                                        </option>
+                                      );
+                                    })}
+                                  </select>
+                                </div>
                               </td>
                             </tr>
                           );

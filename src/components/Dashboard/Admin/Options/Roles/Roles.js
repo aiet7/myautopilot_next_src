@@ -8,7 +8,7 @@ import { convertDate } from "@/utils/conversions";
 import EditRole from "./EditRole";
 import CreateRole from "./CreateRole";
 
-const Roles = ({}) => {
+const Roles = ({ }) => {
   const { user } = useUserStore();
 
   const {
@@ -36,9 +36,8 @@ const Roles = ({}) => {
           openAdmin && handleHistoryMenu(false);
         }
       }}
-      className={`relative flex flex-col h-full w-full ${
-        openAdmin && "lg:opacity-100 opacity-5 xl:ml-[350px]"
-      }  dark:bg-black transition-all duration-300 ease bg-white`}
+      className={`relative flex flex-col h-full w-full ${openAdmin && "lg:opacity-100 opacity-5 xl:ml-[350px]"
+        }  dark:bg-black transition-all duration-300 ease bg-white`}
     >
       {activeRole && <EditRole />}
       {createRole && <CreateRole />}

@@ -13,7 +13,7 @@ const Branding = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Branding")
 );
 const Companies = dynamic(() =>
-  import("@/components/Dashboard/Admin/Options/Companies")
+  import("@/components/Dashboard/Admin/Options/Companies/Companies")
 );
 const Cards = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/Cards/Cards")

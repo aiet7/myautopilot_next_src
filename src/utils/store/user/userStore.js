@@ -16,33 +16,14 @@ import useCompaniesStore from "../admin/control/companies/companiesStore";
 import useRolesStore from "../admin/control/roles/rolesStore";
 
 const useUserStore = create((set, get) => ({
-  // tech: null,
-  // client: null,
-
   user: null,
 
-  // initializeTech: async (msp, id) => {
-  //   const { getUser, saveUser } = useLocalStorageStore.getState();
-
-  //   const storedTech = getUser();
-
-  //   if (storedTech && storedTech.id === id) {
-  //     set({ tech: storedTech });
-  //   } else if (msp && id) {
-  //     const initialTech = await handleGetTech(msp, id);
-  //     set({
-  //       tech: initialTech,
-  //     });
-  //     saveUser(initialTech);
-  //   }
-  // },
-
   initializeUser: async (msp, id) => {
-    const { userType } = useMspStore.getState();
     const { getUser, saveUser } = useLocalStorageStore.getState();
     const { initializeMSPTickets } = useTicketsStore.getState();
 
     let userData = null;
+    let userType = localStorage.getItem("lastActiveUserType")
 
     const storedUser = getUser();
 

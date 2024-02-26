@@ -38,7 +38,9 @@ export const handleGetManageTechnicians = async (msp) => {
 
 export const handleGetManageDBTechnicians = async (msp) => {
   const response = await fetch(
-    `${dbServiceUrl}/${encodeURIComponent(msp)}/connectWiseMembers`
+    `${dbServiceUrl}/${encodeURIComponent(
+      msp
+    )}/technicianUsers/activeTechnicians`
   );
   return response.json();
 };
@@ -54,7 +56,7 @@ export const handleGetManageClients = async (msp) => {
 
 export const handleGetManageDBClients = async (msp) => {
   const response = await fetch(
-    `${dbServiceUrl}/${encodeURIComponent(msp)}/connectWiseClients`
+    `${dbServiceUrl}/${encodeURIComponent(msp)}/clients/getAll`
   );
   return response.json();
 };
