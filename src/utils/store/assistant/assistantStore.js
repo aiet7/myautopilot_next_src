@@ -41,6 +41,15 @@ const useAssistantStore = create((set, get) => ({
 
     set({ activeAssistantTab: tab });
   },
+
+  clearAssistant: () => {
+    set({
+      promptAssistantInput: "",
+      activeUIAssistantTab: "Tickets",
+      activeAssistantTab: "Tickets",
+      showProgress: true,
+    });
+  },
 }));
 
 export default useAssistantStore;

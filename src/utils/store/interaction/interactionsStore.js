@@ -256,6 +256,20 @@ const useInteractionStore = create((set, get) => ({
       }
     }
   },
+
+  clearInteraction: () => {
+    set({
+      userInput: "",
+      isWaiting: false,
+      isListening: false,
+      isServerError: false,
+      isFeedbackSubmitted: false,
+      isAtBottom: false,
+      isOverflowed: false,
+      feedback: {},
+      textAreaheight: "24px",
+    });
+  },
 }));
 
 export default useInteractionStore;

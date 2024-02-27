@@ -60,7 +60,6 @@ const useMspStore = create((set, get) => ({
   successMessage: false,
 
   showPassword: false,
-  activeFormTab: "Technician",
 
   initializeUserType: async () => {
     const lastActiveUserType = localStorage.getItem("lastActiveUserType");
@@ -666,7 +665,6 @@ const useMspStore = create((set, get) => ({
 
   clearMSPCredentials: () => {
     set({
-      userType: null,
       mspDomains: null,
       technician: null,
       technicianList: null,
@@ -721,7 +719,6 @@ const useMspStore = create((set, get) => ({
       successMessage: false,
 
       showPassword: false,
-      activeFormTab: "Technician",
     });
   },
 }));

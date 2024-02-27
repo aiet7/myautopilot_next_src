@@ -15,6 +15,7 @@ const useDocConversationsStore = create((set, get) => ({
   tempTitle: "",
   tempPrompt: "",
   isDocUploading: false,
+
   setTempTitle: (title) => set((state) => ({ ...state, tempTitle: title })),
   setTempPrompt: (prompt) => set((state) => ({ ...state, tempPrompt: prompt })),
   setEditing: (isEditing) => set((state) => ({ ...state, editing: isEditing })),
@@ -290,6 +291,11 @@ const useDocConversationsStore = create((set, get) => ({
     set({
       documentConversationHistories: [],
       currentDocumentConversationIndex: 0,
+      editing: false,
+      deleting: false,
+      tempTitle: "",
+      tempPrompt: "",
+      isDocUploading: false,
     });
   },
 }));

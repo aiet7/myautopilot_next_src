@@ -24,38 +24,40 @@ const useCompaniesStore = create((set, get) => ({
   },
 
   setViewDetails: (view) => {
-    set({ viewDetails: view, companyDetails: null })
+    set({ viewDetails: view, companyDetails: null });
   },
 
   handleViewDetails: async (mspCustomDomain, companyId) => {
     try {
-      const response = await fetch(`${dbServiceUrl}/${mspCustomDomain}/clientUsersOfEachClient?clientId=${companyId}`)
+      const response = await fetch(
+        `${dbServiceUrl}/${mspCustomDomain}/clientUsersOfEachClient?clientId=${companyId}`
+      );
 
       if (response.status === 200) {
-        const details = await response.json()
-        console.log("Viewing Details!")
+        const details = await response.json();
+        console.log("Viewing Details!");
         set({
           companyDetails: details,
-          viewDetails: true
-        })
+          viewDetails: true,
+        });
       } else {
-        console.log("Viewing Details Failed!")
+        console.log("Viewing Details Failed!");
         set({
-          viewDetails: false
-        })
+          viewDetails: false,
+        });
       }
-
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
   },
 
   clearCompanies: () => {
-    set({ companies: null, viewDetails: null, viewDetails: false });
+    set({
+      companies: null,
+      companyDetails: null,
+      viewDetails: false,
+    });
   },
-
-
-
 }));
 
 export default useCompaniesStore;

@@ -74,13 +74,6 @@ const useLocalStorageStore = create((set, get) => ({
     );
   },
 
-  clearStorage: () => {
-    localStorage.removeItem("lastActiveDirectory");
-    localStorage.removeItem("lastActiveUserType")
-    localStorage.removeItem("lastUI");
-    localStorage.removeItem("lastConvoIndex");
-  },
-
   saveUser: (user) => {
     const { password, ...userWithoutPassword } = user;
     localStorage.setItem(
@@ -93,6 +86,13 @@ const useLocalStorageStore = create((set, get) => ({
   getUser: () => {
     const userString = localStorage.getItem("lastActiveDirectory");
     return userString ? JSON.parse(userString) : null;
+  },
+
+  clearStorage: () => {
+    localStorage.removeItem("lastActiveDirectory");
+    localStorage.removeItem("lastActiveUserType");
+    localStorage.removeItem("lastUI");
+    localStorage.removeItem("lastConvoIndex");
   },
 }));
 

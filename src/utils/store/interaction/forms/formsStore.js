@@ -424,6 +424,14 @@ const useFormsStore = create((set, get) => ({
 
   clearTicketForms: () => {
     set({
+      isFormOpen: {},
+      isServerError: false,
+      previousResponseBodyForForms: {},
+      formError: "",
+      loading: {
+        ticketForm: false,
+      },
+
       ticket: {
         currentTicketTitle: "",
         currentTicketCWCompanyId: 250,

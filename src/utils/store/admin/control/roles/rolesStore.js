@@ -320,6 +320,18 @@ const useRolesStore = create((set, get) => ({
           mspDocuments: false,
         },
       },
+
+      permissions: [
+        "clientBilling",
+        "mspBilling",
+        "clientUserManagement",
+        "technicianUserManagement",
+        "mspBranding",
+        "mspIntegrations",
+        "clientDocuments",
+        "mspDocuments",
+      ],
+
       activeRole: null,
 
       createRole: false,

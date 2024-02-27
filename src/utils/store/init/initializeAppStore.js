@@ -5,6 +5,7 @@ import { handleGetAgents, handleGetMSPs } from "@/utils/api/serverProps";
 const useInitializeAppStore = create((set, get) => ({
   mspSubDomain: null,
   selectedAgent: null,
+
   setSelectedAgent: (id) => set({ selectedAgent: id }),
 
   initializeApp: async () => {
@@ -34,6 +35,13 @@ const useInitializeAppStore = create((set, get) => ({
       const intitialMSPSubdomain = await handleGetMSPs(msp);
       set({ mspSubDomain: intitialMSPSubdomain });
     }
+  },
+
+  clearInit: () => {
+    set({
+      mspSubDomain: null,
+      selectedAgent: null,
+    });
   },
 }));
 

@@ -1288,8 +1288,24 @@ const useManageStore = create((set, get) => ({
         emailConnectorAppPassword: "",
       },
 
+      severityOptions: ["Low", "Medium", "High"],
+      impactOptions: ["Low", "Medium", "High"],
+      tierOptions: ["Tier1", "Tier2", "Tier3"],
+      technicianTierOptions: ["Tier1", "Tier2", "Tier3"],
+      durationOptions: [
+        "15 Minutes",
+        "30 Minutes",
+        "45 Minutes",
+        "1 Hour",
+        "1 Hour 30 Minutes",
+        "2 Hours 30 Minutes",
+        "3 Hours 30 Minutes",
+        "4 Hours",
+      ],
+
       successManageIntegration: false,
       successManageDisconnect: false,
+
       errorManageIntegration: false,
       errorManageDisconnect: false,
 

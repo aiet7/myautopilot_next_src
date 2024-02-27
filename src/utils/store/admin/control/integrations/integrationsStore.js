@@ -143,7 +143,6 @@ const useIntegrationsStore = create((set, get) => ({
       integrations: null,
       selectedCategory: null,
       activeIntegrationsCard: "cards",
-      filteredCards: [],
     });
   },
 }));

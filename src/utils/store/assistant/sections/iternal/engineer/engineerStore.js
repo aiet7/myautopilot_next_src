@@ -53,7 +53,13 @@ const useEngineerStore = create((set, get) => ({
   },
 
   clearEngineer: () => {
-    set({ prompts: "" });
+    set({
+      prependText:
+        "Act as an expert IT prompt engineer. ALWAYS give me the top 5 prompts, without quotation marks around the prompts, that you would give it to gpt to get the best results by making sure to sure it at its best regarding ",
+      userInput: "",
+      prompts: "",
+      isWaiting: false,
+    });
   },
 }));
 

@@ -14,6 +14,9 @@ import useIntegrationsStore from "../admin/control/integrations/integrationsStor
 import useEmployeesStore from "../admin/control/employees/employeesStore";
 import useCompaniesStore from "../admin/control/companies/companiesStore";
 import useRolesStore from "../admin/control/roles/rolesStore";
+import useInteractionStore from "../interaction/interactionsStore";
+import useInitializeAppStore from "../init/initializeAppStore";
+import useAssistantStore from "../assistant/assistantStore";
 
 const useUserStore = create((set, get) => ({
   user: null,
@@ -23,7 +26,7 @@ const useUserStore = create((set, get) => ({
     const { initializeMSPTickets } = useTicketsStore.getState();
 
     let userData = null;
-    let userType = localStorage.getItem("lastActiveUserType")
+    let userType = localStorage.getItem("lastActiveUserType");
 
     const storedUser = getUser();
 
@@ -63,6 +66,9 @@ const useUserStore = create((set, get) => ({
     const { clearEmployees } = useEmployeesStore.getState();
     const { clearCompanies } = useCompaniesStore.getState();
     const { clearRoles } = useRolesStore.getState();
+    const { clearInteraction } = useInteractionStore.getState();
+    const { clearInit } = useInitializeAppStore.getState();
+    const { clearAssistant } = useAssistantStore.getState();
 
     await clearTickets();
 
@@ -81,6 +87,9 @@ const useUserStore = create((set, get) => ({
     clearEmployees();
     clearCompanies();
     clearRoles();
+    clearInteraction();
+    clearInit();
+    clearAssistant();
 
     navigator("/auth/login");
   },

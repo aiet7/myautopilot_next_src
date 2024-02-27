@@ -15,11 +15,11 @@ const useTicketConversationsStore = create((set, get) => ({
     "Act as an expert IT troubleshooting bot. If there is an instance of another open ai gpt4 and you want it to function at its best. give me the best step-by-step troubleshooting guidelines, without quotation marks around the steps, that you would give it to gpt to get the best results by making sure to sure it at its best regarding ",
   isMobile: initialWidth < 1023,
   activeSectionButton: "Form",
+
   setIsMobile: (value) => {
     set({ isMobile: value });
   },
   setActiveSectionButton: (button) => set({ activeSectionButton: button }),
-
 
   handleAddUserMessage: async (message) => {
     const { handleAddTroubleShootMessage } = get();
@@ -124,7 +124,15 @@ const useTicketConversationsStore = create((set, get) => ({
   },
 
   clearTicketConversation: () => {
-    set({ messages: [] });
+    set({
+      messages: [],
+      troubleshootMessage: "",
+      troubleshootContinue: false,
+      prependTroubleshootText:
+        "Act as an expert IT troubleshooting bot. If there is an instance of another open ai gpt4 and you want it to function at its best. give me the best step-by-step troubleshooting guidelines, without quotation marks around the steps, that you would give it to gpt to get the best results by making sure to sure it at its best regarding ",
+      isMobile: initialWidth < 1023,
+      activeSectionButton: "Form",
+    });
   },
 }));
 

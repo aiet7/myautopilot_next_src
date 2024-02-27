@@ -20,6 +20,7 @@ const useConversationStore = create((set, get) => ({
   deleting: false,
   tempTitle: "",
   tempPrompt: "",
+
   setTempTitle: (title) => set((state) => ({ ...state, tempTitle: title })),
   setTempPrompt: (prompt) => set((state) => ({ ...state, tempPrompt: prompt })),
   setEditing: (isEditing) => set((state) => ({ ...state, editing: isEditing })),
@@ -121,21 +122,24 @@ const useConversationStore = create((set, get) => ({
     currentConversation.customPrompt = tempPrompt;
 
     try {
-      const response = await fetch(`${dbServiceUrl}/conversations/addConversation`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: id,
-          userId: userId,
-          agentID: selectedAgent,
-          conversationName: currentConversation.conversationName,
-          customPrompt: currentConversation.customPrompt,
-          timeStamp: Date.now(),
-          deleted: false,
-        }),
-      });
+      const response = await fetch(
+        `${dbServiceUrl}/conversations/addConversation`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: id,
+            userId: userId,
+            agentID: selectedAgent,
+            conversationName: currentConversation.conversationName,
+            customPrompt: currentConversation.customPrompt,
+            timeStamp: Date.now(),
+            deleted: false,
+          }),
+        }
+      );
 
       if (response.status === 200) {
         set((state) => {
@@ -324,6 +328,11 @@ const useConversationStore = create((set, get) => ({
     set({
       conversationHistories: [],
       currentConversationIndex: 0,
+
+      editing: false,
+      deleting: false,
+      tempTitle: "",
+      tempPrompt: "",
     });
   },
 }));

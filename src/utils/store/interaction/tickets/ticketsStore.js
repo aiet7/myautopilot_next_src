@@ -120,9 +120,10 @@ const useTicketsStore = create((set, get) => ({
       ticketStatus: null,
       ticketNotes: null,
       ticketStatusLoading: {},
+      activeTicketButton: "Opened",
       showTicket: null,
+      activeTicketMode: "Default",
     });
-    console.log("tickets set to null");
   },
 }));
 
