@@ -10,7 +10,7 @@ import useAuthStore from "@/utils/store/auth/authStore";
 
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
-const MSPPage = ({ }) => {
+const MSPPage = ({}) => {
   const { height, setHeight } = useUiStore();
   const { mspSubDomain, initializeSubDomain } = useInitializeAppStore();
 
@@ -19,11 +19,13 @@ const MSPPage = ({ }) => {
     current2FA,
     errorMessage,
     setLoginInputs,
+    handleSwitchMspLoginFlow,
     handleClientLogin,
     handleClient2FALogin,
     handleTechnicianLogin,
     handleTechnician2FALogin,
-    clearMSPCredentials, initializeUserType
+    clearMSPCredentials,
+    initializeUserType,
   } = useMspStore();
 
   const { showPassword, setShowPassword, handleShowForgotPassword } =
@@ -54,8 +56,8 @@ const MSPPage = ({ }) => {
   }, []);
 
   useEffect(() => {
-    initializeUserType()
-  }, [])
+    initializeUserType();
+  }, []);
 
   return (
     <>
@@ -92,6 +94,18 @@ const MSPPage = ({ }) => {
               )}
             </div>
             <div className="flex flex-col gap-4 w-full">
+              {!current2FA && (
+                <div className="flex items-center justify-between text-xs font-bold">
+                  {userType === "tech" ? (
+                    <p>Technician Login</p>
+                  ) : (
+                    <p>Client Login</p>
+                  )}
+                  <button type="button" onClick={handleSwitchMspLoginFlow}>
+                    Switch
+                  </button>
+                </div>
+              )}
               {current2FA ? (
                 <>
                   <input

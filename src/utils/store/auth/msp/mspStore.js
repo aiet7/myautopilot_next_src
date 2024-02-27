@@ -8,11 +8,22 @@ const useMspStore = create((set, get) => ({
   userType: null,
   mspDomains: null,
   technician: null,
+  technicianList: null,
+  selectedTechnician: null,
   client: null,
+  clientList: null,
+  selectedClient: null,
   currentStep: 1,
   signupInputs: {
     mspCustomDomain: "",
     techInfo: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phoneNumber: "",
+      password: "",
+    },
+    clientInfo: {
       firstName: "",
       lastName: "",
       email: "",
@@ -40,7 +51,6 @@ const useMspStore = create((set, get) => ({
     },
   },
 
-
   errorMessage: {
     techSignup: false,
 
@@ -53,14 +63,11 @@ const useMspStore = create((set, get) => ({
   activeFormTab: "Technician",
 
   initializeUserType: async () => {
-    const lastActiveUserType = localStorage.getItem("lastActiveUserType")
-    set({
-      userType: lastActiveUserType
-    })
-  },
+    const lastActiveUserType = localStorage.getItem("lastActiveUserType");
 
-  setFormChange: (tab) => {
-    set({ activeFormTab: tab });
+    set({
+      userType: lastActiveUserType,
+    });
   },
 
   setCurrentStep: (step) => set({ currentStep: step }),
@@ -71,43 +78,80 @@ const useMspStore = create((set, get) => ({
     set((prevState) => ({
       signupInputs: section
         ? {
-          ...prevState.signupInputs,
-          [section]: {
-            ...prevState.signupInputs[section],
+            ...prevState.signupInputs,
+            [section]: {
+              ...prevState.signupInputs[section],
+              [field]: value,
+            },
+          }
+        : {
+            ...prevState.signupInputs,
             [field]: value,
           },
-        }
-        : {
-          ...prevState.signupInputs,
-          [field]: value,
-        },
     })),
 
   setLoginInputs: (section, field, value) =>
     set((prevState) => ({
       loginInputs: section
         ? {
-          ...prevState.loginInputs,
-          [section]: {
-            ...prevState.loginInputs[section],
+            ...prevState.loginInputs,
+            [section]: {
+              ...prevState.loginInputs[section],
+              [field]: value,
+            },
+          }
+        : {
+            ...prevState.loginInputs,
             [field]: value,
           },
-        }
-        : {
-          ...prevState.loginInputs,
-          [field]: value,
-        },
     })),
 
+  setSelectedTechnician: (technician) => {
+    set({ selectedTechnician: technician });
+  },
+
+  setSelectedClient: (client) => {
+    set({ selectedClient: client });
+  },
+
+  handleSwitchMspLoginFlow: () => {
+    const { userType } = get();
+
+    if (userType === "tech") {
+      localStorage.setItem("lastActiveUserType", "client");
+      set({
+        userType: "client",
+      });
+    } else {
+      localStorage.setItem("lastActiveUserType", "tech");
+      set({
+        userType: "tech",
+      });
+    }
+  },
+
   handleNavigateTechnicianPage: (navigator) => {
-    navigator("/auth/login/tech")
-    localStorage.setItem("lastActiveUserType", "tech")
+    navigator("/auth/login/tech");
+    localStorage.setItem("lastActiveUserType", "tech");
   },
 
   handleNavigateClientPage: (navigator) => {
-    navigator("/auth/login/client")
-    localStorage.setItem("lastActiveUserType", "client")
+    navigator("/auth/login/client");
+    localStorage.setItem("lastActiveUserType", "client");
+  },
 
+  handleActiveTechnicianTab: () => {
+    localStorage.setItem("lastActiveUserType", "tech");
+    set({
+      userType: "tech",
+    });
+  },
+
+  handleActiveClientTab: () => {
+    localStorage.setItem("lastActiveUserType", "client");
+    set({
+      userType: "client",
+    });
   },
 
   handleSignupTechnician: async () => {
@@ -330,7 +374,6 @@ const useMspStore = create((set, get) => ({
   },
 
   handleTechnicianLogin: async (mspCustomDomain) => {
-
     const { loginInputs, errorMessage } = get();
     const { techInfo } = loginInputs;
     if (techInfo.email === "" || techInfo.password === "") {
@@ -411,7 +454,6 @@ const useMspStore = create((set, get) => ({
             emptyFields: false,
           },
         });
-
       } else {
         set({
           current2FA: false,
@@ -517,16 +559,132 @@ const useMspStore = create((set, get) => ({
     }
   },
 
+  handleActivateTechnicianCheck: async (mspCustomDomain) => {
+    const { signupInputs } = get();
+    const { techInfo } = signupInputs;
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/signup?email=${techInfo.email}`
+      );
+      if (response.ok) {
+        const technicians = await response.json();
+        set({
+          technicianList: technicians,
+        });
+      } else {
+        console.log("Error");
+      }
+    } catch (e) {
+      console.log();
+    }
+  },
+
+  handleActivateClientCheck: async (mspCustomDomain) => {
+    const { signupInputs } = get();
+    const { clientInfo } = signupInputs;
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/${mspCustomDomain}/clientUsers/signup?email=${clientInfo.email}`
+      );
+
+      if (response.ok) {
+        const clients = await response.json();
+        set({
+          clientList: clients,
+        });
+      } else {
+        console.log("Error");
+      }
+    } catch (e) {
+      console.log();
+    }
+  },
+
+  handleActivateTechnician: async (navigator, mspCustomDomain) => {
+    const { signupInputs, selectedTechnician } = get();
+    const { techInfo } = signupInputs;
+    const payload = {
+      ...selectedTechnician,
+      email: selectedTechnician.primaryEmail,
+      password: techInfo.password,
+    };
+
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/createAccount`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (response.ok) {
+        console.log("Technician Activated");
+        navigator(`/${mspCustomDomain}`);
+      } else {
+        console.log("Technician Activation Failed");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleActivateClient: async (navigator, mspCustomDomain) => {
+    const { signupInputs, selectedClient } = get();
+    const { clientInfo } = signupInputs;
+    const payload = {
+      ...selectedClient,
+      email: selectedClient.primaryEmail,
+      password: clientInfo.password,
+    };
+
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/createAccount`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (response.ok) {
+        console.log("Client Activated");
+        navigator(`/${mspCustomDomain}`);
+      } else {
+        console.log("Client Activation Failed");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
   clearMSPCredentials: () => {
-    const { errorMessage } = get();
     set({
+      userType: null,
       mspDomains: null,
+      technician: null,
+      technicianList: null,
+      selectedTechnician: null,
+      client: null,
+      clientList: null,
+      selectedClient: null,
       currentStep: 1,
-      successMessage: "",
-      errorMessage: { ...errorMessage, emptyFields: false, emailCheck: false },
       signupInputs: {
         mspCustomDomain: "",
         techInfo: {
+          firstName: "",
+          lastName: "",
+          email: "",
+          phoneNumber: "",
+          password: "",
+        },
+        clientInfo: {
           firstName: "",
           lastName: "",
           email: "",
@@ -553,6 +711,17 @@ const useMspStore = create((set, get) => ({
           login2FA: "",
         },
       },
+
+      errorMessage: {
+        techSignup: false,
+
+        emptyFields: false,
+        emailCheck: false,
+      },
+      successMessage: false,
+
+      showPassword: false,
+      activeFormTab: "Technician",
     });
   },
 }));
