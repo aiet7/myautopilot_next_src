@@ -16,3 +16,8 @@ export const convertDate = (timeStamp) => {
     day: "numeric",
   });
 };
+
+export const convertTicketText = (text) => {
+  let cleanedText = text.replace(/(Technician|Client):\s+\((\w{24})\):\s+/, "");
+  return cleanedText;
+};

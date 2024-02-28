@@ -13,6 +13,7 @@ import useConversationStore from "@/utils/store/interaction/conversations/conver
 import useDocConversationsStore from "@/utils/store/interaction/conversations/docConversationsStore.js";
 import Cookies from "js-cookie";
 import useUserStore from "@/utils/store/user/userStore";
+import useMspStore from "@/utils/store/auth/msp/mspStore";
 
 const Interaction = dynamic(() =>
   import("@/components/Dashboard/Interaction/Interaction.js")
@@ -30,6 +31,7 @@ const DashboardPage = ({}) => {
   const router = useRouter();
   const { initializeApp } = useInitializeAppStore();
   const { initializeUser } = useUserStore();
+  const { initializeUserType } = useMspStore();
   const { getStorage, setStorage } = useLocalStorageStore();
 
   const { currentConversationIndex } = useConversationStore();
@@ -45,6 +47,7 @@ const DashboardPage = ({}) => {
       if (msp && id && session) {
         initializeApp();
         initializeUser(msp, id);
+        initializeUserType();
       }
     }
   }, [router.isReady, router.asPath]);

@@ -5,6 +5,7 @@ import useRefStore from "./ref/refStore";
 import useDocConversationsStore from "./conversations/docConversationsStore";
 import useTicketConversationsStore from "./conversations/ticketConversationsStore";
 import useUserStore from "../user/userStore";
+import useMspStore from "../auth/msp/mspStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
@@ -181,10 +182,22 @@ const useInteractionStore = create((set, get) => ({
 
   handleCreateTicketNote: async (ticketId, message) => {
     const userStore = useUserStore.getState();
+    const { userType } = useMspStore.getState();
+
     if (message.trim() !== "") {
       set({ isWaiting: true, isServerError: false, userInput: "" });
       const encodedDomain = encodeURIComponent(userStore.user.mspCustomDomain);
       const encodedTicketId = encodeURIComponent(ticketId);
+
+      let formattedPrepend;
+      if (userType === "client") {
+        formattedPrepend = `User: (${
+          userStore.user.firstName + " " + userStore.user.lastName
+        } + ${userStore.user.email}): ${message}`;
+      } else if (userType === "tech") {
+        formattedPrepend = `Technician: (${userStore.user.id}): ${message}`;
+      }
+
       try {
         const response = await fetch(
           `${connectWiseServiceUrl}/addNoteToTicket?mspCustomDomain=${encodedDomain}&ticketId=${encodedTicketId}`,
@@ -194,6 +207,7 @@ const useInteractionStore = create((set, get) => ({
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
+              info: formattedPrepend,
               text: message,
             }),
           }
