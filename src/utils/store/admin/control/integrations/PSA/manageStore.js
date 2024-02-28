@@ -114,8 +114,7 @@ const useManageStore = create((set, get) => ({
         const markedTechnicians = connectWiseTechnicians.map((cwTech) => ({
           ...cwTech,
           isInDB: dbTechnicians.some(
-            (dbTech) =>
-              dbTech.connectWiseMembersId === cwTech.connectWiseMembersId
+            (dbTech) => dbTech.email === cwTech.primaryEmail
           ),
         }));
 
