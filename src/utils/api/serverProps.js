@@ -1,6 +1,7 @@
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 
+
 export const handleGetTech = async (msp, techId) => {
   const response = await fetch(
     `${dbServiceUrl}/${encodeURIComponent(

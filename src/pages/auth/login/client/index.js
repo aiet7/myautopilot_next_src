@@ -3,8 +3,10 @@ import Link from "next/link";
 import { useEffect } from "react";
 import useUiStore from "@/utils/store/ui/uiStore.js";
 import useMspStore from "@/utils/store/auth/msp/mspStore";
+import { useRouter } from "next/router";
 
 const ClientLoginPage = () => {
+  const router = useRouter();
   const { height, setHeight } = useUiStore();
 
   const {
@@ -12,6 +14,7 @@ const ClientLoginPage = () => {
     errorMessage,
     setLoginInputs,
     handleClientCheck,
+    handleNavigateMSPSignup,
     clearMSPCredentials,
   } = useMspStore();
 
@@ -102,11 +105,14 @@ const ClientLoginPage = () => {
                     Back to login in
                   </span>
                 </Link>
-                <Link onClick={() => clearMSPCredentials()} href="/auth/signup">
+                <div
+                  className="cursor-pointer"
+                  onClick={() => handleNavigateMSPSignup(router.push)}
+                >
                   <span className="text-sm text-blue-800 font-semibold">
-                    No Account? Sign up
+                    No account? Sign up
                   </span>
-                </Link>
+                </div>
               </div>
             </div>
           </form>

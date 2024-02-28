@@ -129,6 +129,17 @@ const useMspStore = create((set, get) => ({
     }
   },
 
+  handleNavigateMSPSignup: (navigator) => {
+    const { clearMSPCredentials } = get();
+    navigator("/auth/signup");
+    localStorage.setItem("lastActiveUserType", "tech");
+    clearMSPCredentials();
+  },
+
+  handleNavigateMSPLogin: (navigator) => {
+    navigator("/auth/login");
+  },
+
   handleNavigateTechnicianPage: (navigator) => {
     navigator("/auth/login/tech");
     localStorage.setItem("lastActiveUserType", "tech");
