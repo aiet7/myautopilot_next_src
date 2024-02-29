@@ -8,7 +8,6 @@ export const handleGetTech = async (msp, techId) => {
       msp
     )}/technicianUsers/getById?id=${encodeURIComponent(techId)}`
   );
-  console.log(dbServiceUrl)
   return response.json();
 };
 
