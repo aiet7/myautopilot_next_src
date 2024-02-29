@@ -116,7 +116,7 @@ const ActivatePage = () => {
                     onClick={() =>
                       selectedTechnician
                         ? handleActivateTechnician(router.push, msp)
-                        : handleActivateClient(router.push.msp)
+                        : handleActivateClient(router.push, msp)
                     }
                     className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4"
                   >
@@ -141,7 +141,8 @@ const ActivatePage = () => {
                                 className="cursor-pointer rounded-lg shadow p-4"
                               >
                                 <p className="font-bold text-lg text-black">
-                                  {firstName + " " + lastName}
+                                  {firstName}
+                                  {lastName ? ` ${lastName}` : ""}
                                 </p>
                                 <p>{primaryEmail}</p>
                               </div>
@@ -151,8 +152,13 @@ const ActivatePage = () => {
                       )}
                       {userType === "client" && (
                         <>
-                          {clientList.map((client) => {
-                            const {} = client;
+                            {clientList.map((client) => {
+                            const {
+                              id,
+                              firstName,
+                              lastName,
+                              connectWiseEmailId,
+                            } = client;
                             return (
                               <div
                                 onClick={() => setSelectedClient(client)}
@@ -160,9 +166,10 @@ const ActivatePage = () => {
                                 className="cursor-pointer rounded-lg shadow p-4"
                               >
                                 <p className="font-bold text-lg text-black">
-                                  {firstName + " " + lastName}
+                                  {firstName}
+                                  {lastName ? ` ${lastName}` : ""}
                                 </p>
-                                <p>{primaryEmail}</p>
+                                <p>{connectWiseEmailId}</p>
                               </div>
                             );
                           })}

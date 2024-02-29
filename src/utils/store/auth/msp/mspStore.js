@@ -647,13 +647,13 @@ const useMspStore = create((set, get) => ({
     const { clientInfo } = signupInputs;
     const payload = {
       ...selectedClient,
-      email: selectedClient.primaryEmail,
+      email: selectedClient.connectWiseEmailId,
       password: clientInfo.password,
     };
 
     try {
       const response = await fetch(
-        `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/createAccount`,
+        `${dbServiceUrl}/${mspCustomDomain}/clientUsers/createAccount?connectWiseCompanyId=${selectedClient.connectWiseCompanyId}&clientId=${selectedClient.id}`,
         {
           method: "POST",
           headers: {
