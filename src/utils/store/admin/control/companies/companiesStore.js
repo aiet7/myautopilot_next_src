@@ -1,4 +1,7 @@
-import { handleGetManageDBClients } from "@/utils/api/serverProps";
+import {
+  handleGetManageDBClients,
+  handleGetRoles,
+} from "@/utils/api/serverProps";
 import useUserStore from "@/utils/store/user/userStore";
 import { create } from "zustand";
 
@@ -8,6 +11,8 @@ const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 const useCompaniesStore = create((set, get) => ({
   companies: null,
   companyDetails: null,
+  selectedCompany: null,
+  companyEmployeeRoleOptions: null,
 
   viewDetails: false,
 
@@ -16,18 +21,43 @@ const useCompaniesStore = create((set, get) => ({
     set({ companies: null });
 
     if (userStore.user) {
-      const newCompanies = await handleGetManageDBClients(
-        userStore.user.mspCustomDomain
-      );
-      set({ companies: newCompanies });
+      // const newCompanies = await handleGetManageDBClients(
+      //   userStore.user.mspCustomDomain
+      // );
+      // set({ companies: newCompanies });
+      try {
+        const [dbClients, newRoles] = await Promise.all([
+          handleGetManageDBClients(userStore.user.mspCustomDomain),
+          handleGetRoles(userStore.user.mspCustomDomain),
+        ]);
+        set({
+          companies: dbClients,
+          companyEmployeeRoleOptions: newRoles,
+        });
+      } catch (e) {
+        console.log(e);
+      }
     }
+  },
+
+  setSelectedCompanyEmployee: (id, field, value) => {
+    const { companyDetails } = get();
+    const updatedCompanyEmployees = companyDetails.map((employee) => {
+      if (employee.id === id) {
+        return { ...employee, [field]: value };
+      }
+      return employee;
+    });
+    set({
+      companyDetails: updatedCompanyEmployees,
+    });
   },
 
   setViewDetails: (view) => {
     set({ viewDetails: view, companyDetails: null });
   },
 
-  handleViewDetails: async (mspCustomDomain, companyId) => {
+  handleViewDetails: async (mspCustomDomain, companyId, companyName) => {
     try {
       const response = await fetch(
         `${dbServiceUrl}/${mspCustomDomain}/clientUsersOfEachClient?clientId=${companyId}`
@@ -38,6 +68,7 @@ const useCompaniesStore = create((set, get) => ({
         console.log("Viewing Details!");
         set({
           companyDetails: details,
+          selectedCompany: companyName,
           viewDetails: true,
         });
       } else {
@@ -51,10 +82,16 @@ const useCompaniesStore = create((set, get) => ({
     }
   },
 
+  handleSaveCompanyEmployee: async (mspCustomDomain, id) => {
+    
+  },
+
   clearCompanies: () => {
     set({
       companies: null,
       companyDetails: null,
+      employeesRoleOptions: null,
+      selectedCompany: null,
       viewDetails: false,
     });
   },

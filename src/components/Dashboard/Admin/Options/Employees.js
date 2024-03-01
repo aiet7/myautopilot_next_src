@@ -5,7 +5,7 @@ import useUiStore from "@/utils/store/ui/uiStore";
 import useUserStore from "@/utils/store/user/userStore";
 import { useEffect } from "react";
 
-const Employees = ({ }) => {
+const Employees = ({}) => {
   const { user } = useUserStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
   const {
@@ -19,7 +19,6 @@ const Employees = ({ }) => {
     initializeEmployees,
   } = useEmployeesStore();
 
-
   useEffect(() => {
     initializeEmployees();
   }, [user]);
@@ -31,8 +30,9 @@ const Employees = ({ }) => {
           openAdmin && handleHistoryMenu(false);
         }
       }}
-      className={`relative flex flex-col h-full w-full ${openAdmin && "lg:opacity-100 opacity-5 xl:ml-[350px]"
-        }  dark:bg-black transition-all duration-300 ease bg-white`}
+      className={`relative flex flex-col h-full w-full ${
+        openAdmin && "lg:opacity-100 opacity-5 xl:ml-[350px]"
+      }  dark:bg-black transition-all duration-300 ease bg-white`}
     >
       <div className="dark:border-b-white/20 border-b p-4">
         <h1 className="text-2xl">Employees</h1>
@@ -53,16 +53,16 @@ const Employees = ({ }) => {
                       </p>
                     )}
                     {errorMessage && (
-                      <p className="font-bold text-red-500">Error Updating Employee!</p>
+                      <p className="font-bold text-red-500">
+                        Error Updating Employee!
+                      </p>
                     )}
                   </div>
                   <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
                     <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
                       <thead className="dark:text-white dark:bg-gray-700 sticky top-0  text-lg text-black/60 bg-[#F5F8FA]">
                         <tr className="">
-                          <th className="p-2 border-l border-t border-b  ">
-
-                          </th>
+                          <th className="p-2 border-l border-t border-b  "></th>
                           <th className="p-2 border-l border-t border-b border-r ">
                             Name
                           </th>
@@ -95,12 +95,22 @@ const Employees = ({ }) => {
                             phoneNumber,
                             connectWiseTechnicanId,
                             tierLevel,
-                            roleId
+                            roleId,
                           } = employee;
                           return (
                             <tr key={id}>
                               <td className="p-2 truncate border-l  border-b">
-                                <button onClick={() => handleSaveEmployee(user?.mspCustomDomain, id)} className="hover:underline text-blue-500">Save</button>
+                                <button
+                                  onClick={() =>
+                                    handleSaveEmployee(
+                                      user?.mspCustomDomain,
+                                      id
+                                    )
+                                  }
+                                  className="hover:underline text-blue-500"
+                                >
+                                  Save
+                                </button>
                               </td>
                               <td className="p-2 truncate border-l  border-r border-b">
                                 {firstName + " " + lastName}
@@ -118,7 +128,16 @@ const Employees = ({ }) => {
 
                               <td className="p-2 truncate border-r border-b">
                                 <div className="flex flex-col">
-                                  <select value={tierLevel} onChange={(e) => setSelectedEmployee(id, "tierLevel", e.target.value)}>
+                                  <select
+                                    value={tierLevel}
+                                    onChange={(e) =>
+                                      setSelectedEmployee(
+                                        id,
+                                        "tierLevel",
+                                        e.target.value
+                                      )
+                                    }
+                                  >
                                     {employeesTierOptions.map((tier) => (
                                       <option key={tier} value={tier}>
                                         {tier}
@@ -129,7 +148,16 @@ const Employees = ({ }) => {
                               </td>
                               <td className="p-2 truncate border-r border-b">
                                 <div className="flex flex-col">
-                                  <select value={roleId} onChange={(e) => setSelectedEmployee(id, "roleId", e.target.value)}>
+                                  <select
+                                    value={roleId}
+                                    onChange={(e) =>
+                                      setSelectedEmployee(
+                                        id,
+                                        "roleId",
+                                        e.target.value
+                                      )
+                                    }
+                                  >
                                     {employeesRoleOptions.map((role) => {
                                       const { id, name } = role;
                                       return (

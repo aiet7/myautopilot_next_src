@@ -9,7 +9,12 @@ import ViewWorkers from "./ViewDetails";
 const Companies = () => {
   const { user } = useUserStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
-  const { companies, viewDetails, handleViewDetails, initializeCompanies } = useCompaniesStore();
+  const {
+    companies,
+    viewDetails,
+    handleViewDetails,
+    initializeCompanies,
+  } = useCompaniesStore();
 
   useEffect(() => {
     initializeCompanies();
@@ -22,8 +27,9 @@ const Companies = () => {
           openAdmin && handleHistoryMenu(false);
         }
       }}
-      className={`relative flex flex-col h-full w-full ${openAdmin && "lg:opacity-100 opacity-5 xl:ml-[350px]"
-        }  dark:bg-black transition-all duration-300 ease bg-white `}
+      className={`relative flex flex-col h-full w-full ${
+        openAdmin && "lg:opacity-100 opacity-5 xl:ml-[350px]"
+      }  dark:bg-black transition-all duration-300 ease bg-white `}
     >
       {viewDetails && <ViewWorkers />}
       <div className="dark:border-b-white/20 border-b p-4">
@@ -60,7 +66,6 @@ const Companies = () => {
                           <th className="p-2 border-t border-b border-r">
                             Phone Number
                           </th>
-
                         </tr>
                       </thead>
                       <tbody>
@@ -75,10 +80,19 @@ const Companies = () => {
                             zip,
                             defaultContact,
                             phoneNumber,
-
                           } = company;
                           return (
-                            <tr  className="dark:hover:bg-blue-950 hover:bg-blue-50 cursor-pointer" key={id} onClick={() => handleViewDetails(user?.mspCustomDomain, id)}>
+                            <tr
+                              className="dark:hover:bg-blue-950 hover:bg-blue-50 cursor-pointer"
+                              key={id}
+                              onClick={() =>
+                                handleViewDetails(
+                                  user?.mspCustomDomain,
+                                  id,
+                                  name
+                                )
+                              }
+                            >
                               <td className="p-2 truncate border-l  border-r border-b">
                                 {name}
                               </td>
@@ -100,7 +114,6 @@ const Companies = () => {
                               <td className="p-2 truncate border-r border-b">
                                 {phoneNumber}
                               </td>
-
                             </tr>
                           );
                         })}
