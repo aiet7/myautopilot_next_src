@@ -12,9 +12,12 @@ import useConversationStore from "@/utils/store/interaction/conversations/conver
 import useUiStore from "@/utils/store/ui/uiStore";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import useUserStore from "@/utils/store/user/userStore";
+import useTicketConversationsStore from "@/utils/store/interaction/conversations/ticketConversationsStore";
 
 const History = ({}) => {
   const { user } = useUserStore();
+
+  const { troubleshootContinue } = useTicketConversationsStore();
   const {
     editing,
     deleting,
@@ -37,9 +40,9 @@ const History = ({}) => {
 
   const { openHistory } = useUiStore();
   const { activeUIAssistantTab } = useAssistantStore();
-
+  
   useEffect(() => {
-    if (activeUIAssistantTab === "Engineer") {
+    if (activeUIAssistantTab === "Engineer" && !troubleshootContinue) {
       initializeConversations();
     }
   }, [user, activeUIAssistantTab]);

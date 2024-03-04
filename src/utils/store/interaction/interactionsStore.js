@@ -243,6 +243,7 @@ const useInteractionStore = create((set, get) => ({
         isServerError: false,
         userInput: "",
       });
+
       try {
         const response = await fetch(`${gptServiceUrl}/jarvis`, {
           method: "POST",

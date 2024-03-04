@@ -7,6 +7,8 @@ const ViewDetails = () => {
   const { user } = useUserStore();
 
   const {
+    successMessage,
+    errorMessage,
     companyDetails,
     selectedCompany,
     companyEmployeeRoleOptions,
@@ -100,6 +102,14 @@ const ViewDetails = () => {
             </div>
           </div>
         </div>
+        {successMessage && (
+          <p className="font-semibold text-emerald-500">
+            Successfully Updated Employee!
+          </p>
+        )}
+        {errorMessage && (
+          <p className="font-bold text-red-500">Error Updating Employee!</p>
+        )}
       </div>
     </div>
   );

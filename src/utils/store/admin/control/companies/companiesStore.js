@@ -16,6 +16,9 @@ const useCompaniesStore = create((set, get) => ({
 
   viewDetails: false,
 
+  successMessage: false,
+  errorMessage: false,
+
   initializeCompanies: async () => {
     const userStore = useUserStore.getState();
     set({ companies: null });
@@ -82,8 +85,44 @@ const useCompaniesStore = create((set, get) => ({
     }
   },
 
-  handleSaveCompanyEmployee: async (mspCustomDomain, id) => {
-    
+  handleSaveCompanyEmployee: async (mspCustomDomain, companyEmployeeId) => {
+    const { companyDetails } = get();
+
+    const companyEmployeeToUpdate = companyDetails.find(
+      (employee) => employee.id === companyEmployeeId
+    );
+
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/${mspCustomDomain}/clientUsers/edit`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: companyEmployeeToUpdate.email,
+            roleId: companyEmployeeToUpdate.roleId,
+          }),
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("Role Updated!");
+        set({
+          successMessage: true,
+          errorMessage: false,
+        });
+      } else {
+        console.log("Role Updated Failed");
+        set({
+          successMessage: false,
+          errorMessage: true,
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
   },
 
   clearCompanies: () => {
@@ -93,6 +132,8 @@ const useCompaniesStore = create((set, get) => ({
       employeesRoleOptions: null,
       selectedCompany: null,
       viewDetails: false,
+      successMessage: false,
+      errorMessage: false,
     });
   },
 }));

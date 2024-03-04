@@ -7,6 +7,10 @@ import useEngineerStore from "../../assistant/sections/iternal/engineer/engineer
 const isBrowser = typeof window !== "undefined";
 const initialWidth = isBrowser ? window.innerWidth : 1023;
 
+const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
+const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
+const gptServiceUrl = process.env.NEXT_PUBLIC_GPT_SERVICE_URL;
+
 const useTicketConversationsStore = create((set, get) => ({
   messages: [],
   troubleshootMessage: "",
@@ -56,17 +60,22 @@ const useTicketConversationsStore = create((set, get) => ({
   handleAddTroubleShootMessage: async (message) => {
     const { prependTroubleshootText } = get();
     const completeMessage = prependTroubleshootText + message;
-    const encodedCompleteMessage = encodeURIComponent(completeMessage);
 
     try {
-      const response = await fetch(
-        `https://etech7-wf-etech7-worflow-2.azuremicroservices.io/send?message=${encodedCompleteMessage}`
-      );
+      const response = await fetch(`${gptServiceUrl}/message`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: completeMessage,
+        }),
+      });
 
       if (response.status === 200) {
         const responseBody = await response.json();
         set({
-          troubleshootMessage: responseBody.data,
+          troubleshootMessage: responseBody.choices[0]?.message?.content,
         });
       }
     } catch (e) {
@@ -88,13 +97,12 @@ const useTicketConversationsStore = create((set, get) => ({
 
     try {
       await Promise.all([
-        handleSendMessage(troubleshootMessage),
+        handleSendMessage(troubleshootMessage + " Continue from last step."),
         handleSendPromptGenerator(),
       ]);
     } catch (e) {
       console.log(e);
     }
-
     set({ troubleshootContinue: false });
   },
 
