@@ -29,9 +29,12 @@ const AssistantRail = dynamic(() =>
 const DashboardPage = ({}) => {
   const session = Cookies.get("session_token");
   const router = useRouter();
+
   const { initializeApp } = useInitializeAppStore();
   const { initializeUser } = useUserStore();
   const { initializeUserType } = useMspStore();
+  const { initializeAssistant } = useAssistantStore();
+
   const { getStorage, setStorage } = useLocalStorageStore();
 
   const { currentConversationIndex } = useConversationStore();
@@ -47,6 +50,7 @@ const DashboardPage = ({}) => {
       if (msp && id && session) {
         initializeApp();
         initializeUser(msp, id);
+        initializeAssistant(msp);
         initializeUserType();
       }
     }

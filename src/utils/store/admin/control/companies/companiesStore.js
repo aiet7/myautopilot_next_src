@@ -10,11 +10,15 @@ const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 
 const useCompaniesStore = create((set, get) => ({
   companies: null,
-  companyDetails: null,
+  companyEmployees: null,
+  companyAllTickets: null,
+  companyEmployeeTickets: null,
   selectedCompany: null,
+  selectedCompanyDbId: null,
+  selectedEmployee: null,
   companyEmployeeRoleOptions: null,
 
-  viewDetails: false,
+  currentView: "Companies",
 
   successMessage: false,
   errorMessage: false,
@@ -24,10 +28,6 @@ const useCompaniesStore = create((set, get) => ({
     set({ companies: null });
 
     if (userStore.user) {
-      // const newCompanies = await handleGetManageDBClients(
-      //   userStore.user.mspCustomDomain
-      // );
-      // set({ companies: newCompanies });
       try {
         const [dbClients, newRoles] = await Promise.all([
           handleGetManageDBClients(userStore.user.mspCustomDomain),
@@ -44,23 +44,28 @@ const useCompaniesStore = create((set, get) => ({
   },
 
   setSelectedCompanyEmployee: (id, field, value) => {
-    const { companyDetails } = get();
-    const updatedCompanyEmployees = companyDetails.map((employee) => {
+    const { companyEmployees } = get();
+    const updatedCompanyEmployees = companyEmployees.map((employee) => {
       if (employee.id === id) {
         return { ...employee, [field]: value };
       }
       return employee;
     });
     set({
-      companyDetails: updatedCompanyEmployees,
+      companyEmployees: updatedCompanyEmployees,
     });
   },
 
-  setViewDetails: (view) => {
-    set({ viewDetails: view, companyDetails: null });
+  setCurrentView: (view) => {
+    set({ currentView: view });
   },
 
-  handleViewDetails: async (mspCustomDomain, companyId, companyName) => {
+  handleViewCompanyEmployees: async (
+    mspCustomDomain,
+    companyId,
+    companyName,
+    connectWiseClientsAutopilotDbId
+  ) => {
     try {
       const response = await fetch(
         `${dbServiceUrl}/${mspCustomDomain}/clientUsersOfEachClient?clientId=${companyId}`
@@ -70,14 +75,64 @@ const useCompaniesStore = create((set, get) => ({
         const details = await response.json();
         console.log("Viewing Details!");
         set({
-          companyDetails: details,
+          companyEmployees: details,
           selectedCompany: companyName,
-          viewDetails: true,
+          selectedCompanyDbId: connectWiseClientsAutopilotDbId,
+          currentView: "CompanyEmployees",
         });
       } else {
         console.log("Viewing Details Failed!");
         set({
-          viewDetails: false,
+          currentView: "Companies",
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleViewCompanyAllTickets: async () => {
+    const { selectedCompanyDbId } = get();
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/supportTickets/byClientsAutopilotDbid?clientsAutopilotDbid=${selectedCompanyDbId}`
+      );
+
+      if (response.status === 200) {
+        const allTickets = await response.json();
+        console.log(allTickets);
+        set({
+          companyAllTickets: allTickets,
+          currentView: "CompanyAllTickets",
+        });
+      } else {
+        console.log("Viewing All Tickets Failed!");
+        set({
+          currentView: "CompanyEmployees",
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleViewCompanyEmployeeTickets: async (clientId, firstName, lastName) => {
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/supportTickets/byClientsUserId?clientsUserId=${clientId}`
+      );
+      if (response.status === 200) {
+        const employeeTickets = await response.json();
+        console.log(employeeTickets);
+        set({
+          companyEmployeeTickets: employeeTickets,
+          selectedEmployee: firstName + " " + lastName,
+          currentView: "CompanyEmployeeTickets",
+        });
+      } else {
+        console.log("Viewing Employee Tickets Failed!");
+        set({
+          currentView: "CompanyEmployees",
         });
       }
     } catch (e) {
@@ -86,9 +141,9 @@ const useCompaniesStore = create((set, get) => ({
   },
 
   handleSaveCompanyEmployee: async (mspCustomDomain, companyEmployeeId) => {
-    const { companyDetails } = get();
+    const { companyEmployees } = get();
 
-    const companyEmployeeToUpdate = companyDetails.find(
+    const companyEmployeeToUpdate = companyEmployees.find(
       (employee) => employee.id === companyEmployeeId
     );
 
@@ -128,10 +183,15 @@ const useCompaniesStore = create((set, get) => ({
   clearCompanies: () => {
     set({
       companies: null,
-      companyDetails: null,
-      employeesRoleOptions: null,
+      companyEmployees: null,
+      companyAllTickets: null,
+      companyEmployeeTickets: null,
       selectedCompany: null,
-      viewDetails: false,
+      selectedEmployee: null,
+      companyEmployeeRoleOptions: null,
+
+      currentView: "Companies",
+
       successMessage: false,
       errorMessage: false,
     });

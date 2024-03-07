@@ -5,7 +5,7 @@ import { convertTicketText, convertDate } from "@/utils/conversions";
 
 const Support = () => {
   const { showTicket, ticketNotes, handleTicketMode } = useTicketsStore();
-
+  console.log(ticketNotes);
   return (
     <div className="flex flex-col w-full flex-grow p-4 overflow-hidden">
       <div className="flex flex-col gap-6 overflow-hidden">
@@ -50,7 +50,7 @@ const Support = () => {
         <div className="border-b" />
         <div className="flex flex-col  overflow-hidden">
           <h2 className="font-bold text-xl">Ticket Notes</h2>
-          {ticketNotes.length !== 0 ? (
+          {ticketNotes ? (
             <div className="flex flex-col gap-4 py-4 overflow-y-auto scrollbar-thin">
               {ticketNotes?.map((note) => {
                 const { id, text, dateCreated } = note;

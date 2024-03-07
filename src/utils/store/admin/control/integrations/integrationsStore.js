@@ -105,17 +105,15 @@ const useIntegrationsStore = create((set, get) => ({
       isHovered: false,
     },
   ],
-  filteredCards: [],
 
   initializeIntegrations: async (msp) => {
     set({ integrations: null });
     const newIntegrations = await handleGetIntegrations(msp);
     set({ integrations: newIntegrations });
+    return newIntegrations;
   },
 
   setSelectedCategory: (category) => set({ selectedCategory: category }),
-  setFilteredCards: (filtered) =>
-    set((state) => ({ ...state, filteredCards: filtered })),
 
   handleDescriptionOverlay: (index, hover) => {
     set((state) => {

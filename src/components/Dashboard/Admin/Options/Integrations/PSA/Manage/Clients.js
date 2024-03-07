@@ -57,7 +57,12 @@ const Clients = () => {
                 <FaSpinner className="animate-spin" size={20} />
               </div>
             ) : (
-              <p className="font-bold">Your Current Clients</p>
+              <div className="flex flex-col">
+                <p className="font-bold">Your Current Clients</p>
+                <p className="text-xs">
+                  Select Clients you want to integrate and press next.  Your Contacts will be based of the Clients you integrated.
+                </p>
+              </div>
             )}
 
             {currentClients && (

@@ -7,7 +7,7 @@ const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 const useMspStore = create((set, get) => ({
   userType: null,
   mspDomains: null,
-  technician: null,
+  msp: null,
   technicianList: null,
   selectedTechnician: null,
   client: null,
@@ -21,6 +21,7 @@ const useMspStore = create((set, get) => ({
       lastName: "",
       email: "",
       phoneNumber: "",
+      role: "",
       password: "",
     },
     clientInfo: {
@@ -33,6 +34,14 @@ const useMspStore = create((set, get) => ({
     mspInfo: {
       mspName: "",
       brandLogoUrl: "",
+      companyUrl: "",
+      companyAddress: {
+        street: "",
+        city: "",
+        state: "",
+        zipcode: "",
+      },
+      phoneNumber: "",
     },
   },
 
@@ -57,6 +66,7 @@ const useMspStore = create((set, get) => ({
     emptyFields: false,
     emailCheck: false,
   },
+
   successMessage: false,
 
   showPassword: false,
@@ -164,6 +174,38 @@ const useMspStore = create((set, get) => ({
     });
   },
 
+  handleSignupMSP: async () => {
+    const { signupInputs } = get();
+    const { mspCustomDomain, mspInfo } = signupInputs;
+
+    const msp = {
+      ...mspInfo,
+      customDomain: mspCustomDomain,
+    };
+
+    try {
+      const response = await fetch(`${dbServiceUrl}/msp`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(msp),
+      });
+
+      if (response.ok) {
+        const msp = await response.json();
+        set({
+          msp: msp,
+        });
+        return msp;
+      } else {
+        console.log("ERROR SAVING MSP");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
   handleSignupTechnician: async () => {
     const { signupInputs } = get();
     const { mspCustomDomain, techInfo } = signupInputs;
@@ -184,9 +226,7 @@ const useMspStore = create((set, get) => ({
 
       if (response.ok) {
         const technician = await response.json();
-        set({
-          technician: technician,
-        });
+
         return technician;
       } else {
         console.log("ERROR SAVING TECH");
@@ -196,97 +236,98 @@ const useMspStore = create((set, get) => ({
     }
   },
 
-  handleSignupMSP: async () => {
-    const { signupInputs } = get();
-    const { mspCustomDomain, mspInfo } = signupInputs;
-
-    const msp = {
-      ...mspInfo,
-      customDomain: mspCustomDomain,
-    };
-
-    try {
-      const response = await fetch(`${dbServiceUrl}/msp`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(msp),
-      });
-
-      if (response.ok) {
-        return await response.json();
-      } else {
-        console.log("ERROR SAVING MSP");
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  },
-
   handleSignupProgression: async (navigator) => {
     const {
-      technician,
+      msp,
       errorMessage,
       signupInputs,
       currentStep,
       handleSignupTechnician,
       handleSignupMSP,
     } = get();
-    const { techInfo } = signupInputs;
-
-    if (
-      techInfo.firstName === "" ||
-      techInfo.lastName === "" ||
-      techInfo.email === "" ||
-      techInfo.phoneNumber === "" ||
-      techInfo.password === ""
-    ) {
-      set({
-        errorMessage: { ...errorMessage, emptyFields: true, emailCheck: false },
-      });
-      return;
-    }
+    const { techInfo, mspInfo, mspCustomDomain } = signupInputs;
 
     if (currentStep === 1) {
-      const tech = await handleSignupTechnician();
-      if (tech && tech.id) {
-        set({
-          currentStep: 2,
-          errorMessage: {
-            ...errorMessage,
-            emptyFields: false,
-            emailCheck: false,
-            techSignup: false,
-          },
-        });
+      if (
+        mspCustomDomain !== "" &&
+        mspInfo.mspName !== "" &&
+        mspInfo.companyUrl !== "" &&
+        mspInfo.phoneNumber !== ""
+      ) {
+        const msp = await handleSignupMSP();
+        if (msp && msp.id) {
+          set({
+            currentStep: 2,
+            errorMessage: {
+              ...errorMessage,
+              techSignup: false,
+              emptyFields: false,
+              emailCheck: false,
+            },
+          });
+        } else {
+          set({
+            errorMessage: {
+              ...errorMessage,
+              techSignup: true,
+            },
+          });
+          return;
+        }
       } else {
         set({
           errorMessage: {
             ...errorMessage,
-            techSignup: true,
+            emptyFields: true,
+            emailCheck: false,
           },
         });
         return;
       }
     } else {
-      const msp = await handleSignupMSP();
-      if (msp && msp.id) {
+      if (
+        techInfo.firstName !== "" &&
+        techInfo.lastName !== "" &&
+        techInfo.role !== "" &&
+        techInfo.phoneNumber !== "" &&
+        techInfo.email !== "" &&
+        techInfo.password !== ""
+      ) {
+        const tech = await handleSignupTechnician();
+        if (tech && tech.id) {
+          set({
+            successMessage: true,
+            errorMessage: {
+              ...errorMessage,
+              emptyFields: false,
+              emailCheck: false,
+              techSignup: false,
+            },
+          });
+
+          navigator(
+            `/${msp.customDomain}/dashboard/${tech.id}/admin/integrations`
+          );
+          Cookie.set("session_token", tech.id, { expires: 7 });
+          Cookie.set("client_id", tech.id, { expires: 7 });
+        } else {
+          set({
+            errorMessage: {
+              ...errorMessage,
+              techSignup: true,
+            },
+          });
+          return;
+        }
+      } else {
         set({
-          currentStep: 1,
           errorMessage: {
             ...errorMessage,
-            techSignup: false,
-            emptyFields: false,
+            emptyFields: true,
             emailCheck: false,
           },
-          successMessage: true,
         });
-        navigator(
-          `/${msp.customDomain}/dashboard/${technician.id}/admin/integrations`
-        );
-        Cookie.set("session_token", technician.id, { expires: 7 });
-        Cookie.set("client_id", technician.id, { expires: 7 });
+        return;
       }
     }
   },
@@ -294,7 +335,6 @@ const useMspStore = create((set, get) => ({
   handleTechnicianCheck: async () => {
     const { loginInputs, errorMessage } = get();
     const { techInfo } = loginInputs;
-
     if (techInfo.email === "") {
       set({
         errorMessage: { ...errorMessage, emptyFields: true, emailCheck: false },
@@ -676,8 +716,9 @@ const useMspStore = create((set, get) => ({
 
   clearMSPCredentials: () => {
     set({
+      userType: null,
       mspDomains: null,
-      technician: null,
+      msp: null,
       technicianList: null,
       selectedTechnician: null,
       client: null,
@@ -691,6 +732,7 @@ const useMspStore = create((set, get) => ({
           lastName: "",
           email: "",
           phoneNumber: "",
+          role: "",
           password: "",
         },
         clientInfo: {
@@ -703,6 +745,14 @@ const useMspStore = create((set, get) => ({
         mspInfo: {
           mspName: "",
           brandLogoUrl: "",
+          companyUrl: "",
+          companyAddress: {
+            street: "",
+            city: "",
+            state: "",
+            zipcode: "",
+          },
+          phoneNumber: "",
         },
       },
 
@@ -727,6 +777,7 @@ const useMspStore = create((set, get) => ({
         emptyFields: false,
         emailCheck: false,
       },
+
       successMessage: false,
 
       showPassword: false,

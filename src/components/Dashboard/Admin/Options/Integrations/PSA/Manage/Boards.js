@@ -39,7 +39,6 @@ const Board = () => {
 
   const boardData = customBoard ? customBoardMerge : connectwiseMerge;
 
-
   return (
     <div className="flex flex-col gap-4 h-full overflow-hidden">
       <div className="flex flex-col gap-8 pb-2 justify-between items-start text-xl font-semibold italic text-black/30 md:flex-row">

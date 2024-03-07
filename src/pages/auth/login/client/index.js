@@ -64,7 +64,7 @@ const ClientLoginPage = () => {
                   {mspDomains.map((msp) => {
                     const { id, mspCustomDomain } = msp;
                     return (
-                      <div key={id} className="rounded-lg shadow p-4">
+                      <div key={id} className="rounded-lg shadow-lg border p-4">
                         <Link href={`/${mspCustomDomain}`}>
                           <h2 className="font-bold text-lg text-black">
                             {mspCustomDomain}

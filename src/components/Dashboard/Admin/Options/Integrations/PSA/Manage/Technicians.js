@@ -42,7 +42,10 @@ const Technician = () => {
                 <FaSpinner className="animate-spin" size={20} />
               </div>
             ) : (
-              <p className="font-bold">Your Current Technicians</p>
+              <div className="flex flex-col">
+                  <p className="font-bold">Your Current Technicians</p>
+                  <p className="text-xs">Select Technicians you want to integrate and press next.</p>
+              </div>
             )}
 
             {currentTechs && (

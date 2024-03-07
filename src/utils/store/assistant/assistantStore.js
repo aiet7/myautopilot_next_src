@@ -1,12 +1,30 @@
 import { create } from "zustand";
 import useInteractionStore from "../interaction/interactionsStore";
 import useUiStore from "../ui/uiStore";
+import useIntegrationsStore from "../admin/control/integrations/integrationsStore";
 
 const useAssistantStore = create((set, get) => ({
   promptAssistantInput: "",
   activeUIAssistantTab: "Tickets",
   activeAssistantTab: "Tickets",
   showProgress: true,
+
+  initializeAssistant: async (msp) => {
+    const { initializeIntegrations } = useIntegrationsStore.getState();
+    const integrations = await initializeIntegrations(msp);
+
+    if (integrations.connectWiseManageIntegrator) {
+      set({
+        activeUIAssistantTab: "Tickets",
+        activeAssistantTab: "Tickets",
+      });
+    } else {
+      set({
+        activeUIAssistantTab: "Engineer",
+        activeAssistantTab: "Engineer",
+      });
+    }
+  },
 
   handleShowProgress: () => {
     const { showProgress } = get();

@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import useIntegrationsStore from "../admin/control/integrations/integrationsStore";
 
 const isBrowser = typeof window !== "undefined";
 const initialWidth = isBrowser ? window.innerWidth : 1023;
@@ -18,6 +19,8 @@ const useUiStore = create((set, get) => ({
   setHoverTab: (tab) => set({ hoverTab: tab }),
 
   setHeight: (heightValue) => set({ height: heightValue }),
+
+
 
   handleToggleHistory: () =>
     set((state) => ({ openHistory: !state.openHistory })),

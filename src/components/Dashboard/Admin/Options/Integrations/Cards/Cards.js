@@ -2,7 +2,6 @@
 
 import useUiStore from "@/utils/store/ui/uiStore";
 import useIntegrationsStore from "@/utils/store/admin/control/integrations/integrationsStore";
-import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import useUserStore from "@/utils/store/user/userStore";
@@ -14,19 +13,14 @@ const Cards = () => {
   const {
     cards,
     selectedCategory,
-    filteredCards,
     setSelectedCategory,
-    setFilteredCards,
     handleDescriptionOverlay,
     handleIntegrationsCard,
   } = useIntegrationsStore();
 
-  useEffect(() => {
-    const newFilteredCards = selectedCategory
-      ? cards.filter((card) => card.category === selectedCategory)
-      : cards;
-    setFilteredCards(newFilteredCards);
-  }, [selectedCategory, cards]);
+  const filteredCards = selectedCategory
+    ? cards.filter((card) => card.category === selectedCategory)
+    : cards;
 
   return (
     <div

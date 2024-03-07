@@ -41,7 +41,12 @@ const Contacts = () => {
                 <FaSpinner className="animate-spin" size={20} />
               </div>
             ) : (
-              <p className="font-bold">Your Current Contacts</p>
+              <div className="flex flex-col">
+                <p className="font-bold">Your Current Contacts</p>
+                <p className="text-xs">
+                  Select Contacts you want to integrate and press next.
+                </p>
+              </div>
             )}
             {currentContacts && (
               <div className="flex gap-2 flex-col overflow-hidden ">

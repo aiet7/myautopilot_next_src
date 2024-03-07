@@ -18,7 +18,7 @@ const MSPSignupPage = () => {
     handleSignupProgression,
     clearMSPCredentials,
   } = useMspStore();
-
+  
   useEffect(() => {
     if (typeof window !== "undefined") {
       setHeight(window.innerHeight);
@@ -58,8 +58,8 @@ const MSPSignupPage = () => {
             <div className="flex flex-col items-start">
               <h1 className="text-2xl font-bold text-black">
                 {currentStep === 1
-                  ? "Enter Your Technician Details."
-                  : "Enter Your MSP Details."}
+                  ? "Enter Your MSP Details."
+                  : "Enter Your Technician Details."}
               </h1>
               {errorMessage?.emailCheck && (
                 <p className="text-red-500">Email does not exist.</p>
@@ -79,74 +79,42 @@ const MSPSignupPage = () => {
               )}
             </div>
             <div className="flex flex-col gap-4 w-full ">
-              <input
-                value={signupInputs.mspCustomDomain}
-                onChange={(e) =>
-                  setSignupInputs("", "mspCustomDomain", e.target.value)
-                }
-                type="text"
-                placeholder="Custom domain name*"
-                className=" rounded w-full p-2 border border-gray-300  bg-white text-black"
-              />
               {currentStep === 1 ? (
                 <>
-                  <div className="flex gap-2">
-                    <input
-                      value={signupInputs.techInfo.firstName}
-                      onChange={(e) =>
-                        setSignupInputs("techInfo", "firstName", e.target.value)
-                      }
-                      type="text"
-                      placeholder="First name"
-                      className="rounded w-full p-2 border border-gray-300  bg-white text-black"
-                    />
-                    <input
-                      value={signupInputs.techInfo.lastName}
-                      onChange={(e) =>
-                        setSignupInputs("techInfo", "lastName", e.target.value)
-                      }
-                      type="text"
-                      placeholder="Last name"
-                      className="rounded w-full p-2 border border-gray-300  bg-white text-black"
-                    />
-                  </div>
                   <input
-                    value={signupInputs.techInfo.email}
+                    value={signupInputs.mspCustomDomain}
                     onChange={(e) =>
-                      setSignupInputs("techInfo", "email", e.target.value)
-                    }
-                    type="email"
-                    placeholder="Email address"
-                    className="rounded w-full p-2 border border-gray-300  bg-white text-black"
-                  />
-                  <input
-                    value={signupInputs.techInfo.phoneNumber}
-                    onChange={(e) =>
-                      setSignupInputs("techInfo", "phoneNumber", e.target.value)
+                      setSignupInputs("", "mspCustomDomain", e.target.value)
                     }
                     type="text"
-                    placeholder="Phone number"
-                    className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                    placeholder="Custom Domain Name*"
+                    className=" rounded w-full p-2 border border-gray-300  bg-white text-black"
                   />
-                  <input
-                    value={signupInputs.techInfo.password}
-                    onChange={(e) =>
-                      setSignupInputs("techInfo", "password", e.target.value)
-                    }
-                    type="password"
-                    placeholder="Password"
-                    className="rounded w-full p-2 border border-gray-300  bg-white text-black"
-                  />
-                </>
-              ) : (
-                <>
                   <input
                     value={signupInputs.mspInfo.mspName}
                     onChange={(e) =>
                       setSignupInputs("mspInfo", "mspName", e.target.value)
                     }
                     type="text"
-                    placeholder="MSP name"
+                    placeholder="Company Name*"
+                    className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                  />
+                  <input
+                    value={signupInputs.mspInfo.phoneNumber}
+                    onChange={(e) =>
+                      setSignupInputs("mspInfo", "phoneNumber", e.target.value)
+                    }
+                    type="text"
+                    placeholder="Company Phone Number*"
+                    className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                  />
+                  <input
+                    value={signupInputs.mspInfo.companyUrl}
+                    onChange={(e) =>
+                      setSignupInputs("mspInfo", "companyUrl", e.target.value)
+                    }
+                    type="text"
+                    placeholder="Company Website*"
                     className="rounded w-full p-2 border border-gray-300  bg-white text-black"
                   />
                   <input
@@ -155,7 +123,67 @@ const MSPSignupPage = () => {
                       setSignupInputs("mspInfo", "brandLogoUrl", e.target.value)
                     }
                     type="text"
-                    placeholder="Brand Logo URL"
+                    placeholder="Company Brand Logo URL"
+                    className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                  />
+                </>
+              ) : (
+                <>
+                  <div className="flex gap-2">
+                    <input
+                      value={signupInputs.techInfo.firstName}
+                      onChange={(e) =>
+                        setSignupInputs("techInfo", "firstName", e.target.value)
+                      }
+                      type="text"
+                      placeholder="First name*"
+                      className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                    />
+                    <input
+                      value={signupInputs.techInfo.lastName}
+                      onChange={(e) =>
+                        setSignupInputs("techInfo", "lastName", e.target.value)
+                      }
+                      type="text"
+                      placeholder="Last name*"
+                      className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                    />
+                  </div>
+
+                  <input
+                    value={signupInputs.techInfo.email}
+                    onChange={(e) =>
+                      setSignupInputs("techInfo", "email", e.target.value)
+                    }
+                    type="email"
+                    placeholder="Email address*"
+                    className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                  />
+                  <input
+                    value={signupInputs.techInfo.role}
+                    onChange={(e) =>
+                      setSignupInputs("techInfo", "role", e.target.value)
+                    }
+                    type="text"
+                    placeholder="Role*"
+                    className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                  />
+                  <input
+                    value={signupInputs.techInfo.phoneNumber}
+                    onChange={(e) =>
+                      setSignupInputs("techInfo", "phoneNumber", e.target.value)
+                    }
+                    type="text"
+                    placeholder="Phone number*"
+                    className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                  />
+                  <input
+                    value={signupInputs.techInfo.password}
+                    onChange={(e) =>
+                      setSignupInputs("techInfo", "password", e.target.value)
+                    }
+                    type="password"
+                    placeholder="Password*"
                     className="rounded w-full p-2 border border-gray-300  bg-white text-black"
                   />
                 </>

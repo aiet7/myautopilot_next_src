@@ -22,12 +22,7 @@ const TechLoginPage = () => {
     if (typeof window !== "undefined") {
       setHeight(window.innerHeight);
 
-      // let session_token = Cookie.get("session_token");
-      // const client_id = Cookie.get("client_id");
-      // if (session_token && client_id) {
-      //   router.push(`/dashboard/${client_id}`);
-      // }
-
+   
       const handleResize = () => setHeight(window.innerHeight);
       window.addEventListener("resize", handleResize);
       return () => {
@@ -59,12 +54,12 @@ const TechLoginPage = () => {
               {mspDomains ? (
                 <>
                   <h2 className="text-lg font-semibold text-black">
-                    List of domains.
+                    Choose Your MSP Domain
                   </h2>
                   {mspDomains.map((msp) => {
                     const { id, mspCustomDomain } = msp;
                     return (
-                      <div key={id} className="rounded-lg shadow p-4">
+                      <div key={id} className="rounded-lg shadow-lg border p-4">
                         <Link href={`/${mspCustomDomain}`}>
                           <h2 className="font-bold text-lg text-black">
                             {mspCustomDomain}
