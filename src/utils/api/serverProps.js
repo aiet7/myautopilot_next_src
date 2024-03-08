@@ -1,7 +1,6 @@
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 
-
 export const handleGetTech = async (msp, techId) => {
   const response = await fetch(
     `${dbServiceUrl}/${encodeURIComponent(
@@ -39,9 +38,7 @@ export const handleGetManageTechnicians = async (msp) => {
 
 export const handleGetManageDBTechnicians = async (msp) => {
   const response = await fetch(
-    `${dbServiceUrl}/${encodeURIComponent(
-      msp
-    )}/technicianUsers/activeTechnicians`
+    `${dbServiceUrl}/${encodeURIComponent(msp)}/connectWiseMembers`
   );
   return response.json();
 };
@@ -49,6 +46,15 @@ export const handleGetManageDBTechnicians = async (msp) => {
 export const handleGetManageClients = async (msp) => {
   const response = await fetch(
     `${connectWiseServiceUrl}/getConnectWiseClients?mspCustomDomain=${encodeURIComponent(
+      msp
+    )}`
+  );
+  return response.json();
+};
+
+export const handleGetManageClientAndContactTypes = async (msp) => {
+  const response = await fetch(
+    `${connectWiseServiceUrl}/getCompanyTypes?mspCustomDomain=${encodeURIComponent(
       msp
     )}`
   );

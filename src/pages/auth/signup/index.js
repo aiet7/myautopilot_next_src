@@ -18,7 +18,7 @@ const MSPSignupPage = () => {
     handleSignupProgression,
     clearMSPCredentials,
   } = useMspStore();
-  
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       setHeight(window.innerHeight);
@@ -30,6 +30,8 @@ const MSPSignupPage = () => {
       };
     }
   }, []);
+
+
   return (
     <>
       {height && (
@@ -109,9 +111,9 @@ const MSPSignupPage = () => {
                     className="rounded w-full p-2 border border-gray-300  bg-white text-black"
                   />
                   <input
-                    value={signupInputs.mspInfo.companyUrl}
+                    value={signupInputs.mspInfo.webSiteUrl}
                     onChange={(e) =>
-                      setSignupInputs("mspInfo", "companyUrl", e.target.value)
+                      setSignupInputs("mspInfo", "webSiteUrl", e.target.value)
                     }
                     type="text"
                     placeholder="Company Website*"

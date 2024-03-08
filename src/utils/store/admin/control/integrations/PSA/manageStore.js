@@ -9,6 +9,7 @@ import {
   handleGetManageContacts,
   handleGetManageDBContacts,
   handleGetRoles,
+  handleGetManageClientAndContactTypes,
 } from "@/utils/api/serverProps";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
@@ -23,6 +24,7 @@ const useManageStore = create((set, get) => ({
   loadingTechnicians: false,
 
   clients: null,
+
   clientsSelected: {},
   clientsFilterType: "",
   loadingClients: false,
@@ -30,6 +32,9 @@ const useManageStore = create((set, get) => ({
   contacts: null,
   contactsSelected: {},
   loadingContacts: false,
+
+  clientAndContactTypes: null,
+  selectedAutoSyncType: null,
 
   connectwiseBoards: null,
   connectwiseOpenStatuses: null,
@@ -114,7 +119,8 @@ const useManageStore = create((set, get) => ({
         const markedTechnicians = connectWiseTechnicians.map((cwTech) => ({
           ...cwTech,
           isInDB: dbTechnicians.some(
-            (dbTech) => dbTech.email === cwTech.primaryEmail
+            (dbTech) =>
+              dbTech.connectWiseMembersId === cwTech.connectWiseMembersId
           ),
         }));
 
@@ -143,10 +149,14 @@ const useManageStore = create((set, get) => ({
 
     if (userStore.user) {
       try {
-        const [dbClients, connectWiseClients] = await Promise.all([
-          handleGetManageDBClients(userStore.user.mspCustomDomain),
-          handleGetManageClients(userStore.user.mspCustomDomain),
-        ]);
+        const [dbClients, connectWiseClients, connectWiseTypes] =
+          await Promise.all([
+            handleGetManageDBClients(userStore.user.mspCustomDomain),
+            handleGetManageClients(userStore.user.mspCustomDomain),
+            handleGetManageClientAndContactTypes(
+              userStore.user.mspCustomDomain
+            ),
+          ]);
 
         const markedClients = connectWiseClients.map((cwClient) => ({
           ...cwClient,
@@ -165,6 +175,7 @@ const useManageStore = create((set, get) => ({
             (_, i) => i + 1
           ),
           clients: markedClients,
+          clientAndContactTypes: connectWiseTypes,
           loadingClients: false,
         });
       } catch (e) {
@@ -287,8 +298,16 @@ const useManageStore = create((set, get) => ({
   setCloseConfiguration: () => {
     set({
       technicians: null,
+      techniciansSelected: {},
+
       clients: null,
+      clientsSelected: {},
+
       contacts: null,
+      contactsSelected: {},
+
+      clientAndContactSync: false,
+      clientAndContactTypes: null,
 
       connectwiseOpenStatuses: null,
       connectwiseClosedStatuses: null,
@@ -500,6 +519,27 @@ const useManageStore = create((set, get) => ({
       return { techniciansSelected };
     }),
 
+  setSelectAllTechnicians: (selectAll) => {
+    set((prevState) => {
+      const technicians = prevState.technicians || [];
+      const techniciansSelected = { ...prevState.techniciansSelected };
+
+      technicians.forEach((technician) => {
+        if (!techniciansSelected[technician.connectWiseMembersId]) {
+          techniciansSelected[technician.connectWiseMembersId] = {
+            selected: false,
+            tier: "",
+            roleId: "",
+          };
+        }
+        techniciansSelected[technician.connectWiseMembersId].selected =
+          selectAll;
+      });
+
+      return { techniciansSelected };
+    });
+  },
+
   setSelectedClients: (clientId, value) =>
     set((prevState) => {
       const clientsSelected = { ...prevState.clientsSelected };
@@ -513,8 +553,28 @@ const useManageStore = create((set, get) => ({
       return { clientsSelected };
     }),
 
+  setSelectAllClients: (selectAll) => {
+    set((prevState) => {
+      const clients = prevState.clients || [];
+      const clientsSelected = { ...prevState.clientsSelected };
+
+      clients.forEach((client) => {
+        if (!clientsSelected[client.connectWiseCompanyId]) {
+          clientsSelected[client.connectWiseCompanyId] = { selected: false };
+        }
+        clientsSelected[client.connectWiseCompanyId].selected = selectAll;
+      });
+
+      return { clientsSelected };
+    });
+  },
+
   setClientsFilterType: (filter) => {
     set({ clientsFilterType: filter });
+  },
+
+  setSelectedAutoSyncType: (id, name) => {
+    set({ selectedAutoSyncType: { id, name } });
   },
 
   setSelectedContacts: (clientId, value) =>
@@ -529,6 +589,22 @@ const useManageStore = create((set, get) => ({
       contactsSelected[clientId].selected = value;
       return { contactsSelected };
     }),
+
+  setSelectAllContacts: (selectAll) => {
+    set((prevState) => {
+      const contacts = prevState.contacts || [];
+      const contactsSelected = { ...prevState.contactsSelected };
+
+      contacts.forEach((contact) => {
+        if (!contactsSelected[contact.connectWiseContactId]) {
+          contactsSelected[contact.connectWiseContactId] = { selected: false };
+        }
+        contactsSelected[contact.connectWiseContactId].selected = selectAll;
+      });
+
+      return { contactsSelected };
+    });
+  },
 
   handleSaveManageKeys: async (mspCustomDomain) => {
     const { integrationInputs } = get();
@@ -1142,6 +1218,7 @@ const useManageStore = create((set, get) => ({
 
       if (response.status === 200) {
         set({
+          activeConfigSteps: 2,
           successMessage: true,
           techniciansSelected: {},
           errorMessage: false,
@@ -1180,6 +1257,7 @@ const useManageStore = create((set, get) => ({
 
       if (response.status === 200) {
         set({
+          activeConfigSteps: 3,
           successMessage: true,
           clientsSelected: {},
           errorMessage: false,
@@ -1217,6 +1295,7 @@ const useManageStore = create((set, get) => ({
 
       if (response.status === 200) {
         set({
+          activeConfigSteps: 4,
           successMessage: true,
           contactsSelected: {},
           errorMessage: false,
@@ -1226,6 +1305,30 @@ const useManageStore = create((set, get) => ({
       } else {
         set({ successMessage: false, errorMessage: true });
         console.log("ERROR ADDING MANAGE CONTACT");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleAutoSync: async (mspCustomDomain, clientTypeId, clientTypeName) => {
+    try {
+      const updateTypes = await fetch(
+        `${dbServiceUrl}/${mspCustomDomain}/updateClientSync?clientTypeId=${clientTypeId}&clientTypeName=${clientTypeName}`
+      );
+
+      if (updateTypes.status === 200) {
+        console.log("UPDATED TO DB");
+        const clientsContactsSync = await fetch(
+          `${connectWiseServiceUrl}/syncClientsContacts?mspCustomDomain=${mspCustomDomain}`
+        );
+        set({
+          activeConfigSteps: 4,
+        });
+
+        if (clientsContactsSync.status === 200) {
+          console.log("UPDATED WITH CONNECTWISE");
+        }
       }
     } catch (e) {
       console.log(e);
@@ -1248,6 +1351,9 @@ const useManageStore = create((set, get) => ({
       contacts: null,
       contactsSelected: {},
       loadingContacts: false,
+
+      clientAndContactSync: false,
+      clientAndContactTypes: null,
 
       connectwiseBoards: null,
       connectwiseOpenStatuses: null,

@@ -16,10 +16,15 @@ const Clients = () => {
     clients,
     clientsSelected,
     clientsFilterType,
+    clientAndContactTypes,
+    selectedAutoSyncType,
     loadingClients,
     setSelectedClients,
+    setSelectAllClients,
     setClientsFilterType,
+    setSelectedAutoSyncType,
     handleAddManageClients,
+    handleAutoSync,
     initializeManageClients,
   } = useManageStore();
 
@@ -41,14 +46,53 @@ const Clients = () => {
       clients?.flatMap((client) => client.types?.map((type) => type.name))
     )
   );
-
   useEffect(() => {
     initializeManageClients();
   }, [user]);
-
+  
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex flex-col text-xl overflow-hidden">
+        <div className="flex flex-col self-end gap-1">
+          {clientAndContactTypes && (
+            <div className="flex gap-1 self-end">
+              <select
+                onChange={(e) => {
+                  const selectedType = clientAndContactTypes.find(
+                    (type) => type.id === parseInt(e.target.value)
+                  );
+
+                  if (selectedType) {
+                    setSelectedAutoSyncType(selectedType.id, selectedType.name);
+                  }
+                }}
+                className="text-xs self-end p-1 border rounded-lg"
+              >
+                <option value="">All Types</option>
+                {clientAndContactTypes.map((type) => {
+                  const { id, name } = type;
+                  return (
+                    <option key={id} value={id}>
+                      {name}
+                    </option>
+                  );
+                })}
+              </select>
+              <button
+                onClick={() =>
+                  handleAutoSync(
+                    user?.mspCustomDomain,
+                    selectedAutoSyncType.id,
+                    selectedAutoSyncType.name
+                  )
+                }
+                className="text-sm self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+              >
+                Auto Sync Clients and Contacts
+              </button>
+            </div>
+          )}
+        </div>
         {currentClients?.length !== 0 ? (
           <div className="flex flex-col gap-7 text-xl overflow-hidden">
             {loadingClients ? (
@@ -60,7 +104,8 @@ const Clients = () => {
               <div className="flex flex-col">
                 <p className="font-bold">Your Current Clients</p>
                 <p className="text-xs">
-                  Select Clients you want to integrate and press next.  Your Contacts will be based of the Clients you integrated.
+                  Select Clients you want to integrate and press next. Your
+                  Contacts will be based of the Clients you integrated.
                 </p>
               </div>
             )}
@@ -68,14 +113,6 @@ const Clients = () => {
             {currentClients && (
               <div className="flex gap-2 flex-col overflow-hidden ">
                 <div className="flex items-center justify-start gap-2">
-                  <button
-                    onClick={() =>
-                      handleAddManageClients(user?.mspCustomDomain)
-                    }
-                    className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
-                  >
-                    Bulk Save
-                  </button>
                   {successMessage && (
                     <p className="text-emerald-500">
                       Saved Clients Successfully!
@@ -89,7 +126,20 @@ const Clients = () => {
                   <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
                     <thead className="sticky top-0 bg-white text-lg text-black/60">
                       <tr className="">
-                        <th className="p-2 border-l border-t border-b border-r"></th>
+                        <th className="p-2 border-l border-t border-b border-r">
+                          <input
+                            type="checkbox"
+                            checked={currentClients.every(
+                              (client) =>
+                                clientsSelected[client.connectWiseCompanyId]
+                                  ?.selected
+                            )}
+                            onChange={(e) =>
+                              setSelectAllClients(e.target.checked)
+                            }
+                            className="flex items-center justify-center w-full h-full"
+                          />
+                        </th>
                         <th className="p-2 border-t border-b border-r ">
                           Name
                         </th>
@@ -206,6 +256,12 @@ const Clients = () => {
                     </tbody>
                   </table>
                 </div>
+                <button
+                  onClick={() => handleAddManageClients(user?.mspCustomDomain)}
+                  className="text-sm self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+                >
+                  Save
+                </button>
               </div>
             )}
           </div>

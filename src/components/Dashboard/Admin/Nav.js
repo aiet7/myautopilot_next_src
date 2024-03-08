@@ -41,7 +41,7 @@ const Nav = ({}) => {
           : "-translate-x-full w-full md:w-[350px]"
       } dark:bg-[#111111] dark:border-white/10  bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease md:border-r md:border-black/10`}
     >
-      <div className="overflow-y-auto h-full scrollbar-thin">
+      <div id="sidebar" className="overflow-y-auto h-full scrollbar-thin">
         {options.map((option, index) => {
           return (
             <Link
@@ -71,6 +71,7 @@ const Nav = ({}) => {
           );
         })}
       </div>
+   
     </div>
   );
 };

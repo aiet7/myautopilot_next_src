@@ -34,7 +34,7 @@ const useMspStore = create((set, get) => ({
     mspInfo: {
       mspName: "",
       brandLogoUrl: "",
-      companyUrl: "",
+      webSiteUrl: "",
       companyAddress: {
         street: "",
         city: "",
@@ -71,6 +71,11 @@ const useMspStore = create((set, get) => ({
 
   showPassword: false,
 
+  tooltipGuide: {
+    show: true,
+    step: 0,
+  },
+
   initializeUserType: async () => {
     const lastActiveUserType = localStorage.getItem("lastActiveUserType");
 
@@ -78,6 +83,11 @@ const useMspStore = create((set, get) => ({
       userType: lastActiveUserType,
     });
   },
+
+  setTooltipGuideVisibility: (show) =>
+    set((state) => ({ tooltipGuide: { ...state.tooltipGuide, show } })),
+  setTooltipGuideStep: (step) =>
+    set((state) => ({ tooltipGuide: { ...state.tooltipGuide, step } })),
 
   setCurrentStep: (step) => set({ currentStep: step }),
 
@@ -178,18 +188,19 @@ const useMspStore = create((set, get) => ({
     const { signupInputs } = get();
     const { mspCustomDomain, mspInfo } = signupInputs;
 
-    const msp = {
-      ...mspInfo,
-      customDomain: mspCustomDomain,
-    };
-
     try {
       const response = await fetch(`${dbServiceUrl}/msp`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(msp),
+        body: JSON.stringify({
+          mspName: mspInfo.mspName,
+          customDomain: mspCustomDomain,
+          brandLogoUrl: mspInfo.brandLogoUrl,
+          companyPhoneNumber: mspInfo.phoneNumber,
+          webSiteUrl: mspInfo.webSiteUrl,
+        }),
       });
 
       if (response.ok) {
@@ -220,7 +231,14 @@ const useMspStore = create((set, get) => ({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(techInfo),
+          body: JSON.stringify({
+            firstName: techInfo.firstName,
+            lastName: techInfo.lastName,
+            phoneNumber: techInfo.phoneNumber,
+            email: techInfo.email,
+            password: techInfo.password,
+            role: techInfo.role,
+          }),
         }
       );
 

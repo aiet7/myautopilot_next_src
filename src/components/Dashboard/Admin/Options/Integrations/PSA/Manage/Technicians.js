@@ -19,6 +19,7 @@ const Technician = () => {
     techniciansRoleOptions,
     loadingTechnicians,
     setSelectedTechnicians,
+    setSelectAllTechnicians,
     handleAddManageTechnician,
     initializeManageTechnicians,
   } = useManageStore();
@@ -43,22 +44,16 @@ const Technician = () => {
               </div>
             ) : (
               <div className="flex flex-col">
-                  <p className="font-bold">Your Current Technicians</p>
-                  <p className="text-xs">Select Technicians you want to integrate and press next.</p>
+                <p className="font-bold">Your Current Technicians</p>
+                <p className="text-xs">
+                  Select Technicians you want to integrate and press next.
+                </p>
               </div>
             )}
 
             {currentTechs && (
               <div className="flex gap-2 flex-col overflow-hidden ">
                 <div className="flex items-center justify-start gap-2">
-                  <button
-                    onClick={() =>
-                      handleAddManageTechnician(user?.mspCustomDomain)
-                    }
-                    className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
-                  >
-                    Bulk Save
-                  </button>
                   {successMessage && (
                     <p className="text-emerald-500">
                       Saved Technicians Successfully!
@@ -72,7 +67,21 @@ const Technician = () => {
                   <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
                     <thead className="sticky top-0 bg-white text-lg text-black/60">
                       <tr className="">
-                        <th className="p-2 border-l border-t border-b border-r"></th>
+                        <th className="p-2 border-l border-t border-b border-r">
+                          <input
+                            type="checkbox"
+                            checked={currentTechs.every(
+                              (technician) =>
+                                techniciansSelected[
+                                  technician.connectWiseMembersId
+                                ]?.selected
+                            )}
+                            onChange={(e) =>
+                              setSelectAllTechnicians(e.target.checked)
+                            }
+                            className="flex items-center justify-center w-full h-full"
+                          />
+                        </th>
                         <th className="p-2 border-t border-b border-r ">
                           Name
                         </th>
@@ -108,6 +117,7 @@ const Technician = () => {
                           primaryEmail,
                           isInDB,
                         } = technician;
+                        console.log(isInDB)
                         return (
                           <tr
                             key={connectWiseMembersId}
@@ -197,6 +207,14 @@ const Technician = () => {
                     </tbody>
                   </table>
                 </div>
+                <button
+                  onClick={() =>
+                    handleAddManageTechnician(user?.mspCustomDomain)
+                  }
+                  className="text-sm self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+                >
+                  Save
+                </button>
               </div>
             )}
           </div>

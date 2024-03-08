@@ -9,6 +9,7 @@ import useLocalStorageStore from "@/utils/store/localstorage/localStorageStore";
 import useUserStore from "@/utils/store/user/userStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useAdminStore from "@/utils/store/admin/adminStore";
+import SetupWizard from "@/components/Dashboard/SetupWizard";
 
 const Cards = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/Cards/Cards")
@@ -52,6 +53,7 @@ const IntegrationsPage = () => {
   return (
     <>
       <Cards />
+      <SetupWizard />
     </>
   );
 };

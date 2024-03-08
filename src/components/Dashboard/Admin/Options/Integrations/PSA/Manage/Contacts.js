@@ -16,6 +16,7 @@ const Contacts = () => {
     contactsSelected,
     loadingContacts,
     setSelectedContacts,
+    setSelectAllContacts,
     handleAddManageContacts,
     initializeManageContacts,
   } = useManageStore();
@@ -72,7 +73,20 @@ const Contacts = () => {
                   <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
                     <thead className="sticky top-0 bg-white text-lg text-black/60">
                       <tr className="">
-                        <th className="p-2 border-l border-t border-b border-r"></th>
+                        <th className="p-2 border-l border-t border-b border-r">
+                          <input
+                            type="checkbox"
+                            checked={currentContacts.every(
+                              (contact) =>
+                                contactsSelected[contact.connectWiseContactId]
+                                  ?.selected
+                            )}
+                            onChange={(e) =>
+                              setSelectAllContacts(e.target.checked)
+                            }
+                            className="flex items-center justify-center w-full h-full"
+                          />
+                        </th>
                         <th className="p-2 border-t border-b border-r ">
                           Name
                         </th>
@@ -167,6 +181,12 @@ const Contacts = () => {
                     </tbody>
                   </table>
                 </div>
+                <button
+                  onClick={() => handleAddManageContacts(user?.mspCustomDomain)}
+                  className="text-sm self-end  bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+                >
+                  Bulk Save
+                </button>
               </div>
             )}
           </div>
