@@ -36,9 +36,18 @@ export const handleGetManageTechnicians = async (msp) => {
   return response.json();
 };
 
-export const handleGetManageDBTechnicians = async (msp) => {
+export const handleGetManageInactiveDBTechnicians = async (msp) => {
   const response = await fetch(
     `${dbServiceUrl}/${encodeURIComponent(msp)}/connectWiseMembers`
+  );
+  return response.json();
+};
+
+export const handleGetManageActiveDBTechnicians = async (msp) => {
+  const response = await fetch(
+    `${dbServiceUrl}/${encodeURIComponent(
+      msp
+    )}/technicianUsers/activeTechnicians`
   );
   return response.json();
 };
@@ -83,6 +92,8 @@ export const handleGetManageDBContacts = async (msp) => {
   );
   return response.json();
 };
+
+
 
 export const handleGetRoles = async (msp) => {
   const response = await fetch(

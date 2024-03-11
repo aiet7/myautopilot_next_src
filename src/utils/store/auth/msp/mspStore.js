@@ -763,7 +763,7 @@ const useMspStore = create((set, get) => ({
         mspInfo: {
           mspName: "",
           brandLogoUrl: "",
-          companyUrl: "",
+          webSiteUrl: "",
           companyAddress: {
             street: "",
             city: "",

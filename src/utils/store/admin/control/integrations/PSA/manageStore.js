@@ -3,7 +3,7 @@ import useIntegrationsStore from "../integrationsStore";
 import useUserStore from "@/utils/store/user/userStore";
 import {
   handleGetManageTechnicians,
-  handleGetManageDBTechnicians,
+  handleGetManageInactiveDBTechnicians,
   handleGetManageClients,
   handleGetManageDBClients,
   handleGetManageContacts,
@@ -111,7 +111,7 @@ const useManageStore = create((set, get) => ({
       try {
         const [dbTechnicians, connectWiseTechnicians, newRoles] =
           await Promise.all([
-            handleGetManageDBTechnicians(userStore.user.mspCustomDomain),
+            handleGetManageInactiveDBTechnicians(userStore.user.mspCustomDomain),
             handleGetManageTechnicians(userStore.user.mspCustomDomain),
             handleGetRoles(userStore.user.mspCustomDomain),
           ]);

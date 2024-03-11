@@ -8,16 +8,16 @@ const ViewCompanies = () => {
 
   return (
     <div className="flex flex-col text-xl overflow-hidden">
-      {companies?.length !== 0 ? (
-        <div className="flex flex-col gap-7 text-xl overflow-hidden">
-          {companies && (
-            <div className="flex flex-col overflow-hidden px-4">
-              <div className="flex items-center justify-start gap-2 py-4">
-                <button className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1">
-                  Add Company
-                </button>
-              </div>
-              <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
+      <div className="flex flex-col gap-7 text-xl overflow-hidden">
+        <div className="flex flex-col overflow-hidden px-4">
+          <div className="flex items-center justify-start gap-2 py-4">
+            <button className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1">
+              Add Company
+            </button>
+          </div>
+          {companies?.length !== 0 ? (
+            <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
+              {companies && (
                 <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
                   <thead className="dark:text-white dark:bg-gray-700 sticky top-0 text-lg text-black/60 bg-[#F5F8FA]">
                     <tr className="">
@@ -92,15 +92,15 @@ const ViewCompanies = () => {
                     })}
                   </tbody>
                 </table>
-              </div>
+              )}
             </div>
+          ) : (
+            <p className="text-xl font-bold text-black/20  w-full">
+              Currently Have No Companies Listed
+            </p>
           )}
         </div>
-      ) : (
-        <p className="text-xl font-bold text-black/20 p-4 w-full">
-          Currently Have No Companies Listed
-        </p>
-      )}
+      </div>
     </div>
   );
 };

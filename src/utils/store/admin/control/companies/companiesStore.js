@@ -10,7 +10,8 @@ const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 
 const useCompaniesStore = create((set, get) => ({
   companies: null,
-  companyEmployees: null,
+  companyInactiveEmployees: null,
+  companyActiveEmployees: null,
   companyAllTickets: null,
   companyEmployeeTickets: null,
   selectedCompany: null,
@@ -19,6 +20,8 @@ const useCompaniesStore = create((set, get) => ({
   companyEmployeeRoleOptions: null,
 
   currentView: "Companies",
+  currentEmployeeView: "Active",
+  addEmployee: false,
 
   successMessage: false,
   errorMessage: false,
@@ -43,22 +46,26 @@ const useCompaniesStore = create((set, get) => ({
     }
   },
 
+  setCurrentEmployeeView: (view) => set({ currentEmployeeView: view }),
+
   setSelectedCompanyEmployee: (id, field, value) => {
-    const { companyEmployees } = get();
-    const updatedCompanyEmployees = companyEmployees.map((employee) => {
+    const { companyInactiveEmployees } = get();
+    const updatedCompanyEmployees = companyInactiveEmployees.map((employee) => {
       if (employee.id === id) {
         return { ...employee, [field]: value };
       }
       return employee;
     });
     set({
-      companyEmployees: updatedCompanyEmployees,
+      companyInactiveEmployees: updatedCompanyEmployees,
     });
   },
 
   setCurrentView: (view) => {
     set({ currentView: view });
   },
+
+  setAddEmployee: (add) => set({ addEmployee: add }),
 
   handleViewCompanyEmployees: async (
     mspCustomDomain,
@@ -67,23 +74,50 @@ const useCompaniesStore = create((set, get) => ({
     connectWiseClientsAutopilotDbId
   ) => {
     try {
-      const response = await fetch(
+      const activeEmployeesPromise = fetch(
         `${dbServiceUrl}/${mspCustomDomain}/clientUsersOfEachClient?clientId=${companyId}`
       );
+      const inactiveEmployeesPromise = fetch(
+        `${dbServiceUrl}/${mspCustomDomain}/connectWiseContacts`
+      );
 
-      if (response.status === 200) {
-        const details = await response.json();
-        console.log("Viewing Details!");
+      const [activeResponse, inactiveResponse] = await Promise.all([
+        activeEmployeesPromise,
+        inactiveEmployeesPromise,
+      ]);
+
+      if (activeResponse.status === 200) {
+        const details = await activeResponse.json();
         set({
-          companyEmployees: details,
+          companyActiveEmployees: details,
           selectedCompany: companyName,
           selectedCompanyDbId: connectWiseClientsAutopilotDbId,
           currentView: "CompanyEmployees",
         });
-      } else {
-        console.log("Viewing Details Failed!");
+      }
+
+      if (inactiveResponse.status === 200) {
+        const details = await inactiveResponse.json();
         set({
-          currentView: "Companies",
+          companyInactiveEmployees: details,
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleAddCompanyEmployee: async (mspCustomDomain) => {
+    try {
+      const response = await fetch(
+        `${connectWiseServiceUrl}/getCommunicationTypes?mspCustomDomain=${mspCustomDomain}`
+      );
+
+      if (response.status === 200) {
+        const communicationTypes = await response.json();
+        console.log(communicationTypes);
+        set({
+          addEmployee: true,
         });
       }
     } catch (e) {
@@ -100,7 +134,6 @@ const useCompaniesStore = create((set, get) => ({
 
       if (response.status === 200) {
         const allTickets = await response.json();
-        console.log(allTickets);
         set({
           companyAllTickets: allTickets,
           currentView: "CompanyAllTickets",
@@ -123,7 +156,6 @@ const useCompaniesStore = create((set, get) => ({
       );
       if (response.status === 200) {
         const employeeTickets = await response.json();
-        console.log(employeeTickets);
         set({
           companyEmployeeTickets: employeeTickets,
           selectedEmployee: firstName + " " + lastName,
@@ -141,9 +173,9 @@ const useCompaniesStore = create((set, get) => ({
   },
 
   handleSaveCompanyEmployee: async (mspCustomDomain, companyEmployeeId) => {
-    const { companyEmployees } = get();
+    const { companyInactiveEmployees } = get();
 
-    const companyEmployeeToUpdate = companyEmployees.find(
+    const companyEmployeeToUpdate = companyInactiveEmployees.find(
       (employee) => employee.id === companyEmployeeId
     );
 
@@ -183,14 +215,17 @@ const useCompaniesStore = create((set, get) => ({
   clearCompanies: () => {
     set({
       companies: null,
-      companyEmployees: null,
+      companyInactiveEmployees: null,
+      companyActiveEmployees: null,
       companyAllTickets: null,
       companyEmployeeTickets: null,
       selectedCompany: null,
+      selectedCompanyDbId: null,
       selectedEmployee: null,
       companyEmployeeRoleOptions: null,
 
       currentView: "Companies",
+      currentEmployeeView: "Active",
 
       successMessage: false,
       errorMessage: false,

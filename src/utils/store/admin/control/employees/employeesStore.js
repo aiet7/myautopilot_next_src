@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import useUserStore from "@/utils/store/user/userStore";
 import {
-  handleGetManageDBTechnicians,
+  handleGetManageInactiveDBTechnicians,
+  handleGetManageActiveDBTechnicians,
   handleGetRoles,
 } from "@/utils/api/serverProps";
 
@@ -10,10 +11,13 @@ const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 const emailConnectorUrl = process.env.NEXT_PUBLIC_EMAILCONNECTOR_URL;
 
 const useEmployeesStore = create((set, get) => ({
-  employees: null,
+  inactiveEmployees: null,
+  activeEmployees: null,
 
   employeesTierOptions: ["Tier1", "Tier2", "Tier3", "NoTier"],
   employeesRoleOptions: null,
+
+  currentView: "Active",
 
   successMessage: false,
   errorMessage: false,
@@ -24,13 +28,18 @@ const useEmployeesStore = create((set, get) => ({
 
     if (userStore.user) {
       try {
-        const [dbEmployees, newRoles] = await Promise.all([
-          handleGetManageDBTechnicians(userStore.user.mspCustomDomain),
-          handleGetRoles(userStore.user.mspCustomDomain),
-        ]);
+        const [dbInactiveEmployees, dbActiveEmployees, newRoles] =
+          await Promise.all([
+            handleGetManageInactiveDBTechnicians(
+              userStore.user.mspCustomDomain
+            ),
+            handleGetManageActiveDBTechnicians(userStore.user.mspCustomDomain),
+            handleGetRoles(userStore.user.mspCustomDomain),
+          ]);
 
         set({
-          employees: dbEmployees,
+          inactiveEmployees: dbInactiveEmployees,
+          activeEmployees: dbActiveEmployees,
           employeesRoleOptions: newRoles,
         });
       } catch (e) {
@@ -38,6 +47,8 @@ const useEmployeesStore = create((set, get) => ({
       }
     }
   },
+
+  setCurrentView: (view) => set({ currentView: view }),
 
   setSelectedEmployee: (id, field, value) => {
     const { employees } = get();
@@ -94,10 +105,13 @@ const useEmployeesStore = create((set, get) => ({
 
   clearEmployees: () => {
     set({
-      employees: null,
+      inactiveEmployees: null,
+      activeEmployees: null,
 
       employeesTierOptions: ["Tier1", "Tier2", "Tier3", "NoTier"],
       employeesRoleOptions: null,
+
+      currentView: "Active",
 
       successMessage: false,
       errorMessage: false,

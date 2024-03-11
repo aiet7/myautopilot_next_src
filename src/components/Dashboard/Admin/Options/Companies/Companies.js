@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useCompaniesStore from "@/utils/store/admin/control/companies/companiesStore";
 import useUserStore from "@/utils/store/user/userStore";
-import ViewEmployees from "./ViewEmployees";
+import ViewEmployees from "./ViewEmployees/ViewEmployees";
 import ViewCompanies from "./ViewCompanies";
 import ViewAllTickets from "./ViewAllTickets";
 import ViewEmployeeTickets from "./ViewEmployeeTickets";
@@ -24,6 +24,7 @@ const Companies = () => {
   useEffect(() => {
     initializeCompanies();
   }, [user]);
+  
   const renderBreadCrumb = () => {
     switch (currentView) {
       case "CompanyEmployees":

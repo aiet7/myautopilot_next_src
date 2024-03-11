@@ -24,6 +24,7 @@ const Technician = () => {
     initializeManageTechnicians,
   } = useManageStore();
 
+
   const indexOfLastTech = activePage * activePerPage;
   const indexOfFirstTech = indexOfLastTech - activePerPage;
   const currentTechs = technicians?.slice(indexOfFirstTech, indexOfLastTech);
@@ -117,7 +118,6 @@ const Technician = () => {
                           primaryEmail,
                           isInDB,
                         } = technician;
-                        console.log(isInDB)
                         return (
                           <tr
                             key={connectWiseMembersId}

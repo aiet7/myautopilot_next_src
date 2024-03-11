@@ -31,7 +31,6 @@ const MSPSignupPage = () => {
     }
   }, []);
 
-
   return (
     <>
       {height && (

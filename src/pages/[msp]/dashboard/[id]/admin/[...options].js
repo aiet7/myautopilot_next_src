@@ -19,7 +19,7 @@ const Cards = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/Cards/Cards")
 );
 const Employees = dynamic(() =>
-  import("@/components/Dashboard/Admin/Options/Employees")
+  import("@/components/Dashboard/Admin/Options/Employees/Employees")
 );
 const Roles = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Roles/Roles")
