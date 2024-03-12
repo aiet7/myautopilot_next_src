@@ -74,6 +74,7 @@ const Cards = () => {
                   }/admin/integrations/${view.toLowerCase()}`}
                 >
                   <div
+                  id="manage"
                     onClick={() => handleIntegrationsCard(view)}
                     onMouseEnter={() => handleDescriptionOverlay(view, true)}
                     onMouseLeave={() => handleDescriptionOverlay(view, false)}

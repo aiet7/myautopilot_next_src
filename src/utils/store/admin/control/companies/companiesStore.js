@@ -16,12 +16,27 @@ const useCompaniesStore = create((set, get) => ({
   companyEmployeeTickets: null,
   selectedCompany: null,
   selectedCompanyDbId: null,
+  selectedCompanyId: null,
   selectedEmployee: null,
   companyEmployeeRoleOptions: null,
 
   currentView: "Companies",
   currentEmployeeView: "Active",
+
   addEmployee: false,
+  addEmployeeInputs: {
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+
+    companyId: "",
+    emailTypeId: "",
+    phoneTypeId: "",
+  },
+
+  emailTypes: null,
+  phoneTypes: null,
 
   successMessage: false,
   errorMessage: false,
@@ -65,13 +80,24 @@ const useCompaniesStore = create((set, get) => ({
     set({ currentView: view });
   },
 
-  setAddEmployee: (add) => set({ addEmployee: add }),
+  setAddEmployee: (add) =>
+    set({ addEmployee: add, successMessage: false, errorMessage: false }),
+
+  setNewEmployeeInputs: (name, value) => {
+    set((state) => ({
+      addEmployeeInputs: {
+        ...state.addEmployeeInputs,
+        [name]: value,
+      },
+    }));
+  },
 
   handleViewCompanyEmployees: async (
     mspCustomDomain,
     companyId,
     companyName,
-    connectWiseClientsAutopilotDbId
+    connectWiseClientsAutopilotDbId,
+    connectWiseCompantId
   ) => {
     try {
       const activeEmployeesPromise = fetch(
@@ -92,6 +118,7 @@ const useCompaniesStore = create((set, get) => ({
           companyActiveEmployees: details,
           selectedCompany: companyName,
           selectedCompanyDbId: connectWiseClientsAutopilotDbId,
+          selectedCompanyId: connectWiseCompantId,
           currentView: "CompanyEmployees",
         });
       }
@@ -107,7 +134,7 @@ const useCompaniesStore = create((set, get) => ({
     }
   },
 
-  handleAddCompanyEmployee: async (mspCustomDomain) => {
+  handleViewCompanyEmployeeForm: async (mspCustomDomain) => {
     try {
       const response = await fetch(
         `${connectWiseServiceUrl}/getCommunicationTypes?mspCustomDomain=${mspCustomDomain}`
@@ -115,9 +142,52 @@ const useCompaniesStore = create((set, get) => ({
 
       if (response.status === 200) {
         const communicationTypes = await response.json();
-        console.log(communicationTypes);
+
         set({
           addEmployee: true,
+          emailTypes: communicationTypes,
+          phoneTypes: communicationTypes,
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleSaveNewCompanyEmployee: async (mspCustomDomain) => {
+    const { addEmployeeInputs, selectedCompanyId } = get();
+
+    try {
+      const response = await fetch(
+        `${connectWiseServiceUrl}/addConnectWiseContact?mspCustomDomain=${mspCustomDomain}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            firstName: addEmployeeInputs.firstName,
+            lastName: addEmployeeInputs.lastName,
+            email: addEmployeeInputs.email,
+            phone: addEmployeeInputs.phone,
+            companyId: selectedCompanyId,
+            emailTypeId: addEmployeeInputs.emailTypeId,
+            phoneTypeId: addEmployeeInputs.phoneTypeId,
+          }),
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("EMPLOYEE ADDED!");
+        set({
+          successMessage: true,
+          errorMessage: false,
+        });
+      } else {
+        console.log("EMPLOYEE ADD FAILED!");
+        set({
+          successMessage: false,
+          errorMessage: true,
         });
       }
     } catch (e) {
@@ -218,14 +288,34 @@ const useCompaniesStore = create((set, get) => ({
       companyInactiveEmployees: null,
       companyActiveEmployees: null,
       companyAllTickets: null,
+      companies: null,
+      companyInactiveEmployees: null,
+      companyActiveEmployees: null,
+      companyAllTickets: null,
       companyEmployeeTickets: null,
       selectedCompany: null,
       selectedCompanyDbId: null,
+      selectedCompanyId: null,
       selectedEmployee: null,
       companyEmployeeRoleOptions: null,
 
       currentView: "Companies",
       currentEmployeeView: "Active",
+
+      addEmployee: false,
+      addEmployeeInputs: {
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+
+        companyId: "",
+        emailTypeId: "",
+        phoneTypeId: "",
+      },
+
+      emailTypes: null,
+      phoneTypes: null,
 
       successMessage: false,
       errorMessage: false,

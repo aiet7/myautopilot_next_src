@@ -12,7 +12,6 @@ import History from "../Dashboard/History/History";
 import Documents from "../Dashboard/Documents/Documents";
 import TabNavRail from "../Dashboard/TabNavRail";
 import Tickets from "../Dashboard/Tickets/Tickets";
-import SetupWizard from "../Dashboard/SetupWizard";
 
 const Account = dynamic(() => import("@/components/Dashboard/Account"));
 

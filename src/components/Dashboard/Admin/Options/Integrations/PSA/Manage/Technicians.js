@@ -24,7 +24,6 @@ const Technician = () => {
     initializeManageTechnicians,
   } = useManageStore();
 
-
   const indexOfLastTech = activePage * activePerPage;
   const indexOfFirstTech = indexOfLastTech - activePerPage;
   const currentTechs = technicians?.slice(indexOfFirstTech, indexOfLastTech);
@@ -55,11 +54,6 @@ const Technician = () => {
             {currentTechs && (
               <div className="flex gap-2 flex-col overflow-hidden ">
                 <div className="flex items-center justify-start gap-2">
-                  {successMessage && (
-                    <p className="text-emerald-500">
-                      Saved Technicians Successfully!
-                    </p>
-                  )}
                   {errorMessage && (
                     <p className="text-red-500">Error Saving Technicians</p>
                   )}

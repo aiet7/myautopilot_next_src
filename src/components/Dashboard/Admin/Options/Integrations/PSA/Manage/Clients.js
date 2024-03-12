@@ -113,11 +113,7 @@ const Clients = () => {
             {currentClients && (
               <div className="flex gap-2 flex-col overflow-hidden ">
                 <div className="flex items-center justify-start gap-2">
-                  {successMessage && (
-                    <p className="text-emerald-500">
-                      Saved Clients Successfully!
-                    </p>
-                  )}
+                  
                   {errorMessage && (
                     <p className="text-red-500">Error Saving Clients</p>
                   )}

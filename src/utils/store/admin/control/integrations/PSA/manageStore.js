@@ -95,6 +95,15 @@ const useManageStore = create((set, get) => ({
   errorManageIntegration: false,
   errorManageDisconnect: false,
 
+  successMessageCategory: false,
+  errorMessageCategory: false,
+
+  successMessageSubCategory: false,
+  errorMessageSubCategory: false,
+
+  successMessageStatus: false,
+  errorMessageStatus: false,
+
   successMessage: false,
   errorMessage: false,
 
@@ -111,7 +120,9 @@ const useManageStore = create((set, get) => ({
       try {
         const [dbTechnicians, connectWiseTechnicians, newRoles] =
           await Promise.all([
-            handleGetManageInactiveDBTechnicians(userStore.user.mspCustomDomain),
+            handleGetManageInactiveDBTechnicians(
+              userStore.user.mspCustomDomain
+            ),
             handleGetManageTechnicians(userStore.user.mspCustomDomain),
             handleGetRoles(userStore.user.mspCustomDomain),
           ]);
@@ -242,6 +253,14 @@ const useManageStore = create((set, get) => ({
       activeConfigSteps: step,
       successMessage: false,
       errorMessage: false,
+      successMessageCategory: false,
+      errorMessageCategory: false,
+
+      successMessageSubCategory: false,
+      errorMessageSubCategory: false,
+
+      successMessageStatus: false,
+      errorMessageStatus: false,
       activePage: 1,
       activePageNumbers: [],
     });
@@ -262,6 +281,14 @@ const useManageStore = create((set, get) => ({
         customBoard: false,
         successMessage: false,
         errorMessage: false,
+        successMessageCategory: false,
+        errorMessageCategory: false,
+
+        successMessageSubCategory: false,
+        errorMessageSubCategory: false,
+
+        successMessageStatus: false,
+        errorMessageStatus: false,
         activeConfigSteps: activeConfigSteps - 1,
         activePage: 1,
         activePageNumbers: [],
@@ -284,6 +311,14 @@ const useManageStore = create((set, get) => ({
         customBoard: false,
         successMessage: false,
         errorMessage: false,
+        successMessageCategory: false,
+        errorMessageCategory: false,
+
+        successMessageSubCategory: false,
+        errorMessageSubCategory: false,
+
+        successMessageStatus: false,
+        errorMessageStatus: false,
         activeConfigSteps: activeConfigSteps + 1,
         activePage: 1,
         activePageNumbers: [],
@@ -324,6 +359,14 @@ const useManageStore = create((set, get) => ({
 
       errorMessage: false,
       successMessage: false,
+      successMessageCategory: false,
+      errorMessageCategory: false,
+
+      successMessageSubCategory: false,
+      errorMessageSubCategory: false,
+
+      successMessageStatus: false,
+      errorMessageStatus: false,
       activeConfig: false,
       activeConfigSteps: 1,
       activePage: 1,
@@ -356,7 +399,7 @@ const useManageStore = create((set, get) => ({
           }
     ),
 
-  setBoardInputs: (categoryId, subCategoryId, field, id, name) => {
+  setBoardInputs: (categoryId, subCategoryId, field, value, id, name) => {
     set((prevState) => {
       const updatedConnectwiseMerge = { ...prevState.connectwiseMerge };
 
@@ -366,32 +409,47 @@ const useManageStore = create((set, get) => ({
         (field === "openStatus" || field === "closedStatus")
       ) {
         updatedConnectwiseMerge[field] = { id: parseInt(id), name };
+      } else {
+        const updatedCategories =
+          updatedConnectwiseMerge.mspConnectWiseManageCategorizations.map(
+            (category) => {
+              if (category.categoryId === categoryId) {
+                if (field === "categoryName" && subCategoryId == null) {
+                  return { ...category, categoryName: value };
+                } else {
+                  const updatedSubCategories =
+                    category.mspConnectWiseManageSubCategorizations.map(
+                      (subCategory) => {
+                        if (subCategory.subCategoryId === subCategoryId) {
+                          if (field === "subCategoryName") {
+                            return { ...subCategory, subCategoryName: value };
+                          } else if (field === "priority") {
+                            subCategory["priorityId"] = parseInt(id);
+                            subCategory["priority"] = name;
+                          } else {
+                            subCategory[field] = parseInt(id);
+                          }
+                        }
+                        return subCategory;
+                      }
+                    );
+
+                  return {
+                    ...category,
+                    mspConnectWiseManageSubCategorizations:
+                      updatedSubCategories,
+                  };
+                }
+              }
+              return category;
+            }
+          );
+
+        updatedConnectwiseMerge.mspConnectWiseManageCategorizations =
+          updatedCategories;
       }
 
-      updatedConnectwiseMerge.mspConnectWiseManageCategorizations =
-        updatedConnectwiseMerge.mspConnectWiseManageCategorizations.map(
-          (category) => {
-            if (category.categoryId === categoryId) {
-              category.mspConnectWiseManageSubCategorizations =
-                category.mspConnectWiseManageSubCategorizations.map(
-                  (subCategory) => {
-                    if (subCategory.subCategoryId === subCategoryId) {
-                      if (field === "priority") {
-                        subCategory["priorityId"] = id;
-                        subCategory["priority"] = name;
-                      } else {
-                        subCategory[field] = id;
-                      }
-                    }
-                    return subCategory;
-                  }
-                );
-            }
-            return category;
-          }
-        );
-
-      return { connectwiseMerge: updatedConnectwiseMerge };
+      return { ...prevState, connectwiseMerge: updatedConnectwiseMerge };
     });
   },
 
@@ -451,44 +509,60 @@ const useManageStore = create((set, get) => ({
     });
   },
 
-  setNewCustomCategory: () =>
+  setNewCustomCategory: (isCustomBoard) =>
     set((prevState) => {
+      const mergeKey = isCustomBoard ? "customBoardMerge" : "connectwiseMerge";
+
+      const newTempIndex =
+        prevState[mergeKey].mspConnectWiseManageCategorizations.length + 1;
+
       const newCategory = {
         categoryId: Date.now(),
         categoryName: "",
         mspConnectWiseManageSubCategorizations: [],
+        isNew: true,
+        tempIndex: newTempIndex,
       };
 
       return {
         ...prevState,
-        customBoardMerge: {
-          ...prevState.customBoardMerge,
+        [mergeKey]: {
+          ...prevState[mergeKey],
           mspConnectWiseManageCategorizations: [
-            ...prevState.customBoardMerge.mspConnectWiseManageCategorizations,
+            ...prevState[mergeKey].mspConnectWiseManageCategorizations,
             newCategory,
           ],
         },
       };
     }),
 
-  setNewCustomSubcategory: (categoryId) =>
+  setNewCustomSubcategory: (categoryId, isCustomBoard) =>
     set((prevState) => {
-      const categoryIndex =
-        prevState.customBoardMerge.mspConnectWiseManageCategorizations.findIndex(
-          (category) => category.categoryId === categoryId
-        );
-
+      const mergeKey = isCustomBoard ? "customBoardMerge" : "connectwiseMerge";
+      const categoryIndex = prevState[
+        mergeKey
+      ].mspConnectWiseManageCategorizations.findIndex(
+        (category) => category.categoryId === categoryId
+      );
+      const subcategories =
+        prevState[mergeKey].mspConnectWiseManageCategorizations[categoryIndex]
+          .mspConnectWiseManageSubCategorizations;
+      const newTempIndex =
+        subcategories.length > 0
+          ? Math.max(...subcategories.map((sc) => sc.tempIndex || 0)) + 1
+          : 0;
       if (categoryIndex === -1) return prevState;
 
       const newSubcategory = {
         subCategoryId: Date.now(),
         subCategoryName: "",
+        isNew: true,
+        tempIndex: newTempIndex,
       };
 
       const updatedCategories = [
-        ...prevState.customBoardMerge.mspConnectWiseManageCategorizations,
+        ...prevState[mergeKey].mspConnectWiseManageCategorizations,
       ];
-
       updatedCategories[categoryIndex].mspConnectWiseManageSubCategorizations =
         [
           ...updatedCategories[categoryIndex]
@@ -498,8 +572,8 @@ const useManageStore = create((set, get) => ({
 
       return {
         ...prevState,
-        customBoardMerge: {
-          ...prevState.customBoardMerge,
+        [mergeKey]: {
+          ...prevState[mergeKey],
           mspConnectWiseManageCategorizations: updatedCategories,
         },
       };
@@ -930,9 +1004,10 @@ const useManageStore = create((set, get) => ({
         activeBoard: null,
         customBoard: false,
         customBoardMetadata: true,
+        connectwiseOpenStatuses: null,
+        connectwiseClosedStatuses: null,
       });
       await handleCustomBoardMetadata();
-      await handleGetBoardStatuses(id, mspCustomDomain);
     } else {
       set({
         connectwiseMerge: null,
@@ -973,6 +1048,73 @@ const useManageStore = create((set, get) => ({
         });
       } else {
         console.log("Failed loading statuses");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleCreateOpenStatus: async (mspCustomDomain) => {
+    try {
+      const { connectwiseMerge, connectwiseBoards, activeBoard } = get();
+      const activeBoardDetails = connectwiseBoards.find(
+        (board) => board.id === parseInt(activeBoard)
+      );
+      const response = await fetch(
+        `${connectWiseServiceUrl}/createStatus?mspCustomDomain=${mspCustomDomain}&boardId=${activeBoardDetails.id}&statusName=${connectwiseMerge.openStatus.name}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("Open status created!");
+        set({
+          successMessageStatus: true,
+          errorMessageStatus: false,
+        });
+      } else {
+        console.log("Open status failed");
+        set({
+          successMessageStatus: false,
+          errorMessageStatus: true,
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleCreateClosedStatus: async (mspCustomDomain) => {
+    const { connectwiseMerge, connectwiseBoards, activeBoard } = get();
+    const activeBoardDetails = connectwiseBoards.find(
+      (board) => board.id === parseInt(activeBoard)
+    );
+    try {
+      const response = await fetch(
+        `${connectWiseServiceUrl}/createStatus?mspCustomDomain=${mspCustomDomain}&boardId=${activeBoardDetails.id}&statusName=${connectwiseMerge.closedStatus.name}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.status === 200) {
+        console.log("Closed status created!");
+        set({
+          successMessageStatus: true,
+          errorMessageStatus: false,
+        });
+      } else {
+        console.log("Closed status failed");
+        set({
+          successMessageStatus: false,
+          errorMessageStatus: true,
+        });
       }
     } catch (e) {
       console.log(e);
@@ -1052,6 +1194,90 @@ const useManageStore = create((set, get) => ({
         }));
       } else {
         console.log("Failed to fetch custom");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleCreateCategory: async (mspCustomDomain, tempIndex) => {
+    const { connectwiseMerge, connectwiseBoards, activeBoard } = get();
+
+    const activeBoardDetails = connectwiseBoards.find(
+      (board) => board.id === parseInt(activeBoard)
+    );
+
+    const categoryToSave =
+      connectwiseMerge.mspConnectWiseManageCategorizations.find(
+        (category) => category.tempIndex === tempIndex
+      );
+
+    try {
+      const response = await fetch(
+        `${connectWiseServiceUrl}/createCategory?mspCustomDomain=${mspCustomDomain}&boardId=${activeBoardDetails.id}&categoryName=${categoryToSave.categoryName}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("created new category");
+        set({
+          successMessageCategory: true,
+          errorMessageCategory: false,
+        });
+      } else {
+        console.log("Failed to create category!");
+        set({
+          successMessageCategory: false,
+          errorMessageCategory: true,
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleCreateSubCategory: async (mspCustomDomain, tempIndex, categoryId) => {
+    const { connectwiseMerge, connectwiseBoards, activeBoard } = get();
+    const activeBoardDetails = connectwiseBoards.find(
+      (board) => board.id === parseInt(activeBoard)
+    );
+    const category = connectwiseMerge.mspConnectWiseManageCategorizations.find(
+      (category) => category.categoryId === categoryId
+    );
+
+    const subCategoryToSave =
+      category.mspConnectWiseManageSubCategorizations.find(
+        (subCategory) => subCategory.tempIndex === tempIndex
+      );
+
+    try {
+      const response = await fetch(
+        `${connectWiseServiceUrl}/createSubCategory?mspCustomDomain=${mspCustomDomain}&boardId=${activeBoardDetails.id}&subCategoryName=${subCategoryToSave.subCategoryName}&categoryId=${categoryId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("created new subcategory");
+        set({
+          successMessageSubCategory: true,
+          errorMessageSubCategory: false,
+        });
+      } else {
+        console.log("Failed to create subcategory");
+        set({
+          successMessageSubCategory: false,
+          errorMessageSubCategory: true,
+        });
       }
     } catch (e) {
       console.log(e);
@@ -1175,8 +1401,10 @@ const useManageStore = create((set, get) => ({
 
       if (response.status === 200) {
         console.log("CUSTOM BOARD SAVED!");
+        set({ errorMessage: false, successMessage: true });
       } else {
         console.log("ERROR SAVING CUSTOM BOARD");
+        set({ errorMessage: true, successMessage: false });
       }
     } catch (e) {
       console.log(e);

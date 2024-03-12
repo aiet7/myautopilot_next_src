@@ -11,10 +11,9 @@ const ViewEmployees = () => {
   const {
     addEmployee,
     currentEmployeeView,
-    setAddEmployee,
     setCurrentEmployeeView,
     handleViewCompanyAllTickets,
-    handleAddCompanyEmployee,
+    handleViewCompanyEmployeeForm,
   } = useCompaniesStore();
 
   const renderComponent = () => {
@@ -52,7 +51,9 @@ const ViewEmployees = () => {
           </div>
           <div className="flex items-center justify-start gap-2 py-4">
             <button
-              onClick={() => handleAddCompanyEmployee(user?.mspCustomDomain)}
+              onClick={() =>
+                handleViewCompanyEmployeeForm(user?.mspCustomDomain)
+              }
               className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
             >
               Add Employee

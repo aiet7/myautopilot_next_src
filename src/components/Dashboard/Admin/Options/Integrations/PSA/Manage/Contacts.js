@@ -60,11 +60,7 @@ const Contacts = () => {
                   >
                     Bulk Save
                   </button>
-                  {successMessage && (
-                    <p className="text-emerald-500">
-                      Saved Contacts Successfully!
-                    </p>
-                  )}
+                 
                   {errorMessage && (
                     <p className="text-red-500">Error Saving Contacts</p>
                   )}

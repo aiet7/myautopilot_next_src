@@ -5,7 +5,6 @@ import { GiOrganigram } from "react-icons/gi";
 import { FaUserCog } from "react-icons/fa";
 import { MdOutlineBrandingWatermark, MdBusinessCenter } from "react-icons/md";
 import useAdminStore from "@/utils/store/admin/adminStore";
-
 import Link from "next/link";
 import useUserStore from "@/utils/store/user/userStore";
 
@@ -41,7 +40,7 @@ const Nav = ({}) => {
           : "-translate-x-full w-full md:w-[350px]"
       } dark:bg-[#111111] dark:border-white/10  bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease md:border-r md:border-black/10`}
     >
-      <div id="sidebar" className="overflow-y-auto h-full scrollbar-thin">
+      <div className="overflow-y-auto h-full scrollbar-thin">
         {options.map((option, index) => {
           return (
             <Link
@@ -49,6 +48,7 @@ const Nav = ({}) => {
               href={`/${user?.mspCustomDomain}/dashboard/${user?.id}/admin/${option}`}
             >
               <div
+                id={`nav-${option}`}
                 onClick={() => handleOptionSelected(option)}
                 className="flex flex-col items-start my-2"
               >
@@ -71,7 +71,6 @@ const Nav = ({}) => {
           );
         })}
       </div>
-   
     </div>
   );
 };

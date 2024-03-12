@@ -62,7 +62,8 @@ const ViewCompanies = () => {
                               user?.mspCustomDomain,
                               id,
                               name,
-                              connectWiseClientsAutopilotDbId
+                              connectWiseClientsAutopilotDbId,
+                              connectWiseCompanyId
                             )
                           }
                         >

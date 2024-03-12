@@ -13,6 +13,12 @@ const Board = () => {
     connectwiseClosedStatuses,
     successMessage,
     errorMessage,
+    successMessageCategory,
+    errorMessageCategory,
+    successMessageSubCategory,
+    errorMessageSubCategory,
+    successMessageStatus,
+    errorMessageStatus,
     severityOptions,
     impactOptions,
     tierOptions,
@@ -31,6 +37,10 @@ const Board = () => {
     setCustomBoardInputs,
     setNewCustomCategory,
     setNewCustomSubcategory,
+    handleCreateOpenStatus,
+    handleCreateClosedStatus,
+    handleCreateCategory,
+    handleCreateSubCategory,
     handleGetBoardDetails,
     handleSaveCustomBoardMetadata,
     handleSaveBoard,
@@ -38,7 +48,7 @@ const Board = () => {
   } = useManageStore();
 
   const boardData = customBoard ? customBoardMerge : connectwiseMerge;
-
+  console.log(boardData);
   return (
     <div className="flex flex-col gap-4 h-full overflow-hidden">
       <div className="flex flex-col gap-8 pb-2 justify-between items-start text-xl font-semibold italic text-black/30 md:flex-row">
@@ -86,66 +96,139 @@ const Board = () => {
                   </option>
                 );
               })}
-            <option value="custom">Custom</option>
           </select>
+          <button
+            onClick={() =>
+              handleGetBoardDetails("custom", user?.mspCustomDomain)
+            }
+            className="hover:bg-blue-500 bg-blue-800 text-white px-6 py-2 rounded-md"
+          >
+            Custom Board
+          </button>
           {connectwiseOpenStatuses && (
-            <select
-              onChange={(e) => {
-                const selectedOpenStatus = connectwiseOpenStatuses.find(
-                  (status) => status.id.toString() === e.target.value
-                );
+            <>
+              {connectwiseOpenStatuses?.length > 0 ? (
+                <select
+                  onChange={(e) => {
+                    const selectedOpenStatus = connectwiseOpenStatuses.find(
+                      (status) => status.id.toString() === e.target.value
+                    );
 
-                setBoardInputs(
-                  null,
-                  null,
-                  "openStatus",
-                  selectedOpenStatus.id,
-                  selectedOpenStatus.name
-                );
-              }}
-              className="border rounded-lg shadow-lg p-2 cursor-pointer text-black"
-            >
-              <option value="Select Open Status" disabled selected>
-                Select Open Status
-              </option>
-              {connectwiseOpenStatuses.map((open) => {
-                const { id, name } = open;
-                return (
-                  <option value={id} key={id}>
-                    {name}
+                    setBoardInputs(
+                      null,
+                      null,
+                      "openStatus",
+                      null,
+                      selectedOpenStatus.id,
+                      selectedOpenStatus.name
+                    );
+                  }}
+                  className="border rounded-lg shadow-lg p-2 cursor-pointer text-black"
+                >
+                  <option value="Select Open Status" disabled selected>
+                    Select Open Status
                   </option>
-                );
-              })}
-            </select>
+                  {connectwiseOpenStatuses.map((open) => {
+                    const { id, name } = open;
+                    return (
+                      <option value={id} key={id}>
+                        {name}
+                      </option>
+                    );
+                  })}
+                </select>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <input
+                    className="border p-2 rounded"
+                    placeholder="Enter Open Status"
+                    onChange={(e) =>
+                      setBoardInputs(
+                        null,
+                        null,
+                        "openStatus",
+                        null,
+                        null,
+                        e.target.value
+                      )
+                    }
+                  />
+                  <button
+                    onClick={() =>
+                      handleCreateOpenStatus(user?.mspCustomDomain)
+                    }
+                    className="hover:bg-blue-500 bg-blue-800 text-white px-6 py-2 rounded-md"
+                  >
+                    Save Open Status
+                  </button>
+                </div>
+              )}
+            </>
           )}
           {connectwiseClosedStatuses && (
-            <select
-              onChange={(e) => {
-                const selectedClosedStatus = connectwiseClosedStatuses.find(
-                  (status) => status.id.toString() === e.target.value
-                );
-                setBoardInputs(
-                  null,
-                  null,
-                  "closedStatus",
-                  selectedClosedStatus.id,
-                  selectedClosedStatus.name
-                );
-              }}
-              className="border rounded-lg shadow-lg p-2 cursor-pointer text-black"
-            >
-              <option value="Select Closed Status" disabled selected>
-                Select Closed Status
-              </option>
-              {connectwiseClosedStatuses.map((closed) => {
-                const { id, name } = closed;
-                return (
-                  <option value={id} key={id}>
-                    {name}
+            <>
+              {connectwiseClosedStatuses?.length > 0 ? (
+                <select
+                  onChange={(e) => {
+                    const selectedClosedStatus = connectwiseClosedStatuses.find(
+                      (status) => status.id.toString() === e.target.value
+                    );
+                    setBoardInputs(
+                      null,
+                      null,
+                      "closedStatus",
+                      null,
+                      selectedClosedStatus.id,
+                      selectedClosedStatus.name
+                    );
+                  }}
+                  className="border rounded-lg shadow-lg p-2 cursor-pointer text-black"
+                >
+                  <option value="Select Closed Status" disabled selected>
+                    Select Closed Status
                   </option>
-                );
-              })}
-            </select>
+                  {connectwiseClosedStatuses.map((closed) => {
+                    const { id, name } = closed;
+                    return (
+                      <option value={id} key={id}>
+                        {name}
+                      </option>
+                    );
+                  })}
+                </select>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <input
+                    className="border p-2 rounded"
+                    placeholder="Enter Closed Status"
+                    onChange={(e) =>
+                      setBoardInputs(
+                        null,
+                        null,
+                        "closedStatus",
+                        null,
+                        null,
+                        e.target.value
+                      )
+                    }
+                  />
+                  <button
+                    onClick={() =>
+                      handleCreateClosedStatus(user?.mspCustomDomain)
+                    }
+                    className="hover:bg-blue-500 bg-blue-800 text-white px-6 py-2 rounded-md"
+                  >
+                    Save Closed Status
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+          {successMessageStatus && (
+            <p className="text-emerald-500">Saved Open Status Successfully!</p>
+          )}
+          {errorMessageStatus && (
+            <p className="text-red-500">Error Saving Open Status!</p>
           )}
         </div>
       )}
@@ -271,13 +354,11 @@ const Board = () => {
                   <th className="p-2 border-l border-t border-b border-r ">
                     <div className="flex justify-between items-center">
                       Category Name
-                      {customBoard && (
-                        <AiOutlinePlus
-                          onClick={setNewCustomCategory}
-                          className="text-black cursor-pointer"
-                          size={20}
-                        />
-                      )}
+                      <AiOutlinePlus
+                        onClick={() => setNewCustomCategory(customBoard)}
+                        className="text-black cursor-pointer"
+                        size={20}
+                      />
                     </div>
                   </th>
                   <th className="p-2 border-t border-b border-r">
@@ -307,25 +388,51 @@ const Board = () => {
                       categoryId,
                       categoryName,
                       mspConnectWiseManageSubCategorizations,
+                      isNew,
+                      tempIndex,
                     } = category;
                     return (
                       <tr key={categoryId}>
                         <td className="p-2 truncate border-l border-r border-b align-top">
-                          {customBoard ? (
-                            <input
-                              type="text"
-                              placeholder={categoryName}
-                              onChange={(e) =>
-                                setCustomBoardInputs(
-                                  categoryId,
-                                  null,
-                                  "categoryName",
-                                  e.target.value,
-                                  null,
-                                  null
-                                )
-                              }
-                            />
+                          {customBoard || isNew ? (
+                            <div className="flex items-center gap-1">
+                              <input
+                                type="text"
+                                placeholder={categoryName}
+                                onChange={(e) => {
+                                  customBoard
+                                    ? setCustomBoardInputs(
+                                        categoryId,
+                                        null,
+                                        "categoryName",
+                                        e.target.value,
+                                        null,
+                                        null
+                                      )
+                                    : setBoardInputs(
+                                        categoryId,
+                                        null,
+                                        "categoryName",
+                                        e.target.value,
+                                        null,
+                                        null
+                                      );
+                                }}
+                              />
+                              {!customBoard && (
+                                <button
+                                  onClick={() =>
+                                    handleCreateCategory(
+                                      user?.mspCustomDomain,
+                                      tempIndex
+                                    )
+                                  }
+                                  className="hover:bg-blue-500 bg-blue-800 text-white px-2 py-1rounded-lg "
+                                >
+                                  Save
+                                </button>
+                              )}
+                            </div>
                           ) : (
                             categoryName
                           )}
@@ -333,24 +440,54 @@ const Board = () => {
                         <td className="p-2 truncate border-r border-b align-top">
                           {mspConnectWiseManageSubCategorizations.map(
                             (subCat) => {
-                              const { subCategoryId, subCategoryName } = subCat;
+                              const {
+                                subCategoryId,
+                                subCategoryName,
+                                isNew,
+                                tempIndex,
+                              } = subCat;
                               return (
                                 <div key={subCategoryId}>
-                                  {customBoard ? (
-                                    <input
-                                      type="text"
-                                      placeholder={subCategoryName}
-                                      onChange={(e) =>
-                                        setCustomBoardInputs(
-                                          categoryId,
-                                          subCategoryId,
-                                          "subCategoryName",
-                                          e.target.value,
-                                          null,
-                                          null
-                                        )
-                                      }
-                                    />
+                                  {customBoard || isNew ? (
+                                    <div className="flex items-center gap-1">
+                                      <input
+                                        type="text"
+                                        placeholder={subCategoryName}
+                                        onChange={(e) => {
+                                          customBoard
+                                            ? setCustomBoardInputs(
+                                                categoryId,
+                                                subCategoryId,
+                                                "subCategoryName",
+                                                e.target.value,
+                                                null,
+                                                null
+                                              )
+                                            : setBoardInputs(
+                                                categoryId,
+                                                subCategoryId,
+                                                "subCategoryName",
+                                                e.target.value,
+                                                null,
+                                                null
+                                              );
+                                        }}
+                                      />
+                                      {!customBoard && (
+                                        <button
+                                          onClick={() =>
+                                            handleCreateSubCategory(
+                                              user?.mspCustomDomain,
+                                              tempIndex,
+                                              categoryId
+                                            )
+                                          }
+                                          className="hover:bg-blue-500 bg-blue-800 text-white px-2 py-1rounded-lg "
+                                        >
+                                          Save
+                                        </button>
+                                      )}
+                                    </div>
                                   ) : (
                                     <p>{subCategoryName}</p>
                                   )}
@@ -358,15 +495,14 @@ const Board = () => {
                               );
                             }
                           )}
-                          {customBoard && (
-                            <AiOutlinePlus
-                              size={20}
-                              className="cursor-pointer mt-1"
-                              onClick={() =>
-                                setNewCustomSubcategory(categoryId)
-                              }
-                            />
-                          )}
+
+                          <AiOutlinePlus
+                            size={20}
+                            className="cursor-pointer mt-1"
+                            onClick={() =>
+                              setNewCustomSubcategory(categoryId, customBoard)
+                            }
+                          />
                         </td>
                         {!customBoard && (
                           <>
@@ -402,6 +538,7 @@ const Board = () => {
                                               categoryId,
                                               subCategoryId,
                                               "priority",
+                                              null,
                                               selectedPriority.id,
                                               selectedPriority.name
                                             );
@@ -449,6 +586,7 @@ const Board = () => {
                                               categoryId,
                                               subCategoryId,
                                               "severity",
+                                              null,
                                               e.target.value,
                                               null
                                             );
@@ -491,6 +629,7 @@ const Board = () => {
                                               categoryId,
                                               subCategoryId,
                                               "impact",
+                                              null,
                                               e.target.value,
                                               null
                                             );
@@ -533,6 +672,7 @@ const Board = () => {
                                               categoryId,
                                               subCategoryId,
                                               "tier",
+                                              null,
                                               e.target.value,
                                               null
                                             );
@@ -573,6 +713,7 @@ const Board = () => {
                                               categoryId,
                                               subCategoryId,
                                               "duration",
+                                              null,
                                               e.target.value,
                                               null
                                             );
@@ -599,23 +740,39 @@ const Board = () => {
           </div>
         )}
       </div>
-      <div className="flex items-center gap-2 self-end">
-        {successMessage && (
-          <p className="text-emerald-500">Saved Board Successfully!</p>
-        )}
-        {errorMessage && <p className="text-red-500">Error Saving Board</p>}
-        {boardData && (
-          <button
-            onClick={() =>
-              customBoard
-                ? handleSaveCustomBoard(user?.mspCustomDomain)
-                : handleSaveBoard(user?.mspCustomDomain)
-            }
-            className="hover:bg-blue-500 bg-blue-800 text-white px-6 py-2 rounded-lg "
-          >
-            {customBoard ? "Save Custom Board" : "Save Board"}
-          </button>
-        )}
+      <div className="flex items-center justify-between ">
+        <div>
+          {successMessageCategory && (
+            <p className="text-emerald-500">Saved Category Successfully!</p>
+          )}
+          {errorMessageCategory && (
+            <p className="text-red-500">Error Saving Board</p>
+          )}
+          {successMessageSubCategory && (
+            <p className="text-emerald-500">Saved Category Successfully!</p>
+          )}
+          {errorMessageSubCategory && (
+            <p className="text-red-500">Error Saving Board</p>
+          )}
+        </div>
+        <div lassName="flex items-center gap-2 self-end ">
+          {successMessage && (
+            <p className="text-emerald-500">Saved Board Successfully!</p>
+          )}
+          {errorMessage && <p className="text-red-500">Error Saving Board</p>}
+          {boardData && (
+            <button
+              onClick={() =>
+                customBoard
+                  ? handleSaveCustomBoard(user?.mspCustomDomain)
+                  : handleSaveBoard(user?.mspCustomDomain)
+              }
+              className="hover:bg-blue-500 bg-blue-800 text-white px-6 py-2 rounded-lg "
+            >
+              {customBoard ? "Save Custom Board" : "Save Board"}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
