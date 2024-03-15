@@ -35,6 +35,9 @@ const useManageStore = create((set, get) => ({
 
   clientAndContactTypes: null,
   selectedAutoSyncType: null,
+  autoSyncLoading: false,
+  autoSyncingShow: false,
+  autoSyncingCompleted: false,
 
   connectwiseBoards: null,
   connectwiseOpenStatuses: null,
@@ -44,6 +47,7 @@ const useManageStore = create((set, get) => ({
 
   connectwiseMerge: null,
   loadingMerge: false,
+  loadingAiMerge: false,
 
   customBoardMetadata: false,
   customBoard: false,
@@ -76,18 +80,18 @@ const useManageStore = create((set, get) => ({
 
   severityOptions: ["Low", "Medium", "High"],
   impactOptions: ["Low", "Medium", "High"],
-  tierOptions: ["Tier1", "Tier2", "Tier3"],
+  tierOptions: ["Tier1", "Tier2", "Tier3", "No Dispatching"],
   technicianTierOptions: ["Tier1", "Tier2", "Tier3"],
-  durationOptions: [
-    "15 Minutes",
-    "30 Minutes",
-    "45 Minutes",
-    "1 Hour",
-    "1 Hour 30 Minutes",
-    "2 Hours 30 Minutes",
-    "3 Hours 30 Minutes",
-    "4 Hours",
-  ],
+  durationOptions: {
+    "15 Minutes": 15,
+    "30 Minutes": 30,
+    "45 Minutes": 45,
+    "1 Hour": 60,
+    "1 Hour 30 Minutes": 90,
+    "2 Hours 30 Minutes": 150,
+    "3 Hours 30 Minutes": 210,
+    "4 Hours": 240,
+  },
 
   successManageIntegration: false,
   successManageDisconnect: false,
@@ -168,6 +172,9 @@ const useManageStore = create((set, get) => ({
               userStore.user.mspCustomDomain
             ),
           ]);
+        
+        console.log("DB",dbClients)
+        console.log("CW",connectWiseClients)
 
         const markedClients = connectWiseClients.map((cwClient) => ({
           ...cwClient,
@@ -176,6 +183,7 @@ const useManageStore = create((set, get) => ({
               dbClient.connectWiseCompanyId === cwClient.connectWiseCompanyId
           ),
         }));
+
 
         const totalClients = markedClients.length;
         const totalPages = Math.ceil(totalClients / activePerPage);
@@ -427,7 +435,7 @@ const useManageStore = create((set, get) => ({
                             subCategory["priorityId"] = parseInt(id);
                             subCategory["priority"] = name;
                           } else {
-                            subCategory[field] = parseInt(id);
+                            subCategory[field] = id;
                           }
                         }
                         return subCategory;
@@ -678,6 +686,10 @@ const useManageStore = create((set, get) => ({
 
       return { contactsSelected };
     });
+  },
+
+  setAutoSyncToast: (toast, completed) => {
+    set({ autoSyncingShow: toast, autoSyncingCompleted: completed });
   },
 
   handleSaveManageKeys: async (mspCustomDomain) => {
@@ -995,6 +1007,38 @@ const useManageStore = create((set, get) => ({
     }
   },
 
+  handleGenerateAIBoard: async () => {
+    const { connectwiseMerge } = get();
+    set({
+      loadingAiMerge: true,
+    });
+    try {
+      const response = await fetch(
+        `${connectWiseServiceUrl}/getMergedConnectWiseCategorizationWithGpt`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(connectwiseMerge),
+        }
+      );
+
+      if (response.status === 200) {
+        const generatedAiBoard = await response.json();
+        console.log("Generated AI Board Complete!");
+        set({
+          connectwiseMerge: generatedAiBoard,
+          loadingAiMerge: false,
+        });
+      } else {
+        console.log("Failed To Generate AI Board");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
   handleGetBoardDetails: async (id, mspCustomDomain) => {
     const { handleCustomBoardMetadata, handleGetBoardStatuses } = get();
     if (id === "custom") {
@@ -1291,6 +1335,8 @@ const useManageStore = create((set, get) => ({
       (board) => board.id === parseInt(activeBoard)
     );
 
+    console.log(connectwiseMerge);
+
     try {
       const response = await fetch(
         `${dbServiceUrl}/${mspCustomDomain}/connectWiseManageDetails/update`,
@@ -1314,7 +1360,11 @@ const useManageStore = create((set, get) => ({
       );
 
       if (response.status === 200) {
-        set({ errorMessage: false, successMessage: true });
+        set({
+          activeConfigSteps: 2,
+          errorMessage: false,
+          successMessage: true,
+        });
       } else {
         set({ errorMessage: true, successMessage: false });
       }
@@ -1539,19 +1589,55 @@ const useManageStore = create((set, get) => ({
     }
   },
 
+  handleSetDefaultCompany: async (mspCustomDomain, companyName, companyId) => {
+    console.log(companyId);
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/${mspCustomDomain}/connectWiseManageDetails/update`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            mspCustomDomain: mspCustomDomain,
+            defaultCompanyId: companyId,
+            defaultCompanyName: companyName,
+          }),
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("Successfuly Set Default Company");
+      } else {
+        console.log("Failed To Successfuly Set Default Company");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
   handleAutoSync: async (mspCustomDomain, clientTypeId, clientTypeName) => {
+    set({
+      autoSyncLoading: true,
+      autoSyncingShow: true,
+      autoSyncingCompleted: false,
+    });
     try {
       const updateTypes = await fetch(
         `${dbServiceUrl}/${mspCustomDomain}/updateClientSync?clientTypeId=${clientTypeId}&clientTypeName=${clientTypeName}`
       );
 
       if (updateTypes.status === 200) {
-        console.log("UPDATED TO DB");
+        console.log("UPDATED CLIENTTYPEID TO DB");
         const clientsContactsSync = await fetch(
           `${connectWiseServiceUrl}/syncClientsContacts?mspCustomDomain=${mspCustomDomain}`
         );
         set({
-          activeConfigSteps: 4,
+          activeConfigSteps: 1,
+          autoSyncLoading: false,
+          autoSyncingShow: true,
+          autoSyncingCompleted: true,
         });
 
         if (clientsContactsSync.status === 200) {
@@ -1572,6 +1658,7 @@ const useManageStore = create((set, get) => ({
       loadingTechnicians: false,
 
       clients: null,
+
       clientsSelected: {},
       clientsFilterType: "",
       loadingClients: false,
@@ -1580,8 +1667,11 @@ const useManageStore = create((set, get) => ({
       contactsSelected: {},
       loadingContacts: false,
 
-      clientAndContactSync: false,
       clientAndContactTypes: null,
+      selectedAutoSyncType: null,
+      autoSyncLoading: false,
+      autoSyncingShow: false,
+      autoSyncingCompleted: false,
 
       connectwiseBoards: null,
       connectwiseOpenStatuses: null,
@@ -1623,24 +1713,33 @@ const useManageStore = create((set, get) => ({
 
       severityOptions: ["Low", "Medium", "High"],
       impactOptions: ["Low", "Medium", "High"],
-      tierOptions: ["Tier1", "Tier2", "Tier3"],
+      tierOptions: ["Tier1", "Tier2", "Tier3", "No Dispatching"],
       technicianTierOptions: ["Tier1", "Tier2", "Tier3"],
-      durationOptions: [
-        "15 Minutes",
-        "30 Minutes",
-        "45 Minutes",
-        "1 Hour",
-        "1 Hour 30 Minutes",
-        "2 Hours 30 Minutes",
-        "3 Hours 30 Minutes",
-        "4 Hours",
-      ],
+      durationOptions: {
+        "15 Minutes": 15,
+        "30 Minutes": 30,
+        "45 Minutes": 45,
+        "1 Hour": 60,
+        "1 Hour 30 Minutes": 90,
+        "2 Hours 30 Minutes": 150,
+        "3 Hours 30 Minutes": 210,
+        "4 Hours": 240,
+      },
 
       successManageIntegration: false,
       successManageDisconnect: false,
 
       errorManageIntegration: false,
       errorManageDisconnect: false,
+
+      successMessageCategory: false,
+      errorMessageCategory: false,
+
+      successMessageSubCategory: false,
+      errorMessageSubCategory: false,
+
+      successMessageStatus: false,
+      errorMessageStatus: false,
 
       successMessage: false,
       errorMessage: false,

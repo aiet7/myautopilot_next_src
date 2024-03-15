@@ -21,13 +21,13 @@ const Configuration = () => {
   const renderComponent = () => {
     switch (activeConfigSteps) {
       case 1:
-        return <Technician />;
-      case 2:
-        return <Clients />;
-      case 3:
-        return <Contacts />;
-      case 4:
         return <Board />;
+      case 2:
+        return <Technician />;
+      case 3:
+        return <Clients />;
+      case 4:
+        return <Contacts />;
     }
   };
   return (
@@ -46,7 +46,7 @@ const Configuration = () => {
                 activeConfigSteps === 1 && "text-white bg-blue-800"
               } px-4 py-3 rounded-lg w-full text-black/20 border`}
             >
-              Technicians
+              Board
             </button>
             <button
               onClick={() => setActiveConfigStep(2)}
@@ -54,7 +54,7 @@ const Configuration = () => {
                 activeConfigSteps === 2 && "text-white bg-blue-800"
               } px-4 py-3 rounded-lg w-full text-black/20 border`}
             >
-              Clients
+              Technicians
             </button>
             <button
               onClick={() => setActiveConfigStep(3)}
@@ -62,7 +62,7 @@ const Configuration = () => {
                 activeConfigSteps === 3 && "text-white bg-blue-800"
               } px-4 py-3 rounded-lg w-full text-black/20 border`}
             >
-              Contacts
+              Clients
             </button>
             <button
               onClick={() => setActiveConfigStep(4)}
@@ -70,7 +70,7 @@ const Configuration = () => {
                 activeConfigSteps === 4 && "text-white bg-blue-800"
               } px-4 py-3 rounded-lg w-full text-black/20 border`}
             >
-              Board
+              Contacts
             </button>
           </div>
           {renderComponent()}

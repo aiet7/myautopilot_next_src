@@ -43,7 +43,11 @@ const useCompaniesStore = create((set, get) => ({
 
   initializeCompanies: async () => {
     const userStore = useUserStore.getState();
-    set({ companies: null });
+    set({
+      companies: null,
+      companyActiveEmployees: null,
+      companyInactiveEmployees: null,
+    });
 
     if (userStore.user) {
       try {
@@ -64,15 +68,15 @@ const useCompaniesStore = create((set, get) => ({
   setCurrentEmployeeView: (view) => set({ currentEmployeeView: view }),
 
   setSelectedCompanyEmployee: (id, field, value) => {
-    const { companyInactiveEmployees } = get();
-    const updatedCompanyEmployees = companyInactiveEmployees.map((employee) => {
+    const { companyActiveEmployees } = get();
+    const updatedCompanyEmployees = companyActiveEmployees.map((employee) => {
       if (employee.id === id) {
         return { ...employee, [field]: value };
       }
       return employee;
     });
     set({
-      companyInactiveEmployees: updatedCompanyEmployees,
+      companyActiveEmployees: updatedCompanyEmployees,
     });
   },
 
@@ -243,9 +247,9 @@ const useCompaniesStore = create((set, get) => ({
   },
 
   handleSaveCompanyEmployee: async (mspCustomDomain, companyEmployeeId) => {
-    const { companyInactiveEmployees } = get();
+    const { companyActiveEmployees } = get();
 
-    const companyEmployeeToUpdate = companyInactiveEmployees.find(
+    const companyEmployeeToUpdate = companyActiveEmployees.find(
       (employee) => employee.id === companyEmployeeId
     );
 
@@ -284,10 +288,6 @@ const useCompaniesStore = create((set, get) => ({
 
   clearCompanies: () => {
     set({
-      companies: null,
-      companyInactiveEmployees: null,
-      companyActiveEmployees: null,
-      companyAllTickets: null,
       companies: null,
       companyInactiveEmployees: null,
       companyActiveEmployees: null,

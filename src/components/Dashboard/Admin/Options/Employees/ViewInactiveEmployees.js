@@ -10,9 +10,6 @@ const ViewInactiveEmployees = () => {
     successMessage,
     errorMessage,
     inactiveEmployees,
-    employeesTierOptions,
-    employeesRoleOptions,
-    setSelectedEmployee,
     handleSaveEmployee,
   } = useEmployeesStore();
 
@@ -45,29 +42,30 @@ const ViewInactiveEmployees = () => {
                       <th className="p-2 border-t border-b border-r">
                         Phone Number
                       </th>
-
-                      <th className="p-2 border-t border-b border-r">Tier</th>
-                      <th className="p-2 border-t border-b border-r">Roles</th>
                     </tr>
                   </thead>
                   <tbody>
                     {inactiveEmployees?.map((employee) => {
                       const {
                         id,
-                        email,
+                        mobilePhone,
+                        officePhone,
+                        primaryEmail,
+                        officeEmail,
                         firstName,
                         lastName,
-                        phoneNumber,
-                        connectWiseTechnicanId,
-                        tierLevel,
-                        roleId,
+                        connectWiseMembersId,
                       } = employee;
                       return (
                         <tr key={id}>
                           <td className="p-2 truncate border-l  border-b">
                             <button
                               onClick={() =>
-                                handleSaveEmployee(user?.mspCustomDomain, id)
+                                handleSaveEmployee(
+                                  user?.mspCustomDomain,
+                                  id,
+                                  false
+                                )
                               }
                               className="hover:underline text-blue-500"
                             >
@@ -78,58 +76,14 @@ const ViewInactiveEmployees = () => {
                             {firstName + " " + lastName}
                           </td>
                           <td className="p-2 truncate border-r border-b">
-                            {email}
+                            {primaryEmail || officeEmail}
                           </td>
                           <td className="p-2 truncate border-r border-b">
-                            {connectWiseTechnicanId}
-                          </td>
-
-                          <td className="p-2 truncate border-r border-b">
-                            {phoneNumber}
+                            {connectWiseMembersId}
                           </td>
 
                           <td className="p-2 truncate border-r border-b">
-                            <div className="flex flex-col">
-                              <select
-                                value={tierLevel}
-                                onChange={(e) =>
-                                  setSelectedEmployee(
-                                    id,
-                                    "tierLevel",
-                                    e.target.value
-                                  )
-                                }
-                              >
-                                {employeesTierOptions.map((tier) => (
-                                  <option key={tier} value={tier}>
-                                    {tier}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                          </td>
-                          <td className="p-2 truncate border-r border-b">
-                            <div className="flex flex-col">
-                              <select
-                                value={roleId}
-                                onChange={(e) =>
-                                  setSelectedEmployee(
-                                    id,
-                                    "roleId",
-                                    e.target.value
-                                  )
-                                }
-                              >
-                                {employeesRoleOptions.map((role) => {
-                                  const { id, name } = role;
-                                  return (
-                                    <option key={id} value={id}>
-                                      {name}
-                                    </option>
-                                  );
-                                })}
-                              </select>
-                            </div>
+                            {mobilePhone || officePhone}
                           </td>
                         </tr>
                       );

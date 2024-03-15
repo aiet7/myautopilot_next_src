@@ -12,6 +12,8 @@ import useUserStore from "@/utils/store/user/userStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useIntegrationsStore from "@/utils/store/admin/control/integrations/integrationsStore";
 import useAdminStore from "@/utils/store/admin/adminStore";
+import useTooltipStore from "@/utils/store/tooltip/tooltipStore";
+import JoyRide from "react-joyride";
 
 const Openai = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/AI/Openai")
@@ -48,12 +50,20 @@ const SoftwareIntegratePages = () => {
   const session = Cookies.get("session_token");
 
   const router = useRouter();
+  const {
+    initialSteps,
+    authenticatedSteps,
+    run,
+    steps,
+    stepIndex,
+    handleJoyrideCallback,
+    initializeSteps,
+  } = useTooltipStore();
   const { initializeUser } = useUserStore();
-  const { initializeIntegrations } = useIntegrationsStore();
+  const { integrations, initializeIntegrations } = useIntegrationsStore();
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
   const { currentOption } = useAdminStore();
-
   const { software } = router.query;
 
   useEffect(() => {
@@ -81,6 +91,14 @@ const SoftwareIntegratePages = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, currentOption]);
+
+  useEffect(() => {
+    if (integrations?.connectWiseManageIntegrator) {
+      initializeSteps(authenticatedSteps);
+    } else {
+      initializeSteps(initialSteps);
+    }
+  }, [integrations?.connectWiseManageIntegrator]);
 
   const renderComponent = () => {
     if (software && software.length > 0) {
@@ -116,7 +134,37 @@ const SoftwareIntegratePages = () => {
     return <p>No integration selected</p>;
   };
 
-  return <>{renderComponent()}</>;
+  return (
+    <>
+      {renderComponent()}
+      <JoyRide
+        continuous
+        run={run}
+        scrollToFirstStep
+        showProgress
+        showSkipButton
+        steps={steps}
+        stepIndex={stepIndex}
+        styles={{
+          tooltipTitle: {
+            textAlign: "left",
+            fontWeight: "bold",
+          },
+          tooltipContent: {
+            textAlign: "left",
+            paddingTop: "10px",
+            paddingBottom: "10px",
+            paddingLeft: "0",
+            paddingRight: "0",
+          },
+          options: {
+            zIndex: 1000,
+          },
+        }}
+        callback={handleJoyrideCallback}
+      />
+    </>
+  );
 };
 
 SoftwareIntegratePages.getLayout = (page) => {

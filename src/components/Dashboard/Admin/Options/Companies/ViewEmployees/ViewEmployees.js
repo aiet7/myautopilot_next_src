@@ -46,7 +46,7 @@ const ViewEmployees = () => {
                 currentEmployeeView === "Inactive" && "font-bold"
               } cursor-pointer`}
             >
-              Inactive
+              All
             </span>
           </div>
           <div className="flex items-center justify-start gap-2 py-4">

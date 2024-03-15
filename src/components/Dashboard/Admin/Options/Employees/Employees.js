@@ -56,7 +56,7 @@ const Employees = ({}) => {
             currentView === "Inactive" && "font-bold"
           } cursor-pointer`}
         >
-          Inactive
+          All
         </span>
       </div>
       <div className="flex flex-col h-full overflow-hidden">

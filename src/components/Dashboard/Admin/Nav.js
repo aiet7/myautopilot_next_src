@@ -2,7 +2,7 @@
 import useUiStore from "@/utils/store/ui/uiStore";
 import { BsGearWideConnected } from "react-icons/bs";
 import { GiOrganigram } from "react-icons/gi";
-import { FaUserCog } from "react-icons/fa";
+import { FaUserCog, FaChalkboard } from "react-icons/fa";
 import { MdOutlineBrandingWatermark, MdBusinessCenter } from "react-icons/md";
 import useAdminStore from "@/utils/store/admin/adminStore";
 import Link from "next/link";
@@ -25,7 +25,8 @@ const Nav = ({}) => {
         return <MdOutlineBrandingWatermark size={20} />;
       case "companies":
         return <MdBusinessCenter size={20} />;
-
+      case "boards":
+        return <FaChalkboard size={20} />;
       default:
         return null;
     }
@@ -44,11 +45,11 @@ const Nav = ({}) => {
         {options.map((option, index) => {
           return (
             <Link
+              id={`nav-${option}`}
               key={option}
               href={`/${user?.mspCustomDomain}/dashboard/${user?.id}/admin/${option}`}
             >
               <div
-                id={`nav-${option}`}
                 onClick={() => handleOptionSelected(option)}
                 className="flex flex-col items-start my-2"
               >

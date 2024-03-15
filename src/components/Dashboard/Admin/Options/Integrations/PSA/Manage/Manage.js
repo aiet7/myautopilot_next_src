@@ -10,7 +10,6 @@ import Configuration from "./Configuration";
 
 import Link from "next/link";
 import { convertHideIntegrationKeys } from "@/utils/conversions";
-import { FcGoogle } from "react-icons/fc";
 
 const Manage = () => {
   const { user } = useUserStore();
@@ -105,7 +104,10 @@ const Manage = () => {
               </div>
               <div className="flex flex-col p-4 gap-6 text-sm">
                 <div className="flex flex-col gap-6 lg:flex-row ">
-                  <div className="flex flex-col w-full gap-1">
+                  <div
+                    id="manage-clientId"
+                    className="flex flex-col w-full gap-1"
+                  >
                     <p>Client ID</p>
                     <p className="dark:text-white/60 text-black/60">
                       Your Client ID that is assigned to you from ConnectWise
@@ -130,7 +132,10 @@ const Manage = () => {
                       />
                     )}
                   </div>
-                  <div className="flex flex-col w-full gap-1">
+                  <div
+                    id="manage-publicKey"
+                    className="flex flex-col w-full gap-1"
+                  >
                     <p>Public Key</p>
                     <p className="dark:text-white/60 text-black/60">
                       Your generated Public Key that was created via ConnectWise
@@ -158,7 +163,10 @@ const Manage = () => {
                   </div>
                 </div>
                 <div className="flex flex-col gap-6 lg:flex-row">
-                  <div className="flex flex-col w-full gap-1">
+                  <div
+                    id="manage-companyId"
+                    className="flex flex-col w-full gap-1"
+                  >
                     <p>Company ID</p>
                     <p className="dark:text-white/60 text-black/60">
                       Your Company ID that is assigned to you from ConnectWise
@@ -183,7 +191,10 @@ const Manage = () => {
                       />
                     )}
                   </div>
-                  <div className="flex flex-col w-full gap-1">
+                  <div
+                    id="manage-privateKey"
+                    className="flex flex-col w-full gap-1"
+                  >
                     <p>Private Key</p>
                     <p className="dark:text-white/60 text-black/60">
                       Your generated Private Key that was created via
@@ -223,6 +234,7 @@ const Manage = () => {
                       </button>
                     ) : (
                       <button
+                        id="manage-saveKeys"
                         onClick={() =>
                           handleSaveManageKeys(user?.mspCustomDomain)
                         }
@@ -334,6 +346,11 @@ const Manage = () => {
 
                 {integrations?.connectWiseManageIntegrator && (
                   <button
+                    id={
+                      integrations?.connectWiseManageIntegrator
+                        ? "manageAuthenticated-configuration"
+                        : ""
+                    }
                     onClick={() => setActiveConfig(true, user?.mspCustomDomain)}
                     className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg px-3 py-1"
                   >
@@ -342,6 +359,11 @@ const Manage = () => {
                 )}
                 {
                   <button
+                    id={
+                      integrations?.connectWiseManageIntegrator
+                        ? "manageAuthenticated-disconnect"
+                        : "manage-authenticate"
+                    }
                     onClick={() =>
                       integrations?.connectWiseManageIntegrator
                         ? handleDisconnectManage(user?.mspCustomDomain)

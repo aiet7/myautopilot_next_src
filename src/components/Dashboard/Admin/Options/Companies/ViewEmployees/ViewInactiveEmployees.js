@@ -7,8 +7,7 @@ const ViewInactiveEmployees = () => {
   const { user } = useUserStore();
   const {
     companyInactiveEmployees,
-    companyEmployeeRoleOptions,
-    setSelectedCompanyEmployee,
+
     handleViewCompanyEmployeeTickets,
     handleSaveCompanyEmployee,
   } = useCompaniesStore();
@@ -31,7 +30,6 @@ const ViewInactiveEmployees = () => {
                   <th className="p-2 border-t border-b border-r">
                     Phone Number
                   </th>
-                  <th className="p-2 border-t border-b border-r">Roles</th>
                 </tr>
               </thead>
               <tbody>
@@ -75,30 +73,6 @@ const ViewInactiveEmployees = () => {
                       </td>
                       <td className="p-2 truncate border-r border-b">
                         {connectWisePhoneNumber || defaultPhoneNbr}
-                      </td>
-                      <td className="p-2 truncate border-r border-b">
-                        <div className="flex flex-col">
-                          <select
-                            value={roleId}
-                            onClick={(e) => e.stopPropagation()}
-                            onChange={(e) =>
-                              setSelectedCompanyEmployee(
-                                id,
-                                "roleId",
-                                e.target.value
-                              )
-                            }
-                          >
-                            {companyEmployeeRoleOptions.map((role) => {
-                              const { id, name } = role;
-                              return (
-                                <option key={id} value={id}>
-                                  {name}
-                                </option>
-                              );
-                            })}
-                          </select>
-                        </div>
                       </td>
                     </tr>
                   );

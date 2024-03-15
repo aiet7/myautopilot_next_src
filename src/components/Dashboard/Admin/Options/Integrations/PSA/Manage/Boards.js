@@ -4,6 +4,8 @@ import useManageStore from "@/utils/store/admin/control/integrations/PSA/manageS
 import useUserStore from "@/utils/store/user/userStore";
 import { FaClipboard, FaSpinner } from "react-icons/fa";
 import { AiOutlinePlus } from "react-icons/ai";
+import { SiOpenai } from "react-icons/si";
+import { useEffect } from "react";
 
 const Board = () => {
   const { user } = useUserStore();
@@ -30,6 +32,7 @@ const Board = () => {
     customBoardMetadata,
     customBoard,
     connectwiseBoards,
+    loadingAiMerge,
     loadingMerge,
     customBoardMerge,
     connectwiseMerge,
@@ -39,6 +42,7 @@ const Board = () => {
     setNewCustomSubcategory,
     handleCreateOpenStatus,
     handleCreateClosedStatus,
+    handleGenerateAIBoard,
     handleCreateCategory,
     handleCreateSubCategory,
     handleGetBoardDetails,
@@ -49,6 +53,85 @@ const Board = () => {
 
   const boardData = customBoard ? customBoardMerge : connectwiseMerge;
   console.log(boardData);
+
+  useEffect(() => {
+    if (
+      boardData &&
+      boardData.mspConnectWiseManageCategorizations &&
+      boardData.prioritiesList
+    ) {
+      boardData.mspConnectWiseManageCategorizations.forEach((category) => {
+        const categoryId = category.categoryId;
+
+        category.mspConnectWiseManageSubCategorizations.forEach(
+          (subCategory) => {
+            const subCategoryId = subCategory.subCategoryId;
+
+            if (!subCategory.priorityId || subCategory.priorityId === 0) {
+              const defaultPriority = boardData.prioritiesList[0];
+              setBoardInputs(
+                categoryId,
+                subCategoryId,
+                "priority",
+                null,
+                defaultPriority.id,
+                defaultPriority.name
+              );
+            }
+
+            if (subCategory.severity === null) {
+              const defaultSeverity = "Low" || severityOptions[0];
+              setBoardInputs(
+                categoryId,
+                subCategoryId,
+                "severity",
+                null,
+                defaultSeverity,
+                null
+              );
+            }
+
+            if (subCategory.impact === null) {
+              const defaultImpact = "Low" || impactOptions[0];
+              setBoardInputs(
+                categoryId,
+                subCategoryId,
+                "impact",
+                null,
+                defaultImpact,
+                null
+              );
+            }
+
+            if (subCategory.tier === null) {
+              const defaultTier = "Low" || tierOptions[3];
+              setBoardInputs(
+                categoryId,
+                subCategoryId,
+                "tier",
+                null,
+                defaultTier,
+                null
+              );
+            }
+
+            if (subCategory.durationToResolve === 0) {
+              const defaultDuration = 15 || durationOptions["15 Minutes"];
+              setBoardInputs(
+                categoryId,
+                subCategoryId,
+                "durationToResolve",
+                null,
+                defaultDuration,
+                null
+              );
+            }
+          }
+        );
+      });
+    }
+  }, [loadingMerge]);
+
   return (
     <div className="flex flex-col gap-4 h-full overflow-hidden">
       <div className="flex flex-col gap-8 pb-2 justify-between items-start text-xl font-semibold italic text-black/30 md:flex-row">
@@ -105,6 +188,20 @@ const Board = () => {
           >
             Custom Board
           </button>
+          {connectwiseMerge && (
+            <button
+              onClick={handleGenerateAIBoard}
+              className="hover:bg-green-500 flex items-center gap-2 bg-green-600 text-white px-6 py-2 rounded-md"
+            >
+              <span>
+                {loadingAiMerge
+                  ? "Generating AI Board..."
+                  : "Generate AI Board"}
+              </span>
+              <SiOpenai size={15} />
+            </button>
+          )}
+
           {connectwiseOpenStatuses && (
             <>
               {connectwiseOpenStatuses?.length > 0 ? (
@@ -509,7 +606,7 @@ const Board = () => {
                             <td className="p-1 border-r border-b align-top">
                               {mspConnectWiseManageSubCategorizations.map(
                                 (subCat) => {
-                                  const { subCategoryId } = subCat;
+                                  const { subCategoryId, priorityId } = subCat;
 
                                   return (
                                     <div
@@ -517,6 +614,7 @@ const Board = () => {
                                       className="flex flex-col"
                                     >
                                       <select
+                                        value={priorityId}
                                         onChange={(e) => {
                                           const selectedPriority =
                                             boardData?.prioritiesList.find(
@@ -564,13 +662,14 @@ const Board = () => {
                             <td className="p-1 border-r border-b align-top">
                               {mspConnectWiseManageSubCategorizations.map(
                                 (subCat) => {
-                                  const { subCategoryId } = subCat;
+                                  const { subCategoryId, severity } = subCat;
                                   return (
                                     <div
                                       key={subCategoryId}
                                       className="flex flex-col"
                                     >
                                       <select
+                                        value={severity}
                                         onChange={(e) => {
                                           if (customBoard) {
                                             setCustomBoardInputs(
@@ -607,13 +706,14 @@ const Board = () => {
                             <td className="p-1 border-r border-b align-top">
                               {mspConnectWiseManageSubCategorizations.map(
                                 (subCat) => {
-                                  const { subCategoryId } = subCat;
+                                  const { subCategoryId, impact } = subCat;
                                   return (
                                     <div
                                       key={subCategoryId}
                                       className="flex flex-col"
                                     >
                                       <select
+                                        value={impact}
                                         onChange={(e) => {
                                           if (customBoard) {
                                             setCustomBoardInputs(
@@ -650,13 +750,14 @@ const Board = () => {
                             <td className="p-1 border-r border-b align-top">
                               {mspConnectWiseManageSubCategorizations.map(
                                 (subCat) => {
-                                  const { subCategoryId } = subCat;
+                                  const { subCategoryId, tier } = subCat;
                                   return (
                                     <div
                                       key={subCategoryId}
                                       className="flex flex-col"
                                     >
                                       <select
+                                        value={tier}
                                         onChange={(e) => {
                                           if (customBoard) {
                                             setCustomBoardInputs(
@@ -680,7 +781,9 @@ const Board = () => {
                                         }}
                                       >
                                         {tierOptions.map((option) => (
-                                          <option key={option}>{option}</option>
+                                          <option key={option} value={option}>
+                                            {option}
+                                          </option>
                                         ))}
                                       </select>
                                     </div>
@@ -691,19 +794,23 @@ const Board = () => {
                             <td className="p-1 border-r border-b align-top">
                               {mspConnectWiseManageSubCategorizations.map(
                                 (subCat) => {
-                                  const { subCategoryId } = subCat;
+                                  const { subCategoryId, durationToResolve } =
+                                    subCat;
                                   return (
                                     <div
                                       key={subCategoryId}
                                       className="flex flex-col"
                                     >
                                       <select
+                                        value={
+                                          durationOptions[durationToResolve]
+                                        }
                                         onChange={(e) => {
                                           if (customBoard) {
                                             setCustomBoardInputs(
                                               categoryId,
                                               subCategoryId,
-                                              "duration",
+                                              "durationToResolve",
                                               e.target.value,
                                               null,
                                               null
@@ -712,17 +819,21 @@ const Board = () => {
                                             setBoardInputs(
                                               categoryId,
                                               subCategoryId,
-                                              "duration",
+                                              "durationToResolve",
                                               null,
-                                              e.target.value,
+                                              durationOptions[e.target.value],
                                               null
                                             );
                                           }
                                         }}
                                       >
-                                        {durationOptions.map((option) => (
-                                          <option key={option}>{option}</option>
-                                        ))}
+                                        {Object.keys(durationOptions).map(
+                                          (option) => (
+                                            <option key={option} value={option}>
+                                              {option}
+                                            </option>
+                                          )
+                                        )}
                                       </select>
                                     </div>
                                   );
@@ -755,10 +866,7 @@ const Board = () => {
             <p className="text-red-500">Error Saving Board</p>
           )}
         </div>
-        <div lassName="flex items-center gap-2 self-end ">
-          {successMessage && (
-            <p className="text-emerald-500">Saved Board Successfully!</p>
-          )}
+        <div className="flex items-center gap-2 self-end ">
           {errorMessage && <p className="text-red-500">Error Saving Board</p>}
           {boardData && (
             <button

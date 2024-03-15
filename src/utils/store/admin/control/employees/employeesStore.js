@@ -24,7 +24,7 @@ const useEmployeesStore = create((set, get) => ({
 
   initializeEmployees: async () => {
     const userStore = useUserStore.getState();
-    set({ employees: null });
+    set({ activeEmployees: null, inactiveEmployees: null });
 
     if (userStore.user) {
       try {
@@ -50,23 +50,35 @@ const useEmployeesStore = create((set, get) => ({
 
   setCurrentView: (view) => set({ currentView: view }),
 
-  setSelectedEmployee: (id, field, value) => {
-    const { employees } = get();
-    const updatedEmployees = employees.map((employee) => {
+  setSelectedEmployee: (id, field, value, isActive) => {
+    const { activeEmployees, inactiveEmployees } = get();
+
+    const targetEmployees = isActive ? activeEmployees : inactiveEmployees;
+
+    const updatedEmployees = targetEmployees.map((employee) => {
       if (employee.id === id) {
         return { ...employee, [field]: value };
       }
       return employee;
     });
-    set({
-      employees: updatedEmployees,
-    });
+
+    if (isActive) {
+      set({
+        activeEmployees: updatedEmployees,
+      });
+    } else {
+      set({
+        inactiveEmployees: updatedEmployees,
+      });
+    }
   },
 
-  handleSaveEmployee: async (mspCustomDomain, employeeId) => {
-    const { employees } = get();
+  handleSaveEmployee: async (mspCustomDomain, employeeId, isActive) => {
+    const { activeEmployees, inactiveEmployees } = get();
 
-    const employeeToUpdate = employees.find(
+    const targetEmployees = isActive ? activeEmployees : inactiveEmployees;
+
+    const employeeToUpdate = targetEmployees.find(
       (employee) => employee.id === employeeId
     );
     try {

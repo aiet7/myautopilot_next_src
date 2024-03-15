@@ -67,7 +67,11 @@ const ViewActiveEmployees = () => {
                           <td className="p-2 truncate border-l  border-b">
                             <button
                               onClick={() =>
-                                handleSaveEmployee(user?.mspCustomDomain, id)
+                                handleSaveEmployee(
+                                  user?.mspCustomDomain,
+                                  id,
+                                  true
+                                )
                               }
                               className="hover:underline text-blue-500"
                             >
@@ -96,7 +100,8 @@ const ViewActiveEmployees = () => {
                                   setSelectedEmployee(
                                     id,
                                     "tierLevel",
-                                    e.target.value
+                                    e.target.value,
+                                    true
                                   )
                                 }
                               >
@@ -116,7 +121,8 @@ const ViewActiveEmployees = () => {
                                   setSelectedEmployee(
                                     id,
                                     "roleId",
-                                    e.target.value
+                                    e.target.value,
+                                    true
                                   )
                                 }
                               >

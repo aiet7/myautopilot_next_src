@@ -18,11 +18,16 @@ const Clients = () => {
     clientsFilterType,
     clientAndContactTypes,
     selectedAutoSyncType,
+    autoSyncingShow,
+    autoSyncLoading,
+    autoSyncingCompleted,
     loadingClients,
+    setAutoSyncToast,
     setSelectedClients,
     setSelectAllClients,
     setClientsFilterType,
     setSelectedAutoSyncType,
+    handleSetDefaultCompany,
     handleAddManageClients,
     handleAutoSync,
     initializeManageClients,
@@ -49,9 +54,9 @@ const Clients = () => {
   useEffect(() => {
     initializeManageClients();
   }, [user]);
-  
+
   return (
-    <div className="flex flex-col h-full overflow-hidden">
+    <div className="relative flex flex-col h-full overflow-hidden">
       <div className="flex flex-col text-xl overflow-hidden">
         <div className="flex flex-col self-end gap-1">
           {clientAndContactTypes && (
@@ -113,7 +118,6 @@ const Clients = () => {
             {currentClients && (
               <div className="flex gap-2 flex-col overflow-hidden ">
                 <div className="flex items-center justify-start gap-2">
-                  
                   {errorMessage && (
                     <p className="text-red-500">Error Saving Clients</p>
                   )}
@@ -135,6 +139,14 @@ const Clients = () => {
                             }
                             className="flex items-center justify-center w-full h-full"
                           />
+                        </th>
+                        <th className="p-2 border-t border-b border-r ">
+                          <div
+                            className="flex flex-col items-start"
+                          >
+                            <span>Default Company</span>
+                            <span className="text-xs">If company is not registered, will not be able to create tickets</span>
+                          </div>
                         </th>
                         <th className="p-2 border-t border-b border-r ">
                           Name
@@ -177,8 +189,10 @@ const Clients = () => {
                     </thead>
                     <tbody>
                       {currentClients?.map((client) => {
+                        console.log(client);
                         const {
                           name,
+                          identifier,
                           connectWiseCompanyId,
                           addressLine1,
                           addressLine2,
@@ -212,6 +226,20 @@ const Clients = () => {
                                   type="checkbox"
                                 />
                               )}
+                            </td>
+                            <td className="p-2 truncate border-l border-r border-b">
+                              <button
+                                onClick={() =>
+                                  handleSetDefaultCompany(
+                                    user?.mspCustomDomain,
+                                    identifier,
+                                    connectWiseCompanyId
+                                  )
+                                }
+                                className="hover:underline text-blue-500"
+                              >
+                                Set Default
+                              </button>
                             </td>
                             <td className="p-2 truncate  border-r border-b">
                               {name}
@@ -267,6 +295,40 @@ const Clients = () => {
           </p>
         )}
       </div>
+      {autoSyncingShow && (
+        <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center z-[99]">
+          <div className="bg-gray-700 text-white flex flex-col justify-center gap-4 w-[320px] h-[220px] p-3 rounded-md">
+            <h2 className="font-bold">AutoSync</h2>
+            {autoSyncLoading && (
+              <p>
+                Your clients and contacts are currently syncing. You can hide
+                this popup, and the syncing will continue. You will be notified
+                when it is complete.
+              </p>
+            )}
+            {!autoSyncLoading && autoSyncingCompleted && (
+              <p>Your clients and contacts have been successfully synced.</p>
+            )}
+            <div>
+              {autoSyncLoading ? (
+                <button
+                  onClick={() => setAutoSyncToast(false, null)}
+                  className="text-sm self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+                >
+                  Hide
+                </button>
+              ) : (
+                <button
+                  onClick={() => setAutoSyncToast(false, false)}
+                  className="text-sm self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+                >
+                  OK
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

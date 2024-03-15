@@ -110,6 +110,7 @@ const useIntegrationsStore = create((set, get) => ({
     set({ integrations: null });
     const newIntegrations = await handleGetIntegrations(msp);
     set({ integrations: newIntegrations });
+
     return newIntegrations;
   },
 

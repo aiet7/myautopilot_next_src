@@ -58,9 +58,13 @@ const ViewActiveEmployees = () => {
                     >
                       <td className="p-2 truncate border-l  border-b">
                         <button
-                          onClick={() =>
-                            handleSaveCompanyEmployee(user?.mspCustomDomain, id)
-                          }
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSaveCompanyEmployee(
+                              user?.mspCustomDomain,
+                              id
+                            );
+                          }}
                           className="hover:underline text-blue-500"
                         >
                           Save

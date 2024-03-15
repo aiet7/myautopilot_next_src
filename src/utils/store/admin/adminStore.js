@@ -1,7 +1,14 @@
 import { create } from "zustand";
 
 const useAdminStore = create((set, get) => ({
-  options: ["employees", "roles", "integrations", "branding", "companies"],
+  options: [
+    "employees",
+    "roles",
+    "integrations",
+    "branding",
+    "companies",
+    "boards",
+  ],
   currentOption: null,
 
   handleOptionSelected: (option) => {

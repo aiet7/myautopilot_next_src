@@ -9,8 +9,6 @@ import useLocalStorageStore from "@/utils/store/localstorage/localStorageStore";
 import useUserStore from "@/utils/store/user/userStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useAdminStore from "@/utils/store/admin/adminStore";
-import ReactJoyride from "react-joyride";
-import useTooltipStore from "@/utils/store/tooltip/tooltipStore";
 
 const Cards = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/Cards/Cards")
@@ -24,8 +22,7 @@ const IntegrationsPage = () => {
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
   const { currentOption } = useAdminStore();
-  const { runTour, steps, stepIndex, handleJoyrideCallback } =
-    useTooltipStore();
+  
 
   useEffect(() => {
     if (router.isReady) {
@@ -56,21 +53,7 @@ const IntegrationsPage = () => {
   return (
     <>
       <Cards />
-      <ReactJoyride
-        continuous
-        run={runTour}
-        scrollToFirstStep
-        showProgress
-        showSkipButton
-        steps={steps}
-        stepIndex={stepIndex}
-        styles={{
-          options: {
-            zIndex: 1000,
-          },
-        }}
-        callback={handleJoyrideCallback}
-      />
+      
     </>
   );
 };
