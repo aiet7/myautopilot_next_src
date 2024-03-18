@@ -2,7 +2,7 @@
 
 import useCompaniesStore from "@/utils/store/admin/control/companies/companiesStore";
 import ViewActiveEmployees from "../../Companies/ViewEmployees/ViewActiveEmployees";
-import ViewInactiveEmployees from "../../Companies/ViewEmployees/ViewInactiveEmployees";
+import ViewPSAEmployees from "./ViewPSAEmployees";
 import AddEmployee from "./AddEmployee";
 import useUserStore from "@/utils/store/user/userStore";
 
@@ -18,8 +18,8 @@ const ViewEmployees = () => {
 
   const renderComponent = () => {
     switch (currentEmployeeView) {
-      case "Inactive":
-        return <ViewInactiveEmployees />;
+      case "PSA Contacts":
+        return <ViewPSAEmployees />;
       default:
         return <ViewActiveEmployees />;
     }
@@ -33,7 +33,7 @@ const ViewEmployees = () => {
             <span
               onClick={() => setCurrentEmployeeView("Active")}
               className={`${
-                currentEmployeeView !== "Inactive" && "font-bold"
+                currentEmployeeView !== "PSA Contacts" && "font-bold"
               } cursor-pointer`}
             >
               Active
@@ -41,12 +41,12 @@ const ViewEmployees = () => {
             <span>/</span>
 
             <span
-              onClick={() => setCurrentEmployeeView("Inactive")}
+              onClick={() => setCurrentEmployeeView("PSA Contacts")}
               className={`${
-                currentEmployeeView === "Inactive" && "font-bold"
+                currentEmployeeView === "PSA Contacts" && "font-bold"
               } cursor-pointer`}
             >
-              All
+              PSA Contacts
             </span>
           </div>
           <div className="flex items-center justify-start gap-2 py-4">

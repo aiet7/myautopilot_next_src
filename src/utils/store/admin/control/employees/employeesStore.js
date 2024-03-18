@@ -11,7 +11,7 @@ const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 const emailConnectorUrl = process.env.NEXT_PUBLIC_EMAILCONNECTOR_URL;
 
 const useEmployeesStore = create((set, get) => ({
-  inactiveEmployees: null,
+  employees: null,
   activeEmployees: null,
 
   employeesTierOptions: ["Tier1", "Tier2", "Tier3", "NoTier"],
@@ -24,21 +24,18 @@ const useEmployeesStore = create((set, get) => ({
 
   initializeEmployees: async () => {
     const userStore = useUserStore.getState();
-    set({ activeEmployees: null, inactiveEmployees: null });
+    set({ activeEmployees: null, employees: null });
 
     if (userStore.user) {
       try {
-        const [dbInactiveEmployees, dbActiveEmployees, newRoles] =
-          await Promise.all([
-            handleGetManageInactiveDBTechnicians(
-              userStore.user.mspCustomDomain
-            ),
-            handleGetManageActiveDBTechnicians(userStore.user.mspCustomDomain),
-            handleGetRoles(userStore.user.mspCustomDomain),
-          ]);
+        const [dbEmployees, dbActiveEmployees, newRoles] = await Promise.all([
+          handleGetManageInactiveDBTechnicians(userStore.user.mspCustomDomain),
+          handleGetManageActiveDBTechnicians(userStore.user.mspCustomDomain),
+          handleGetRoles(userStore.user.mspCustomDomain),
+        ]);
 
         set({
-          inactiveEmployees: dbInactiveEmployees,
+          employees: dbEmployees,
           activeEmployees: dbActiveEmployees,
           employeesRoleOptions: newRoles,
         });
@@ -51,9 +48,9 @@ const useEmployeesStore = create((set, get) => ({
   setCurrentView: (view) => set({ currentView: view }),
 
   setSelectedEmployee: (id, field, value, isActive) => {
-    const { activeEmployees, inactiveEmployees } = get();
+    const { activeEmployees, employees } = get();
 
-    const targetEmployees = isActive ? activeEmployees : inactiveEmployees;
+    const targetEmployees = isActive ? activeEmployees : employees;
 
     const updatedEmployees = targetEmployees.map((employee) => {
       if (employee.id === id) {
@@ -68,17 +65,15 @@ const useEmployeesStore = create((set, get) => ({
       });
     } else {
       set({
-        inactiveEmployees: updatedEmployees,
+        employees: updatedEmployees,
       });
     }
   },
 
-  handleSaveEmployee: async (mspCustomDomain, employeeId, isActive) => {
-    const { activeEmployees, inactiveEmployees } = get();
+  handleSaveActiveEmployee: async (mspCustomDomain, employeeId) => {
+    const { activeEmployees } = get();
 
-    const targetEmployees = isActive ? activeEmployees : inactiveEmployees;
-
-    const employeeToUpdate = targetEmployees.find(
+    const employeeToUpdate = activeEmployees.find(
       (employee) => employee.id === employeeId
     );
     try {
@@ -92,19 +87,48 @@ const useEmployeesStore = create((set, get) => ({
           body: JSON.stringify({
             email: employeeToUpdate.email,
             roleId: employeeToUpdate.roleId,
-            tierLevel: employeeToUpdate.tierLevel,
           }),
         }
       );
 
       if (response.status === 200) {
-        console.log("Role and Tier Updated!");
+        console.log("Role Updated!");
         set({
           successMessage: true,
           errorMessage: false,
         });
       } else {
-        console.log("Role and Tier Updated Failed!");
+        console.log("Role Updated Failed!");
+        set({
+          successMessage: false,
+          errorMessage: true,
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleSaveEmployee: async (mspCustomDomain, employeeId) => {
+    const { employees } = get();
+
+    const employeeToUpdate = employees.find(
+      (employee) => employee.id === employeeId
+    );
+
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/${mspCustomDomain}/updateConnectWiseMemberTier?id=${employeeId}&tier=${employeeToUpdate.tier}`
+      );
+
+      if (response.status === 200) {
+        console.log("Tier Updated!");
+        set({
+          successMessage: true,
+          errorMessage: false,
+        });
+      } else {
+        console.log("Tier Updated Failed!");
         set({
           successMessage: false,
           errorMessage: true,
@@ -117,7 +141,7 @@ const useEmployeesStore = create((set, get) => ({
 
   clearEmployees: () => {
     set({
-      inactiveEmployees: null,
+      employees: null,
       activeEmployees: null,
 
       employeesTierOptions: ["Tier1", "Tier2", "Tier3", "NoTier"],

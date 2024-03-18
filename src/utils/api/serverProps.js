@@ -93,7 +93,12 @@ export const handleGetManageDBContacts = async (msp) => {
   return response.json();
 };
 
-
+export const handleGetDBBoard = async (msp) => {
+  const response = await fetch(
+    `${dbServiceUrl}/${encodeURIComponent(msp)}/connectWiseManageDetails`
+  );
+  return response.json();
+};
 
 export const handleGetRoles = async (msp) => {
   const response = await fetch(

@@ -10,10 +10,9 @@ const ViewActiveEmployees = () => {
     successMessage,
     errorMessage,
     activeEmployees,
-    employeesTierOptions,
     employeesRoleOptions,
     setSelectedEmployee,
-    handleSaveEmployee,
+    handleSaveActiveEmployee,
   } = useEmployeesStore();
 
   return (
@@ -38,15 +37,11 @@ const ViewActiveEmployees = () => {
                       <th className="p-2 border-t border-b border-r ">
                         Email Address
                       </th>
-                      <th className="p-2 border-t border-b border-r ">
-                        Technician ID
-                      </th>
 
                       <th className="p-2 border-t border-b border-r">
                         Phone Number
                       </th>
 
-                      <th className="p-2 border-t border-b border-r">Tier</th>
                       <th className="p-2 border-t border-b border-r">Roles</th>
                     </tr>
                   </thead>
@@ -58,8 +53,6 @@ const ViewActiveEmployees = () => {
                         firstName,
                         lastName,
                         phoneNumber,
-                        connectWiseTechnicanId,
-                        tierLevel,
                         roleId,
                       } = employee;
                       return (
@@ -67,10 +60,9 @@ const ViewActiveEmployees = () => {
                           <td className="p-2 truncate border-l  border-b">
                             <button
                               onClick={() =>
-                                handleSaveEmployee(
+                                handleSaveActiveEmployee(
                                   user?.mspCustomDomain,
-                                  id,
-                                  true
+                                  id
                                 )
                               }
                               className="hover:underline text-blue-500"
@@ -84,35 +76,11 @@ const ViewActiveEmployees = () => {
                           <td className="p-2 truncate border-r border-b">
                             {email}
                           </td>
-                          <td className="p-2 truncate border-r border-b">
-                            {connectWiseTechnicanId}
-                          </td>
 
                           <td className="p-2 truncate border-r border-b">
                             {phoneNumber}
                           </td>
 
-                          <td className="p-2 truncate border-r border-b">
-                            <div className="flex flex-col">
-                              <select
-                                value={tierLevel}
-                                onChange={(e) =>
-                                  setSelectedEmployee(
-                                    id,
-                                    "tierLevel",
-                                    e.target.value,
-                                    true
-                                  )
-                                }
-                              >
-                                {employeesTierOptions.map((tier) => (
-                                  <option key={tier} value={tier}>
-                                    {tier}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                          </td>
                           <td className="p-2 truncate border-r border-b">
                             <div className="flex flex-col">
                               <select

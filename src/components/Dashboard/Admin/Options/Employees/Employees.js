@@ -5,7 +5,7 @@ import useUiStore from "@/utils/store/ui/uiStore";
 import useUserStore from "@/utils/store/user/userStore";
 import { useEffect } from "react";
 import ViewActiveEmployees from "./ViewActiveEmployees";
-import ViewInactiveEmployees from "./ViewInactiveEmployees";
+import ViewEmployees from "./ViewEmployees";
 
 const Employees = ({}) => {
   const { user } = useUserStore();
@@ -19,8 +19,8 @@ const Employees = ({}) => {
 
   const renderComponent = () => {
     switch (currentView) {
-      case "Inactive":
-        return <ViewInactiveEmployees />;
+      case "Technicians":
+        return <ViewEmployees />;
       default:
         return <ViewActiveEmployees />;
     }
@@ -44,22 +44,22 @@ const Employees = ({}) => {
         <span
           onClick={() => setCurrentView("Active")}
           className={`${
-            currentView !== "Inactive" && "font-bold"
+            currentView !== "Technicians" && "font-bold"
           } cursor-pointer`}
         >
           Active
         </span>
         <span>/</span>
         <span
-          onClick={() => setCurrentView("Inactive")}
+          onClick={() => setCurrentView("Technicians")}
           className={`${
-            currentView === "Inactive" && "font-bold"
+            currentView === "Technicians" && "font-bold"
           } cursor-pointer`}
         >
-          All
+          Technicians
         </span>
       </div>
-      <div className="flex flex-col h-full overflow-hidden">
+      <div className="flex flex-col h-full overflow-hidden pb-4">
         {renderComponent()}
       </div>
     </div>

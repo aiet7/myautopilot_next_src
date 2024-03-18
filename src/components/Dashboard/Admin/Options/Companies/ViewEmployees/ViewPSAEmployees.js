@@ -3,20 +3,19 @@
 import useCompaniesStore from "@/utils/store/admin/control/companies/companiesStore";
 import useUserStore from "@/utils/store/user/userStore";
 
-const ViewInactiveEmployees = () => {
+const ViewPSAEmployees = () => {
   const { user } = useUserStore();
   const {
-    companyInactiveEmployees,
-
+    companyPSAEmployees,
     handleViewCompanyEmployeeTickets,
     handleSaveCompanyEmployee,
   } = useCompaniesStore();
 
   return (
     <>
-      {companyInactiveEmployees?.length !== 0 ? (
+      {companyPSAEmployees?.length !== 0 ? (
         <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
-          {companyInactiveEmployees && (
+          {companyPSAEmployees && (
             <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
               <thead className="dark:text-white dark:bg-gray-700 sticky top-0 text-lg text-black/60 bg-[#F5F8FA]">
                 <tr className="">
@@ -33,7 +32,7 @@ const ViewInactiveEmployees = () => {
                 </tr>
               </thead>
               <tbody>
-                {companyInactiveEmployees?.map((employee) => {
+                {companyPSAEmployees?.map((employee) => {
                   const {
                     id,
                     firstName,
@@ -90,4 +89,4 @@ const ViewInactiveEmployees = () => {
   );
 };
 
-export default ViewInactiveEmployees;
+export default ViewPSAEmployees;

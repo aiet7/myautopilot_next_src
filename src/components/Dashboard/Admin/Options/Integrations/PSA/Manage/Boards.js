@@ -198,7 +198,7 @@ const Board = () => {
                   ? "Generating AI Board..."
                   : "Generate AI Board"}
               </span>
-              <SiOpenai size={15} />
+              <SiOpenai size={15}  />
             </button>
           )}
 
@@ -579,7 +579,7 @@ const Board = () => {
                                               categoryId
                                             )
                                           }
-                                          className="hover:bg-blue-500 bg-blue-800 text-white px-2 py-1rounded-lg "
+                                          className="hover:bg-blue-500 bg-blue-800 text-white px-2 py-1 rounded-lg "
                                         >
                                           Save
                                         </button>
@@ -796,15 +796,19 @@ const Board = () => {
                                 (subCat) => {
                                   const { subCategoryId, durationToResolve } =
                                     subCat;
+                                  const durationKey = Object.keys(
+                                    durationOptions
+                                  ).find(
+                                    (key) =>
+                                      durationOptions[key] === durationToResolve
+                                  );
                                   return (
                                     <div
                                       key={subCategoryId}
                                       className="flex flex-col"
                                     >
                                       <select
-                                        value={
-                                          durationOptions[durationToResolve]
-                                        }
+                                        value={durationKey}
                                         onChange={(e) => {
                                           if (customBoard) {
                                             setCustomBoardInputs(

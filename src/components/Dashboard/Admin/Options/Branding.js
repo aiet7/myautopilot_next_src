@@ -30,7 +30,7 @@ const Branding = () => {
       <div className="dark:border-b-white/20 border-b p-4">
         <h1 className="text-2xl">Branding</h1>
       </div>
-      <div className="flex flex-col h-full overflow-hidden">
+      <div className="flex flex-col h-full overflow-hidden pb-4">
         <div className="flex flex-col text-xl overflow-hidden">
           <div className="flex flex-col gap-7 text-xl overflow-hidden">
             <div className="flex flex-col overflow-hidden px-4">

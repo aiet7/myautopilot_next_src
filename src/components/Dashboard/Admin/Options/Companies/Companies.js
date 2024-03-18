@@ -109,7 +109,7 @@ const Companies = () => {
       <div className="dark:border-b-white/20 border-b p-4">
         {renderBreadCrumb()}
       </div>
-      <div className="flex flex-col h-full overflow-hidden">
+      <div className="flex flex-col h-full overflow-hidden pb-4">
         {renderComponent()}
       </div>
     </div>

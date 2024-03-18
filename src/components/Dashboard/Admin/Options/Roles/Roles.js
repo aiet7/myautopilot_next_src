@@ -44,7 +44,7 @@ const Roles = ({ }) => {
       <div className="dark:border-b-white/20 border-b p-4">
         <h1 className="text-2xl">Roles</h1>
       </div>
-      <div className="flex flex-col h-full overflow-hidden">
+      <div className="flex flex-col h-full overflow-hidden pb-4">
         <div className="flex flex-col text-xl overflow-hidden">
           {roles?.length !== 0 ? (
             <div className="flex flex-col gap-7 text-xl overflow-hidden">
@@ -137,7 +137,7 @@ const Roles = ({ }) => {
               )}
             </div>
           ) : (
-            <p className="text-xl font-bold text-black/20  w-full">
+            <p className="text-xl font-bold text-black/20 p-4 w-full">
               Currently Have No Roles Listed
             </p>
           )}

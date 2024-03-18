@@ -7,7 +7,7 @@ const useAdminStore = create((set, get) => ({
     "integrations",
     "branding",
     "companies",
-    "boards",
+    "board",
   ],
   currentOption: null,
 

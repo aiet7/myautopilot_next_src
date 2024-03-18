@@ -3,13 +3,15 @@
 import useEmployeesStore from "@/utils/store/admin/control/employees/employeesStore";
 import useUserStore from "@/utils/store/user/userStore";
 
-const ViewInactiveEmployees = () => {
+const ViewEmployees = () => {
   const { user } = useUserStore();
 
   const {
     successMessage,
     errorMessage,
-    inactiveEmployees,
+    employees,
+    employeesTierOptions,
+    setSelectedEmployee,
     handleSaveEmployee,
   } = useEmployeesStore();
 
@@ -17,14 +19,9 @@ const ViewInactiveEmployees = () => {
     <div className="flex flex-col text-xl overflow-hidden">
       <div className="flex flex-col gap-7 text-xl overflow-hidden ">
         <div className="flex  flex-col overflow-hidden px-4">
-          <div className="flex items-center justify-start gap-2 py-4">
-            <button className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1">
-              Add Employee
-            </button>
-          </div>
-          {inactiveEmployees?.length !== 0 ? (
+          {employees?.length !== 0 ? (
             <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
-              {inactiveEmployees && (
+              {employees && (
                 <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
                   <thead className="dark:text-white dark:bg-gray-700 sticky top-0  text-lg text-black/60 bg-[#F5F8FA]">
                     <tr className="">
@@ -42,10 +39,11 @@ const ViewInactiveEmployees = () => {
                       <th className="p-2 border-t border-b border-r">
                         Phone Number
                       </th>
+                      <th className="p-2 border-t border-b border-r">Tier</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {inactiveEmployees?.map((employee) => {
+                    {employees?.map((employee) => {
                       const {
                         id,
                         mobilePhone,
@@ -55,17 +53,14 @@ const ViewInactiveEmployees = () => {
                         firstName,
                         lastName,
                         connectWiseMembersId,
+                        tier,
                       } = employee;
                       return (
                         <tr key={id}>
                           <td className="p-2 truncate border-l  border-b">
                             <button
                               onClick={() =>
-                                handleSaveEmployee(
-                                  user?.mspCustomDomain,
-                                  id,
-                                  false
-                                )
+                                handleSaveEmployee(user?.mspCustomDomain, id)
                               }
                               className="hover:underline text-blue-500"
                             >
@@ -85,6 +80,26 @@ const ViewInactiveEmployees = () => {
                           <td className="p-2 truncate border-r border-b">
                             {mobilePhone || officePhone}
                           </td>
+                          <td className="p-2 truncate border-r border-b">
+                            <div className="flex flex-col">
+                              <select
+                                value={tier}
+                                onChange={(e) =>
+                                  setSelectedEmployee(
+                                    id,
+                                    "tier",
+                                    e.target.value
+                                  )
+                                }
+                              >
+                                {employeesTierOptions.map((tier) => (
+                                  <option key={tier} value={tier}>
+                                    {tier}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          </td>
                         </tr>
                       );
                     })}
@@ -103,4 +118,4 @@ const ViewInactiveEmployees = () => {
   );
 };
 
-export default ViewInactiveEmployees;
+export default ViewEmployees;

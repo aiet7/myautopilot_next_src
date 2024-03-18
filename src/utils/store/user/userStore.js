@@ -17,6 +17,7 @@ import useRolesStore from "../admin/control/roles/rolesStore";
 import useInteractionStore from "../interaction/interactionsStore";
 import useInitializeAppStore from "../init/initializeAppStore";
 import useAssistantStore from "../assistant/assistantStore";
+import useBoardStore from "../admin/control/board/boardStore";
 
 const useUserStore = create((set, get) => ({
   user: null,
@@ -69,6 +70,7 @@ const useUserStore = create((set, get) => ({
     const { clearInteraction } = useInteractionStore.getState();
     const { clearInit } = useInitializeAppStore.getState();
     const { clearAssistant } = useAssistantStore.getState();
+    const { clearBoard } = useBoardStore.getState();
 
     await clearTickets();
 
@@ -90,6 +92,7 @@ const useUserStore = create((set, get) => ({
     clearInteraction();
     clearInit();
     clearAssistant();
+    clearBoard();
 
     navigator("/auth/login");
   },

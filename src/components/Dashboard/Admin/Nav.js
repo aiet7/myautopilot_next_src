@@ -25,7 +25,7 @@ const Nav = ({}) => {
         return <MdOutlineBrandingWatermark size={20} />;
       case "companies":
         return <MdBusinessCenter size={20} />;
-      case "boards":
+      case "board":
         return <FaChalkboard size={20} />;
       default:
         return null;

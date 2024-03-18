@@ -25,6 +25,10 @@ const Roles = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Roles/Roles")
 );
 
+const Board = dynamic(() =>
+  import("@/components/Dashboard/Admin/Options/Board/Board")
+);
+
 const OptionPages = () => {
   const session = Cookies.get("session_token");
   const router = useRouter();
@@ -77,6 +81,8 @@ const OptionPages = () => {
           return <Employees />;
         case "roles":
           return <Roles />;
+        case "board":
+          return <Board />;
         default:
           return <p>Option not found</p>;
       }

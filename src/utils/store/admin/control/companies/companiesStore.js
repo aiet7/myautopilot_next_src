@@ -10,7 +10,7 @@ const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 
 const useCompaniesStore = create((set, get) => ({
   companies: null,
-  companyInactiveEmployees: null,
+  companyPSAEmployees: null,
   companyActiveEmployees: null,
   companyAllTickets: null,
   companyEmployeeTickets: null,
@@ -46,7 +46,7 @@ const useCompaniesStore = create((set, get) => ({
     set({
       companies: null,
       companyActiveEmployees: null,
-      companyInactiveEmployees: null,
+      companyPSAEmployees: null,
     });
 
     if (userStore.user) {
@@ -107,13 +107,13 @@ const useCompaniesStore = create((set, get) => ({
       const activeEmployeesPromise = fetch(
         `${dbServiceUrl}/${mspCustomDomain}/clientUsersOfEachClient?clientId=${companyId}`
       );
-      const inactiveEmployeesPromise = fetch(
+      const psaEmployeesPromise = fetch(
         `${dbServiceUrl}/${mspCustomDomain}/connectWiseContacts`
       );
 
-      const [activeResponse, inactiveResponse] = await Promise.all([
+      const [activeResponse, psaResponse] = await Promise.all([
         activeEmployeesPromise,
-        inactiveEmployeesPromise,
+        psaEmployeesPromise,
       ]);
 
       if (activeResponse.status === 200) {
@@ -127,10 +127,10 @@ const useCompaniesStore = create((set, get) => ({
         });
       }
 
-      if (inactiveResponse.status === 200) {
-        const details = await inactiveResponse.json();
+      if (psaResponse.status === 200) {
+        const details = await psaResponse.json();
         set({
-          companyInactiveEmployees: details,
+          companyPSAEmployees: details,
         });
       }
     } catch (e) {
@@ -289,7 +289,7 @@ const useCompaniesStore = create((set, get) => ({
   clearCompanies: () => {
     set({
       companies: null,
-      companyInactiveEmployees: null,
+      companyPSAEmployees: null,
       companyActiveEmployees: null,
       companyAllTickets: null,
       companyEmployeeTickets: null,
