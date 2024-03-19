@@ -137,7 +137,7 @@ const SoftwareIntegratePages = () => {
   return (
     <>
       {renderComponent()}
-      {/* <JoyRide
+      <JoyRide
         continuous
         run={run}
         scrollToFirstStep
@@ -162,7 +162,7 @@ const SoftwareIntegratePages = () => {
           },
         }}
         callback={handleJoyrideCallback}
-      /> */}
+      />
     </>
   );
 };

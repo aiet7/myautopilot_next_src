@@ -28,8 +28,8 @@ const ViewEmployees = () => {
     <div className="flex flex-col text-xl overflow-hidden">
       {addEmployee && <AddEmployee />}
       <div className="flex flex-col gap-7 text-xl overflow-hidden">
-        <div className="flex flex-col overflow-hidden px-4">
-          <div className="flex items-center gap-1 py-4 text-sm">
+        <div className="flex flex-col overflow-hidden p-4">
+          <div className="flex items-center gap-1  text-sm">
             <span
               onClick={() => setCurrentEmployeeView("Active")}
               className={`${
@@ -50,14 +50,16 @@ const ViewEmployees = () => {
             </span>
           </div>
           <div className="flex items-center justify-start gap-2 py-4">
-            <button
-              onClick={() =>
-                handleViewCompanyEmployeeForm(user?.mspCustomDomain)
-              }
-              className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
-            >
-              Add Employee
-            </button>
+            {currentEmployeeView === "PSA Contacts" && (
+              <button
+                onClick={() =>
+                  handleViewCompanyEmployeeForm(user?.mspCustomDomain)
+                }
+                className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+              >
+                Add Employee
+              </button>
+            )}
             <p
               onClick={handleViewCompanyAllTickets}
               className="hover:underline text-blue-800 text-sm cursor-pointer"

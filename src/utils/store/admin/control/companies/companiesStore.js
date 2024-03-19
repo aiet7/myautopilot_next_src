@@ -159,7 +159,7 @@ const useCompaniesStore = create((set, get) => ({
   },
 
   handleSaveNewCompanyEmployee: async (mspCustomDomain) => {
-    const { addEmployeeInputs, selectedCompanyId } = get();
+    const { companyPSAEmployees, addEmployeeInputs, selectedCompanyId } = get();
 
     try {
       const response = await fetch(
@@ -182,8 +182,10 @@ const useCompaniesStore = create((set, get) => ({
       );
 
       if (response.status === 200) {
+        const newCompanyEmployee = await response.json();
         console.log("EMPLOYEE ADDED!");
         set({
+          companyPSAEmployees: [...companyPSAEmployees, newCompanyEmployee],
           successMessage: true,
           errorMessage: false,
         });

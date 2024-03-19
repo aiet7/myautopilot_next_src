@@ -22,6 +22,16 @@ const useEmployeesStore = create((set, get) => ({
   successMessage: false,
   errorMessage: false,
 
+  addEmployeeInputs: {
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    password: "",
+  },
+
+  addEmployee: false,
+
   initializeEmployees: async () => {
     const userStore = useUserStore.getState();
     set({ activeEmployees: null, employees: null });
@@ -70,6 +80,18 @@ const useEmployeesStore = create((set, get) => ({
     }
   },
 
+  setAddEmployee: (add) => {
+    set({ addEmployee: add, successMessage: false, errorMessage: false });
+  },
+
+  setNewEmployeeInputs: (name, value) => {
+    set((state) => ({
+      addEmployeeInputs: {
+        ...state.addEmployeeInputs,
+        [name]: value,
+      },
+    }));
+  },
   handleSaveActiveEmployee: async (mspCustomDomain, employeeId) => {
     const { activeEmployees } = get();
 
@@ -129,6 +151,46 @@ const useEmployeesStore = create((set, get) => ({
         });
       } else {
         console.log("Tier Updated Failed!");
+        set({
+          successMessage: false,
+          errorMessage: true,
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleSaveNewEmployee: async (mspCustomDomain) => {
+    const { activeEmployees, addEmployeeInputs } = get();
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/add`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            firstName: addEmployeeInputs.firstName,
+            lastName: addEmployeeInputs.lastName,
+            phoneNumber: addEmployeeInputs.phone,
+            email: addEmployeeInputs.email,
+            password: addEmployeeInputs.password,
+          }),
+        }
+      );
+
+      if (response.status === 200) {
+        const newEmployee = await response.json();
+        console.log("Employee Added!");
+        set({
+          activeEmployees: [...activeEmployees, newEmployee],
+          successMessage: true,
+          errorMessage: false,
+        });
+      } else {
+        console.log("Employee Addition Failed!");
         set({
           successMessage: false,
           errorMessage: true,

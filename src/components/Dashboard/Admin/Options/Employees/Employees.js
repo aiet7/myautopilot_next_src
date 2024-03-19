@@ -40,7 +40,7 @@ const Employees = ({}) => {
       <div className="dark:border-b-white/20 border-b p-4">
         <h1 className="text-2xl">Employees</h1>
       </div>
-      <div className="flex items-center gap-1 p-4 text-sm">
+      <div className="flex items-center gap-1 text-sm pt-4 px-4">
         <span
           onClick={() => setCurrentView("Active")}
           className={`${
@@ -59,7 +59,7 @@ const Employees = ({}) => {
           Technicians
         </span>
       </div>
-      <div className="flex flex-col h-full overflow-hidden pb-4">
+      <div className="flex flex-col h-full overflow-hidden">
         {renderComponent()}
       </div>
     </div>

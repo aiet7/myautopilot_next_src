@@ -18,7 +18,7 @@ const ViewEmployees = () => {
   return (
     <div className="flex flex-col text-xl overflow-hidden">
       <div className="flex flex-col gap-7 text-xl overflow-hidden ">
-        <div className="flex  flex-col overflow-hidden px-4">
+        <div className="flex  flex-col overflow-hidden p-4">
           {employees?.length !== 0 ? (
             <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
               {employees && (

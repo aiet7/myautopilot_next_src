@@ -15,6 +15,7 @@ const ViewActiveEmployees = () => {
 
   return (
     <>
+      
       {companyActiveEmployees?.length !== 0 ? (
         <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
           {companyActiveEmployees && (

@@ -2,6 +2,7 @@
 
 import useEmployeesStore from "@/utils/store/admin/control/employees/employeesStore";
 import useUserStore from "@/utils/store/user/userStore";
+import AddEmployee from "./AddEmployee";
 
 const ViewActiveEmployees = () => {
   const { user } = useUserStore();
@@ -9,18 +10,24 @@ const ViewActiveEmployees = () => {
   const {
     successMessage,
     errorMessage,
+    addEmployee,
     activeEmployees,
     employeesRoleOptions,
     setSelectedEmployee,
+    setAddEmployee,
     handleSaveActiveEmployee,
   } = useEmployeesStore();
 
   return (
     <div className="flex flex-col text-xl overflow-hidden">
+      {addEmployee && <AddEmployee />}
       <div className="flex flex-col gap-7 text-xl overflow-hidden ">
-        <div className="flex  flex-col overflow-hidden px-4">
-          <div className="flex items-center justify-start gap-2 py-4">
-            <button className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1">
+        <div className="flex  flex-col overflow-hidden p-4">
+          <div className="flex items-center justify-start gap-2  pb-4">
+            <button
+              onClick={() => setAddEmployee(true)}
+              className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+            >
               Add Employee
             </button>
           </div>

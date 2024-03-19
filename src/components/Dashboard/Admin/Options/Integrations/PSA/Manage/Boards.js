@@ -52,7 +52,6 @@ const Board = () => {
   } = useManageStore();
 
   const boardData = customBoard ? customBoardMerge : connectwiseMerge;
-  console.log(boardData);
 
   useEffect(() => {
     if (

@@ -9,12 +9,7 @@ const ViewCompanies = () => {
   return (
     <div className="flex flex-col text-xl overflow-hidden">
       <div className="flex flex-col gap-7 text-xl overflow-hidden">
-        <div className="flex flex-col overflow-hidden px-4">
-          <div className="flex items-center justify-start gap-2 py-4">
-            <button className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1">
-              Add Company
-            </button>
-          </div>
+        <div className="flex flex-col overflow-hidden p-4">
           {companies?.length !== 0 ? (
             <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
               {companies && (
