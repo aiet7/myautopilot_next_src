@@ -60,7 +60,10 @@ const Clients = () => {
       <div className="flex flex-col text-xl overflow-hidden">
         <div className="flex flex-col self-end gap-1">
           {clientAndContactTypes && (
-            <div className="flex gap-1 self-end">
+            <div
+              id="manageAuthenticated-clientContactAutoSync"
+              className="flex gap-1 self-end"
+            >
               <select
                 onChange={(e) => {
                   const selectedType = clientAndContactTypes.find(
@@ -140,12 +143,16 @@ const Clients = () => {
                             className="flex items-center justify-center w-full h-full"
                           />
                         </th>
-                        <th className="p-2 border-t border-b border-r ">
-                          <div
-                            className="flex flex-col items-start"
-                          >
+                        <th
+                          id="manageAuthenticated-defaultClient"
+                          className="p-2 border-t border-b border-r "
+                        >
+                          <div className="flex flex-col items-start">
                             <span>Default Company</span>
-                            <span className="text-xs">If company is not registered, will not be able to create tickets</span>
+                            <span className="text-xs">
+                              If company is not registered, will not be able to
+                              create tickets
+                            </span>
                           </div>
                         </th>
                         <th className="p-2 border-t border-b border-r ">
@@ -281,6 +288,7 @@ const Clients = () => {
                   </table>
                 </div>
                 <button
+                  id="manageAuthenticated-saveClients"
                   onClick={() => handleAddManageClients(user?.mspCustomDomain)}
                   className="text-sm self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
                 >

@@ -95,8 +95,18 @@ const Technician = () => {
                         <th className="p-2 border-t border-b border-r">
                           Office Phone
                         </th>
-                        <th className="p-2 border-t border-b border-r">Tier</th>
-                        <th className="p-2 border-t border-b border-r">Role</th>
+                        <th
+                          id="manageAuthenticated-technicianTier"
+                          className="p-2 border-t border-b border-r"
+                        >
+                          Tier
+                        </th>
+                        <th
+                          id="manageAuthenticated-technicianRole"
+                          className="p-2 border-t border-b border-r"
+                        >
+                          Role
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -202,6 +212,7 @@ const Technician = () => {
                   </table>
                 </div>
                 <button
+                  id="manageAuthenticated-saveTechnicians"
                   onClick={() =>
                     handleAddManageTechnician(user?.mspCustomDomain)
                   }

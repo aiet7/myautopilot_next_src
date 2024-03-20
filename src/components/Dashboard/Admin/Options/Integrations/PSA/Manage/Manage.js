@@ -30,7 +30,6 @@ const Manage = () => {
   } = useManageStore();
   const { integrations, handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
-
   return (
     <div
       onClick={() => {
@@ -104,10 +103,7 @@ const Manage = () => {
               </div>
               <div className="flex flex-col p-4 gap-6 text-sm">
                 <div className="flex flex-col gap-6 lg:flex-row ">
-                  <div
-                    id="manage-clientId"
-                    className="flex flex-col w-full gap-1"
-                  >
+                  <div className="flex flex-col w-full gap-1">
                     <p>Client ID</p>
                     <p className="dark:text-white/60 text-black/60">
                       Your Client ID that is assigned to you from ConnectWise
@@ -120,6 +116,7 @@ const Manage = () => {
                       </p>
                     ) : (
                       <input
+                        id="manage-clientId"
                         value={integrationInputs.clientId}
                         onChange={(e) =>
                           setIntegrationInputs(
@@ -132,10 +129,7 @@ const Manage = () => {
                       />
                     )}
                   </div>
-                  <div
-                    id="manage-publicKey"
-                    className="flex flex-col w-full gap-1"
-                  >
+                  <div className="flex flex-col w-full gap-1">
                     <p>Public Key</p>
                     <p className="dark:text-white/60 text-black/60">
                       Your generated Public Key that was created via ConnectWise
@@ -149,6 +143,7 @@ const Manage = () => {
                       </p>
                     ) : (
                       <input
+                        id="manage-publicKey"
                         value={integrationInputs.publicKey}
                         onChange={(e) =>
                           setIntegrationInputs(
@@ -163,10 +158,7 @@ const Manage = () => {
                   </div>
                 </div>
                 <div className="flex flex-col gap-6 lg:flex-row">
-                  <div
-                    id="manage-companyId"
-                    className="flex flex-col w-full gap-1"
-                  >
+                  <div className="flex flex-col w-full gap-1">
                     <p>Company ID</p>
                     <p className="dark:text-white/60 text-black/60">
                       Your Company ID that is assigned to you from ConnectWise
@@ -179,6 +171,7 @@ const Manage = () => {
                       </p>
                     ) : (
                       <input
+                        id="manage-companyId"
                         value={integrationInputs.companyId}
                         onChange={(e) =>
                           setIntegrationInputs(
@@ -191,10 +184,7 @@ const Manage = () => {
                       />
                     )}
                   </div>
-                  <div
-                    id="manage-privateKey"
-                    className="flex flex-col w-full gap-1"
-                  >
+                  <div className="flex flex-col w-full gap-1">
                     <p>Private Key</p>
                     <p className="dark:text-white/60 text-black/60">
                       Your generated Private Key that was created via
@@ -208,6 +198,7 @@ const Manage = () => {
                       </p>
                     ) : (
                       <input
+                        id="manage-privateKey"
                         value={integrationInputs.privateKey}
                         onChange={(e) =>
                           setIntegrationInputs(
@@ -346,11 +337,7 @@ const Manage = () => {
 
                 {integrations?.connectWiseManageIntegrator && (
                   <button
-                    id={
-                      integrations?.connectWiseManageIntegrator
-                        ? "manageAuthenticated-configuration"
-                        : ""
-                    }
+                    id="manageAuthenticated-configuration"
                     onClick={() => setActiveConfig(true, user?.mspCustomDomain)}
                     className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg px-3 py-1"
                   >

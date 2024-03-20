@@ -375,6 +375,7 @@ const useManageStore = create((set, get) => ({
 
       successMessageStatus: false,
       errorMessageStatus: false,
+      activeBoard: null,
       activeConfig: false,
       activeConfigSteps: 1,
       activePage: 1,

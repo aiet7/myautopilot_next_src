@@ -14,6 +14,7 @@ import useIntegrationsStore from "@/utils/store/admin/control/integrations/integ
 import useAdminStore from "@/utils/store/admin/adminStore";
 import useTooltipStore from "@/utils/store/tooltip/tooltipStore";
 import JoyRide from "react-joyride";
+import useManageStore from "@/utils/store/admin/control/integrations/PSA/manageStore";
 
 const Openai = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/AI/Openai")
@@ -51,19 +52,24 @@ const SoftwareIntegratePages = () => {
 
   const router = useRouter();
   const {
-    initialSteps,
-    authenticatedSteps,
     run,
     steps,
     stepIndex,
     handleJoyrideCallback,
-    initializeSteps,
+    handleUpdateCurrentCondition,
   } = useTooltipStore();
   const { initializeUser } = useUserStore();
   const { integrations, initializeIntegrations } = useIntegrationsStore();
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
   const { currentOption } = useAdminStore();
+  const {
+    activeConfig,
+    activeConfigSteps,
+    activeBoard,
+    customBoard,
+    customBoardMetadata,
+  } = useManageStore();
   const { software } = router.query;
 
   useEffect(() => {
@@ -93,12 +99,61 @@ const SoftwareIntegratePages = () => {
   }, [activeTab, currentOption]);
 
   useEffect(() => {
-    if (integrations?.connectWiseManageIntegrator) {
-      initializeSteps(authenticatedSteps);
+    if (activeConfig) {
+      if (
+        activeConfig &&
+        activeConfigSteps === 1 &&
+        !activeBoard &&
+        !customBoardMetadata &&
+        !customBoard
+      ) {
+        handleUpdateCurrentCondition("preSelectedBoard");
+      } else if (
+        activeConfig &&
+        activeConfigSteps === 1 &&
+        activeBoard &&
+        !customBoardMetadata &&
+        !customBoard
+      ) {
+        handleUpdateCurrentCondition("postSelectedBoard");
+      } else if (
+        activeConfig &&
+        activeConfigSteps === 1 &&
+        !activeBoard &&
+        customBoardMetadata &&
+        !customBoard
+      ) {
+        handleUpdateCurrentCondition("preCustomSelectedBoard");
+      } else if (
+        activeConfig &&
+        activeConfigSteps === 1 &&
+        !activeBoard &&
+        customBoardMetadata &&
+        customBoard
+      ) {
+        handleUpdateCurrentCondition("postCustomSelectedBoard");
+      } else if (activeConfig && activeConfigSteps === 2) {
+        handleUpdateCurrentCondition("technician");
+      } else if (activeConfig && activeConfigSteps === 3) {
+        handleUpdateCurrentCondition("client");
+      } else if (activeConfig && activeConfigSteps === 4) {
+        handleUpdateCurrentCondition("contact");
+      }
     } else {
-      initializeSteps(initialSteps);
+      if (integrations?.connectWiseManageIntegrator) {
+        handleUpdateCurrentCondition("authenticated");
+      } else {
+        handleUpdateCurrentCondition("initial");
+      }
     }
-  }, [integrations?.connectWiseManageIntegrator]);
+  }, [
+    customBoardMetadata,
+    customBoard,
+    activeBoard,
+    activeConfig,
+    activeConfigSteps,
+    integrations?.connectWiseManageIntegrator,
+  ]);
 
   const renderComponent = () => {
     if (software && software.length > 0) {

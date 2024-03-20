@@ -60,7 +60,7 @@ const Contacts = () => {
                   >
                     Bulk Save
                   </button>
-                 
+
                   {errorMessage && (
                     <p className="text-red-500">Error Saving Contacts</p>
                   )}
@@ -178,6 +178,7 @@ const Contacts = () => {
                   </table>
                 </div>
                 <button
+                  id="manageAuthenticated-saveContacts"
                   onClick={() => handleAddManageContacts(user?.mspCustomDomain)}
                   className="text-sm self-end  bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
                 >

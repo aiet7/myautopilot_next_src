@@ -154,6 +154,7 @@ const Board = () => {
       {connectwiseBoards && (
         <div className="flex flex-wrap gap-2 items-center text-xs ">
           <select
+            id="manageAuthenticated-chooseBoard"
             onChange={(e) =>
               handleGetBoardDetails(e.target.value, user?.mspCustomDomain)
             }
@@ -180,6 +181,7 @@ const Board = () => {
               })}
           </select>
           <button
+            id="manageAuthenticated-customBoard"
             onClick={() =>
               handleGetBoardDetails("custom", user?.mspCustomDomain)
             }
@@ -189,6 +191,7 @@ const Board = () => {
           </button>
           {connectwiseMerge && (
             <button
+              id="manageAuthenticated-generateAiBoard"
               onClick={handleGenerateAIBoard}
               className="hover:bg-green-500 flex items-center gap-2 bg-green-600 text-white px-6 py-2 rounded-md"
             >
@@ -197,7 +200,7 @@ const Board = () => {
                   ? "Generating AI Board..."
                   : "Generate AI Board"}
               </span>
-              <SiOpenai size={15}  />
+              <SiOpenai size={15} />
             </button>
           )}
 
@@ -205,6 +208,7 @@ const Board = () => {
             <>
               {connectwiseOpenStatuses?.length > 0 ? (
                 <select
+                  id="manageAuthenticated-openStatus"
                   onChange={(e) => {
                     const selectedOpenStatus = connectwiseOpenStatuses.find(
                       (status) => status.id.toString() === e.target.value
@@ -265,6 +269,7 @@ const Board = () => {
             <>
               {connectwiseClosedStatuses?.length > 0 ? (
                 <select
+                  id="manageAuthenticated-closedStatus"
                   onChange={(e) => {
                     const selectedClosedStatus = connectwiseClosedStatuses.find(
                       (status) => status.id.toString() === e.target.value
@@ -338,6 +343,7 @@ const Board = () => {
             </div>
           ) : (
             <input
+              id="manageAuthenticated-customTitle"
               className="border p-2 rounded"
               placeholder="Enter Board Title"
               onChange={(e) =>
@@ -359,6 +365,7 @@ const Board = () => {
             </div>
           ) : (
             <select
+              id="manageAuthenticated-department"
               onChange={(e) => {
                 const selectedDepartment =
                   customBoardMerge.departmentsList.find(
@@ -398,6 +405,7 @@ const Board = () => {
             </div>
           ) : (
             <select
+              id="manageAuthenticated-location"
               onChange={(e) => {
                 const selectedLocation = customBoardMerge.locationsList.find(
                   (location) => location.id.toString() === e.target.value
@@ -431,6 +439,7 @@ const Board = () => {
           )}
           {!customBoard && (
             <button
+              id="manageAuthenticated-saveMetaData"
               onClick={() =>
                 handleSaveCustomBoardMetadata(user?.mspCustomDomain)
               }
@@ -443,12 +452,22 @@ const Board = () => {
       )}
       <div className="flex flex-col text-xl overflow-hidden">
         {boardData && boardData.mspConnectWiseManageCategorizations && (
-          <div className="block text-sm overflow-auto scrollbar-thin  max-h-full max-w-full">
+          <div
+            id={`${customBoard && "manageAuthenticated-customTemplate"}`}
+            className="block text-sm overflow-auto scrollbar-thin  max-h-full max-w-full"
+          >
             <table className=" min-w-full table-fixed border-separate border-spacing-0 text-left">
               <thead className="sticky top-0 bg-white text-lg text-black/60">
                 <tr className="">
                   <th className="p-2 border-l border-t border-b border-r ">
-                    <div className="flex justify-between items-center">
+                    <div
+                      id={
+                        customBoard
+                          ? "manageAuthenticated-customCategory"
+                          : "manageAuthenticated-category"
+                      }
+                      className="flex justify-between items-center"
+                    >
                       Category Name
                       <AiOutlinePlus
                         onClick={() => setNewCustomCategory(customBoard)}
@@ -457,20 +476,46 @@ const Board = () => {
                       />
                     </div>
                   </th>
-                  <th className="p-2 border-t border-b border-r">
+                  <th
+                    id={
+                      customBoard
+                        ? "manageAuthenticated-customSubcategory"
+                        : "manageAuthenticated-subcategory"
+                    }
+                    className="p-2 border-t border-b border-r"
+                  >
                     Sub-Categorizations
                   </th>
                   {!customBoard && (
                     <>
-                      <th className="p-2 border-t border-b border-r">
+                      <th
+                        id="manageAuthenticated-priority"
+                        className="p-2 border-t border-b border-r"
+                      >
                         Priority
                       </th>
-                      <th className="p-2 border-t border-b border-r">
+                      <th
+                        id="manageAuthenticated-severity"
+                        className="p-2 border-t border-b border-r"
+                      >
                         Severity
                       </th>
-                      <th className="p-2 border-t border-b border-r">Impact</th>
-                      <th className="p-2 border-t border-b border-r">Tier</th>
-                      <th className="p-2 border-t border-b border-r">
+                      <th
+                        id="manageAuthenticated-impact"
+                        className="p-2 border-t border-b border-r"
+                      >
+                        Impact
+                      </th>
+                      <th
+                        id="manageAuthenticated-tier"
+                        className="p-2 border-t border-b border-r"
+                      >
+                        Tier
+                      </th>
+                      <th
+                        id="manageAuthenticated-duration"
+                        className="p-2 border-t border-b border-r"
+                      >
                         Duration
                       </th>
                     </>
@@ -873,6 +918,11 @@ const Board = () => {
           {errorMessage && <p className="text-red-500">Error Saving Board</p>}
           {boardData && (
             <button
+              id={
+                customBoard
+                  ? "manageAuthenticated-customSaveCustomBoard"
+                  : "manageAuthenticated-saveBoard"
+              }
               onClick={() =>
                 customBoard
                   ? handleSaveCustomBoard(user?.mspCustomDomain)
