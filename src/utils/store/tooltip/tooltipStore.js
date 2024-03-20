@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { ACTIONS, STATUS, EVENTS } from "react-joyride";
+import useMspStore from "../auth/msp/mspStore";
 
 const useTooltipStore = create((set, get) => ({
   run: true,
@@ -451,10 +452,6 @@ const useTooltipStore = create((set, get) => ({
     set({ run: true, stepIndex: 0 }); // Restart the Joyride with the new steps
   },
 
-  initializeSteps: async (steps) => {
-    set({ steps: steps, run: true, stepIndex: 0 });
-  },
-
   setRun: (run) => set(() => ({ run })),
   setStepIndex: (index) => set(() => ({ stepIndex: index })),
 
@@ -467,8 +464,12 @@ const useTooltipStore = create((set, get) => ({
   },
 
   handleJoyrideCallback: (data) => {
+    const { setIsFirstTimeUser } = useMspStore.getState();
     const { action, index, status, type } = data;
     const { stepIndex } = get();
+    if (status === "skipped") {
+      setIsFirstTimeUser(false);
+    }
     if (status === "finished" || status === "skipped" || action === "close") {
       set({ run: false });
     } else if (

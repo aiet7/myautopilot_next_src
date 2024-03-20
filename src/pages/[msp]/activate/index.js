@@ -25,6 +25,7 @@ const ActivatePage = () => {
     handleActivateClientCheck,
     handleActivateTechnician,
     handleActivateClient,
+    handleNavigateMSPSignup,
     initializeUserType,
   } = useMspStore();
 
@@ -152,7 +153,7 @@ const ActivatePage = () => {
                       )}
                       {userType === "client" && (
                         <>
-                            {clientList.map((client) => {
+                          {clientList.map((client) => {
                             const {
                               id,
                               firstName,
@@ -236,11 +237,13 @@ const ActivatePage = () => {
                 </>
               )}
               <div className="flex flex-col gap-1">
-                <Link href={"/auth/signup"}>
-                  <span className="text-sm text-blue-800 font-semibold">
-                    Back to sign up
-                  </span>
-                </Link>
+                <span
+                  onClick={() => handleNavigateMSPSignup(router.push)}
+                  className="text-sm text-blue-800 font-semibold cursor-pointer"
+                >
+                  Back to sign up
+                </span>
+
                 <Link href={`/${msp}`}>
                   <span className="text-sm text-blue-800 font-semibold">
                     Have An Account? Log in

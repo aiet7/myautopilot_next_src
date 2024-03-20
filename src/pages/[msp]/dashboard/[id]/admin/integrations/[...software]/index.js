@@ -5,16 +5,16 @@ import { useEffect } from "react";
 
 import dynamic from "next/dynamic";
 import Layout from "@/components/Layouts/Layout";
-
 import Cookies from "js-cookie";
+
 import useLocalStorageStore from "@/utils/store/localstorage/localStorageStore";
 import useUserStore from "@/utils/store/user/userStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useIntegrationsStore from "@/utils/store/admin/control/integrations/integrationsStore";
 import useAdminStore from "@/utils/store/admin/adminStore";
-import useTooltipStore from "@/utils/store/tooltip/tooltipStore";
-import JoyRide from "react-joyride";
 import useManageStore from "@/utils/store/admin/control/integrations/PSA/manageStore";
+import useTooltipStore from "@/utils/store/tooltip/tooltipStore";
+import useMspStore from "@/utils/store/auth/msp/mspStore";
 
 const Openai = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/AI/Openai")
@@ -47,17 +47,14 @@ const Workspace = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/SUITE/Workspace")
 );
 
+const JoyRide = dynamic(() => import("react-joyride"));
+
 const SoftwareIntegratePages = () => {
   const session = Cookies.get("session_token");
 
   const router = useRouter();
-  const {
-    run,
-    steps,
-    stepIndex,
-    handleJoyrideCallback,
-    handleUpdateCurrentCondition,
-  } = useTooltipStore();
+
+  const { isFirstTimeUser } = useMspStore();
   const { initializeUser } = useUserStore();
   const { integrations, initializeIntegrations } = useIntegrationsStore();
   const { getStorage, setStorage } = useLocalStorageStore();
@@ -70,7 +67,17 @@ const SoftwareIntegratePages = () => {
     customBoard,
     customBoardMetadata,
   } = useManageStore();
+  const {
+    run,
+    steps,
+    stepIndex,
+    handleJoyrideCallback,
+    handleUpdateCurrentCondition,
+  } = useTooltipStore();
+
   const { software } = router.query;
+
+  console.log(isFirstTimeUser)
 
   useEffect(() => {
     if (router.isReady) {
@@ -192,32 +199,34 @@ const SoftwareIntegratePages = () => {
   return (
     <>
       {renderComponent()}
-      <JoyRide
-        continuous
-        run={run}
-        scrollToFirstStep
-        showProgress
-        showSkipButton
-        steps={steps}
-        stepIndex={stepIndex}
-        styles={{
-          tooltipTitle: {
-            textAlign: "left",
-            fontWeight: "bold",
-          },
-          tooltipContent: {
-            textAlign: "left",
-            paddingTop: "10px",
-            paddingBottom: "10px",
-            paddingLeft: "0",
-            paddingRight: "0",
-          },
-          options: {
-            zIndex: 1000,
-          },
-        }}
-        callback={handleJoyrideCallback}
-      />
+      {isFirstTimeUser && (
+        <JoyRide
+          continuous
+          run={run}
+          scrollToFirstStep
+          showProgress
+          showSkipButton
+          steps={steps}
+          stepIndex={stepIndex}
+          styles={{
+            tooltipTitle: {
+              textAlign: "left",
+              fontWeight: "bold",
+            },
+            tooltipContent: {
+              textAlign: "left",
+              paddingTop: "10px",
+              paddingBottom: "10px",
+              paddingLeft: "0",
+              paddingRight: "0",
+            },
+            options: {
+              zIndex: 1000,
+            },
+          }}
+          callback={handleJoyrideCallback}
+        />
+      )}
     </>
   );
 };

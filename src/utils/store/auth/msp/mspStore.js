@@ -60,6 +60,8 @@ const useMspStore = create((set, get) => ({
     },
   },
 
+  isFirstTimeUser: false,
+
   errorMessage: {
     techSignup: false,
 
@@ -71,23 +73,22 @@ const useMspStore = create((set, get) => ({
 
   showPassword: false,
 
-  tooltipGuide: {
-    show: true,
-    step: 0,
-  },
-
   initializeUserType: async () => {
     const lastActiveUserType = localStorage.getItem("lastActiveUserType");
 
-    set({
-      userType: lastActiveUserType,
-    });
+    if (!lastActiveUserType) {
+      localStorage.setItem("lastActiveUserType", "tech");
+      set({
+        userType: "tech",
+      });
+    } else {
+      set({
+        userType: lastActiveUserType,
+      });
+    }
   },
 
-  setTooltipGuideVisibility: (show) =>
-    set((state) => ({ tooltipGuide: { ...state.tooltipGuide, show } })),
-  setTooltipGuideStep: (step) =>
-    set((state) => ({ tooltipGuide: { ...state.tooltipGuide, step } })),
+  setIsFirstTimeUser: (firstTime) => set({ isFirstTimeUser: firstTime }),
 
   setCurrentStep: (step) => set({ currentStep: step }),
 
@@ -322,7 +323,9 @@ const useMspStore = create((set, get) => ({
               techSignup: false,
             },
           });
-
+          set({
+            isFirstTimeUser: true,
+          });
           navigator(
             `/${msp.customDomain}/dashboard/${tech.id}/admin/integrations/connectwise`
           );

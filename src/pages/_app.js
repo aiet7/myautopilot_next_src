@@ -10,6 +10,7 @@ import useAuthStore from "@/utils/store/auth/authStore";
 import { FaSpinner } from "react-icons/fa";
 import { Montserrat } from "next/font/google";
 
+
 const montserrat = Montserrat({
   weight: ["400", "700"],
   subsets: ["latin"],
@@ -18,6 +19,8 @@ const montserrat = Montserrat({
 function MyApp({ Component, pageProps }) {
   const { loading, smallLoading, setIsLoading, setIsSmallLoading } =
     useAuthStore();
+ 
+
   const router = useRouter();
   const getLayout = Component.getLayout || ((page) => page);
 
@@ -65,6 +68,8 @@ function MyApp({ Component, pageProps }) {
       Router.events.off("routeChangeError", end);
     };
   }, [router.pathname]);
+
+  
 
   return getLayout(
     <>
