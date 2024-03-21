@@ -77,8 +77,6 @@ const SoftwareIntegratePages = () => {
 
   const { software } = router.query;
 
-  console.log(isFirstTimeUser)
-
   useEffect(() => {
     if (router.isReady) {
       const currentPath = router.asPath;
