@@ -172,9 +172,9 @@ const useManageStore = create((set, get) => ({
               userStore.user.mspCustomDomain
             ),
           ]);
-        
-        console.log("DB",dbClients)
-        console.log("CW",connectWiseClients)
+
+        console.log("DB", dbClients);
+        console.log("CW", connectWiseClients);
 
         const markedClients = connectWiseClients.map((cwClient) => ({
           ...cwClient,
@@ -183,7 +183,6 @@ const useManageStore = create((set, get) => ({
               dbClient.connectWiseCompanyId === cwClient.connectWiseCompanyId
           ),
         }));
-
 
         const totalClients = markedClients.length;
         const totalPages = Math.ceil(totalClients / activePerPage);
@@ -1010,6 +1009,7 @@ const useManageStore = create((set, get) => ({
 
   handleGenerateAIBoard: async () => {
     const { connectwiseMerge } = get();
+    const { openStatus, closedStatus } = connectwiseMerge;
     set({
       loadingAiMerge: true,
     });
@@ -1028,8 +1028,14 @@ const useManageStore = create((set, get) => ({
       if (response.status === 200) {
         const generatedAiBoard = await response.json();
         console.log("Generated AI Board Complete!");
+
+        const updatedAiBoard = {
+          ...generatedAiBoard,
+          openStatus: openStatus,
+          closedStatus: closedStatus,
+        };
         set({
-          connectwiseMerge: generatedAiBoard,
+          connectwiseMerge: updatedAiBoard,
           loadingAiMerge: false,
         });
       } else {
@@ -1060,6 +1066,8 @@ const useManageStore = create((set, get) => ({
         activeBoard: id,
         customBoard: false,
         customBoardMetadata: false,
+        connectwiseOpenStatuses: null,
+        connectwiseClosedStatuses: null,
       });
       try {
         const response = await fetch(
@@ -1497,7 +1505,7 @@ const useManageStore = create((set, get) => ({
 
       if (response.status === 200) {
         set({
-          activeConfigSteps: 2,
+          activeConfigSteps: 3,
           successMessage: true,
           techniciansSelected: {},
           errorMessage: false,
@@ -1536,7 +1544,7 @@ const useManageStore = create((set, get) => ({
 
       if (response.status === 200) {
         set({
-          activeConfigSteps: 3,
+          activeConfigSteps: 4,
           successMessage: true,
           clientsSelected: {},
           errorMessage: false,
@@ -1574,7 +1582,6 @@ const useManageStore = create((set, get) => ({
 
       if (response.status === 200) {
         set({
-          activeConfigSteps: 4,
           successMessage: true,
           contactsSelected: {},
           errorMessage: false,

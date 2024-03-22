@@ -445,11 +445,10 @@ const useTooltipStore = create((set, get) => ({
       case "contact":
         set({ steps: contactSteps });
         break;
-      // Add more cases as needed for other conditions
       default:
         set({ steps: [] });
     }
-    set({ run: true, stepIndex: 0 }); // Restart the Joyride with the new steps
+    set({ run: true, stepIndex: 0 });
   },
 
   setRun: (run) => set(() => ({ run })),

@@ -11,6 +11,8 @@ const Board = () => {
 
   const { board, durationOptions, intializeBoard } = useBoardStore();
 
+  console.log(board);
+
   useEffect(() => {
     intializeBoard();
   }, [user]);
@@ -34,10 +36,37 @@ const Board = () => {
           {board ? (
             <div className="flex flex-col gap-7 text-xl overflow-hidden">
               <div className="flex  flex-col overflow-hidden px-4">
-                <div className="flex items-center justify-start gap-2 py-4">
+                <div className="flex flex-wrap items-center justify-start gap-4 py-4">
                   <button className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1">
                     Configure Board
                   </button>
+                  <p className="text-sm">
+                    <strong>Board ID: </strong>
+                    {`${board?.boardId}`}
+                  </p>
+                  <p className="text-sm">
+                    <strong>Board Name: </strong>
+                    {`${board?.boardName}`}
+                  </p>
+
+                  <p className="text-sm">
+                    <strong>Company ID: </strong>
+                    {`${board?.defaultCompanyId}`}
+                  </p>
+                  <p className="text-sm">
+                    <strong>Company: </strong>
+                    {`${board?.defaultCompanyName}`}
+                  </p>
+                  <p className="text-sm">
+                    <strong>Open Status: </strong>
+                    {`${board?.newCreatingTicketStatus}`}
+                  </p>
+                  <p className="text-sm">
+                    <strong>Closed Status: </strong>
+                    {`${board?.closingTicketStatus}`}
+                  </p>
+
+                  <p className="text-sm"></p>
                 </div>
                 <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
                   <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">

@@ -60,6 +60,7 @@ const SoftwareIntegratePages = () => {
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
   const { currentOption } = useAdminStore();
+  
   const {
     activeConfig,
     activeConfigSteps,
@@ -67,6 +68,7 @@ const SoftwareIntegratePages = () => {
     customBoard,
     customBoardMetadata,
   } = useManageStore();
+
   const {
     run,
     steps,
@@ -104,54 +106,57 @@ const SoftwareIntegratePages = () => {
   }, [activeTab, currentOption]);
 
   useEffect(() => {
-    if (activeConfig) {
-      if (
-        activeConfig &&
-        activeConfigSteps === 1 &&
-        !activeBoard &&
-        !customBoardMetadata &&
-        !customBoard
-      ) {
-        handleUpdateCurrentCondition("preSelectedBoard");
-      } else if (
-        activeConfig &&
-        activeConfigSteps === 1 &&
-        activeBoard &&
-        !customBoardMetadata &&
-        !customBoard
-      ) {
-        handleUpdateCurrentCondition("postSelectedBoard");
-      } else if (
-        activeConfig &&
-        activeConfigSteps === 1 &&
-        !activeBoard &&
-        customBoardMetadata &&
-        !customBoard
-      ) {
-        handleUpdateCurrentCondition("preCustomSelectedBoard");
-      } else if (
-        activeConfig &&
-        activeConfigSteps === 1 &&
-        !activeBoard &&
-        customBoardMetadata &&
-        customBoard
-      ) {
-        handleUpdateCurrentCondition("postCustomSelectedBoard");
-      } else if (activeConfig && activeConfigSteps === 2) {
-        handleUpdateCurrentCondition("technician");
-      } else if (activeConfig && activeConfigSteps === 3) {
-        handleUpdateCurrentCondition("client");
-      } else if (activeConfig && activeConfigSteps === 4) {
-        handleUpdateCurrentCondition("contact");
-      }
-    } else {
-      if (integrations?.connectWiseManageIntegrator) {
-        handleUpdateCurrentCondition("authenticated");
+    if (isFirstTimeUser) {
+      if (activeConfig) {
+        if (
+          activeConfig &&
+          activeConfigSteps === 1 &&
+          !activeBoard &&
+          !customBoardMetadata &&
+          !customBoard
+        ) {
+          handleUpdateCurrentCondition("preSelectedBoard");
+        } else if (
+          activeConfig &&
+          activeConfigSteps === 1 &&
+          activeBoard &&
+          !customBoardMetadata &&
+          !customBoard
+        ) {
+          handleUpdateCurrentCondition("postSelectedBoard");
+        } else if (
+          activeConfig &&
+          activeConfigSteps === 1 &&
+          !activeBoard &&
+          customBoardMetadata &&
+          !customBoard
+        ) {
+          handleUpdateCurrentCondition("preCustomSelectedBoard");
+        } else if (
+          activeConfig &&
+          activeConfigSteps === 1 &&
+          !activeBoard &&
+          customBoardMetadata &&
+          customBoard
+        ) {
+          handleUpdateCurrentCondition("postCustomSelectedBoard");
+        } else if (activeConfig && activeConfigSteps === 2) {
+          handleUpdateCurrentCondition("technician");
+        } else if (activeConfig && activeConfigSteps === 3) {
+          handleUpdateCurrentCondition("client");
+        } else if (activeConfig && activeConfigSteps === 4) {
+          handleUpdateCurrentCondition("contact");
+        }
       } else {
-        handleUpdateCurrentCondition("initial");
+        if (integrations?.connectWiseManageIntegrator) {
+          handleUpdateCurrentCondition("authenticated");
+        } else {
+          handleUpdateCurrentCondition("initial");
+        }
       }
     }
   }, [
+    isFirstTimeUser,
     customBoardMetadata,
     customBoard,
     activeBoard,

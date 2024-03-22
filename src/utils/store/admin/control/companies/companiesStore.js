@@ -101,7 +101,7 @@ const useCompaniesStore = create((set, get) => ({
     companyId,
     companyName,
     connectWiseClientsAutopilotDbId,
-    connectWiseCompantId
+    connectWiseCompanyId
   ) => {
     try {
       const activeEmployeesPromise = fetch(
@@ -122,7 +122,7 @@ const useCompaniesStore = create((set, get) => ({
           companyActiveEmployees: details,
           selectedCompany: companyName,
           selectedCompanyDbId: connectWiseClientsAutopilotDbId,
-          selectedCompanyId: connectWiseCompantId,
+          selectedCompanyId: connectWiseCompanyId,
           currentView: "CompanyEmployees",
         });
       }

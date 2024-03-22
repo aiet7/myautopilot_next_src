@@ -6,6 +6,7 @@ import useDocConversationsStore from "./conversations/docConversationsStore";
 import useTicketConversationsStore from "./conversations/ticketConversationsStore";
 import useUserStore from "../user/userStore";
 import useMspStore from "../auth/msp/mspStore";
+import useTicketsStore from "./tickets/ticketsStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
@@ -183,6 +184,7 @@ const useInteractionStore = create((set, get) => ({
   handleCreateTicketNote: async (ticketId, message) => {
     const userStore = useUserStore.getState();
     const { userType } = useMspStore.getState();
+    const { handleGetTicketNotes } = useTicketsStore.getState();
 
     if (message.trim() !== "") {
       set({ isWaiting: true, isServerError: false, userInput: "" });
@@ -214,8 +216,7 @@ const useInteractionStore = create((set, get) => ({
         );
 
         if (response.status === 200) {
-          const responseBody = await response.json();
-          console.log(responseBody);
+          await handleGetTicketNotes(ticketId);
         }
       } catch (e) {
         console.log(e);
