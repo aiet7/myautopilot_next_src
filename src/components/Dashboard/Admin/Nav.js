@@ -1,6 +1,6 @@
 "use client";
 import useUiStore from "@/utils/store/ui/uiStore";
-import { BsGearWideConnected } from "react-icons/bs";
+import { BsGearWideConnected, BsPeopleFill } from "react-icons/bs";
 import { GiOrganigram } from "react-icons/gi";
 import { FaUserCog, FaChalkboard } from "react-icons/fa";
 import { MdOutlineBrandingWatermark, MdBusinessCenter } from "react-icons/md";
@@ -19,8 +19,10 @@ const Nav = ({}) => {
         return <GiOrganigram size={20} />;
       case "roles":
         return <FaUserCog size={20} />;
-      case "integrations":
+      case "msp-integrations":
         return <BsGearWideConnected size={20} />;
+      case "client-integrations":
+        return <BsPeopleFill size={20} />;
       case "branding":
         return <MdOutlineBrandingWatermark size={20} />;
       case "companies":
@@ -45,9 +47,10 @@ const Nav = ({}) => {
         {options.map((option, index) => {
           return (
             <Link
-              id={`nav-${option}`}
               key={option}
-              href={`/${user?.mspCustomDomain}/dashboard/${user?.id}/admin/${option}`}
+              href={`/${user?.mspCustomDomain}/dashboard/${
+                user?.id
+              }/admin/${option.replace("Integrations", "-integrations")}`}
             >
               <div
                 onClick={() => handleOptionSelected(option)}
@@ -62,7 +65,17 @@ const Nav = ({}) => {
                     <div className="w-8">{renderIcon(option)}</div>
                     <div className="w-64 truncate flex">
                       <span className="px-1">
-                        {option.charAt(0).toUpperCase() + option.slice(1)}
+                        {{
+                          "msp-integrations": "MSP Integrations",
+                          "client-integrations": "Client Integrations",
+                        }[option] ||
+                          option
+                            .split("-")
+                            .map(
+                              (word) =>
+                                word.charAt(0).toUpperCase() + word.slice(1)
+                            )
+                            .join(" ")}
                       </span>
                     </div>
                   </div>

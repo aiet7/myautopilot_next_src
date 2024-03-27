@@ -50,7 +50,7 @@ const Nable = () => {
               </div>
               <div className="flex flex-col">
                 <Link
-                  href={`/${user?.mspCustomDomain}/dashboard/${user?.id}/admin/integrations`}
+                  href={`/${user?.mspCustomDomain}/dashboard/${user?.id}/admin/msp-integrations`}
                 >
                   <button
                     onClick={() => handleIntegrationsCard("cards")}

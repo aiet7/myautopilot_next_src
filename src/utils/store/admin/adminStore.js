@@ -4,7 +4,8 @@ const useAdminStore = create((set, get) => ({
   options: [
     "employees",
     "roles",
-    "integrations",
+    "msp-integrations",
+    "client-integrations",
     "branding",
     "companies",
     "board",

@@ -44,7 +44,6 @@ const OptionPages = () => {
     if (router.isReady) {
       const currentPath = router.asPath;
       const { msp, id, options } = router.query;
-
       getStorage(currentPath, options[0]);
       if (msp && id && session) {
         initializeUser(msp, id);
@@ -75,8 +74,10 @@ const OptionPages = () => {
           return <Branding />;
         case "companies":
           return <Companies />;
-        case "integrations":
+        case "msp-integrations":
           return <Cards />;
+        case "client-integrations":
+          return <h1>Test client</h1>;
         case "employees":
           return <Employees />;
         case "roles":

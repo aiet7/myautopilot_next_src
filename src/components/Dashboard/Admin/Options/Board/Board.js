@@ -11,7 +11,6 @@ const Board = () => {
 
   const { board, durationOptions, intializeBoard } = useBoardStore();
 
-  console.log(board);
 
   useEffect(() => {
     intializeBoard();

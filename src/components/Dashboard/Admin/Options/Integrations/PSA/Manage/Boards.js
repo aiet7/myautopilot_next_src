@@ -51,9 +51,7 @@ const Board = () => {
     handleSaveCustomBoard,
   } = useManageStore();
 
-  
   const boardData = customBoard ? customBoardMerge : connectwiseMerge;
-
 
   useEffect(() => {
     if (

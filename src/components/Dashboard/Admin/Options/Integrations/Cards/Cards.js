@@ -11,7 +11,7 @@ const Cards = () => {
   const { openAdmin, handleHistoryMenu } = useUiStore();
 
   const {
-    cards,
+    mspCards,
     selectedCategory,
     setSelectedCategory,
     handleDescriptionOverlay,
@@ -19,8 +19,8 @@ const Cards = () => {
   } = useIntegrationsStore();
 
   const filteredCards = selectedCategory
-    ? cards.filter((card) => card.category === selectedCategory)
-    : cards;
+    ? mspCards.filter((card) => card.category === selectedCategory)
+    : mspCards;
 
   return (
     <div
@@ -71,10 +71,10 @@ const Cards = () => {
                   key={view}
                   href={`/${user?.mspCustomDomain}/dashboard/${
                     user?.id
-                  }/admin/integrations/${view.toLowerCase()}`}
+                  }/admin/msp-integrations/${view.toLowerCase()}`}
                 >
                   <div
-                  id="manage"
+                    id="manage"
                     onClick={() => handleIntegrationsCard(view)}
                     onMouseEnter={() => handleDescriptionOverlay(view, true)}
                     onMouseLeave={() => handleDescriptionOverlay(view, false)}
@@ -101,7 +101,6 @@ const Cards = () => {
           </div>
         </div>
       </div>
-      
     </div>
   );
 };

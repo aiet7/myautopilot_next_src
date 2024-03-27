@@ -53,14 +53,15 @@ const SoftwareIntegratePages = () => {
   const session = Cookies.get("session_token");
 
   const router = useRouter();
+  const { software } = router.query;
 
   const { isFirstTimeUser } = useMspStore();
+
   const { initializeUser } = useUserStore();
   const { integrations, initializeIntegrations } = useIntegrationsStore();
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
   const { currentOption } = useAdminStore();
-  
   const {
     activeConfig,
     activeConfigSteps,
@@ -77,13 +78,11 @@ const SoftwareIntegratePages = () => {
     handleUpdateCurrentCondition,
   } = useTooltipStore();
 
-  const { software } = router.query;
-
   useEffect(() => {
     if (router.isReady) {
       const currentPath = router.asPath;
       const { msp, id } = router.query;
-      getStorage(currentPath, "integrations");
+      getStorage(currentPath, "msp-integrations");
       if (msp && id && session) {
         initializeUser(msp, id);
         initializeIntegrations(msp);
@@ -91,7 +90,6 @@ const SoftwareIntegratePages = () => {
         router.push("/auth/login");
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady, router.asPath]);
 
   useEffect(() => {
@@ -102,7 +100,6 @@ const SoftwareIntegratePages = () => {
     return () => {
       window.removeEventListener("beforeunload", setStorage);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, currentOption]);
 
   useEffect(() => {
@@ -168,7 +165,6 @@ const SoftwareIntegratePages = () => {
   const renderComponent = () => {
     if (software && software.length > 0) {
       const componentKey = software[0].toLowerCase();
-
       switch (componentKey) {
         case "openai":
           return <Openai />;

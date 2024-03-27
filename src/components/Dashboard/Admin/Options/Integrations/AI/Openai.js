@@ -39,7 +39,7 @@ const Openai = () => {
                 />
               </div>
               <div className="flex flex-col">
-                <Link href={`/${user?.mspCustomDomain}/dashboard/${user?.id}/admin/integrations`}>
+                <Link href={`/${user?.mspCustomDomain}/dashboard/${user?.id}/admin/msp-integrations`}>
                   <button
                     onClick={() => handleIntegrationsCard("cards")}
                     className="dark:text-white dark:hover:bg-white/20 hover:bg-black/5 text-black px-4 py-2 w-full text-left text-sm border-b"

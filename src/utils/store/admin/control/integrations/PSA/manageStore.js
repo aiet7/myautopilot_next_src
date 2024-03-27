@@ -1061,7 +1061,6 @@ const useManageStore = create((set, get) => ({
       await handleCustomBoardMetadata();
     } else {
       set({
-        connectwiseMerge: null,
         loadingMerge: true,
         activeBoard: id,
         customBoard: false,

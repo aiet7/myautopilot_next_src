@@ -417,6 +417,7 @@ const useTooltipStore = create((set, get) => ({
       clientSteps,
       contactSteps,
     } = get();
+
     switch (currentCondition) {
       case "initial":
         set({ steps: initialSteps });

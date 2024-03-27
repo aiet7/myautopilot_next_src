@@ -22,13 +22,12 @@ const IntegrationsPage = () => {
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
   const { currentOption } = useAdminStore();
-  
 
   useEffect(() => {
     if (router.isReady) {
       const currentPath = router.asPath;
       const { msp, id } = router.query;
-      getStorage(currentPath, "integrations");
+      getStorage(currentPath, "msp-integrations");
 
       if (msp && id && session) {
         initializeUser(msp, id);
@@ -53,7 +52,6 @@ const IntegrationsPage = () => {
   return (
     <>
       <Cards />
-      
     </>
   );
 };

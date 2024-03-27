@@ -5,7 +5,7 @@ const useIntegrationsStore = create((set, get) => ({
   integrations: null,
   selectedCategory: null,
   activeIntegrationsCard: "cards",
-  cards: [
+  mspCards: [
     {
       type: "image",
       value: "/images/logo-Automate.png",
@@ -110,18 +110,15 @@ const useIntegrationsStore = create((set, get) => ({
     set({ integrations: null });
     const newIntegrations = await handleGetIntegrations(msp);
     set({ integrations: newIntegrations });
-
-    return newIntegrations;
   },
-
   setSelectedCategory: (category) => set({ selectedCategory: category }),
 
   handleDescriptionOverlay: (index, hover) => {
     set((state) => {
-      const newCards = state.cards.map((card) =>
+      const newCards = state.mspCards.map((card) =>
         card.view === index ? { ...card, isHovered: hover } : card
       );
-      return { ...state, cards: newCards };
+      return { ...state, mspCards: newCards };
     });
   },
 
@@ -129,7 +126,7 @@ const useIntegrationsStore = create((set, get) => ({
     set((state) => ({
       ...state,
       activeIntegrationsCard: view,
-      cards: state.cards.map((card) => ({ ...card, isHovered: false })),
+      mspCards: state.mspCards.map((card) => ({ ...card, isHovered: false })),
     }));
   },
 
