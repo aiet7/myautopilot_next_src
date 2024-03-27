@@ -5,22 +5,29 @@ import useIntegrationsStore from "@/utils/store/admin/control/integrations/integ
 import Image from "next/image";
 import Link from "next/link";
 import useUserStore from "@/utils/store/user/userStore";
+import { useRouter } from "next/router";
 
 const Cards = () => {
   const { user } = useUserStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
+  const router = useRouter();
 
   const {
     mspCards,
+    clientCards,
     selectedCategory,
     setSelectedCategory,
     handleDescriptionOverlay,
     handleIntegrationsCard,
   } = useIntegrationsStore();
 
+  const isMSP = router.pathname.includes("msp-integrations");
+
+  const cardsToDisplay = isMSP ? mspCards : clientCards;
+
   const filteredCards = selectedCategory
-    ? mspCards.filter((card) => card.category === selectedCategory)
-    : mspCards;
+    ? cardsToDisplay.filter((card) => card.category === selectedCategory)
+    : cardsToDisplay;
 
   return (
     <div
@@ -71,13 +78,19 @@ const Cards = () => {
                   key={view}
                   href={`/${user?.mspCustomDomain}/dashboard/${
                     user?.id
-                  }/admin/msp-integrations/${view.toLowerCase()}`}
+                  }/admin/${
+                    isMSP ? "msp-integrations" : "client-integrations"
+                  }/${view.toLowerCase()}`}
                 >
                   <div
                     id="manage"
-                    onClick={() => handleIntegrationsCard(view)}
-                    onMouseEnter={() => handleDescriptionOverlay(view, true)}
-                    onMouseLeave={() => handleDescriptionOverlay(view, false)}
+                    onClick={() => handleIntegrationsCard(view, isMSP)}
+                    onMouseEnter={() =>
+                      handleDescriptionOverlay(view, true, isMSP)
+                    }
+                    onMouseLeave={() =>
+                      handleDescriptionOverlay(view, false, isMSP)
+                    }
                     className="dark:bg-white/60 dark:shadow-white/20 relative flex items-center justify-center border shadow-lg rounded w-full h-60  cursor-pointer"
                   >
                     <Image

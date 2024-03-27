@@ -10,8 +10,11 @@ import Configuration from "./Configuration";
 
 import Link from "next/link";
 import { convertHideIntegrationKeys } from "@/utils/conversions";
+import { useRouter } from "next/router";
 
 const Manage = () => {
+  const router = useRouter();
+
   const { user } = useUserStore();
 
   const {
@@ -28,8 +31,11 @@ const Manage = () => {
     handleIntegrateManage,
     handleDisconnectManage,
   } = useManageStore();
+
   const { integrations, handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
+  const isMSP = router.pathname.includes("msp-integrations");
+
   return (
     <div
       onClick={() => {
@@ -60,7 +66,11 @@ const Manage = () => {
               </div>
               <div className="flex flex-col">
                 <Link
-                  href={`/${user?.mspCustomDomain}/dashboard/${user?.id}/admin/msp-integrations`}
+                  href={`/${user?.mspCustomDomain}/dashboard/${
+                    user?.id
+                  }/admin/${
+                    isMSP ? "msp-integrations" : "client-integrations"
+                  }`}
                 >
                   <button
                     onClick={() => handleIntegrationsCard("cards")}

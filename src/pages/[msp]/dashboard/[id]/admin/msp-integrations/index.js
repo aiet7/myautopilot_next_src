@@ -14,7 +14,7 @@ const Cards = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/Cards/Cards")
 );
 
-const IntegrationsPage = () => {
+const MSPIntegrationsPage = () => {
   const session = Cookies.get("session_token");
   const router = useRouter();
 
@@ -22,7 +22,7 @@ const IntegrationsPage = () => {
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
   const { currentOption } = useAdminStore();
-
+  
   useEffect(() => {
     if (router.isReady) {
       const currentPath = router.asPath;
@@ -56,8 +56,8 @@ const IntegrationsPage = () => {
   );
 };
 
-IntegrationsPage.getLayout = (page) => {
+MSPIntegrationsPage.getLayout = (page) => {
   return <Layout>{page}</Layout>;
 };
 
-export default IntegrationsPage;
+export default MSPIntegrationsPage;

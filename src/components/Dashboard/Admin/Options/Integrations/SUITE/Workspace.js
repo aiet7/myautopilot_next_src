@@ -5,12 +5,17 @@ import useUiStore from "@/utils/store/ui/uiStore";
 import Image from "next/image";
 import Link from "next/link";
 import useUserStore from "@/utils/store/user/userStore";
+import { useRouter } from "next/router";
 
 const Workspace = () => {
+  const router = useRouter();
+
   const { user } = useUserStore();
 
   const { handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
+  const isMSP = router.pathname.includes("msp-integrations");
+
   return (
     <div
       onClick={() => {
@@ -40,7 +45,11 @@ const Workspace = () => {
               </div>
               <div className="flex flex-col">
                 <Link
-                  href={`/${user?.mspCustomDomain}/dashboard/${user?.id}/admin/msp-integrations`}
+                  href={`/${user?.mspCustomDomain}/dashboard/${
+                    user?.id
+                  }/admin/${
+                    isMSP ? "msp-integrations" : "client-integrations"
+                  }`}
                 >
                   <button
                     onClick={() => handleIntegrationsCard("cards")}

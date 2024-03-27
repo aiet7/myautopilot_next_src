@@ -77,7 +77,7 @@ const OptionPages = () => {
         case "msp-integrations":
           return <Cards />;
         case "client-integrations":
-          return <h1>Test client</h1>;
+          return <Cards />;
         case "employees":
           return <Employees />;
         case "roles":

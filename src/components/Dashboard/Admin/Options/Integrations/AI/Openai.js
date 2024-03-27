@@ -6,11 +6,17 @@ import useUserStore from "@/utils/store/user/userStore";
 import Image from "next/image";
 
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const Openai = () => {
+  const router = useRouter();
+
   const { user } = useUserStore();
   const { handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
+
+  const isMSP = router.pathname.includes("msp-integrations");
+
   return (
     <div
       onClick={() => {
@@ -39,7 +45,13 @@ const Openai = () => {
                 />
               </div>
               <div className="flex flex-col">
-                <Link href={`/${user?.mspCustomDomain}/dashboard/${user?.id}/admin/msp-integrations`}>
+                <Link
+                  href={`/${user?.mspCustomDomain}/dashboard/${
+                    user?.id
+                  }/admin/${
+                    isMSP ? "msp-integrations" : "client-integrations"
+                  }`}
+                >
                   <button
                     onClick={() => handleIntegrationsCard("cards")}
                     className="dark:text-white dark:hover:bg-white/20 hover:bg-black/5 text-black px-4 py-2 w-full text-left text-sm border-b"

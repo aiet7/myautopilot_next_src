@@ -106,6 +106,27 @@ const useIntegrationsStore = create((set, get) => ({
     },
   ],
 
+  clientCards: [
+    {
+      type: "image",
+      value: "/images/logo-Office365.png",
+      category: "SUITE",
+      view: "office365",
+      description:
+        "Access data and perform actions in numerous Microsoft 365 products using the Graph API.",
+      isHovered: false,
+    },
+    {
+      type: "image",
+      value: "/images/logo-GoogleWS.png",
+      category: "SUITE",
+      view: "googlews",
+      description:
+        "Integrate with Google Workspace for streamlined access to Google services like Gmail, Drive, and Calendar.",
+      isHovered: false,
+    },
+  ],
+
   initializeIntegrations: async (msp) => {
     set({ integrations: null });
     const newIntegrations = await handleGetIntegrations(msp);
@@ -113,21 +134,29 @@ const useIntegrationsStore = create((set, get) => ({
   },
   setSelectedCategory: (category) => set({ selectedCategory: category }),
 
-  handleDescriptionOverlay: (index, hover) => {
+  handleDescriptionOverlay: (view, hover, isMSP) => {
     set((state) => {
-      const newCards = state.mspCards.map((card) =>
-        card.view === index ? { ...card, isHovered: hover } : card
+      const cardsKey = isMSP ? "mspCards" : "clientCards";
+      const updatedCards = state[cardsKey].map((card) =>
+        card.view === view ? { ...card, isHovered: hover } : card
       );
-      return { ...state, mspCards: newCards };
+      return { ...state, [cardsKey]: updatedCards };
     });
   },
 
-  handleIntegrationsCard: (view) => {
-    set((state) => ({
-      ...state,
-      activeIntegrationsCard: view,
-      mspCards: state.mspCards.map((card) => ({ ...card, isHovered: false })),
-    }));
+  handleIntegrationsCard: (view, isMSP) => {
+    set((state) => {
+      const cardsKey = isMSP ? "mspCards" : "clientCards";
+      const updatedCards = state[cardsKey].map((card) => ({
+        ...card,
+        isHovered: false,
+      }));
+      return {
+        ...state,
+        activeIntegrationsCard: view,
+        [cardsKey]: updatedCards,
+      };
+    });
   },
 
   handleUpdateIntegrations: (updatedIntegrations) => {

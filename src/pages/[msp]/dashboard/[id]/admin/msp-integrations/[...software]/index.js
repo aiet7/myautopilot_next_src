@@ -49,7 +49,7 @@ const Workspace = dynamic(() =>
 
 const JoyRide = dynamic(() => import("react-joyride"));
 
-const SoftwareIntegratePages = () => {
+const MSPSoftwareIntegratePages = () => {
   const session = Cookies.get("session_token");
 
   const router = useRouter();
@@ -230,8 +230,8 @@ const SoftwareIntegratePages = () => {
   );
 };
 
-SoftwareIntegratePages.getLayout = (page) => {
+MSPSoftwareIntegratePages.getLayout = (page) => {
   return <Layout>{page}</Layout>;
 };
 
-export default SoftwareIntegratePages;
+export default MSPSoftwareIntegratePages;
