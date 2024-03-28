@@ -5,15 +5,21 @@ import Image from "next/image";
 import Link from "next/link";
 import useUserStore from "@/utils/store/user/userStore";
 import { useRouter } from "next/router";
+import useMspStore from "@/utils/store/auth/msp/mspStore";
+import { useEffect } from "react";
 
 const Office = () => {
   const router = useRouter();
 
+  const { userType } = useMspStore();
   const { user } = useUserStore();
 
-  const { handleIntegrationsCard } = useIntegrationsStore();
+  const { clientIntegrations, handleIntegrationsCard } =
+    useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
   const isMSP = router.pathname.includes("msp-integrations");
+
+
 
   return (
     <div
@@ -51,7 +57,7 @@ const Office = () => {
                   }`}
                 >
                   <button
-                    onClick={() => handleIntegrationsCard("cards")}
+                    onClick={() => handleIntegrationsCard("cards", isMSP)}
                     className="dark:text-white dark:hover:bg-white/20 hover:bg-black/5 text-black px-4 py-2 w-full text-left text-sm border-b"
                   >
                     Integration Center

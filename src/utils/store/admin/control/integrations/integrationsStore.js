@@ -1,8 +1,20 @@
-import { handleGetIntegrations } from "@/utils/api/serverProps";
+import {
+  handleGetClientIntegrations,
+  handleGetMSPIntegrations,
+  handleGetManageDBClients,
+} from "@/utils/api/serverProps";
+import useUserStore from "@/utils/store/user/userStore";
 import { create } from "zustand";
 
+const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
+const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
+const emailConnectorUrl = process.env.NEXT_PUBLIC_EMAILCONNECTOR_URL;
+
 const useIntegrationsStore = create((set, get) => ({
-  integrations: null,
+  mspIntegrations: null,
+  clientIntegrations: null,
+  clientList: null,
+  selectedCompany: null,
   selectedCategory: null,
   activeIntegrationsCard: "cards",
   mspCards: [
@@ -23,24 +35,7 @@ const useIntegrationsStore = create((set, get) => ({
       description: "Manage contacts, tasks, tickets and more within CW Manage.",
       isHovered: false,
     },
-    {
-      type: "image",
-      value: "/images/logo-Office365.png",
-      category: "SUITE",
-      view: "office365",
-      description:
-        "Access data and perform actions in numerous Microsoft 365 products using the Graph API.",
-      isHovered: false,
-    },
-    {
-      type: "image",
-      value: "/images/logo-GoogleWS.png",
-      category: "SUITE",
-      view: "googlews",
-      description:
-        "Integrate with Google Workspace for streamlined access to Google services like Gmail, Drive, and Calendar.",
-      isHovered: false,
-    },
+
     {
       type: "image",
       value: "/images/logo-Nablermm.png",
@@ -127,12 +122,33 @@ const useIntegrationsStore = create((set, get) => ({
     },
   ],
 
-  initializeIntegrations: async (msp) => {
-    set({ integrations: null });
-    const newIntegrations = await handleGetIntegrations(msp);
-    set({ integrations: newIntegrations });
+  initializeMSPIntegrations: async (msp) => {
+    set({ mspIntegrations: null, selectedCompany: null });
+    const newIntegrations = await handleGetMSPIntegrations(msp);
+    set({ mspIntegrations: newIntegrations });
   },
+
+  initializeClientIntegrations: async (msp, clientId) => {
+    set({ clientIntegrations: null });
+    const newIntegrations = await handleGetClientIntegrations(msp, clientId);
+    set({ clientIntegrations: newIntegrations });
+  },
+
+  initializeClientList: async () => {
+    const userStore = useUserStore.getState();
+    set({ clientList: null, selectedCompany: null });
+
+    if (userStore.user) {
+      const clientList = await handleGetManageDBClients(
+        userStore.user.mspCustomDomain
+      );
+      set({ clientList: clientList });
+    }
+  },
+
   setSelectedCategory: (category) => set({ selectedCategory: category }),
+
+  setSelectedCompany: (company) => set({ selectedCompany: company }),
 
   handleDescriptionOverlay: (view, hover, isMSP) => {
     set((state) => {
@@ -159,13 +175,19 @@ const useIntegrationsStore = create((set, get) => ({
     });
   },
 
-  handleUpdateIntegrations: (updatedIntegrations) => {
-    set({ integrations: updatedIntegrations });
+  handleUpdateMSPIntegrations: (updatedIntegrations) => {
+    set({ mspIntegrations: updatedIntegrations });
+  },
+
+  handleUpdateClientIntegrations: (updatedIntegrations) => {
+    set({ clientIntegrations: updatedIntegrations });
   },
 
   clearIntegration: () => {
     set({
-      integrations: null,
+      mspIntegrations: null,
+      clientList: null,
+      selectedCompany: null,
       selectedCategory: null,
       activeIntegrationsCard: "cards",
     });

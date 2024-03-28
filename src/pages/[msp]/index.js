@@ -57,11 +57,9 @@ const MSPPage = ({}) => {
   }, []);
 
   useEffect(() => {
-    console.log("firing off")
     initializeUserType();
   }, [userType]);
 
-  console.log(userType)
 
   return (
     <>

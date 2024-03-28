@@ -20,9 +20,18 @@ export const handleGetClient = async (msp, clientId) => {
   return response.json();
 };
 
-export const handleGetIntegrations = async (msp) => {
+export const handleGetMSPIntegrations = async (msp) => {
   const response = await fetch(
     `${dbServiceUrl}/${encodeURIComponent(msp)}/integrations`
+  );
+  return response.json();
+};
+
+export const handleGetClientIntegrations = async (msp, clientId) => {
+  const response = await fetch(
+    `${dbServiceUrl}/${encodeURIComponent(
+      msp
+    )}/clientIntegrations/client?clientId=${clientId}`
   );
   return response.json();
 };

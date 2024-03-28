@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import useUserStore from "@/utils/store/user/userStore";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 const Cards = () => {
   const { user } = useUserStore();
@@ -13,21 +14,32 @@ const Cards = () => {
   const router = useRouter();
 
   const {
+    clientList,
     mspCards,
     clientCards,
+    selectedCompany,
     selectedCategory,
+    setSelectedCompany,
     setSelectedCategory,
     handleDescriptionOverlay,
     handleIntegrationsCard,
+    initializeClientList,
   } = useIntegrationsStore();
 
   const isMSP = router.pathname.includes("msp-integrations");
 
   const cardsToDisplay = isMSP ? mspCards : clientCards;
-
   const filteredCards = selectedCategory
     ? cardsToDisplay.filter((card) => card.category === selectedCategory)
     : cardsToDisplay;
+
+  useEffect(() => {
+    if (!isMSP) {
+      initializeClientList();
+    } else {
+      console.log("not loading");
+    }
+  }, [isMSP, user]);
 
   return (
     <div
@@ -45,7 +57,7 @@ const Cards = () => {
           <h1 className="text-2xl">Integration Center</h1>
         </div>
         <div className="flex flex-col py-6 w-full overflow-hidden">
-          <div className="flex gap-2 px-4 py-2">
+          <div className="flex items-center gap-2 px-4 py-2">
             <button
               onClick={() => setSelectedCategory(null)}
               className={`px-4 py-2 rounded ${
@@ -69,49 +81,69 @@ const Cards = () => {
                 {category}
               </button>
             ))}
+            {clientList && !isMSP && (
+              <select
+                onChange={(e) => setSelectedCompany(e.target.value)}
+                className="border rounded-lg shadow-lg p-2 cursor-pointer text-black w-full"
+              >
+                <option value="Select Company" disabled selected>
+                  Select Company
+                </option>
+                {clientList.map((client) => {
+                  const { id, name } = client;
+                  return (
+                    <option key={id} value={id}>
+                      {name}
+                    </option>
+                  );
+                })}
+              </select>
+            )}
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2  xl:grid-cols-3 gap-4 py-7 px-4 overflow-auto scrollbar-thin">
-            {filteredCards.map((card, index) => {
-              const { value, view, description, isHovered } = card;
-              return (
-                <Link
-                  key={view}
-                  href={`/${user?.mspCustomDomain}/dashboard/${
-                    user?.id
-                  }/admin/${
-                    isMSP ? "msp-integrations" : "client-integrations"
-                  }/${view.toLowerCase()}`}
-                >
-                  <div
-                    id="manage"
-                    onClick={() => handleIntegrationsCard(view, isMSP)}
-                    onMouseEnter={() =>
-                      handleDescriptionOverlay(view, true, isMSP)
-                    }
-                    onMouseLeave={() =>
-                      handleDescriptionOverlay(view, false, isMSP)
-                    }
-                    className="dark:bg-white/60 dark:shadow-white/20 relative flex items-center justify-center border shadow-lg rounded w-full h-60  cursor-pointer"
+          {(isMSP || (!isMSP && selectedCompany)) && (
+            <div className="grid grid-cols-1 lg:grid-cols-2  xl:grid-cols-3 gap-4 py-7 px-4 overflow-auto scrollbar-thin">
+              {filteredCards.map((card, index) => {
+                const { value, view, description, isHovered } = card;
+                return (
+                  <Link
+                    key={view}
+                    href={`/${user?.mspCustomDomain}/dashboard/${
+                      user?.id
+                    }/admin/${
+                      isMSP ? "msp-integrations" : "client-integrations"
+                    }/${view.toLowerCase()}`}
                   >
-                    <Image
-                      src={value}
-                      alt="Card Image"
-                      width={300}
-                      height={300}
-                      priority={true}
-                    />
-                    {isHovered && (
-                      <div className="absolute bg-black/80 inset-0 w-full flex items-center justify-center">
-                        <p className="text-white text-lg px-10">
-                          {description}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+                    <div
+                      id="manage"
+                      onClick={() => handleIntegrationsCard(view, isMSP)}
+                      onMouseEnter={() =>
+                        handleDescriptionOverlay(view, true, isMSP)
+                      }
+                      onMouseLeave={() =>
+                        handleDescriptionOverlay(view, false, isMSP)
+                      }
+                      className="dark:bg-white/60 dark:shadow-white/20 relative flex items-center justify-center border shadow-lg rounded w-full h-60  cursor-pointer"
+                    >
+                      <Image
+                        src={value}
+                        alt="Card Image"
+                        width={300}
+                        height={300}
+                        priority={true}
+                      />
+                      {isHovered && (
+                        <div className="absolute bg-black/80 inset-0 w-full flex items-center justify-center">
+                          <p className="text-white text-lg px-10">
+                            {description}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
     </div>

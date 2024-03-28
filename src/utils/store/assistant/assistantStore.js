@@ -10,8 +10,8 @@ const useAssistantStore = create((set, get) => ({
   showProgress: true,
 
   initializeAssistant: async (msp) => {
-    const { initializeIntegrations } = useIntegrationsStore.getState();
-    const integrations = await initializeIntegrations(msp);
+    const { initializeMSPIntegrations } = useIntegrationsStore.getState();
+    const integrations = await initializeMSPIntegrations(msp);
     if (integrations?.connectWiseManageIntegrator) {
       set({
         activeUIAssistantTab: "Tickets",

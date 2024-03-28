@@ -94,7 +94,7 @@ const useTicketsStore = create((set, get) => ({
   handleGetTicketNotes: async (ticketId) => {
     const userStore = useUserStore.getState();
     const encodedDomain = encodeURIComponent(userStore.user.mspCustomDomain);
-   
+
     try {
       const ticketNotesResponse = await fetch(
         `${connectWiseServiceUrl}/getConnectWiseTicketNotesById?mspCustomDomain=${encodedDomain}&ticketId=${ticketId}`

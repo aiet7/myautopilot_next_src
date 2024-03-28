@@ -32,7 +32,7 @@ const Manage = () => {
     handleDisconnectManage,
   } = useManageStore();
 
-  const { integrations, handleIntegrationsCard } = useIntegrationsStore();
+  const { mspIntegrations, handleIntegrationsCard } = useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
   const isMSP = router.pathname.includes("msp-integrations");
 
@@ -73,7 +73,7 @@ const Manage = () => {
                   }`}
                 >
                   <button
-                    onClick={() => handleIntegrationsCard("cards")}
+                    onClick={() => handleIntegrationsCard("cards", isMSP)}
                     className="dark:text-white dark:hover:bg-white/20 hover:bg-black/5 text-black px-4 py-2 w-full text-left text-sm border-b"
                   >
                     Integration Center
@@ -118,10 +118,10 @@ const Manage = () => {
                     <p className="dark:text-white/60 text-black/60">
                       Your Client ID that is assigned to you from ConnectWise
                     </p>
-                    {integrations?.connectWiseManageIntegration?.clientId ? (
+                    {mspIntegrations?.connectWiseManageIntegration?.clientId ? (
                       <p className="p-1">
                         {convertHideIntegrationKeys(
-                          integrations?.connectWiseManageIntegration?.clientId
+                          mspIntegrations?.connectWiseManageIntegration?.clientId
                         )}
                       </p>
                     ) : (
@@ -145,10 +145,10 @@ const Manage = () => {
                       Your generated Public Key that was created via ConnectWise
                       Manager
                     </p>
-                    {integrations?.connectWiseManageIntegration?.publicKey ? (
+                    {mspIntegrations?.connectWiseManageIntegration?.publicKey ? (
                       <p className="p-1">
                         {convertHideIntegrationKeys(
-                          integrations?.connectWiseManageIntegration?.publicKey
+                          mspIntegrations?.connectWiseManageIntegration?.publicKey
                         )}
                       </p>
                     ) : (
@@ -173,10 +173,10 @@ const Manage = () => {
                     <p className="dark:text-white/60 text-black/60">
                       Your Company ID that is assigned to you from ConnectWise
                     </p>
-                    {integrations?.connectWiseManageIntegration?.companyId ? (
+                    {mspIntegrations?.connectWiseManageIntegration?.companyId ? (
                       <p className="p-1">
                         {convertHideIntegrationKeys(
-                          integrations?.connectWiseManageIntegration?.companyId
+                          mspIntegrations?.connectWiseManageIntegration?.companyId
                         )}
                       </p>
                     ) : (
@@ -200,10 +200,10 @@ const Manage = () => {
                       Your generated Private Key that was created via
                       ConnectWise Manager
                     </p>
-                    {integrations?.connectWiseManageIntegration?.privateKey ? (
+                    {mspIntegrations?.connectWiseManageIntegration?.privateKey ? (
                       <p className="p-1">
                         {convertHideIntegrationKeys(
-                          integrations?.connectWiseManageIntegration?.privateKey
+                          mspIntegrations?.connectWiseManageIntegration?.privateKey
                         )}
                       </p>
                     ) : (
@@ -222,9 +222,9 @@ const Manage = () => {
                     )}
                   </div>
                 </div>
-                {!integrations?.connectWiseManageIntegrator && (
+                {!mspIntegrations?.connectWiseManageIntegrator && (
                   <>
-                    {integrations?.connectWiseManageIntegration?.clientId ? (
+                    {mspIntegrations?.connectWiseManageIntegration?.clientId ? (
                       <button
                         onClick={() =>
                           handleRemoveManageKeys(user?.mspCustomDomain)
@@ -345,7 +345,7 @@ const Manage = () => {
                   <p className="text-red-500">Error Disconnecting Manage!</p>
                 )}
 
-                {integrations?.connectWiseManageIntegrator && (
+                {mspIntegrations?.connectWiseManageIntegrator && (
                   <button
                     id="manageAuthenticated-configuration"
                     onClick={() => setActiveConfig(true, user?.mspCustomDomain)}
@@ -357,18 +357,18 @@ const Manage = () => {
                 {
                   <button
                     id={
-                      integrations?.connectWiseManageIntegrator
+                      mspIntegrations?.connectWiseManageIntegrator
                         ? "manageAuthenticated-disconnect"
                         : "manage-authenticate"
                     }
                     onClick={() =>
-                      integrations?.connectWiseManageIntegrator
+                      mspIntegrations?.connectWiseManageIntegrator
                         ? handleDisconnectManage(user?.mspCustomDomain)
                         : handleIntegrateManage(user?.mspCustomDomain)
                     }
                     className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg px-3 py-1"
                   >
-                    {integrations?.connectWiseManageIntegrator
+                    {mspIntegrations?.connectWiseManageIntegrator
                       ? "Disconnect"
                       : "Authenticate"}
                   </button>

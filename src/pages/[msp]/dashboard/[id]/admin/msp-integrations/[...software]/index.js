@@ -55,10 +55,10 @@ const MSPSoftwareIntegratePages = () => {
   const router = useRouter();
   const { software } = router.query;
 
-  const { isFirstTimeUser } = useMspStore();
+  const { isFirstTimeUser, initializeUserType } = useMspStore();
 
   const { initializeUser } = useUserStore();
-  const { integrations, initializeIntegrations } = useIntegrationsStore();
+  const { integrations, initializeMSPIntegrations } = useIntegrationsStore();
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
   const { currentOption } = useAdminStore();
@@ -85,7 +85,8 @@ const MSPSoftwareIntegratePages = () => {
       getStorage(currentPath, "msp-integrations");
       if (msp && id && session) {
         initializeUser(msp, id);
-        initializeIntegrations(msp);
+        initializeMSPIntegrations(msp);
+        initializeUserType();
       } else {
         router.push("/auth/login");
       }

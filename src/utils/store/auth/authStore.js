@@ -448,6 +448,9 @@ const useAuthStore = create((set, get) => ({
     set({
       email: "",
       password: "",
+      verifyPassword: "",
+      verificationCode: "",
+
       firstName: "",
       lastName: "",
       phoneNumber: "",
@@ -459,6 +462,14 @@ const useAuthStore = create((set, get) => ({
         zipcode: "",
         state: "",
       },
+      errorMessage: "",
+      resentCodeMessage: "",
+      showLoginForm: false,
+      showSignupForm: false,
+      loading: false,
+      smallLoading: false,
+      companies: [],
+      showPassword: false,
     });
   },
 }));

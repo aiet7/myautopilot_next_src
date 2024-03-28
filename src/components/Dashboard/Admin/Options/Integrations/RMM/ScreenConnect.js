@@ -52,7 +52,7 @@ const ScreenConnect = () => {
                   }`}
                 >
                   <button
-                    onClick={() => handleIntegrationsCard("cards")}
+                    onClick={() => handleIntegrationsCard("cards", isMSP)}
                     className="dark:text-white dark:hover:bg-white/20 hover:bg-black/5 text-black px-4 py-2 w-full text-left text-sm border-b"
                   >
                     Integration Center

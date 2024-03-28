@@ -12,7 +12,7 @@ import { IoTicketSharp } from "react-icons/io5";
 import useIntegrationsStore from "@/utils/store/admin/control/integrations/integrationsStore";
 
 const AssistantRail = ({}) => {
-  const { integrations } = useIntegrationsStore();
+  const { mspIntegrations } = useIntegrationsStore();
   const { openAssistant } = useUiStore();
   const {
     activeAssistantTab,
@@ -28,7 +28,7 @@ const AssistantRail = ({}) => {
     >
       <IoTicketSharp
         className={`${
-          integrations?.connectWiseManageIntegrator
+          mspIntegrations?.connectWiseManageIntegrator
             ? "dark:hover:bg-white/20 hover:bg-black/20 cursor-pointer"
             : "dark:text-white/10 text-black/20"
         } ${
@@ -36,7 +36,7 @@ const AssistantRail = ({}) => {
         } rounded-full px-2 outline-none`}
         size={35}
         onClick={() => {
-          if (integrations?.connectWiseManageIntegrator) {
+          if (mspIntegrations?.connectWiseManageIntegrator) {
             handleAssistantTabChange("Tickets");
             handleUIAssistantTabChange("Tickets");
           } else return;

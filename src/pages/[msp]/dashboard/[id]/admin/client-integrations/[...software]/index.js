@@ -12,7 +12,7 @@ import useUserStore from "@/utils/store/user/userStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useIntegrationsStore from "@/utils/store/admin/control/integrations/integrationsStore";
 import useAdminStore from "@/utils/store/admin/adminStore";
-
+import useMspStore from "@/utils/store/auth/msp/mspStore";
 
 const Office = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/SUITE/Office")
@@ -21,19 +21,25 @@ const Workspace = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/SUITE/Workspace")
 );
 
-
 const ClientSoftwareIntegratePages = () => {
   const session = Cookies.get("session_token");
 
   const router = useRouter();
   const { software } = router.query;
 
-
+  const { initializeUserType } = useMspStore();
   const { initializeUser } = useUserStore();
-  const { initializeIntegrations } = useIntegrationsStore();
+  const { selectedCompany, initializeClientIntegrations } =
+    useIntegrationsStore();
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
   const { currentOption } = useAdminStore();
+
+  useEffect(() => {
+    if (!selectedCompany) {
+      router.back();
+    }
+  }, [selectedCompany]);
 
   useEffect(() => {
     if (router.isReady) {
@@ -42,7 +48,11 @@ const ClientSoftwareIntegratePages = () => {
       getStorage(currentPath, "client-integrations");
       if (msp && id && session) {
         initializeUser(msp, id);
-        initializeIntegrations(msp);
+        initializeUserType();
+
+        if (selectedCompany) {
+          initializeClientIntegrations(msp, selectedCompany);
+        }
       } else {
         router.push("/auth/login");
       }

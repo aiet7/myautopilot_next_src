@@ -9,6 +9,7 @@ import useLocalStorageStore from "@/utils/store/localstorage/localStorageStore";
 import useUserStore from "@/utils/store/user/userStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useAdminStore from "@/utils/store/admin/adminStore";
+import useMspStore from "@/utils/store/auth/msp/mspStore";
 
 const Cards = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/Cards/Cards")
@@ -18,11 +19,12 @@ const MSPIntegrationsPage = () => {
   const session = Cookies.get("session_token");
   const router = useRouter();
 
+  const { initializeUserType } = useMspStore();
   const { initializeUser } = useUserStore();
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
   const { currentOption } = useAdminStore();
-  
+
   useEffect(() => {
     if (router.isReady) {
       const currentPath = router.asPath;
@@ -31,6 +33,7 @@ const MSPIntegrationsPage = () => {
 
       if (msp && id && session) {
         initializeUser(msp, id);
+        initializeUserType();
       } else {
         router.push("/auth/login");
       }

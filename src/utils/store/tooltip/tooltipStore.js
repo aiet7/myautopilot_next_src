@@ -479,6 +479,15 @@ const useTooltipStore = create((set, get) => ({
       set({ stepIndex: stepIndex + (action === ACTIONS.PREV ? -1 : 1) });
     }
   },
+
+  clearTooltip: () => {
+    set({
+      run: true,
+      stepIndex: 0,
+
+      steps: [],
+    });
+  },
 }));
 
 export default useTooltipStore;

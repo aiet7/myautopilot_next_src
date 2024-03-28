@@ -792,6 +792,8 @@ const useMspStore = create((set, get) => ({
         },
       },
 
+      isFirstTimeUser: false,
+
       errorMessage: {
         techSignup: false,
 

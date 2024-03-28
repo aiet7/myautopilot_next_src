@@ -20,6 +20,21 @@ const useAdminStore = create((set, get) => ({
 
     set({ currentOption: option });
   },
+
+  clearAdmin: () => {
+    set({
+      options: [
+        "employees",
+        "roles",
+        "msp-integrations",
+        "client-integrations",
+        "branding",
+        "companies",
+        "board",
+      ],
+      currentOption: null,
+    });
+  },
 }));
 
 export default useAdminStore;

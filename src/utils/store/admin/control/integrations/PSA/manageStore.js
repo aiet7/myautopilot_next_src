@@ -694,7 +694,7 @@ const useManageStore = create((set, get) => ({
 
   handleSaveManageKeys: async (mspCustomDomain) => {
     const { integrationInputs } = get();
-    const { handleUpdateIntegrations } = useIntegrationsStore.getState();
+    const { handleUpdateMSPIntegrations } = useIntegrationsStore.getState();
 
     const {
       connectWiseManageIntegrator,
@@ -719,7 +719,7 @@ const useManageStore = create((set, get) => ({
 
       if (response.status === 200) {
         const updatedIntegrations = await response.json();
-        handleUpdateIntegrations(updatedIntegrations);
+        handleUpdateMSPIntegrations(updatedIntegrations);
         set({
           successManageIntegration: false,
           successManageDisconnect: false,
@@ -744,7 +744,7 @@ const useManageStore = create((set, get) => ({
   },
 
   handleRemoveManageKeys: async (mspCustomDomain) => {
-    const { handleUpdateIntegrations } = useIntegrationsStore.getState();
+    const { handleUpdateMSPIntegrations } = useIntegrationsStore.getState();
 
     try {
       const response = await fetch(
@@ -768,7 +768,7 @@ const useManageStore = create((set, get) => ({
 
       if (response.status === 200) {
         const updatedIntegrations = await response.json();
-        handleUpdateIntegrations(updatedIntegrations);
+        handleUpdateMSPIntegrations(updatedIntegrations);
         set({
           successManageDisconnect: false,
           successManageIntegration: false,
@@ -794,7 +794,7 @@ const useManageStore = create((set, get) => ({
   },
 
   handleIntegrateManage: async (mspCustomDomain) => {
-    const { handleUpdateIntegrations } = useIntegrationsStore.getState();
+    const { handleUpdateMSPIntegrations } = useIntegrationsStore.getState();
     try {
       const response = await fetch(
         `${connectWiseServiceUrl}/getConnectWiseBoards?mspCustomDomain=${mspCustomDomain}`
@@ -817,7 +817,7 @@ const useManageStore = create((set, get) => ({
 
         if (updatedResponse.status === 200) {
           const updatedIntegrations = await updatedResponse.json();
-          handleUpdateIntegrations(updatedIntegrations);
+          handleUpdateMSPIntegrations(updatedIntegrations);
           set({
             successManageIntegration: true,
             successManageDisconnect: false,
@@ -853,7 +853,7 @@ const useManageStore = create((set, get) => ({
 
   // handleIntegrateEmailConnector: async (mspCustomDomain) => {
   //   const { integrationInputs } = get();
-  //   const { handleUpdateIntegrations } = useIntegrationsStore.getState();
+  //   const { handleUpdateMSPIntegrations } = useIntegrationsStore.getState();
 
   //   if (integrationInputs.emailConnectorGmail.trim() !== "") {
   //     try {
@@ -870,7 +870,7 @@ const useManageStore = create((set, get) => ({
   //       });
   //       if (response.status === 200) {
   //         const updatedIntegrations = await response.json();
-  //         handleUpdateIntegrations(updatedIntegrations);
+  //         handleUpdateMSPIntegrations(updatedIntegrations);
   //         console.log("EMAIL CONNECTOR INTEGRATED");
   //       } else {
   //         console.log("EMAIL CONNECTOR FAILED");
@@ -882,7 +882,7 @@ const useManageStore = create((set, get) => ({
   // },
 
   handleDisconnectManage: async (mspCustomDomain) => {
-    const { handleUpdateIntegrations } = useIntegrationsStore.getState();
+    const { handleUpdateMSPIntegrations } = useIntegrationsStore.getState();
 
     try {
       const response = await fetch(
@@ -916,7 +916,7 @@ const useManageStore = create((set, get) => ({
         );
         const updatedIntegrations = await updatedResponse.json();
 
-        handleUpdateIntegrations(updatedIntegrations);
+        handleUpdateMSPIntegrations(updatedIntegrations);
         set({
           technicians: null,
           clients: null,
@@ -956,7 +956,7 @@ const useManageStore = create((set, get) => ({
   },
 
   // handleDisconnectEmailIntegrator: async (mspCustomDomain) => {
-  //   const { handleUpdateIntegrations } = useIntegrationsStore.getState();
+  //   const { handleUpdateMSPIntegrations } = useIntegrationsStore.getState();
   //   try {
   //     const response = await fetch(
   //       `${dbServiceUrl}/${mspCustomDomain}/integrations/update`,
@@ -978,7 +978,7 @@ const useManageStore = create((set, get) => ({
 
   //     if (response.status === 200) {
   //       const updatedIntegrations = await response.json();
-  //       handleUpdateIntegrations(updatedIntegrations);
+  //       handleUpdateMSPIntegrations(updatedIntegrations);
   //       set({ errorMessage: false, successMessage: true });
   //       console.log("EMAILCONNECTOR DISCONNECTED");
   //     } else {
@@ -1688,6 +1688,7 @@ const useManageStore = create((set, get) => ({
 
       connectwiseMerge: null,
       loadingMerge: false,
+      loadingAiMerge: false,
 
       customBoardMetadata: false,
       customBoard: false,

@@ -213,6 +213,16 @@ const useEmployeesStore = create((set, get) => ({
 
       successMessage: false,
       errorMessage: false,
+
+      addEmployeeInputs: {
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        password: "",
+      },
+
+      addEmployee: false,
     });
   },
 }));
