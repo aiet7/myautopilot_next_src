@@ -34,7 +34,7 @@ const ClientSoftwareIntegratePages = () => {
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
   const { currentOption } = useAdminStore();
-
+  
   useEffect(() => {
     if (!selectedCompany) {
       router.back();

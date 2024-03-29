@@ -83,16 +83,18 @@ const Cards = () => {
             ))}
             {clientList && !isMSP && (
               <select
-                onChange={(e) => setSelectedCompany(e.target.value)}
+                onChange={(e) => {
+                  setSelectedCompany(e.target.value);
+                }}
                 className="border rounded-lg shadow-lg p-2 cursor-pointer text-black w-full"
               >
                 <option value="Select Company" disabled selected>
                   Select Company
                 </option>
-                {clientList.map((client) => {
-                  const { id, name } = client;
+                {clientList.map((client, index) => {
+                  const { id, name, connectWiseClientsAutopilotDbId } = client;
                   return (
-                    <option key={id} value={id}>
+                    <option key={id} value={connectWiseClientsAutopilotDbId}>
                       {name}
                     </option>
                   );

@@ -327,7 +327,7 @@ const useMspStore = create((set, get) => ({
             isFirstTimeUser: true,
           });
           navigator(
-            `/${msp.customDomain}/dashboard/${tech.id}/admin/integrations/connectwise`
+            `/${msp.customDomain}/dashboard/${tech.id}/admin/msp-integrations/connectwise`
           );
           Cookie.set("session_token", tech.id, { expires: 7 });
           Cookie.set("client_id", tech.id, { expires: 7 });

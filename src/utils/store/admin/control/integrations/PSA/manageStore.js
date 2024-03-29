@@ -173,8 +173,7 @@ const useManageStore = create((set, get) => ({
             ),
           ]);
 
-        console.log("DB", dbClients);
-        console.log("CW", connectWiseClients);
+     
 
         const markedClients = connectWiseClients.map((cwClient) => ({
           ...cwClient,

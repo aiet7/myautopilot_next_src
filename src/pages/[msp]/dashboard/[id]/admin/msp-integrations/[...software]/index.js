@@ -47,7 +47,7 @@ const Workspace = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/SUITE/Workspace")
 );
 
-const JoyRide = dynamic(() => import("react-joyride"));
+// const JoyRide = dynamic(() => import("react-joyride"));
 
 const MSPSoftwareIntegratePages = () => {
   const session = Cookies.get("session_token");
@@ -62,21 +62,21 @@ const MSPSoftwareIntegratePages = () => {
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
   const { currentOption } = useAdminStore();
-  const {
-    activeConfig,
-    activeConfigSteps,
-    activeBoard,
-    customBoard,
-    customBoardMetadata,
-  } = useManageStore();
+  // const {
+  //   activeConfig,
+  //   activeConfigSteps,
+  //   activeBoard,
+  //   customBoard,
+  //   customBoardMetadata,
+  // } = useManageStore();
 
-  const {
-    run,
-    steps,
-    stepIndex,
-    handleJoyrideCallback,
-    handleUpdateCurrentCondition,
-  } = useTooltipStore();
+  // const {
+  //   run,
+  //   steps,
+  //   stepIndex,
+  //   handleJoyrideCallback,
+  //   handleUpdateCurrentCondition,
+  // } = useTooltipStore();
 
   useEffect(() => {
     if (router.isReady) {
@@ -103,65 +103,65 @@ const MSPSoftwareIntegratePages = () => {
     };
   }, [activeTab, currentOption]);
 
-  useEffect(() => {
-    if (isFirstTimeUser) {
-      if (activeConfig) {
-        if (
-          activeConfig &&
-          activeConfigSteps === 1 &&
-          !activeBoard &&
-          !customBoardMetadata &&
-          !customBoard
-        ) {
-          handleUpdateCurrentCondition("preSelectedBoard");
-        } else if (
-          activeConfig &&
-          activeConfigSteps === 1 &&
-          activeBoard &&
-          !customBoardMetadata &&
-          !customBoard
-        ) {
-          handleUpdateCurrentCondition("postSelectedBoard");
-        } else if (
-          activeConfig &&
-          activeConfigSteps === 1 &&
-          !activeBoard &&
-          customBoardMetadata &&
-          !customBoard
-        ) {
-          handleUpdateCurrentCondition("preCustomSelectedBoard");
-        } else if (
-          activeConfig &&
-          activeConfigSteps === 1 &&
-          !activeBoard &&
-          customBoardMetadata &&
-          customBoard
-        ) {
-          handleUpdateCurrentCondition("postCustomSelectedBoard");
-        } else if (activeConfig && activeConfigSteps === 2) {
-          handleUpdateCurrentCondition("technician");
-        } else if (activeConfig && activeConfigSteps === 3) {
-          handleUpdateCurrentCondition("client");
-        } else if (activeConfig && activeConfigSteps === 4) {
-          handleUpdateCurrentCondition("contact");
-        }
-      } else {
-        if (integrations?.connectWiseManageIntegrator) {
-          handleUpdateCurrentCondition("authenticated");
-        } else {
-          handleUpdateCurrentCondition("initial");
-        }
-      }
-    }
-  }, [
-    isFirstTimeUser,
-    customBoardMetadata,
-    customBoard,
-    activeBoard,
-    activeConfig,
-    activeConfigSteps,
-    integrations?.connectWiseManageIntegrator,
-  ]);
+  // useEffect(() => {
+  //   if (isFirstTimeUser) {
+  //     if (activeConfig) {
+  //       if (
+  //         activeConfig &&
+  //         activeConfigSteps === 1 &&
+  //         !activeBoard &&
+  //         !customBoardMetadata &&
+  //         !customBoard
+  //       ) {
+  //         handleUpdateCurrentCondition("preSelectedBoard");
+  //       } else if (
+  //         activeConfig &&
+  //         activeConfigSteps === 1 &&
+  //         activeBoard &&
+  //         !customBoardMetadata &&
+  //         !customBoard
+  //       ) {
+  //         handleUpdateCurrentCondition("postSelectedBoard");
+  //       } else if (
+  //         activeConfig &&
+  //         activeConfigSteps === 1 &&
+  //         !activeBoard &&
+  //         customBoardMetadata &&
+  //         !customBoard
+  //       ) {
+  //         handleUpdateCurrentCondition("preCustomSelectedBoard");
+  //       } else if (
+  //         activeConfig &&
+  //         activeConfigSteps === 1 &&
+  //         !activeBoard &&
+  //         customBoardMetadata &&
+  //         customBoard
+  //       ) {
+  //         handleUpdateCurrentCondition("postCustomSelectedBoard");
+  //       } else if (activeConfig && activeConfigSteps === 2) {
+  //         handleUpdateCurrentCondition("technician");
+  //       } else if (activeConfig && activeConfigSteps === 3) {
+  //         handleUpdateCurrentCondition("client");
+  //       } else if (activeConfig && activeConfigSteps === 4) {
+  //         handleUpdateCurrentCondition("contact");
+  //       }
+  //     } else {
+  //       if (integrations?.connectWiseManageIntegrator) {
+  //         handleUpdateCurrentCondition("authenticated");
+  //       } else {
+  //         handleUpdateCurrentCondition("initial");
+  //       }
+  //     }
+  //   }
+  // }, [
+  //   isFirstTimeUser,
+  //   customBoardMetadata,
+  //   customBoard,
+  //   activeBoard,
+  //   activeConfig,
+  //   activeConfigSteps,
+  //   integrations?.connectWiseManageIntegrator,
+  // ]);
 
   const renderComponent = () => {
     if (software && software.length > 0) {
@@ -196,39 +196,7 @@ const MSPSoftwareIntegratePages = () => {
     return <p>No integration selected</p>;
   };
 
-  return (
-    <>
-      {renderComponent()}
-      {isFirstTimeUser && (
-        <JoyRide
-          continuous
-          run={run}
-          scrollToFirstStep
-          showProgress
-          showSkipButton
-          steps={steps}
-          stepIndex={stepIndex}
-          styles={{
-            tooltipTitle: {
-              textAlign: "left",
-              fontWeight: "bold",
-            },
-            tooltipContent: {
-              textAlign: "left",
-              paddingTop: "10px",
-              paddingBottom: "10px",
-              paddingLeft: "0",
-              paddingRight: "0",
-            },
-            options: {
-              zIndex: 1000,
-            },
-          }}
-          callback={handleJoyrideCallback}
-        />
-      )}
-    </>
-  );
+  return <>{renderComponent()}</>;
 };
 
 MSPSoftwareIntegratePages.getLayout = (page) => {

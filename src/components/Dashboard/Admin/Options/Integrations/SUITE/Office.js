@@ -7,6 +7,8 @@ import useUserStore from "@/utils/store/user/userStore";
 import { useRouter } from "next/router";
 import useMspStore from "@/utils/store/auth/msp/mspStore";
 import { useEffect } from "react";
+import { convertHideIntegrationKeys } from "@/utils/conversions";
+import useSuiteStore from "@/utils/store/admin/control/integrations/suite/suiteStore";
 
 const Office = () => {
   const router = useRouter();
@@ -14,13 +16,20 @@ const Office = () => {
   const { userType } = useMspStore();
   const { user } = useUserStore();
 
-  const { clientIntegrations, handleIntegrationsCard } =
+  const { selectedCompany, clientIntegrations, handleIntegrationsCard } =
     useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
+  const {
+    integrationInputs,
+    setIntegrationInputs,
+    handleSaveOfficeKeys,
+    handleRemoveOfficeKeys,
+    handleIntegrateOffice,
+    handleDisconnectOffice,
+  } = useSuiteStore();
+
   const isMSP = router.pathname.includes("msp-integrations");
-
-
-
+  console.log(clientIntegrations);
   return (
     <div
       onClick={() => {
@@ -92,30 +101,129 @@ const Office = () => {
                   <div className="flex flex-col w-full gap-1">
                     <p>Tenant ID</p>
                     <p className="dark:text-white/60 text-black/60">
-                      Your Tenant_ID that is assigned to you from Microsft
+                      Your Tenant ID that is assigned to you from Microsoft
                     </p>
-                    <input className="border p-1" />
+                    {clientIntegrations?.microsoftGraphIntegration?.tenantId ? (
+                      <p className="p-1">
+                        {convertHideIntegrationKeys(
+                          clientIntegrations?.microsoftGraphIntegration
+                            ?.tenantId
+                        )}
+                      </p>
+                    ) : (
+                      <input
+                        value={integrationInputs.tenantId}
+                        className="outline outline-1 p-1 "
+                        onChange={(e) =>
+                          setIntegrationInputs(
+                            "text",
+                            "tenantId",
+                            e.target.value
+                          )
+                        }
+                      />
+                    )}
                   </div>
                   <div className="flex flex-col w-full gap-1">
-                    <p>Microsoft ID</p>
+                    <p>Secret ID</p>
                     <p className="dark:text-white/60 text-black/60">
-                      Your Microsoft login ID
+                      Your Microsoft Secret ID
                     </p>
-                    <input className="border p-1" />
+                    {clientIntegrations?.microsoftGraphIntegration?.secretId ? (
+                      <p className="p-1">
+                        {convertHideIntegrationKeys(
+                          clientIntegrations?.microsoftGraphIntegration
+                            ?.secretId
+                        )}
+                      </p>
+                    ) : (
+                      <input
+                        value={integrationInputs.secretId}
+                        className="outline outline-1 p-1 "
+                        onChange={(e) =>
+                          setIntegrationInputs(
+                            "text",
+                            "secretId",
+                            e.target.value
+                          )
+                        }
+                      />
+                    )}
                   </div>
                 </div>
 
                 <div className="flex flex-col w-full gap-1">
-                  <p>Secret Key</p>
+                  <p>Secret Value</p>
                   <p className="dark:text-white/60 text-black/60">
-                    Your generated Secret Key that was created via Microsoft API
+                    Your generated Secret Value that was created via Microsoft
+                    API
                   </p>
-                  <input className="border p-1" />
+                  {clientIntegrations?.microsoftGraphIntegration
+                    ?.secretValue ? (
+                    <p className="p-1">
+                      {convertHideIntegrationKeys(
+                        clientIntegrations?.microsoftGraphIntegration
+                          ?.secretValue
+                      )}
+                    </p>
+                  ) : (
+                    <input
+                      value={integrationInputs.secretValue}
+                      className="outline outline-1 p-1 "
+                      onChange={(e) =>
+                        setIntegrationInputs(
+                          "text",
+                          "secretValue",
+                          e.target.value
+                        )
+                      }
+                    />
+                  )}
                 </div>
+                {!clientIntegrations?.microsoft && (
+                  <>
+                    {clientIntegrations?.microsoftGraphIntegration?.tenantId ? (
+                      <button
+                        onClick={() =>
+                          handleRemoveOfficeKeys(
+                            user?.mspCustomDomain,
+                            selectedCompany
+                          )
+                        }
+                        className="hover:bg-blue-500 self-start bg-blue-800 text-white rounded-lg px-3 py-1"
+                      >
+                        Remove Keys
+                      </button>
+                    ) : (
+                      <button
+                        id="manage-saveKeys"
+                        onClick={() =>
+                          handleSaveOfficeKeys(
+                            user?.mspCustomDomain,
+                            selectedCompany
+                          )
+                        }
+                        className="hover:bg-blue-500 self-start bg-blue-800 text-white rounded-lg px-3 py-1"
+                      >
+                        Save Keys
+                      </button>
+                    )}
+                  </>
+                )}
               </div>
+
               <div className="p-4 flex  justify-end">
-                <button className="hover:bg-blue-500 bg-blue-800 text-white px-3 py-1">
-                  Authenticate
+                <button
+                  onClick={() =>
+                    mspIntegrations?.connectWiseManageIntegrator
+                      ? handleDisconnectOffice(user?.mspCustomDomain)
+                      : handleIntegrateOffice(user?.mspCustomDomain)
+                  }
+                  className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg px-3 py-1"
+                >
+                  {clientIntegrations?.microsoft
+                    ? "Disconnect"
+                    : "Authenticate"}
                 </button>
               </div>
             </div>
