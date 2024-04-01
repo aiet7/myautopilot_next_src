@@ -16,6 +16,15 @@ const useSuiteStore = create((set, get) => ({
     secretValue: "",
   },
 
+  officeDomains: null,
+  officeLicenses: null,
+
+  successOfficeIntegration: false,
+  successOfficeDisconnect: false,
+
+  errorOfficeIntegration: false,
+  errorOfficeDisconnect: false,
+
   setIntegrationInputs: (type, field, value) =>
     set((prevState) =>
       type === "checkbox"
@@ -84,10 +93,9 @@ const useSuiteStore = create((set, get) => ({
             clientsAutopilotDbid: clientId,
             mspCustomDomain: mspCustomDomain,
             microsoftGraphIntegration: {
-              clientId: "",
-              companyId: "",
-              publicKey: "",
-              privateKey: "",
+              tenantId: "",
+              secretId: "",
+              secretValue: "",
             },
           }),
         }
@@ -108,9 +116,60 @@ const useSuiteStore = create((set, get) => ({
     }
   },
 
-  handleIntegrateOffice: async (mspCustomDomain) => {},
+  handleIntegrateOffice: async (mspCustomDomain, clientId) => {
+    const { handleUpdateClientIntegrations } = useIntegrationsStore.getState();
 
-  handleDisconnectOffice: async (mspCustomDomain) => {},
+    try {
+      const response = await fetch(
+        `${workflowServiceUrl}/microsoftGraph/domains?mspCustomDomain=${mspCustomDomain}&clientId=${clientId}`
+      );
+
+      if (response.status === 200) {
+        const domains = await response.json();
+        console.log("OFFICE INTEGRATED");
+        set({
+          officeDomains: domains,
+        });
+      } else {
+        console.log("OFFICE INTEGRATION FAILED");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleDisconnectOffice: async (mspCustomDomain, clientId) => {
+    const { handleUpdateClientIntegrations } = useIntegrationsStore.getState();
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/${mspCustomDomain}/clientIntegrations/update`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            clientsAutopilotDbid: clientId,
+            mspCustomDomain: mspCustomDomain,
+            microsoftGraphIntegration: {
+              tenantId: "",
+              secretId: "",
+              secretValue: "",
+            },
+          }),
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("OFFICE INTEGRATION REMOVED");
+        console.log(domains);
+      } else {
+        console.log("OFFICE INTEGRATION REMOVAL FAILED");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
 }));
 
 export default useSuiteStore;

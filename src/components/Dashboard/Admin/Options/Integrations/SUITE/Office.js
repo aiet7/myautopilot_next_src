@@ -215,9 +215,15 @@ const Office = () => {
               <div className="p-4 flex  justify-end">
                 <button
                   onClick={() =>
-                    mspIntegrations?.connectWiseManageIntegrator
-                      ? handleDisconnectOffice(user?.mspCustomDomain)
-                      : handleIntegrateOffice(user?.mspCustomDomain)
+                    clientIntegrations?.connectWiseManageIntegrator
+                      ? handleDisconnectOffice(
+                          user?.mspCustomDomain,
+                          selectedCompany
+                        )
+                      : handleIntegrateOffice(
+                          user?.mspCustomDomain,
+                          selectedCompany
+                        )
                   }
                   className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg px-3 py-1"
                 >
