@@ -41,7 +41,9 @@ const ScreenConnect = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/RMM/ScreenConnect")
 );
 const Office = dynamic(() =>
-  import("@/components/Dashboard/Admin/Options/Integrations/SUITE/Office")
+  import(
+    "@/components/Dashboard/Admin/Options/Integrations/SUITE/Office/Office"
+  )
 );
 const Workspace = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/SUITE/Workspace")

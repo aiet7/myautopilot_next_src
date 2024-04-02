@@ -121,7 +121,8 @@ const Manage = () => {
                     {mspIntegrations?.connectWiseManageIntegration?.clientId ? (
                       <p className="p-1">
                         {convertHideIntegrationKeys(
-                          mspIntegrations?.connectWiseManageIntegration?.clientId
+                          mspIntegrations?.connectWiseManageIntegration
+                            ?.clientId
                         )}
                       </p>
                     ) : (
@@ -145,10 +146,12 @@ const Manage = () => {
                       Your generated Public Key that was created via ConnectWise
                       Manager
                     </p>
-                    {mspIntegrations?.connectWiseManageIntegration?.publicKey ? (
+                    {mspIntegrations?.connectWiseManageIntegration
+                      ?.publicKey ? (
                       <p className="p-1">
                         {convertHideIntegrationKeys(
-                          mspIntegrations?.connectWiseManageIntegration?.publicKey
+                          mspIntegrations?.connectWiseManageIntegration
+                            ?.publicKey
                         )}
                       </p>
                     ) : (
@@ -173,10 +176,12 @@ const Manage = () => {
                     <p className="dark:text-white/60 text-black/60">
                       Your Company ID that is assigned to you from ConnectWise
                     </p>
-                    {mspIntegrations?.connectWiseManageIntegration?.companyId ? (
+                    {mspIntegrations?.connectWiseManageIntegration
+                      ?.companyId ? (
                       <p className="p-1">
                         {convertHideIntegrationKeys(
-                          mspIntegrations?.connectWiseManageIntegration?.companyId
+                          mspIntegrations?.connectWiseManageIntegration
+                            ?.companyId
                         )}
                       </p>
                     ) : (
@@ -200,10 +205,12 @@ const Manage = () => {
                       Your generated Private Key that was created via
                       ConnectWise Manager
                     </p>
-                    {mspIntegrations?.connectWiseManageIntegration?.privateKey ? (
+                    {mspIntegrations?.connectWiseManageIntegration
+                      ?.privateKey ? (
                       <p className="p-1">
                         {convertHideIntegrationKeys(
-                          mspIntegrations?.connectWiseManageIntegration?.privateKey
+                          mspIntegrations?.connectWiseManageIntegration
+                            ?.privateKey
                         )}
                       </p>
                     ) : (
@@ -354,25 +361,24 @@ const Manage = () => {
                     Configuration
                   </button>
                 )}
-                {
-                  <button
-                    id={
-                      mspIntegrations?.connectWiseManageIntegrator
-                        ? "manageAuthenticated-disconnect"
-                        : "manage-authenticate"
-                    }
-                    onClick={() =>
-                      mspIntegrations?.connectWiseManageIntegrator
-                        ? handleDisconnectManage(user?.mspCustomDomain)
-                        : handleIntegrateManage(user?.mspCustomDomain)
-                    }
-                    className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg px-3 py-1"
-                  >
-                    {mspIntegrations?.connectWiseManageIntegrator
-                      ? "Disconnect"
-                      : "Authenticate"}
-                  </button>
-                }
+
+                <button
+                  id={
+                    mspIntegrations?.connectWiseManageIntegrator
+                      ? "manageAuthenticated-disconnect"
+                      : "manage-authenticate"
+                  }
+                  onClick={() =>
+                    mspIntegrations?.connectWiseManageIntegrator
+                      ? handleDisconnectManage(user?.mspCustomDomain)
+                      : handleIntegrateManage(user?.mspCustomDomain)
+                  }
+                  className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg px-3 py-1"
+                >
+                  {mspIntegrations?.connectWiseManageIntegrator
+                    ? "Disconnect"
+                    : "Authenticate"}
+                </button>
               </div>
             </div>
           </div>

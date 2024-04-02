@@ -19,7 +19,6 @@ import useInitializeAppStore from "../init/initializeAppStore";
 import useAssistantStore from "../assistant/assistantStore";
 import useBoardStore from "../admin/control/board/boardStore";
 import useAdminStore from "../admin/adminStore";
-import useTooltipStore from "../tooltip/tooltipStore";
 
 const useUserStore = create((set, get) => ({
   user: null,
@@ -74,7 +73,6 @@ const useUserStore = create((set, get) => ({
     const { clearAssistant } = useAssistantStore.getState();
     const { clearBoard } = useBoardStore.getState();
     const { clearAdmin } = useAdminStore.getState();
-    const { clearTooltip } = useTooltipStore.getState();
 
     await clearTickets();
 
@@ -98,7 +96,6 @@ const useUserStore = create((set, get) => ({
     clearAssistant();
     clearBoard();
     clearAdmin();
-    clearTooltip();
 
     navigator("/auth/login");
   },

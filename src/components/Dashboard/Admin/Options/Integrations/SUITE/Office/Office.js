@@ -5,22 +5,26 @@ import Image from "next/image";
 import Link from "next/link";
 import useUserStore from "@/utils/store/user/userStore";
 import { useRouter } from "next/router";
-import useMspStore from "@/utils/store/auth/msp/mspStore";
-import { useEffect } from "react";
 import { convertHideIntegrationKeys } from "@/utils/conversions";
 import useSuiteStore from "@/utils/store/admin/control/integrations/suite/suiteStore";
+import ViewOfficeUsers from "./ViewOfficeUsers";
 
 const Office = () => {
   const router = useRouter();
 
-  const { userType } = useMspStore();
   const { user } = useUserStore();
 
   const { selectedCompany, clientIntegrations, handleIntegrationsCard } =
     useIntegrationsStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
   const {
+    activeConfig,
+    successOfficeIntegration,
+    successOfficeDisconnect,
+    errorOfficeIntegration,
+    errorOfficeDisconnect,
     integrationInputs,
+    setActiveConfig,
     setIntegrationInputs,
     handleSaveOfficeKeys,
     handleRemoveOfficeKeys,
@@ -29,7 +33,8 @@ const Office = () => {
   } = useSuiteStore();
 
   const isMSP = router.pathname.includes("msp-integrations");
-  console.log(clientIntegrations);
+
+
   return (
     <div
       onClick={() => {
@@ -41,6 +46,8 @@ const Office = () => {
         openAdmin && "lg:opacity-100 opacity-5 xl:ml-[350px]"
       }  dark:bg-black transition-all duration-300 ease bg-white`}
     >
+      {activeConfig && <ViewOfficeUsers />}
+
       <div className="w-full h-full flex flex-col">
         <div className="dark:border-b-white/20 border-b p-4">
           <h1 className="text-2xl">Microsoft Office Suite Integration</h1>
@@ -212,10 +219,42 @@ const Office = () => {
                 )}
               </div>
 
-              <div className="p-4 flex  justify-end">
+              <div className="p-4 flex items-center justify-end gap-4">
+                {successOfficeIntegration && (
+                  <p className="text-emerald-500">
+                    Successfully Integrated Manage!
+                  </p>
+                )}
+                {errorOfficeIntegration && (
+                  <p className="text-red-500">Error Integrating Manage!</p>
+                )}
+                {successOfficeDisconnect && (
+                  <p className="text-emerald-500">
+                    Successfully Disconnected Manage!
+                  </p>
+                )}
+                {errorOfficeDisconnect && (
+                  <p className="text-red-500">Error Disconnecting Manage!</p>
+                )}
+
+                {clientIntegrations?.microsoft && (
+                  <button
+                    id="manageAuthenticated-configuration"
+                    onClick={() =>
+                      setActiveConfig(
+                        true,
+                        user?.mspCustomDomain,
+                        selectedCompany
+                      )
+                    }
+                    className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg px-3 py-1"
+                  >
+                    View
+                  </button>
+                )}
                 <button
                   onClick={() =>
-                    clientIntegrations?.connectWiseManageIntegrator
+                    clientIntegrations?.microsoft
                       ? handleDisconnectOffice(
                           user?.mspCustomDomain,
                           selectedCompany

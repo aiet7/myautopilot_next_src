@@ -7,6 +7,12 @@ const emailConnectorUrl = process.env.NEXT_PUBLIC_EMAILCONNECTOR_URL;
 const workflowServiceUrl = process.env.NEXT_PUBLIC_WORKFLOW_SERVICE_URL;
 
 const useSuiteStore = create((set, get) => ({
+  officeDomains: null,
+  officeLicenses: null,
+  officeUsers: null,
+
+  activeConfig: false,
+
   integrationInputs: {
     email: null,
     google: null,
@@ -16,14 +22,33 @@ const useSuiteStore = create((set, get) => ({
     secretValue: "",
   },
 
-  officeDomains: null,
-  officeLicenses: null,
-
   successOfficeIntegration: false,
   successOfficeDisconnect: false,
 
   errorOfficeIntegration: false,
   errorOfficeDisconnect: false,
+
+  setActiveConfig: async (config, mspCustomDomain, clientId) => {
+    const { handleGetOfficeUsers } = get();
+    await handleGetOfficeUsers(mspCustomDomain, clientId);
+    set({
+      activeConfig: config,
+    });
+  },
+
+  setCloseConfiguration: () => {
+    set({
+      officeDomains: null,
+      officeLicenses: null,
+      officeUsers: null,
+      activeConfig: false,
+      successOfficeIntegration: false,
+      successOfficeDisconnect: false,
+
+      errorOfficeIntegration: false,
+      errorOfficeDisconnect: false,
+    });
+  },
 
   setIntegrationInputs: (type, field, value) =>
     set((prevState) =>
@@ -67,10 +92,22 @@ const useSuiteStore = create((set, get) => ({
       if (response.status === 200) {
         const updatedIntegrations = await response.json();
         handleUpdateClientIntegrations(updatedIntegrations);
-        set({});
+        set({
+          successOfficeIntegration: false,
+          successOfficeDisconnect: false,
+
+          errorOfficeIntegration: false,
+          errorOfficeDisconnect: false,
+        });
         console.log("OFFICE KEYS SAVED");
       } else {
-        set({});
+        set({
+          successOfficeIntegration: false,
+          successOfficeDisconnect: false,
+
+          errorOfficeIntegration: false,
+          errorOfficeDisconnect: false,
+        });
         console.log("OFFICE KEYS FAILED TO SAVE");
       }
     } catch (e) {
@@ -104,11 +141,23 @@ const useSuiteStore = create((set, get) => ({
       if (response.status === 200) {
         const updatedIntegrations = await response.json();
         handleUpdateClientIntegrations(updatedIntegrations);
-        set({});
+        set({
+          successOfficeIntegration: false,
+          successOfficeDisconnect: false,
+
+          errorOfficeIntegration: false,
+          errorOfficeDisconnect: false,
+        });
 
         console.log("OFFICE KEYS REMOVED");
       } else {
-        set({});
+        set({
+          successOfficeIntegration: false,
+          successOfficeDisconnect: false,
+
+          errorOfficeIntegration: false,
+          errorOfficeDisconnect: false,
+        });
         console.log("OFFICE KEYS FAILED TO REMOVE");
       }
     } catch (e) {
@@ -121,17 +170,53 @@ const useSuiteStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `${workflowServiceUrl}/microsoftGraph/domains?mspCustomDomain=${mspCustomDomain}&clientId=${clientId}`
+        `${workflowServiceUrl}/microsoftGraph/allUsers?mspCustomDomain=${mspCustomDomain}&clientId=${clientId}`
       );
 
       if (response.status === 200) {
-        const domains = await response.json();
-        console.log("OFFICE INTEGRATED");
+        const users = await response.json();
         set({
-          officeDomains: domains,
+          officeUsers: users,
         });
+
+        const updatedResponse = await fetch(
+          `${dbServiceUrl}/${mspCustomDomain}/integrations/updateMicrosoft?status=${true}&clientId=${clientId}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (updatedResponse.status === 200) {
+          const updatedIntegrations = await updatedResponse.json();
+          handleUpdateClientIntegrations(updatedIntegrations);
+          set({
+            successOfficeIntegration: true,
+            successOfficeDisconnect: false,
+            errorOfficeIntegration: false,
+            errorOfficeDisconnect: false,
+          });
+        } else {
+          set({
+            officeUsers: null,
+            successOfficeIntegration: false,
+            successOfficeDisconnect: false,
+
+            errorOfficeIntegration: true,
+            errorOfficeDisconnect: false,
+          });
+        }
       } else {
-        console.log("OFFICE INTEGRATION FAILED");
+        set({
+          officeUsers: null,
+          successOfficeIntegration: false,
+          successOfficeDisconnect: false,
+
+          errorOfficeIntegration: true,
+          errorOfficeDisconnect: false,
+        });
       }
     } catch (e) {
       console.log(e);
@@ -161,14 +246,74 @@ const useSuiteStore = create((set, get) => ({
       );
 
       if (response.status === 200) {
+        const updatedResponse = await fetch(
+          `${dbServiceUrl}/${mspCustomDomain}/integrations/updateMicrosoft?status=${false}&clientId=${clientId}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const updatedIntegrations = await updatedResponse.json();
+        handleUpdateClientIntegrations(updatedIntegrations);
+        set({
+          officeDomains: null,
+          successOfficeDisconnect: true,
+          successOfficeIntegration: false,
+
+          errorOfficeIntegration: false,
+          errorOfficeDisconnect: false,
+        });
         console.log("OFFICE INTEGRATION REMOVED");
-        console.log(domains);
       } else {
         console.log("OFFICE INTEGRATION REMOVAL FAILED");
       }
     } catch (e) {
       console.log(e);
     }
+  },
+
+  handleGetOfficeUsers: async (mspCustomDomain, clientId) => {
+    try {
+      const response = await fetch(
+        `${workflowServiceUrl}/microsoftGraph/allUsers?mspCustomDomain=${mspCustomDomain}&clientId=${clientId}`
+      );
+
+      if (response.status === 200) {
+        const users = await response.json();
+        set({
+          officeUsers: users,
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  clearOffice: () => {
+    set({
+      officeDomains: null,
+      officeLicenses: null,
+      officeUsers: null,
+
+      activeConfig: false,
+
+      integrationInputs: {
+        email: null,
+        google: null,
+        microsoft: null,
+        tenantId: "",
+        secretId: "",
+        secretValue: "",
+      },
+
+      successOfficeIntegration: false,
+      successOfficeDisconnect: false,
+
+      errorOfficeIntegration: false,
+      errorOfficeDisconnect: false,
+    });
   },
 }));
 

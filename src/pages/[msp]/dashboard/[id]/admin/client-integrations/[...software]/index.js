@@ -15,7 +15,9 @@ import useAdminStore from "@/utils/store/admin/adminStore";
 import useMspStore from "@/utils/store/auth/msp/mspStore";
 
 const Office = dynamic(() =>
-  import("@/components/Dashboard/Admin/Options/Integrations/SUITE/Office")
+  import(
+    "@/components/Dashboard/Admin/Options/Integrations/SUITE/Office/Office"
+  )
 );
 const Workspace = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/SUITE/Workspace")
@@ -34,7 +36,7 @@ const ClientSoftwareIntegratePages = () => {
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
   const { currentOption } = useAdminStore();
-  
+
   useEffect(() => {
     if (!selectedCompany) {
       router.back();
