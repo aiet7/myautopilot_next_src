@@ -20,8 +20,6 @@ const useUiStore = create((set, get) => ({
 
   setHeight: (heightValue) => set({ height: heightValue }),
 
-
-
   handleToggleHistory: () =>
     set((state) => ({ openHistory: !state.openHistory })),
   handleToggleAssistant: () =>

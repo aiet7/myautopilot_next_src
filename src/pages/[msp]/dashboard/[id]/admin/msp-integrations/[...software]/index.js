@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-
 import dynamic from "next/dynamic";
 import Layout from "@/components/Layouts/Layout";
 import Cookies from "js-cookie";
@@ -49,36 +48,20 @@ const Workspace = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/SUITE/Workspace")
 );
 
-// const JoyRide = dynamic(() => import("react-joyride"));
-
 const MSPSoftwareIntegratePages = () => {
   const session = Cookies.get("session_token");
 
   const router = useRouter();
+  const { user } = useUserStore();
   const { software } = router.query;
 
-  const { isFirstTimeUser, initializeUserType } = useMspStore();
+  const { initializeUserType } = useMspStore();
 
   const { initializeUser } = useUserStore();
-  const { integrations, initializeMSPIntegrations } = useIntegrationsStore();
+  const { initializeMSPIntegrations } = useIntegrationsStore();
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
   const { currentOption } = useAdminStore();
-  // const {
-  //   activeConfig,
-  //   activeConfigSteps,
-  //   activeBoard,
-  //   customBoard,
-  //   customBoardMetadata,
-  // } = useManageStore();
-
-  // const {
-  //   run,
-  //   steps,
-  //   stepIndex,
-  //   handleJoyrideCallback,
-  //   handleUpdateCurrentCondition,
-  // } = useTooltipStore();
 
   useEffect(() => {
     if (router.isReady) {
@@ -105,65 +88,20 @@ const MSPSoftwareIntegratePages = () => {
     };
   }, [activeTab, currentOption]);
 
-  // useEffect(() => {
-  //   if (isFirstTimeUser) {
-  //     if (activeConfig) {
-  //       if (
-  //         activeConfig &&
-  //         activeConfigSteps === 1 &&
-  //         !activeBoard &&
-  //         !customBoardMetadata &&
-  //         !customBoard
-  //       ) {
-  //         handleUpdateCurrentCondition("preSelectedBoard");
-  //       } else if (
-  //         activeConfig &&
-  //         activeConfigSteps === 1 &&
-  //         activeBoard &&
-  //         !customBoardMetadata &&
-  //         !customBoard
-  //       ) {
-  //         handleUpdateCurrentCondition("postSelectedBoard");
-  //       } else if (
-  //         activeConfig &&
-  //         activeConfigSteps === 1 &&
-  //         !activeBoard &&
-  //         customBoardMetadata &&
-  //         !customBoard
-  //       ) {
-  //         handleUpdateCurrentCondition("preCustomSelectedBoard");
-  //       } else if (
-  //         activeConfig &&
-  //         activeConfigSteps === 1 &&
-  //         !activeBoard &&
-  //         customBoardMetadata &&
-  //         customBoard
-  //       ) {
-  //         handleUpdateCurrentCondition("postCustomSelectedBoard");
-  //       } else if (activeConfig && activeConfigSteps === 2) {
-  //         handleUpdateCurrentCondition("technician");
-  //       } else if (activeConfig && activeConfigSteps === 3) {
-  //         handleUpdateCurrentCondition("client");
-  //       } else if (activeConfig && activeConfigSteps === 4) {
-  //         handleUpdateCurrentCondition("contact");
-  //       }
-  //     } else {
-  //       if (integrations?.connectWiseManageIntegrator) {
-  //         handleUpdateCurrentCondition("authenticated");
-  //       } else {
-  //         handleUpdateCurrentCondition("initial");
-  //       }
-  //     }
-  //   }
-  // }, [
-  //   isFirstTimeUser,
-  //   customBoardMetadata,
-  //   customBoard,
-  //   activeBoard,
-  //   activeConfig,
-  //   activeConfigSteps,
-  //   integrations?.connectWiseManageIntegrator,
-  // ]);
+  useEffect(() => {
+    if (user) {
+      window.userpilot.identify(user.id, {
+        name: user.firstName + " " + user.lastName,
+        email: user.email,
+      });
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      window.userpilot && window.userpilot.reload();
+    }
+  }, [user]);
 
   const renderComponent = () => {
     if (software && software.length > 0) {

@@ -173,8 +173,6 @@ const useManageStore = create((set, get) => ({
             ),
           ]);
 
-     
-
         const markedClients = connectWiseClients.map((cwClient) => ({
           ...cwClient,
           isInDB: dbClients.some(
@@ -387,6 +385,8 @@ const useManageStore = create((set, get) => ({
     set({
       activeConfig: config,
     });
+    window.userpilot.track("Manage Configure");
+    window.userpilot.reload();
   },
 
   setIntegrationInputs: (type, field, value) =>
@@ -817,6 +817,8 @@ const useManageStore = create((set, get) => ({
         if (updatedResponse.status === 200) {
           const updatedIntegrations = await updatedResponse.json();
           handleUpdateMSPIntegrations(updatedIntegrations);
+          window.userpilot.track("Manage Authenticated");
+          window.userpilot.reload();
           set({
             successManageIntegration: true,
             successManageDisconnect: false,
@@ -1076,6 +1078,8 @@ const useManageStore = create((set, get) => ({
           await handleGetBoardStatuses(id, mspCustomDomain);
           const merge = await response.json();
           set({ connectwiseMerge: merge, loadingMerge: false });
+          window.userpilot.track("Manage Select Board");
+          window.userpilot.reload();
         } else {
           console.log("Error");
         }
@@ -1204,6 +1208,9 @@ const useManageStore = create((set, get) => ({
           errorMessage: false,
           successMessage: false,
         });
+
+        window.userpilot.track("Manage Pre Custom Board");
+        window.userpilot.reload();
       } else {
         console.log("Failed to fetch metadata.");
       }
@@ -1416,6 +1423,8 @@ const useManageStore = create((set, get) => ({
             },
           }));
           await handleCustomBoard();
+          window.userpilot.track("Manage Post Custom Board");
+          window.userpilot.reload();
         } else {
           console.log("Error Saving Custom Metadata");
         }

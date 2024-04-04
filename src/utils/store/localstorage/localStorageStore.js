@@ -89,8 +89,39 @@ const useLocalStorageStore = create((set, get) => ({
   },
 
   clearStorage: () => {
+    const defaultStates = {
+      user: {},
+      ui: {
+        currentOption: "employees",
+        activeTab: "iTAgent",
+        activeAssistantTab: "Tickets",
+        activeUIAssistantTab: "Tickets",
+      },
+      conversation: {
+        currentConversationIndex: 0,
+        currentDocumentConversationIndex: 0,
+      },
+    };
+
+    useUserStore.setState({ user: defaultStates.user });
+    useAdminStore.setState({
+      currentOption: defaultStates.ui.currentOption,
+    });
+    useUiStore.setState({
+      activeTab: defaultStates.ui.activeTab,
+      activeAssistantTab: defaultStates.ui.activeAssistantTab,
+      activeUIAssistantTab: defaultStates.ui.activeUIAssistantTab,
+    });
+    useConversationStore.setState({
+      currentConversationIndex:
+        defaultStates.conversation.currentConversationIndex,
+    });
+    useDocConversationsStore.setState({
+      currentDocumentConversationIndex:
+        defaultStates.conversation.currentDocumentConversationIndex,
+    });
+
     localStorage.removeItem("lastActiveDirectory");
-    localStorage.removeItem("lastActiveUserType");
     localStorage.removeItem("lastUI");
     localStorage.removeItem("lastConvoIndex");
   },

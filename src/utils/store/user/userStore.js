@@ -98,6 +98,7 @@ const useUserStore = create((set, get) => ({
     clearAdmin();
 
     navigator("/auth/login");
+   
   },
 }));
 

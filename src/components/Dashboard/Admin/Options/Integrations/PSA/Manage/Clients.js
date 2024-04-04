@@ -196,7 +196,6 @@ const Clients = () => {
                     </thead>
                     <tbody>
                       {currentClients?.map((client) => {
-                        console.log(client);
                         const {
                           name,
                           identifier,

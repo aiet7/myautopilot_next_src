@@ -127,7 +127,6 @@ const Manage = () => {
                       </p>
                     ) : (
                       <input
-                        id="manage-clientId"
                         value={integrationInputs.clientId}
                         onChange={(e) =>
                           setIntegrationInputs(
@@ -156,7 +155,6 @@ const Manage = () => {
                       </p>
                     ) : (
                       <input
-                        id="manage-publicKey"
                         value={integrationInputs.publicKey}
                         onChange={(e) =>
                           setIntegrationInputs(
@@ -186,7 +184,6 @@ const Manage = () => {
                       </p>
                     ) : (
                       <input
-                        id="manage-companyId"
                         value={integrationInputs.companyId}
                         onChange={(e) =>
                           setIntegrationInputs(
@@ -215,7 +212,6 @@ const Manage = () => {
                       </p>
                     ) : (
                       <input
-                        id="manage-privateKey"
                         value={integrationInputs.privateKey}
                         onChange={(e) =>
                           setIntegrationInputs(
@@ -242,7 +238,6 @@ const Manage = () => {
                       </button>
                     ) : (
                       <button
-                        id="manage-saveKeys"
                         onClick={() =>
                           handleSaveManageKeys(user?.mspCustomDomain)
                         }
@@ -354,7 +349,6 @@ const Manage = () => {
 
                 {mspIntegrations?.connectWiseManageIntegrator && (
                   <button
-                    id="manageAuthenticated-configuration"
                     onClick={() => setActiveConfig(true, user?.mspCustomDomain)}
                     className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg px-3 py-1"
                   >
@@ -363,11 +357,7 @@ const Manage = () => {
                 )}
 
                 <button
-                  id={
-                    mspIntegrations?.connectWiseManageIntegrator
-                      ? "manageAuthenticated-disconnect"
-                      : "manage-authenticate"
-                  }
+                  id="manage-authenticated"
                   onClick={() =>
                     mspIntegrations?.connectWiseManageIntegrator
                       ? handleDisconnectManage(user?.mspCustomDomain)
