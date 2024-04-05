@@ -52,15 +52,6 @@ const Contacts = () => {
             {currentContacts && (
               <div className="flex gap-2 flex-col overflow-hidden ">
                 <div className="flex items-center justify-start gap-2">
-                  <button
-                    onClick={() =>
-                      handleAddManageContacts(user?.mspCustomDomain)
-                    }
-                    className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
-                  >
-                    Bulk Save
-                  </button>
-
                   {errorMessage && (
                     <p className="text-red-500">Error Saving Contacts</p>
                   )}
@@ -182,7 +173,7 @@ const Contacts = () => {
                   onClick={() => handleAddManageContacts(user?.mspCustomDomain)}
                   className="text-sm self-end  bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
                 >
-                  Bulk Save
+                  Save
                 </button>
               </div>
             )}

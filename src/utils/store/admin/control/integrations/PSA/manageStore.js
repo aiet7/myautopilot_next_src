@@ -268,6 +268,17 @@ const useManageStore = create((set, get) => ({
       activePage: 1,
       activePageNumbers: [],
     });
+
+    if (step === 2) {
+      window.userpilot.track("Manage Technicians");
+      window.userpilot.reload();
+    } else if (step === 3) {
+      window.userpilot.track("Manage Clients");
+      window.userpilot.reload();
+    } else if (step === 4) {
+      window.userpilot.track("Manage Contacts");
+      window.userpilot.reload();
+    } else return;
   },
 
   setActiveConfigPreviousStep: () => {
@@ -1041,6 +1052,7 @@ const useManageStore = create((set, get) => ({
         });
       } else {
         console.log("Failed To Generate AI Board");
+        set({ loadingAiMerge: false });
       }
     } catch (e) {
       console.log(e);
