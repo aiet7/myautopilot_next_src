@@ -15,6 +15,7 @@ const MSPSignupPage = () => {
     signupInputs,
     setCurrentStep,
     setSignupInputs,
+    setFileSizeError,
     handleSignupProgression,
     clearMSPCredentials,
   } = useMspStore();
@@ -30,7 +31,6 @@ const MSPSignupPage = () => {
       };
     }
   }, []);
-
   return (
     <>
       {height && (
@@ -65,6 +65,12 @@ const MSPSignupPage = () => {
               {errorMessage?.emailCheck && (
                 <p className="text-red-500">Email does not exist.</p>
               )}
+              {errorMessage?.fileSize && (
+                <p className="text-red-500">
+                  Maximum image size exeeds 400x400.
+                </p>
+              )}
+
               {errorMessage?.emptyFields && (
                 <p className="text-red-500">Please fill out required field*.</p>
               )}
@@ -119,11 +125,24 @@ const MSPSignupPage = () => {
                     className="rounded w-full p-2 border border-gray-300  bg-white text-black"
                   />
                   <input
-                    value={signupInputs.mspInfo.brandLogoUrl}
-                    onChange={(e) =>
-                      setSignupInputs("mspInfo", "brandLogoUrl", e.target.value)
-                    }
-                    type="text"
+                    onChange={async (e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        const img = new Image();
+                        img.src = URL.createObjectURL(file);
+                        img.onload = () => {
+                          if (img.width > 400 || img.height > 400) {
+                            setSignupInputs("mspInfo", "brandLogoFile", null);
+                            setFileSizeError(true);
+                            e.target.value = "";
+                          } else {
+                            setSignupInputs("mspInfo", "brandLogoFile", file);
+                            setFileSizeError(false);
+                          }
+                        };
+                      }
+                    }}
+                    type="file"
                     placeholder="Company Brand Logo URL"
                     className="rounded w-full p-2 border border-gray-300  bg-white text-black"
                   />

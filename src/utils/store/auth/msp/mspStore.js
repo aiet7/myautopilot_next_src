@@ -33,7 +33,7 @@ const useMspStore = create((set, get) => ({
     },
     mspInfo: {
       mspName: "",
-      brandLogoUrl: "",
+      brandLogoFile: "",
       webSiteUrl: "",
       companyAddress: {
         street: "",
@@ -64,7 +64,8 @@ const useMspStore = create((set, get) => ({
 
   errorMessage: {
     techSignup: false,
-
+    fileSize: false,
+    fileMissing: false,
     emptyFields: false,
     emailCheck: false,
   },
@@ -86,6 +87,11 @@ const useMspStore = create((set, get) => ({
         userType: lastActiveUserType,
       });
     }
+  },
+
+  setFileSizeError: (error) => {
+    const { errorMessage } = get();
+    set({ errorMessage: { ...errorMessage, fileSize: error } });
   },
 
   setIsFirstTimeUser: (firstTime) => set({ isFirstTimeUser: firstTime }),
@@ -186,22 +192,23 @@ const useMspStore = create((set, get) => ({
   },
 
   handleSignupMSP: async () => {
-    const { signupInputs } = get();
+    const { signupInputs, errorMessage } = get();
     const { mspCustomDomain, mspInfo } = signupInputs;
+
+    const formData = new FormData();
+    formData.append("mspName", mspInfo.mspName);
+    formData.append("customDomain", mspCustomDomain);
+    formData.append("companyPhoneNumber", mspInfo.phoneNumber);
+    formData.append("webSiteUrl", mspInfo.webSiteUrl);
+
+    if (mspInfo.brandLogoFile) {
+      formData.append("file", mspInfo.brandLogoFile);
+    }
 
     try {
       const response = await fetch(`${dbServiceUrl}/msp`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          mspName: mspInfo.mspName,
-          customDomain: mspCustomDomain,
-          brandLogoUrl: mspInfo.brandLogoUrl,
-          companyPhoneNumber: mspInfo.phoneNumber,
-          webSiteUrl: mspInfo.webSiteUrl,
-        }),
+        body: formData,
       });
 
       if (response.ok) {
@@ -271,7 +278,8 @@ const useMspStore = create((set, get) => ({
         mspCustomDomain !== "" &&
         mspInfo.mspName !== "" &&
         mspInfo.companyUrl !== "" &&
-        mspInfo.phoneNumber !== ""
+        mspInfo.phoneNumber !== "" &&
+        mspInfo.brandLogoFile !== null
       ) {
         const msp = await handleSignupMSP();
         if (msp && msp.id) {
@@ -765,7 +773,7 @@ const useMspStore = create((set, get) => ({
         },
         mspInfo: {
           mspName: "",
-          brandLogoUrl: "",
+          brandLogoFile: "",
           webSiteUrl: "",
           companyAddress: {
             street: "",
@@ -796,7 +804,7 @@ const useMspStore = create((set, get) => ({
 
       errorMessage: {
         techSignup: false,
-
+        fileSize: false,
         emptyFields: false,
         emailCheck: false,
       },

@@ -32,7 +32,6 @@ const MSPPage = ({}) => {
     useAuthStore();
   const router = useRouter();
 
-
   useEffect(() => {
     if (router.isReady) {
       const { msp } = router.query;
@@ -59,8 +58,7 @@ const MSPPage = ({}) => {
   useEffect(() => {
     initializeUserType();
   }, [userType]);
-
-
+  console.log(mspSubDomain);
   return (
     <>
       {height && (
@@ -79,12 +77,17 @@ const MSPPage = ({}) => {
 
           <form className="relative p-6 w-[450px] flex flex-col gap-10 items-center justify-center lg:shadow-lg  lg:rounded-lg lg:bg-white">
             <div className="text-black flex flex-col items-center gap-10">
-              <div className="rounded-full w-44 h-44 shadow-xl shadow-black/30  flex items-center justify-center">
-                <img
-                  src={mspSubDomain?.brandLogoUrl}
-                  alt={`${mspSubDomain?.mspName} Portal Logo`}
-                />
-              </div>
+              {mspSubDomain && (
+                <div className="relative rounded-full w-52 h-52 shadow-xl shadow-black/30 flex items-center justify-center overflow-hidden">
+                  <Image
+                    src={mspSubDomain?.brandLogoUrl}
+                    alt={`${mspSubDomain?.mspName} Portal Logo`}
+                    fill
+                    sizes="(min-width: 768px) 50vw, 100vw"
+                    style={{ objectFit: "cover" }}
+                  />
+                </div>
+              )}
               <h1 className="text-2xl font-bold text-black text-center">
                 Welcome back to {mspSubDomain?.mspName}
               </h1>

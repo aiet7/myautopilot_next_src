@@ -5,7 +5,12 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["media.istockphoto.com", "www.upwork.com","www.myautopilot.ai"],
+    domains: [
+      "media.istockphoto.com",
+      "www.upwork.com",
+      "www.myautopilot.ai",
+      "myautopilot.blob.core.windows.net",
+    ],
   },
 };
 
