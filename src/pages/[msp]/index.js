@@ -58,7 +58,7 @@ const MSPPage = ({}) => {
   useEffect(() => {
     initializeUserType();
   }, [userType]);
-  console.log(mspSubDomain);
+  
   return (
     <>
       {height && (

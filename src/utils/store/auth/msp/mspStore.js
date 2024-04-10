@@ -188,7 +188,7 @@ const useMspStore = create((set, get) => ({
   },
 
   handleSignupMSP: async () => {
-    const { signupInputs, errorMessage } = get();
+    const { signupInputs } = get();
     const { mspCustomDomain, mspInfo } = signupInputs;
 
     const formData = new FormData();
@@ -274,8 +274,7 @@ const useMspStore = create((set, get) => ({
         mspCustomDomain !== "" &&
         mspInfo.mspName !== "" &&
         mspInfo.companyUrl !== "" &&
-        mspInfo.phoneNumber !== "" &&
-        mspInfo.brandLogoFile !== null
+        mspInfo.phoneNumber !== ""
       ) {
         const msp = await handleSignupMSP();
         if (msp && msp.id) {
