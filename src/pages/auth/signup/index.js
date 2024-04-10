@@ -31,6 +31,7 @@ const MSPSignupPage = () => {
       };
     }
   }, []);
+
   return (
     <>
       {height && (
@@ -115,6 +116,7 @@ const MSPSignupPage = () => {
                     placeholder="Company Phone Number*"
                     className="rounded w-full p-2 border border-gray-300  bg-white text-black"
                   />
+
                   <input
                     value={signupInputs.mspInfo.webSiteUrl}
                     onChange={(e) =>
@@ -131,7 +133,7 @@ const MSPSignupPage = () => {
                         const img = new Image();
                         img.src = URL.createObjectURL(file);
                         img.onload = () => {
-                          if (img.width > 400 || img.height > 400) {
+                          if (img.width >= 400 || img.height >= 400) {
                             setSignupInputs("mspInfo", "brandLogoFile", null);
                             setFileSizeError(true);
                             e.target.value = "";
@@ -144,7 +146,6 @@ const MSPSignupPage = () => {
                     }}
                     type="file"
                     placeholder="Company Brand Logo URL"
-                    className="rounded w-full p-2 border border-gray-300  bg-white text-black"
                   />
                 </>
               ) : (

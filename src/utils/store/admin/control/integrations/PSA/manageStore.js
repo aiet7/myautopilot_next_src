@@ -272,13 +272,15 @@ const useManageStore = create((set, get) => ({
     if (step === 2) {
       window.userpilot.track("Manage Technicians");
       window.userpilot.reload();
-    } else if (step === 3) {
+    }
+    if (step === 3) {
       window.userpilot.track("Manage Clients");
       window.userpilot.reload();
-    } else if (step === 4) {
+    }
+    if (step === 4) {
       window.userpilot.track("Manage Contacts");
       window.userpilot.reload();
-    } else return;
+    }
   },
 
   setActiveConfigPreviousStep: () => {

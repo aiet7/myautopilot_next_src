@@ -33,7 +33,7 @@ const useMspStore = create((set, get) => ({
     },
     mspInfo: {
       mspName: "",
-      brandLogoFile: "",
+      brandLogoFile: null,
       webSiteUrl: "",
       companyAddress: {
         street: "",
@@ -59,8 +59,6 @@ const useMspStore = create((set, get) => ({
       login2FA: "",
     },
   },
-
-  isFirstTimeUser: false,
 
   errorMessage: {
     techSignup: false,
@@ -93,8 +91,6 @@ const useMspStore = create((set, get) => ({
     const { errorMessage } = get();
     set({ errorMessage: { ...errorMessage, fileSize: error } });
   },
-
-  setIsFirstTimeUser: (firstTime) => set({ isFirstTimeUser: firstTime }),
 
   setCurrentStep: (step) => set({ currentStep: step }),
 
@@ -331,9 +327,7 @@ const useMspStore = create((set, get) => ({
               techSignup: false,
             },
           });
-          set({
-            isFirstTimeUser: true,
-          });
+
           navigator(
             `/${msp.customDomain}/dashboard/${tech.id}/admin/msp-integrations/connectwise`
           );
@@ -773,7 +767,7 @@ const useMspStore = create((set, get) => ({
         },
         mspInfo: {
           mspName: "",
-          brandLogoFile: "",
+          brandLogoFile: null,
           webSiteUrl: "",
           companyAddress: {
             street: "",
@@ -800,11 +794,10 @@ const useMspStore = create((set, get) => ({
         },
       },
 
-      isFirstTimeUser: false,
-
       errorMessage: {
         techSignup: false,
         fileSize: false,
+        fileMissing: false,
         emptyFields: false,
         emailCheck: false,
       },

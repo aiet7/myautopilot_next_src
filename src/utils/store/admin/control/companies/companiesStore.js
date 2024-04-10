@@ -108,7 +108,7 @@ const useCompaniesStore = create((set, get) => ({
         `${dbServiceUrl}/${mspCustomDomain}/clientUsersOfEachClient?clientId=${companyId}`
       );
       const psaEmployeesPromise = fetch(
-        `${dbServiceUrl}/${mspCustomDomain}/connectWiseContacts`
+        `${dbServiceUrl}/${mspCustomDomain}/connectWiseContactsByClientId?connectWiseCompanyId=${connectWiseCompanyId}`
       );
 
       const [activeResponse, psaResponse] = await Promise.all([

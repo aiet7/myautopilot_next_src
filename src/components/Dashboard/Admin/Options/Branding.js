@@ -30,20 +30,28 @@ const Branding = () => {
       <div className="dark:border-b-white/20 border-b p-4">
         <h1 className="text-2xl">Branding</h1>
       </div>
-      <div className="flex flex-col h-full overflow-hidden pb-4">
-        <div className="flex flex-col text-xl overflow-hidden">
-          <div className="flex flex-col gap-7 text-xl overflow-hidden">
+      <div className="flex flex-col  h-full overflow-hidden pb-4">
+        <div className="flex flex-col overflow-hidden">
+          <div className="flex flex-col gap-7  overflow-hidden">
             <div className="flex flex-col overflow-hidden px-4">
               <div className="flex flex-col items-start py-4 gap-1">
-                <h2 className="text-lg font-bold">Add your own unique style</h2>
-                <p className="text-sm">Add your own logo, brand colors, images and your subdomain.  You can change this whenever you want.</p>
+                <h2 className="text-xl font-bold">Add your own unique style</h2>
+                <p className="text-sm">
+                  Add your own logo, brand colors, images and your subdomain.
+                  You can change this whenever you want.
+                </p>
               </div>
-              
+              <div className="flex flex-col gap-1">
+                <p>Brand logo</p>
+                <input type="file" />
+              </div>
             </div>
-            
           </div>
         </div>
       </div>
+      <button className="hover:bg-blue-500 bg-blue-800 self-end text-white rounded-lg py-2 px-10 font-bold m-2">
+        Save
+      </button>
     </div>
   );
 };
