@@ -12,8 +12,6 @@ const Configuration = () => {
     activePageNumbers,
     setActivePage,
     activeConfigSteps,
-    setActiveConfigPreviousStep,
-    setActiveConfigNextStep,
     setActiveConfigStep,
     setCloseConfiguration,
   } = useManageStore();
@@ -94,25 +92,6 @@ const Configuration = () => {
               ))}
             </div>
           )}
-          <div className="flex justify-between font-bold py-4">
-            <button
-              onClick={setActiveConfigPreviousStep}
-              className={`${
-                activeConfigSteps <= 1 ? "opacity-0" : "opacity-100"
-              } hover:bg-blue-500  bg-blue-800 text-white px-6 py-2 rounded-lg`}
-            >
-              Previous
-            </button>
-            <button
-              id="manageAuthenticated-next"
-              onClick={setActiveConfigNextStep}
-              className={`${
-                activeConfigSteps === 4 ? "opacity-0" : "opacity-100"
-              } hover:bg-blue-500  bg-blue-800 text-white px-6 py-2 rounded-lg`}
-            >
-              Next
-            </button>
-          </div>
         </div>
       </div>
     </div>

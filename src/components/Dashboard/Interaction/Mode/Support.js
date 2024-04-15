@@ -5,7 +5,7 @@ import { convertTicketText, convertDate } from "@/utils/conversions";
 
 const Support = () => {
   const { showTicket, ticketNotes, handleTicketMode } = useTicketsStore();
-  console.log(ticketNotes);
+
   return (
     <div className="flex flex-col w-full flex-grow p-4 overflow-hidden">
       <div className="flex flex-col gap-6 overflow-hidden">

@@ -5,7 +5,6 @@ import { AiOutlineClose } from "react-icons/ai";
 const ViewOfficeUsers = () => {
   const { officeUsers, setCloseConfiguration } = useSuiteStore();
 
-  console.log(officeUsers);
 
   return (
     <div className="dark:bg-black/80 absolute bg-black/60 z-[99] top-0 bottom-0 right-0 left-0 flex  items-center justify-center p-2 lg:p-10">

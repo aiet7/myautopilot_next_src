@@ -57,6 +57,8 @@ const useRolesStore = create((set, get) => ({
     if (userStore.user) {
       const newRoles = await handleGetRoles(userStore.user.mspCustomDomain);
       set({ roles: newRoles });
+
+      return newRoles;
     }
   },
 

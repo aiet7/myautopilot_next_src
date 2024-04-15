@@ -26,6 +26,7 @@ const useUserStore = create((set, get) => ({
   initializeUser: async (msp, id) => {
     const { getUser, saveUser } = useLocalStorageStore.getState();
     const { initializeMSPTickets } = useTicketsStore.getState();
+    const { initializeRoles } = useRolesStore.getState();
 
     let userData = null;
     let userType = localStorage.getItem("lastActiveUserType");
@@ -40,6 +41,13 @@ const useUserStore = create((set, get) => ({
       if (fetchedUser) {
         saveUser(fetchedUser);
         userData = fetchedUser;
+        const rolesData = await initializeRoles();
+        const userPermissions = rolesData.find(
+          (role) => role.id === userData.roleId
+        );
+        if (userPermissions) {
+          userData.permissions = userPermissions.permissions;
+        }
       }
     }
 
@@ -98,7 +106,6 @@ const useUserStore = create((set, get) => ({
     clearAdmin();
 
     navigator("/auth/login");
-   
   },
 }));
 

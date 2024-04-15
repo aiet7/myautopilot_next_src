@@ -5,11 +5,13 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: [
-      "media.istockphoto.com",
-      "www.upwork.com",
-      "www.myautopilot.ai",
-      "myautopilot.blob.core.windows.net",
+    domains: ["media.istockphoto.com", "www.upwork.com", "www.myautopilot.ai"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "myautopilot.blob.core.windows.net",
+        pathname: "/brandlogos/**",
+      },
     ],
   },
 };
