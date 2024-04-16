@@ -33,7 +33,7 @@ const OptionPages = () => {
   const session = Cookies.get("session_token");
   const router = useRouter();
 
-  const { initializeUser } = useUserStore();
+  const { user, initializeUser } = useUserStore();
   const { getStorage, setStorage } = useLocalStorageStore();
   const { activeTab } = useUiStore();
   const { currentOption } = useAdminStore();
@@ -52,7 +52,6 @@ const OptionPages = () => {
       }
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady, router.asPath]);
 
   useEffect(() => {
@@ -63,12 +62,30 @@ const OptionPages = () => {
     return () => {
       window.removeEventListener("beforeunload", setStorage);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, currentOption]);
 
   const renderComponent = () => {
     if (options && options.length > 0) {
       const componentKey = options[0].toLowerCase();
+
+      const permissionMap = {
+        branding: user?.permissions?.mspBranding,
+        "msp-integrations": user?.permissions?.mspIntegrations,
+        "client-integrations": user?.permissions?.clientIntegrations,
+        employees: user?.permissions?.technicianUserManagement,
+        roles: user?.permissions?.roleManagement,
+        board: user?.permissions?.boardView,
+        companies: user?.permissions?.clientUserManagement, 
+      };
+
+      if (!permissionMap[componentKey]) {
+        return (
+          <p className="p-4 text-2xl font-bold">
+            You do not have permission to view this page.
+          </p>
+        );
+      }
+
       switch (componentKey) {
         case "branding":
           return <Branding />;

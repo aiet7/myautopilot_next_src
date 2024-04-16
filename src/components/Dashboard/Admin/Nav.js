@@ -13,6 +13,7 @@ const Nav = ({}) => {
   const { openAdmin } = useUiStore();
   const { options, currentOption, handleOptionSelected } = useAdminStore();
 
+
   const renderIcon = (option) => {
     switch (option) {
       case "employees":
@@ -44,46 +45,61 @@ const Nav = ({}) => {
       } dark:bg-[#111111] dark:border-white/10  bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease md:border-r md:border-black/10`}
     >
       <div className="overflow-y-auto h-full scrollbar-thin">
-        {options.map((option, index) => {
-          return (
-            <Link
-              key={option}
-              href={`/${user?.mspCustomDomain}/dashboard/${
-                user?.id
-              }/admin/${option.replace("Integrations", "-integrations")}`}
-            >
-              <div
-                onClick={() => handleOptionSelected(option)}
-                className="flex flex-col items-start my-2"
+        {options
+          .filter((option) => {
+            const permissionMap = {
+              employees: "technicianUserManagement",
+              roles: "roleManagement",
+              "msp-integrations": "mspIntegrations",
+              "client-integrations": "clientIntegrations",
+              branding: "mspBranding",
+              companies: "clientUserManagement",
+              board: "boardView",
+            };
+
+            return user?.permissions?.[permissionMap?.[option]];
+          })
+          .map((option, index) => {
+            console.log(option);
+            return (
+              <Link
+                key={option}
+                href={`/${user?.mspCustomDomain}/dashboard/${
+                  user?.id
+                }/admin/${option.replace("Integrations", "-integrations")}`}
               >
                 <div
-                  className={`${`${
-                    currentOption === option && "dark:bg-white/40 bg-black/20"
-                  }`} dark:text-white dark:hover:bg-white/40 hover:bg-black/20  text-black w-full flex items-center justify-between px-4 py-5 cursor-pointer rounded-lg`}
+                  onClick={() => handleOptionSelected(option)}
+                  className="flex flex-col items-start my-2"
                 >
-                  <div className="flex items-center">
-                    <div className="w-8">{renderIcon(option)}</div>
-                    <div className="w-64 truncate flex">
-                      <span className="px-1">
-                        {{
-                          "msp-integrations": "MSP Integrations",
-                          "client-integrations": "Client Integrations",
-                        }[option] ||
-                          option
-                            .split("-")
-                            .map(
-                              (word) =>
-                                word.charAt(0).toUpperCase() + word.slice(1)
-                            )
-                            .join(" ")}
-                      </span>
+                  <div
+                    className={`${`${
+                      currentOption === option && "dark:bg-white/40 bg-black/20"
+                    }`} dark:text-white dark:hover:bg-white/40 hover:bg-black/20  text-black w-full flex items-center justify-between px-4 py-5 cursor-pointer rounded-lg`}
+                  >
+                    <div className="flex items-center">
+                      <div className="w-8">{renderIcon(option)}</div>
+                      <div className="w-64 truncate flex">
+                        <span className="px-1">
+                          {{
+                            "msp-integrations": "MSP Integrations",
+                            "client-integrations": "Client Integrations",
+                          }[option] ||
+                            option
+                              .split("-")
+                              .map(
+                                (word) =>
+                                  word.charAt(0).toUpperCase() + word.slice(1)
+                              )
+                              .join(" ")}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </Link>
-          );
-        })}
+              </Link>
+            );
+          })}
       </div>
     </div>
   );

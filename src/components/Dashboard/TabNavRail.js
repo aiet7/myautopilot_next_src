@@ -78,19 +78,51 @@ const TabNavRail = ({}) => {
           />
         </div>
       </Link>
-      {user?.roleId === "653ff2126a55f75b62a1b558" && (
+
+      {user?.adminPortal && (
         <Link
-          href={`/${user?.mspCustomDomain}/dashboard/${user?.id}/admin/employees`}
+          href={`/${user?.mspCustomDomain}/dashboard/${user?.id}/admin/${
+            user?.permissions?.technicianUserManagement
+              ? "employees"
+              : user?.permissions?.roleManagement
+              ? "roles"
+              : user?.permissions?.mspIntegrations
+              ? "msp-integrations"
+              : user?.permissions?.clientIntegrations
+              ? "client-integrations"
+              : user?.permissions?.boardView
+              ? "board"
+              : user?.permissions?.mspBranding
+              ? "branding"
+              : user?.permissions?.clientUserManagement
+              ? "companies"
+              : "default"
+          }`}
         >
           <div
             onClick={() => {
               handleTabChange("admin");
-              handleOptionSelected("employees");
+              handleOptionSelected(
+                user?.permissions?.technicianUserManagement
+                  ? "employees"
+                  : user?.permissions?.roleManagement
+                  ? "roles"
+                  : user?.permissions?.mspIntegrations
+                  ? "msp-integrations"
+                  : user?.permissions?.clientIntegrations
+                  ? "client-integrations"
+                  : user?.permissions?.boardView
+                  ? "board"
+                  : user?.permissions?.mspBranding
+                  ? "branding"
+                  : user?.permissions?.clientUserManagement
+                  ? "companies"
+                  : "default"
+              );
             }}
             className="relative flex flex-col gap-2 items-center cursor-pointer"
           >
             <RiAdminLine
-              data-tooltip-id="Admin"
               size={22}
               className={`${
                 activeTab === "admin" && "text-blue-600"
@@ -110,13 +142,6 @@ const TabNavRail = ({}) => {
         {openSettings && (
           <div className="dark:bg-black dark:border-white/40 dark:border rounded-lg bg-white border border-black/10 absolute z-[99] bottom-[52px] right-0 w-full lg:bottom-0 lg:left-[37px] lg:w-[351px]">
             <div className="flex flex-col">
-              {/* <div
-                onClick={() => handleTabChange("settings")}
-                className="dark:hover:bg-white/20 hover:bg-black/10 rounded-tl-lg rounded-tr-lg w-full text-lg flex items-center gap-3 px-6 py-3"
-              >
-                <MdOutlineAccountCircle />
-                <span>Account</span>
-              </div> */}
               <div
                 onClick={handleTheme}
                 className="dark:hover:bg-white/20 hover:bg-black/10  w-full text-lg flex items-center gap-3 px-6 py-3"
