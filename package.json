@@ -29,11 +29,10 @@
     "react-dom": "18.2.0",
     "react-icons": "^4.8.0",
     "react-microsoft-login": "^2.0.1",
-    "react-query": "^3.39.3",
     "react-speech-recognition": "^3.10.0",
+    "sharp": "^0.33.3",
     "sockjs-client": "^1.6.1",
     "url": "^0.11.0",
-    "usa-states": "^0.0.6",
     "zustand": "^4.4.1"
   },
   "devDependencies": {

@@ -103,7 +103,7 @@ const Board = () => {
             }
 
             if (subCategory.tier === null) {
-              const defaultTier = "Low" || tierOptions[3];
+              const defaultTier = "Tier1" || tierOptions[3];
               setBoardInputs(
                 categoryId,
                 subCategoryId,
@@ -915,6 +915,9 @@ const Board = () => {
           )}
         </div>
         <div className="flex items-center gap-2 self-end ">
+          {successMessage && customBoard && (
+            <p className="text-emerald-500">Custom Board Saved!</p>
+          )}
           {errorMessage && <p className="text-red-500">Error Saving Board</p>}
           {boardData && (
             <button

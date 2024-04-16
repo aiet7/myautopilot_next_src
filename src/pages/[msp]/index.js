@@ -89,7 +89,9 @@ const MSPPage = ({}) => {
                 </div>
               )}
               <h1 className="text-2xl font-bold text-black text-center">
-                Welcome back to {mspSubDomain?.mspName}
+                {current2FA
+                  ? "Enter your 2FA code"
+                  : `Welcome back to ${mspSubDomain?.mspName}`}
               </h1>
               {errorMessage?.emailCheck && (
                 <p className="text-red-500">Email or password incorrect.</p>

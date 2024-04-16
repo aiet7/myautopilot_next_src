@@ -1363,8 +1363,6 @@ const useManageStore = create((set, get) => ({
       (board) => board.id === parseInt(activeBoard)
     );
 
-    console.log(connectwiseMerge);
-
     try {
       const response = await fetch(
         `${dbServiceUrl}/${mspCustomDomain}/connectWiseManageDetails/update`,
@@ -1393,6 +1391,8 @@ const useManageStore = create((set, get) => ({
           errorMessage: false,
           successMessage: true,
         });
+        window.userpilot.track("Manage Technicians");
+        window.userpilot.reload();
       } else {
         set({ errorMessage: true, successMessage: false });
       }
@@ -1531,7 +1531,8 @@ const useManageStore = create((set, get) => ({
           techniciansSelected: {},
           errorMessage: false,
         });
-
+        window.userpilot.track("Manage Clients");
+        window.userpilot.reload();
         console.log("MANAGE TECH ADDED");
       } else {
         set({ successMessage: false, errorMessage: true });
@@ -1570,7 +1571,8 @@ const useManageStore = create((set, get) => ({
           clientsSelected: {},
           errorMessage: false,
         });
-
+        window.userpilot.track("Manage Contacts");
+        window.userpilot.reload();
         console.log("MANAGE CLIENT ADDED");
       } else {
         set({ successMessage: false, errorMessage: true });

@@ -18,7 +18,7 @@ const useFormsStore = create((set, get) => ({
 
   ticket: {
     currentTicketTitle: "",
-    currentTicketCWCompanyId: 250,
+    currentTicketCWCompanyId: 24,
     currentTicketDescription: "",
 
     currentTicketCategory: "",
