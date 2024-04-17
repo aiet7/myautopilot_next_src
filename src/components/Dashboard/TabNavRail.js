@@ -27,11 +27,8 @@ const TabNavRail = ({}) => {
   const router = useRouter();
 
   const { user, handleLogout } = useUserStore();
-
   const { activeUIAssistantTab } = useAssistantStore();
-
   const { handleOptionSelected } = useAdminStore();
-
   const {
     openSettings,
     activeTab,
@@ -41,11 +38,9 @@ const TabNavRail = ({}) => {
   } = useUiStore();
 
   const { theme, setTheme } = useTheme();
-
   const handleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
-
   return (
     <div className="dark:bg-[#373737] dark:border-white/10 bg-[#eaf1fb] flex items-center justify-evenly p-3 gap-4 transition-all duration-300 ease lg:relative lg:flex-col lg:justify-start lg:border-r lg:border-black/10">
       {((activeTab === "iTAgent" &&
@@ -79,7 +74,7 @@ const TabNavRail = ({}) => {
         </div>
       </Link>
 
-      {user?.adminPortal && (
+      {user?.permissions?.adminPortal && (
         <Link
           href={`/${user?.mspCustomDomain}/dashboard/${user?.id}/admin/${
             user?.permissions?.technicianUserManagement
@@ -96,6 +91,8 @@ const TabNavRail = ({}) => {
               ? "branding"
               : user?.permissions?.clientUserManagement
               ? "companies"
+              : !user?.permissions?.technicianUserManagement
+              ? "contacts"
               : "default"
           }`}
         >
@@ -117,6 +114,8 @@ const TabNavRail = ({}) => {
                   ? "branding"
                   : user?.permissions?.clientUserManagement
                   ? "companies"
+                  : !user?.permissions?.technicianUserManagement
+                  ? "contacts" 
                   : "default"
               );
             }}

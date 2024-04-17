@@ -1,51 +1,48 @@
 "use client";
 
-import useCompaniesStore from "@/utils/store/admin/control/companies/companiesStore";
-import useUserStore from "@/utils/store/user/userStore";
+import useContactsStore from "@/utils/store/admin/control/contacts/contactsStore";
 
-const ViewPSAEmployees = () => {
-  const { user } = useUserStore();
-  const {
-    companyPSAEmployees,
-    handleViewCompanyEmployeeTickets,
-    handleSaveCompanyEmployee,
-  } = useCompaniesStore();
-
+const ViewPSAContacts = () => {
+  const { psaContacts, handleViewContactTickets } = useContactsStore();
   return (
     <>
-      {companyPSAEmployees?.length !== 0 ? (
+      {psaContacts?.length !== 0 ? (
         <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
-          {companyPSAEmployees && (
+          {psaContacts && (
             <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
-              <thead className="dark:text-white dark:bg-gray-700 sticky top-0 text-lg text-black/60 bg-[#F5F8FA]">
+              <thead className="dark:text-white dark:bg-gray-700 sticky top-0  text-lg text-black/60 bg-[#F5F8FA]">
                 <tr className="">
-                  <th className="p-2 border-l border-t border-b  "></th>
-                  <th className="p-2 border-l border-t border-b border-r">
+                  <th className="p-2 border-l border-t border-b border-r ">
                     Name
                   </th>
-                  <th className="p-2 border-t border-b border-r">
+                  <th className="p-2 border-t border-b border-r ">
                     Email Address
                   </th>
-                  <th className="p-2 border-t border-b border-r">
+                  <th className="p-2 border-t border-b border-r ">
                     Phone Number
                   </th>
+                  <th className="p-2 border-t border-b border-r ">
+                    Company ID
+                  </th>
+                  <th className="p-2 border-t border-b border-r">Contact ID</th>
                 </tr>
               </thead>
               <tbody>
-                {companyPSAEmployees?.map((employee) => {
+                {psaContacts?.map((contact) => {
                   const {
                     id,
                     firstName,
                     lastName,
                     connectWiseEmailId,
                     connectWisePhoneNumber,
-                    defaultPhoneNbr,
-                  } = employee;
+                    connectWiseCompanyId,
+                    connectWiseContactId,
+                  } = contact;
                   return (
                     <tr
                       className="dark:hover:bg-blue-950 hover:bg-blue-50 cursor-pointer"
                       onClick={() =>
-                        handleViewCompanyEmployeeTickets(
+                        handleViewContactTickets(
                           id,
                           firstName,
                           lastName
@@ -53,16 +50,6 @@ const ViewPSAEmployees = () => {
                       }
                       key={id}
                     >
-                      <td className="p-2 truncate border-l  border-b">
-                        <button
-                          onClick={() =>
-                            handleSaveCompanyEmployee(user?.mspCustomDomain, id)
-                          }
-                          className="hover:underline text-blue-500"
-                        >
-                          Save
-                        </button>
-                      </td>
                       <td className="p-2 truncate border-l  border-r border-b">
                         {firstName + " " + lastName}
                       </td>
@@ -70,7 +57,13 @@ const ViewPSAEmployees = () => {
                         {connectWiseEmailId}
                       </td>
                       <td className="p-2 truncate border-r border-b">
-                        {connectWisePhoneNumber || defaultPhoneNbr}
+                        {connectWisePhoneNumber}
+                      </td>
+                      <td className="p-2 truncate border-r border-b">
+                        {connectWiseCompanyId}
+                      </td>
+                      <td className="p-2 truncate border-r border-b">
+                        {connectWiseContactId}
                       </td>
                     </tr>
                   );
@@ -81,11 +74,11 @@ const ViewPSAEmployees = () => {
         </div>
       ) : (
         <p className="text-xl font-bold text-black/20 w-full">
-          Currently Have No Inactive Employees Listed
+          Currently Have No Active PSA Contacts
         </p>
       )}
     </>
   );
 };
 
-export default ViewPSAEmployees;
+export default ViewPSAContacts;

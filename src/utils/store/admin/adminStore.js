@@ -9,6 +9,7 @@ const useAdminStore = create((set, get) => ({
     "client-integrations",
     "branding",
     "companies",
+    "contacts",
     "board",
   ],
   currentOption: null,
@@ -26,10 +27,15 @@ const useAdminStore = create((set, get) => ({
       "client-integrations": "clientIntegrations",
       branding: "mspBranding",
       board: "boardView",
-      companies: "clientUserManagement",  
+      companies: "technicianUserManagement",
+      contacts: "technicianUserManagement",
     };
 
-    if (userStore.user.permissions[permissionMap[option]]) {
+    if (
+      option === "contacts"
+        ? !userStore.user.permissions[permissionMap[option]]
+        : userStore.user.permissions[permissionMap[option]]
+    ) {
       set({ currentOption: option });
     }
   },
@@ -43,6 +49,7 @@ const useAdminStore = create((set, get) => ({
         "client-integrations",
         "branding",
         "companies",
+        "contacts",
         "board",
       ],
       currentOption: null,

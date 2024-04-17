@@ -102,6 +102,26 @@ export const handleGetManageDBContacts = async (msp) => {
   return response.json();
 };
 
+export const handleGetManageDBClientContactsPSA = async (msp, companyId) => {
+  const response = await fetch(
+    `${dbServiceUrl}/${encodeURIComponent(
+      msp
+    )}/connectWiseContactsByClientId?connectWiseCompanyId=${encodeURIComponent(
+      companyId
+    )}`
+  );
+  return response.json();
+};
+
+export const handleGetManageDBClientContactsActive = async (msp, companyId) => {
+  const response = await fetch(
+    `${dbServiceUrl}/${encodeURIComponent(
+      msp
+    )}/clientUsersOfEachClient?clientId=${encodeURIComponent(companyId)}`
+  );
+  return response.json();
+};
+
 export const handleGetDBBoard = async (msp) => {
   const response = await fetch(
     `${dbServiceUrl}/${encodeURIComponent(msp)}/connectWiseManageDetails`

@@ -29,6 +29,10 @@ const Board = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Board/Board")
 );
 
+const Contacts = dynamic(() =>
+  import("@/components/Dashboard/Admin/Options/Contacts/Contacts")
+);
+
 const OptionPages = () => {
   const session = Cookies.get("session_token");
   const router = useRouter();
@@ -51,7 +55,6 @@ const OptionPages = () => {
         router.push("/auth/login");
       }
     }
-
   }, [router.isReady, router.asPath]);
 
   useEffect(() => {
@@ -75,7 +78,8 @@ const OptionPages = () => {
         employees: user?.permissions?.technicianUserManagement,
         roles: user?.permissions?.roleManagement,
         board: user?.permissions?.boardView,
-        companies: user?.permissions?.clientUserManagement, 
+        companies: user?.permissions?.technicianUserManagement,
+        contacts: !user?.permissions?.technicianUserManagement,
       };
 
       if (!permissionMap[componentKey]) {
@@ -91,6 +95,11 @@ const OptionPages = () => {
           return <Branding />;
         case "companies":
           return <Companies />;
+        case "contacts":
+          if (!user?.permissions?.technicianUserManagement) {
+            return <Contacts />;
+          }
+          break;
         case "msp-integrations":
           return <Cards />;
         case "client-integrations":
