@@ -5,7 +5,7 @@ import useUserStore from "@/utils/store/user/userStore";
 const ViewCompanies = () => {
   const { user } = useUserStore();
   const { companies, handleViewCompanyEmployees } = useCompaniesStore();
-
+ 
   return (
     <div className="flex flex-col text-xl overflow-hidden">
       <div className="flex flex-col gap-7 text-xl overflow-hidden">

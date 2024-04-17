@@ -92,7 +92,11 @@ const MSPSignupPage = () => {
                   <input
                     value={signupInputs.mspCustomDomain}
                     onChange={(e) =>
-                      setSignupInputs("", "mspCustomDomain", e.target.value)
+                      setSignupInputs(
+                        "",
+                        "mspCustomDomain",
+                        e.target.value.toLowerCase()
+                      )
                     }
                     type="text"
                     placeholder="Custom Domain Name*"

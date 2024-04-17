@@ -1589,6 +1589,7 @@ const useManageStore = create((set, get) => ({
       (contact) => contactsSelected[contact.connectWiseContactId]?.selected
     );
 
+
     try {
       const response = await fetch(
         `${dbServiceUrl}/${encodeURIComponent(
