@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import useIntegrationsStore from "../admin/control/integrations/integrationsStore";
+
 
 const isBrowser = typeof window !== "undefined";
 const initialWidth = isBrowser ? window.innerWidth : 1023;
@@ -14,6 +14,8 @@ const useUiStore = create((set, get) => ({
   openAdmin: initialWidth > 1023 ? true : false,
   openTickets: initialWidth > 1023 ? true : false,
   openSettings: false,
+
+ 
 
   setActiveTab: (tab) => set({ activeTab: tab }),
   setHoverTab: (tab) => set({ hoverTab: tab }),

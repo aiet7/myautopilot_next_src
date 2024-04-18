@@ -8,6 +8,7 @@ import { FaSpinner } from "react-icons/fa";
 const Contacts = () => {
   const { user } = useUserStore();
   const {
+    finishedIntagrationShow,
     activePage,
     activePerPage,
     successMessage,
@@ -15,6 +16,7 @@ const Contacts = () => {
     contacts,
     contactsSelected,
     loadingContacts,
+    setFinishedIntegratingToast,
     setSelectedContacts,
     setSelectAllContacts,
     handleAddManageContacts,
@@ -184,6 +186,24 @@ const Contacts = () => {
           </p>
         )}
       </div>
+      {finishedIntagrationShow && (
+        <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center z-[99]">
+          <div className="bg-gray-700 text-white flex flex-col justify-center gap-4 w-[320px] h-[220px] p-3 rounded-md">
+            <h2 className="font-bold">Finished Integrating</h2>
+            <p>
+              You have successfully integrated your ConnectWise Manage system
+              into our platform. You can now manage your tickets, board,
+              technicians and clients through our admin portal!
+            </p>
+            <button
+              onClick={() => setFinishedIntegratingToast(false)}
+              className="text-sm self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

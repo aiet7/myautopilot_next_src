@@ -21,6 +21,8 @@ const useLocalStorageStore = create((set, get) => ({
 
     useUserStore.setState({ user: parsedLastActiveDirectory });
 
+    
+
     useAdminStore.setState({
       currentOption:
         parsedLastUI.currentOption || (isOnAdminRoute ? option : "employees"),

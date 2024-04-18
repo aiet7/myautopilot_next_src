@@ -12,10 +12,12 @@ import History from "../Dashboard/History/History";
 import Documents from "../Dashboard/Documents/Documents";
 import TabNavRail from "../Dashboard/TabNavRail";
 import Tickets from "../Dashboard/Tickets/Tickets";
+import useUserStore from "@/utils/store/user/userStore";
 
 const Account = dynamic(() => import("@/components/Dashboard/Account"));
 
 const Layout = ({ children }) => {
+  const { user } = useUserStore();
   const { height, activeTab, openSettings, setHeight, handleToggleSettings } =
     useUiStore();
   const { activeUIAssistantTab } = useAssistantStore();

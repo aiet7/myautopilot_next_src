@@ -28,7 +28,7 @@ const Roles = ({}) => {
   useEffect(() => {
     initializeRoles();
   }, [user]);
-  console.log(user);
+  
   return (
     <div
       onClick={() => {
