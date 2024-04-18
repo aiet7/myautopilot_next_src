@@ -60,7 +60,7 @@ const MSPSoftwareIntegratePages = () => {
   const { initializeUser } = useUserStore();
   const { initializeMSPIntegrations } = useIntegrationsStore();
   const { getStorage, setStorage } = useLocalStorageStore();
-  const { activeTab } = useUiStore();
+  const { activeTab, setActiveTab } = useUiStore();
   const { currentOption } = useAdminStore();
 
   useEffect(() => {
@@ -102,6 +102,12 @@ const MSPSoftwareIntegratePages = () => {
       window.userpilot && window.userpilot.reload();
     }
   }, [user]);
+
+  useEffect(() => {
+    if (user?.permissions?.adminPortal) {
+      setActiveTab("admin");
+    }
+  }, [user?.permissions?.adminPortal]);
 
   const renderComponent = () => {
     if (software && software.length > 0) {

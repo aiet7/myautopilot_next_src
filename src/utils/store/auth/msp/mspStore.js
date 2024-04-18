@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import Cookie from "js-cookie";
+import useUiStore from "../../ui/uiStore";
+import useUserStore from "../../user/userStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
@@ -259,6 +261,7 @@ const useMspStore = create((set, get) => ({
   },
 
   handleSignupProgression: async (navigator) => {
+   
     const {
       msp,
       errorMessage,
@@ -316,7 +319,7 @@ const useMspStore = create((set, get) => ({
         techInfo.password !== ""
       ) {
         const tech = await handleSignupTechnician();
-        if (tech && tech.id) {
+        if (tech && tech.id ) {
           set({
             successMessage: true,
             errorMessage: {

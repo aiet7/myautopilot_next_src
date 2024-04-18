@@ -32,6 +32,7 @@ const useManageStore = create((set, get) => ({
   contacts: null,
   contactsSelected: {},
   loadingContacts: false,
+  finishedIntagrationShow: false,
 
   clientAndContactTypes: null,
   selectedAutoSyncType: null,
@@ -702,6 +703,10 @@ const useManageStore = create((set, get) => ({
 
   setAutoSyncToast: (toast, completed) => {
     set({ autoSyncingShow: toast, autoSyncingCompleted: completed });
+  },
+
+  setFinishedIntegratingToast: (toast) => {
+    set({ finishedIntagrationShow: toast });
   },
 
   handleSaveManageKeys: async (mspCustomDomain) => {
@@ -1589,7 +1594,6 @@ const useManageStore = create((set, get) => ({
       (contact) => contactsSelected[contact.connectWiseContactId]?.selected
     );
 
-
     try {
       const response = await fetch(
         `${dbServiceUrl}/${encodeURIComponent(
@@ -1609,11 +1613,16 @@ const useManageStore = create((set, get) => ({
           successMessage: true,
           contactsSelected: {},
           errorMessage: false,
+          finishedIntagrationShow: true,
         });
 
         console.log("MANAGE CONTACT ADDED");
       } else {
-        set({ successMessage: false, errorMessage: true });
+        set({
+          successMessage: false,
+          errorMessage: true,
+          finishedIntagrationShow: false,
+        });
         console.log("ERROR ADDING MANAGE CONTACT");
       }
     } catch (e) {
@@ -1666,7 +1675,6 @@ const useManageStore = create((set, get) => ({
           `${connectWiseServiceUrl}/syncClientsContacts?mspCustomDomain=${mspCustomDomain}`
         );
         set({
-          activeConfigSteps: 1,
           autoSyncLoading: false,
           autoSyncingShow: true,
           autoSyncingCompleted: true,
@@ -1698,6 +1706,7 @@ const useManageStore = create((set, get) => ({
       contacts: null,
       contactsSelected: {},
       loadingContacts: false,
+      finishedIntagrationShow: false,
 
       clientAndContactTypes: null,
       selectedAutoSyncType: null,
