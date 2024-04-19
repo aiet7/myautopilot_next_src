@@ -5,7 +5,6 @@ import useTicketConversationsStore from "@/utils/store/interaction/conversations
 import { useEffect } from "react";
 
 const Switch = ({ item, itemId }) => {
-
   const { activeSectionButton, isMobile, setIsMobile, setActiveSectionButton } =
     useTicketConversationsStore();
 
@@ -27,30 +26,6 @@ const Switch = ({ item, itemId }) => {
   switch (item.type) {
     case "form":
       switch (item.formType) {
-        // case "emailButtons + emailForm":
-        //   return (
-        //     <div className="flex flex-col gap-6">
-        //       <p>Please select an email address.</p>
-        //       <EmailButtons />
-        //       <EmailForm itemId={itemId} />
-        //     </div>
-        //   );
-
-        // case "contactForm + emailForm":
-        //   return (
-        //     <div className="flex flex-col gap-6">
-        //       <p>Would you like to add this email to your contacts?.</p>
-        //       <ContactForm />
-        //       <EmailForm itemId={itemId} />
-        //     </div>
-        //   );
-        // case "contactForm":
-        //   return (
-        //     <div className="flex flex-col gap-6">
-        //       <p>Add email to contact.</p>
-        //       <ContactForm itemId={itemId} />
-        //     </div>
-        //   );
         case "ticketForm":
           return (
             <div className="flex flex-col gap-6">
@@ -104,20 +79,6 @@ const Switch = ({ item, itemId }) => {
               </div>
             </div>
           );
-        // case "eventForm":
-        //   return (
-        //     <div className="flex flex-col gap-6">
-        //       <p>Schedule an event.</p>
-        //       <EventForm itemId={itemId} />
-        //     </div>
-        //   );
-        // case "taskForm":
-        //   return (
-        //     <div className="flex flex-col gap-6">
-        //       <p>Create a task.</p>
-        //       <TaskForm itemId={itemId} />
-        //     </div>
-        //   );
 
         default:
           return null;

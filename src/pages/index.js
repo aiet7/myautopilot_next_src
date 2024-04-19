@@ -69,7 +69,9 @@ const WelcomePage = () => {
               <p className="text-xl font-bold italic">
                 Integrating AI into Managed Services Software Suites & Tools
               </p>
-              <p className="text-lg font-semibold">ConnectWise / Kaseya / Datto / N-able</p>
+              <p className="text-lg font-semibold">
+                ConnectWise / Kaseya / Datto / N-able
+              </p>
             </div>
             <div className="flex flex-col gap-6 text-sm lg:text-lg py-4 lg:flex-row">
               <div className="flex flex-col text-left gap-2 lg:text-center">
