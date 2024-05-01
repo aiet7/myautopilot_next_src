@@ -11,7 +11,7 @@ const DocumentGuide = () => {
     <div className="flex flex-col items-center p-4 text-md h-full max-w-[700px] mx-auto justify-between">
       <div className="dark:border-white flex items-center justify-center border border-black px-12 py-2 rounded-lg font-bold mb-4">
         <BsStars size={15} />
-        <span>GPT-3.5</span>
+        <span>Autopilot</span>
       </div>
 
       <div className="flex flex-col justify-center flex-grow gap-2">

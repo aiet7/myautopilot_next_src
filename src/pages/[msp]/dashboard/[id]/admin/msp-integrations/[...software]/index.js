@@ -11,8 +11,7 @@ import useUserStore from "@/utils/store/user/userStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useIntegrationsStore from "@/utils/store/admin/control/integrations/integrationsStore";
 import useAdminStore from "@/utils/store/admin/adminStore";
-import useManageStore from "@/utils/store/admin/control/integrations/PSA/manageStore";
-import useTooltipStore from "@/utils/store/tooltip/tooltipStore";
+
 import useMspStore from "@/utils/store/auth/msp/mspStore";
 
 const Openai = dynamic(() =>

@@ -78,13 +78,12 @@ const MSPPage = ({}) => {
           <form className="relative p-6 w-[450px] flex flex-col gap-10 items-center justify-center lg:shadow-lg  lg:rounded-lg lg:bg-white">
             <div className="text-black flex flex-col items-center gap-10">
               {mspSubDomain && (
-                <div className="relative rounded-full w-52 h-52 shadow-xl shadow-black/30 flex items-center justify-center overflow-hidden">
+                <div className="relative rounded-full w-32 h-32 shadow-xl shadow-black/30 flex items-center justify-center overflow-hidden">
                   <Image
                     src={mspSubDomain?.brandLogoUrl}
                     alt={`${mspSubDomain?.mspName} Portal Logo`}
-                    fill
-                    sizes="(min-width: 768px) 50vw, 100vw"
-                    style={{ objectFit: "cover" }}
+                    width={100}
+                    height={100}
                   />
                 </div>
               )}
