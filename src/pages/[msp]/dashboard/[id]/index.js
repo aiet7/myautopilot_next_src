@@ -52,6 +52,8 @@ const DashboardPage = ({}) => {
         initializeUser(msp, id);
         initializeAssistant(msp);
         initializeUserType();
+      } else {
+        router.push("/auth/login");
       }
     }
   }, [router.isReady, router.asPath]);
