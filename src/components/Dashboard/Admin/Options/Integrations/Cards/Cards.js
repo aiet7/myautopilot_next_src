@@ -27,7 +27,6 @@ const Cards = () => {
   } = useIntegrationsStore();
 
   const isMSP = router.pathname.includes("msp-integrations");
-
   const cardsToDisplay = isMSP ? mspCards : clientCards;
   const filteredCards = selectedCategory
     ? cardsToDisplay.filter((card) => card.category === selectedCategory)
@@ -91,14 +90,21 @@ const Cards = () => {
                 <option value="Select Company" disabled selected>
                   Select Company
                 </option>
-                {clientList.map((client, index) => {
-                  const { id, name, connectWiseClientsAutopilotDbId } = client;
-                  return (
-                    <option key={id} value={connectWiseClientsAutopilotDbId}>
-                      {name}
-                    </option>
-                  );
-                })}
+                {clientList
+                  .filter(
+                    (client) =>
+                      client.connectWiseCompanyId === user?.connectWiseCompanyId
+                  )
+                  .map((client, index) => {
+                    const { id, name, connectWiseClientsAutopilotDbId } =
+                      client;
+
+                    return (
+                      <option key={id} value={connectWiseClientsAutopilotDbId}>
+                        {name}
+                      </option>
+                    );
+                  })}
               </select>
             )}
           </div>
