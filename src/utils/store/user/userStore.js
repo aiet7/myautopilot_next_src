@@ -26,7 +26,8 @@ const useUserStore = create((set, get) => ({
 
   initializeUser: async (msp, id) => {
     const { getUser, saveUser } = useLocalStorageStore.getState();
-    const { initializeMSPTickets } = useTicketsStore.getState();
+    const { initializeMSPTickets, initializeClientTickets } =
+      useTicketsStore.getState();
     const { initializeRoles } = useRolesStore.getState();
 
     let userData = null;
@@ -56,6 +57,8 @@ const useUserStore = create((set, get) => ({
       set({ user: userData });
       if (userType === "tech") {
         await initializeMSPTickets();
+      } else if (userType === "client") {
+        await initializeClientTickets();
       }
     } else {
       console.error("Failed to initialize tech information.");
