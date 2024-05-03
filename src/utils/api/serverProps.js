@@ -31,7 +31,7 @@ export const handleGetClientIntegrations = async (msp, clientId) => {
   const response = await fetch(
     `${dbServiceUrl}/${encodeURIComponent(
       msp
-    )}/clientIntegrations/client?clientId=${clientId}`
+    )}/clientIntegrations/client?clientId=${encodeURIComponent(clientId)}`
   );
   return response.json();
 };
@@ -138,7 +138,9 @@ export const handleGetRoles = async (msp) => {
 
 export const handleGetConversations = async (clientId) => {
   const response = await fetch(
-    `${dbServiceUrl}/conversations/getConversations?userId=${clientId}`
+    `${dbServiceUrl}/conversations/getConversations?userId=${encodeURIComponent(
+      clientId
+    )}`
   );
 
   return response.json();
@@ -146,7 +148,9 @@ export const handleGetConversations = async (clientId) => {
 
 export const handleGetMessages = async (conversationId) => {
   const response = await fetch(
-    `${dbServiceUrl}/getMessages?conversationId=${conversationId}`
+    `${dbServiceUrl}/getMessages?conversationId=${encodeURIComponent(
+      conversationId
+    )}`
   );
   return response.json();
 };
@@ -161,9 +165,19 @@ export const handleGetMSPTickets = async (msp) => {
   return response.json();
 };
 
+export const handleGetClientTickets = async (clientId) => {
+  const response = await fetch(
+    `${dbServiceUrl}/supportTickets/byClientsUserId?clientsUserId=${encodeURIComponent(
+      clientId
+    )}`
+  );
+
+  return response.json();
+};
+
 export const handleGetMSPs = async (customDomain) => {
   const response = await fetch(
-    `${dbServiceUrl}/msp?customDomain=${customDomain}`
+    `${dbServiceUrl}/msp?customDomain=${encodeURIComponent(customDomain)}`
   );
   return response.json();
 };

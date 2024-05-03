@@ -3,6 +3,7 @@ import useTicketsStore from "../../interaction/tickets/ticketsStore";
 import { validateTicketForm } from "@/utils/formValidations";
 import useTicketConversationsStore from "../conversations/ticketConversationsStore";
 import useUserStore from "../../user/userStore";
+import useMspStore from "../../auth/msp/mspStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
@@ -251,6 +252,7 @@ const useFormsStore = create((set, get) => ({
     const userStore = useUserStore.getState();
 
     const { addTicket } = useTicketsStore.getState();
+    const { userType } = useMspStore.getState();
     const {
       currentTicketTitle,
       currentTicketCWCompanyId,
@@ -295,32 +297,37 @@ const useFormsStore = create((set, get) => ({
         const encodedDomain = encodeURIComponent(
           userStore.user.mspCustomDomain
         );
-        const ticketResponse = await fetch(
-          `${connectWiseServiceUrl}/createTicket?mspCustomDomain=${encodedDomain}`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              title: currentTicketTitle,
-              description: currentTicketDescription,
-              categoryName: currentTicketCategory,
-              categoryId: currentTicketCategoryId,
-              subCategoryName: currentTicketSubCategory,
-              subCategoryId: currentTicketSubCategoryId,
-              durationToResolve: currentTicketDurationToResolve,
-              priority: currentTicketPriority,
-              priorityId: currentTicketPriorityId,
-              impact: currentTicketImpact,
-              severity: currentTicketSeverity,
-              tier: currentTicketTier,
-              name: currentTicketName,
-              emailId: currentTicketEmailId,
-              phoneNumber: currentTicketPhoneNumber,
-              connectWiseCompanyId: currentTicketCWCompanyId,
-              technicianId: userStore.user.id,
-            }),
-          }
-        );
+
+        let url = `${connectWiseServiceUrl}/createTicket?mspCustomDomain=${encodedDomain}`;
+        let body = {
+          title: currentTicketTitle,
+          description: currentTicketDescription,
+          categoryName: currentTicketCategory,
+          categoryId: currentTicketCategoryId,
+          subCategoryName: currentTicketSubCategory,
+          subCategoryId: currentTicketSubCategoryId,
+          durationToResolve: currentTicketDurationToResolve,
+          priority: currentTicketPriority,
+          priorityId: currentTicketPriorityId,
+          impact: currentTicketImpact,
+          severity: currentTicketSeverity,
+          tier: currentTicketTier,
+          name: currentTicketName,
+          emailId: currentTicketEmailId,
+          phoneNumber: currentTicketPhoneNumber,
+          connectWiseCompanyId: currentTicketCWCompanyId,
+        };
+
+        if (userType === "client") {
+          url += `&userId=${userStore.user.id}`;
+        } else if (userType === "tech") {
+          body.technicianId = userStore.user.id;
+        }
+        const ticketResponse = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
 
         if (ticketResponse.status === 200) {
           const ticket = await ticketResponse.json();

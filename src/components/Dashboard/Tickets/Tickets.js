@@ -3,9 +3,11 @@
 import useUiStore from "@/utils/store/ui/uiStore";
 import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
 import { FiRefreshCcw } from "react-icons/fi";
+import useMspStore from "@/utils/store/auth/msp/mspStore";
 
 const Tickets = ({}) => {
   const { openTickets } = useUiStore();
+  const { userType } = useMspStore();
   const {
     tickets,
     ticketStatus,
@@ -15,7 +17,10 @@ const Tickets = ({}) => {
     handleTicketMode,
     handleGetTicketStatus,
     initializeMSPTickets,
+    initializeClientTickets,
   } = useTicketsStore();
+
+  console.log(tickets);
 
   return (
     <div
@@ -44,7 +49,16 @@ const Tickets = ({}) => {
           Closed
         </button>
       </div>
-      <div onClick={initializeMSPTickets} className="pt-4 flex justify-end ">
+      <div
+        onClick={() => {
+          if (userType === "tech") {
+            initializeMSPTickets();
+          } else if (userType === "client") {
+            initializeClientTickets();
+          }
+        }}
+        className="pt-4 flex justify-end "
+      >
         <div className="flex items-center gap-2 cursor-pointer">
           <p className="text-sm italic">Refresh your tickets</p>
           <FiRefreshCcw size={15} />
