@@ -7,9 +7,11 @@ import Link from "next/link";
 import useUserStore from "@/utils/store/user/userStore";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import useMspStore from "@/utils/store/auth/msp/mspStore";
 
 const Cards = () => {
   const { user } = useUserStore();
+  const { userType } = useMspStore();
   const { openAdmin, handleHistoryMenu } = useUiStore();
   const router = useRouter();
 
@@ -91,9 +93,11 @@ const Cards = () => {
                   Select Company
                 </option>
                 {clientList
-                  .filter(
-                    (client) =>
-                      client.connectWiseCompanyId === user?.connectWiseCompanyId
+                  .filter((client) =>
+                    userType === "tech"
+                      ? true
+                      : client.connectWiseCompanyId ===
+                        user?.connectWiseCompanyId
                   )
                   .map((client, index) => {
                     const { id, name, connectWiseClientsAutopilotDbId } =

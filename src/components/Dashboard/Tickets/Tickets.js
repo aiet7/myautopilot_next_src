@@ -20,7 +20,6 @@ const Tickets = ({}) => {
     initializeClientTickets,
   } = useTicketsStore();
 
-  console.log(tickets);
 
   return (
     <div
