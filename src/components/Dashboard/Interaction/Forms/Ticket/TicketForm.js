@@ -2,8 +2,11 @@ import useFormsStore from "@/utils/store/interaction/forms/formsStore";
 import TicketOnboarding from "./TicketOnboarding";
 
 import { useEffect } from "react";
+import useMspStore from "@/utils/store/auth/msp/mspStore";
 
 const TicketForm = ({ itemId }) => {
+  const { userType } = useMspStore();
+
   const {
     loading,
     formError,
@@ -17,10 +20,47 @@ const TicketForm = ({ itemId }) => {
     handleCreateTicketCategories();
   }, []);
 
-
   return (
     <div>
       <div className="flex  flex-col gap-2">
+        {userType === "tech" && (
+          <div>
+            <span className="font-bold">Company</span>
+            <select
+              className="h-[50px] border outline-blue-500 w-full px-3"
+              value={ticket.currentTicketCWCompanyId || ""}
+              onChange={(e) => {
+                setTicket(
+                  "currentTicketCWCompanyId",
+                  e.target.value,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null
+                );
+              }}
+            >
+              <option value="" disabled selected>
+                Select Company
+              </option>
+              {ticket.currentCompanies?.map((company) => {
+                const { name, connectWiseCompanyId } = company;
+                return (
+                  <option
+                    key={connectWiseCompanyId}
+                    value={connectWiseCompanyId}
+                  >
+                    {name}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+        )}
         <div>
           <span className="font-bold">Ticket Name</span>
           <p className="text-xs text-red-500">{formError}</p>

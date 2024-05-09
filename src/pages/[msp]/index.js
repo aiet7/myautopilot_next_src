@@ -101,13 +101,13 @@ const MSPPage = ({}) => {
             </div>
             <div className="flex flex-col gap-4 w-full">
               {!current2FA && (
-                <div className="flex items-center justify-between text-xs font-bold">
+                <div className="flex items-center justify-between  font-bold">
                   {userType === "tech" ? (
                     <p>Technician Login</p>
                   ) : (
                     <p>Client Login</p>
                   )}
-                  <button type="button" onClick={handleSwitchMspLoginFlow}>
+                  <button className="hover:underline" type="button" onClick={handleSwitchMspLoginFlow}>
                     Switch
                   </button>
                 </div>

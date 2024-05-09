@@ -160,7 +160,7 @@ const Board = () => {
             }
             className="border rounded-lg shadow-lg p-2 cursor-pointer text-black"
           >
-            <option value="Select Board" disabled selected>
+            <option value="" disabled selected>
               Select Board
             </option>
 
