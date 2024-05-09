@@ -5,6 +5,8 @@ import useTicketConversationsStore from "../conversations/ticketConversationsSto
 import useUserStore from "../../user/userStore";
 import useMspStore from "../../auth/msp/mspStore";
 
+import { handleGetManageDBClients } from "@/utils/api/serverProps";
+
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 
@@ -18,8 +20,9 @@ const useFormsStore = create((set, get) => ({
   },
 
   ticket: {
+    currentCompanies: null,
     currentTicketTitle: "",
-    currentTicketCWCompanyId: 250,
+    currentTicketCWCompanyId: "",
     currentTicketDescription: "",
 
     currentTicketCategory: "",
@@ -161,7 +164,7 @@ const useFormsStore = create((set, get) => ({
     }
   },
 
-  handleCreateTicketProcess: (responseBody) => {
+  handleCreateTicketProcess: async (responseBody) => {
     const userStore = useUserStore.getState();
     const { handleAddForm } = useTicketConversationsStore.getState();
     const {
@@ -182,6 +185,10 @@ const useFormsStore = create((set, get) => ({
       phoneNumber,
     } = responseBody;
 
+    const companies = await handleGetManageDBClients(
+      userStore.user.mspCustomDomain
+    );
+
     let newEmployeeFirstName = "";
     let newEmployeeLastName = "";
 
@@ -194,6 +201,7 @@ const useFormsStore = create((set, get) => ({
     set((state) => ({
       ticket: {
         ...state.ticket,
+        currentCompanies: companies || null,
         currentTicketCategoryId: categoryId || null,
         currentTicketSubCategoryId: subCategoryId || null,
         currentTicketPriorityId: priorityId || null,
@@ -318,11 +326,13 @@ const useFormsStore = create((set, get) => ({
           connectWiseCompanyId: currentTicketCWCompanyId,
         };
 
-        if (userType === "client") {
-          url += `&userId=${userStore.user.id}`;
-        } else if (userType === "tech") {
+        if (userType === "tech") {
           body.technicianId = userStore.user.id;
+          body.connectWiseCompanyId = currentTicketCWCompanyId;
+        } else if (userType === "client") {
+          url += `&userId=${userStore.user.id}`;
         }
+
         const ticketResponse = await fetch(url, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -387,7 +397,10 @@ const useFormsStore = create((set, get) => ({
               }));
             }
           }
-          const aiContent = `Ticket Created!\n\nID: ${id}\n\nTitle: ${currentTicketTitle}\n\nDescription: ${currentTicketDescription}\n\nCategory: ${currentTicketCategory}\n\nSubcategory: ${currentTicketSubCategory}\n\nPriority: ${currentTicketPriority}\n\nSeverity: ${currentTicketSeverity}\n\nImpact: ${currentTicketImpact}\n\nTier: ${currentTicketTier}\n\nConnectWise Company ID: ${currentTicketCWCompanyId}\n\nName: ${currentTicketName}\n\nEmail: ${currentTicketEmailId}\n\nPhone: ${currentTicketPhoneNumber}.`;
+          const aiContent = `Ticket Created!\n\nID: ${id}\n\nTitle: ${currentTicketTitle}\n\nDescription: ${currentTicketDescription}\n\nCategory: ${currentTicketCategory}\n\nSubcategory: ${currentTicketSubCategory}\n\nPriority: ${currentTicketPriority}\n\nSeverity: ${currentTicketSeverity}\n\nImpact: ${currentTicketImpact}\n\nTier: ${currentTicketTier}\n\n${
+            currentTicketCWCompanyId &&
+            `ConnectWise Company ID: ${currentTicketCWCompanyId}`
+          } \n\nName: ${currentTicketName}\n\nEmail: ${currentTicketEmailId}\n\nPhone: ${currentTicketPhoneNumber}.`;
           handleAddAssistantMessage(aiContent, "ticketForm");
           addTicket({
             ticketId: id,
@@ -440,8 +453,9 @@ const useFormsStore = create((set, get) => ({
       },
 
       ticket: {
+        currentCompanies: null,
         currentTicketTitle: "",
-        currentTicketCWCompanyId: 250,
+        currentTicketCWCompanyId: "",
         currentTicketDescription: "",
 
         currentTicketCategory: "",
