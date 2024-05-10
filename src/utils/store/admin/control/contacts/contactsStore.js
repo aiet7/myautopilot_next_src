@@ -104,6 +104,7 @@ const useContactsStore = create((set, get) => ({
 
       if (response.status === 200) {
         const allTickets = await response.json();
+        console.log(allTickets)
         set({
           contactAllTickets: allTickets,
           currentView: "ContactAllTickets",

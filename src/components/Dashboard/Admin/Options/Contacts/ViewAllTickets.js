@@ -6,6 +6,7 @@ const ViewAllTickets = () => {
   
   const { contactAllTickets } = useContactsStore();
 
+
   return (
     <div className="flex flex-col text-xl overflow-hidden">
       <div className="flex flex-col gap-7 text-xl overflow-hidden">
