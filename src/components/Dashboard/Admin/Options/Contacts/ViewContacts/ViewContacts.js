@@ -24,6 +24,7 @@ const ViewContacts = () => {
         return <ViewActiveContacts />;
     }
   };
+
   return (
     <div className="flex flex-col text-xl overflow-hidden">
       {addContact && <AddContact />}

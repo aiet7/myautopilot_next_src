@@ -4,7 +4,7 @@ import useCompaniesStore from "@/utils/store/admin/control/companies/companiesSt
 
 const ViewEmployeeTickets = () => {
   const { companyEmployeeTickets } = useCompaniesStore();
-
+  
   return (
     <div className="flex flex-col text-xl overflow-hidden">
       <div className="flex flex-col gap-7 text-xl overflow-hidden">
@@ -20,75 +20,47 @@ const ViewEmployeeTickets = () => {
                 <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
                   <thead className="dark:text-white dark:bg-gray-700 sticky top-0 text-lg text-black/60 bg-[#F5F8FA]">
                     <tr className="">
-                      <th className="p-2 border-l border-t border-b"></th>
+                      <th className="p-2 border-l border-t border-b">
+                        Ticket ID
+                      </th>
                       <th className="p-2 border-l border-t border-b border-r">
-                        Name
+                        Title
                       </th>
                       <th className="p-2 border-t border-b border-r">
-                        Email Address
+                        Category
                       </th>
                       <th className="p-2 border-t border-b border-r">
-                        Phone Number
+                        Subcategory
                       </th>
-                      <th className="p-2 border-t border-b border-r">Roles</th>
+                      <th className="p-2 border-t border-b border-r">Status</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {companyEmployees?.map((employee) => {
+                    {companyEmployeeTickets?.map((ticket) => {
                       const {
                         id,
-                        firstName,
-                        lastName,
-                        email,
-                        phoneNumber,
-                        roleId,
-                      } = employee;
+                        ticketId,
+                        title,
+                        category,
+                        subcategory,
+                        closed,
+                      } = ticket;
                       return (
                         <tr key={id}>
                           <td className="p-2 truncate border-l  border-b">
-                            <button
-                              onClick={() =>
-                                handleSaveCompanyEmployee(
-                                  user?.mspCustomDomain,
-                                  id
-                                )
-                              }
-                              className="hover:underline text-blue-500"
-                            >
-                              Save
-                            </button>
+                            {ticketId}
                           </td>
                           <td className="p-2 truncate border-l  border-r border-b">
-                            {firstName + " " + lastName}
+                            {title}
                           </td>
                           <td className="p-2 truncate border-r border-b">
-                            {email}
+                            {category}
                           </td>
                           <td className="p-2 truncate border-r border-b">
-                            {phoneNumber}
+                            {subcategory}
                           </td>
                           <td className="p-2 truncate border-r border-b">
-                            <div className="flex flex-col">
-                              <select
-                                value={roleId}
-                                onChange={(e) =>
-                                  setSelectedCompanyEmployee(
-                                    id,
-                                    "roleId",
-                                    e.target.value
-                                  )
-                                }
-                              >
-                                {companyEmployeeRoleOptions.map((role) => {
-                                  const { id, name } = role;
-                                  return (
-                                    <option key={id} value={id}>
-                                      {name}
-                                    </option>
-                                  );
-                                })}
-                              </select>
-                            </div>
+                            {closed ? "Closed" : "Open"}
                           </td>
                         </tr>
                       );
