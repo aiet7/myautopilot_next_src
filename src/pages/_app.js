@@ -2,15 +2,13 @@
 
 import "../styles/global.css";
 import Head from "next/head";
-import Script from "next/script";
 import Loading from "../components/Loading.js";
 import { useEffect } from "react";
 import Router, { useRouter } from "next/router";
 import useAuthStore from "@/utils/store/auth/authStore";
 import { FaSpinner } from "react-icons/fa";
 import { Montserrat } from "next/font/google";
-import useMspStore from "@/utils/store/auth/msp/mspStore";
-import useUserStore from "@/utils/store/user/userStore";
+import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
 
 const montserrat = Montserrat({
   weight: ["400", "700"],
@@ -80,10 +78,7 @@ function MyApp({ Component, pageProps }) {
             __html: `window.userpilotSettings = {token: "NX-36eaaed1"};`,
           }}
         />
-        <script
-          src="https://js.userpilot.io/sdk/latest.js"
-          async
-        />
+        <script src="https://js.userpilot.io/sdk/latest.js" async />
       </Head>
       {loading ? (
         <Loading />
@@ -95,6 +90,12 @@ function MyApp({ Component, pageProps }) {
       ) : (
         <Component {...pageProps} className={montserrat.className} />
       )}
+      <ProgressBar
+        height="3px"
+        options={{ showSpinner: false }}
+        shallowRouting
+        color="#1e40af"
+      />
     </>
   );
 }
