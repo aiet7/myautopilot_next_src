@@ -83,7 +83,7 @@ const ClientLoginPage = () => {
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        handleClientCheck();
+                        handleClientCheck(router.push);
                       }
                     }}
                     type="email"
@@ -91,7 +91,7 @@ const ClientLoginPage = () => {
                     className="w-full p-2 border border-gray-300 bg-white text-black"
                   />
                   <button
-                    onClick={() => handleClientCheck()}
+                    onClick={() => handleClientCheck(router.push)}
                     type="button"
                     className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4"
                   >

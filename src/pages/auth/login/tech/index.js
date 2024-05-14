@@ -22,7 +22,6 @@ const TechLoginPage = () => {
     if (typeof window !== "undefined") {
       setHeight(window.innerHeight);
 
-   
       const handleResize = () => setHeight(window.innerHeight);
       window.addEventListener("resize", handleResize);
       return () => {
@@ -78,7 +77,7 @@ const TechLoginPage = () => {
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        handleTechnicianCheck();
+                        handleTechnicianCheck(router.push);
                       }
                     }}
                     type="email"
@@ -86,7 +85,7 @@ const TechLoginPage = () => {
                     className="w-full p-2 border border-gray-300 bg-white text-black"
                   />
                   <button
-                    onClick={() => handleTechnicianCheck()}
+                    onClick={() => handleTechnicianCheck(router.push)}
                     type="button"
                     className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4"
                   >

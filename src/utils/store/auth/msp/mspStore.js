@@ -261,7 +261,6 @@ const useMspStore = create((set, get) => ({
   },
 
   handleSignupProgression: async (navigator) => {
-   
     const {
       msp,
       errorMessage,
@@ -319,7 +318,7 @@ const useMspStore = create((set, get) => ({
         techInfo.password !== ""
       ) {
         const tech = await handleSignupTechnician();
-        if (tech && tech.id ) {
+        if (tech && tech.id) {
           set({
             successMessage: true,
             errorMessage: {
@@ -357,7 +356,7 @@ const useMspStore = create((set, get) => ({
     }
   },
 
-  handleTechnicianCheck: async () => {
+  handleTechnicianCheck: async (navigator) => {
     const { loginInputs, errorMessage } = get();
     const { techInfo } = loginInputs;
     if (techInfo.email === "") {
@@ -380,14 +379,18 @@ const useMspStore = create((set, get) => ({
 
       if (response.ok) {
         const mspList = await response.json();
-        set({
-          mspDomains: mspList,
-          errorMessage: {
-            ...errorMessage,
-            emptyFields: false,
-            emailCheck: false,
-          },
-        });
+        if (mspList.length === 1) {
+          navigator(`/${mspList[0].mspCustomDomain}`);
+        } else if (mspList.length > 1) {
+          set({
+            mspDomains: mspList,
+            errorMessage: {
+              ...errorMessage,
+              emptyFields: false,
+              emailCheck: false,
+            },
+          });
+        }
       } else {
         set({
           errorMessage: {
@@ -402,7 +405,7 @@ const useMspStore = create((set, get) => ({
     }
   },
 
-  handleClientCheck: async () => {
+  handleClientCheck: async (navigator) => {
     const { loginInputs, errorMessage } = get();
     const { clientInfo } = loginInputs;
 
@@ -426,14 +429,19 @@ const useMspStore = create((set, get) => ({
 
       if (response.ok) {
         const mspList = await response.json();
-        set({
-          mspDomains: mspList,
-          errorMessage: {
-            ...errorMessage,
-            emptyFields: false,
-            emailCheck: false,
-          },
-        });
+
+        if (mspList.length === 1) {
+          navigator(`/${mspList[0].mspCustomDomain}`);
+        } else if (mspList.length > 1) {
+          set({
+            mspDomains: mspList,
+            errorMessage: {
+              ...errorMessage,
+              emptyFields: false,
+              emailCheck: false,
+            },
+          });
+        }
       } else {
         set({
           errorMessage: {
