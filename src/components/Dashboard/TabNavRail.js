@@ -40,13 +40,13 @@ const TabNavRail = ({}) => {
   const handleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
-  
   return (
     <div className="dark:bg-[#373737] dark:border-white/10 bg-[#eaf1fb] flex items-center justify-evenly p-3 gap-4 transition-all duration-300 ease lg:relative lg:flex-col lg:justify-start lg:border-r lg:border-black/10">
       {((activeTab === "iTAgent" &&
         (activeUIAssistantTab === "Engineer" ||
           activeUIAssistantTab === "Document" ||
-          activeUIAssistantTab === "Tickets")) ||
+          activeUIAssistantTab === "Tickets" ||
+          activeUIAssistantTab === "Queue")) ||
         activeTab === "admin") && (
         <>
           <AiOutlineMenu
@@ -115,7 +115,7 @@ const TabNavRail = ({}) => {
                   : user?.permissions?.clientUserManagement
                   ? "companies"
                   : !user?.permissions?.technicianUserManagement
-                  ? "contacts" 
+                  ? "contacts"
                   : "default"
               );
             }}

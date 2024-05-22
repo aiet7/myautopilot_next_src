@@ -87,7 +87,7 @@ const Cards = () => {
                 onChange={(e) => {
                   setSelectedCompany(e.target.value);
                 }}
-                className="border rounded-lg shadow-lg p-2 cursor-pointer text-black w-full"
+                className="dark:bg-white border rounded-lg shadow-lg p-2 cursor-pointer text-black w-full"
               >
                 <option value="Select Company" disabled selected>
                   Select Company

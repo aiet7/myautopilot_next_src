@@ -114,32 +114,6 @@ const Manage = () => {
               <div className="flex flex-col p-4 gap-6 text-sm">
                 <div className="flex flex-col gap-6 lg:flex-row ">
                   <div className="flex flex-col w-full gap-1">
-                    <p>Client ID</p>
-                    <p className="dark:text-white/60 text-black/60">
-                      Your Client ID that is assigned to you from ConnectWise
-                    </p>
-                    {mspIntegrations?.connectWiseManageIntegration?.clientId ? (
-                      <p className="p-1">
-                        {convertHideIntegrationKeys(
-                          mspIntegrations?.connectWiseManageIntegration
-                            ?.clientId
-                        )}
-                      </p>
-                    ) : (
-                      <input
-                        value={integrationInputs.clientId}
-                        onChange={(e) =>
-                          setIntegrationInputs(
-                            "text",
-                            "clientId",
-                            e.target.value
-                          )
-                        }
-                        className="outline outline-1 p-1 "
-                      />
-                    )}
-                  </div>
-                  <div className="flex flex-col w-full gap-1">
                     <p>Public Key</p>
                     <p className="dark:text-white/60 text-black/60">
                       Your generated Public Key that was created via ConnectWise
@@ -160,35 +134,6 @@ const Manage = () => {
                           setIntegrationInputs(
                             "text",
                             "publicKey",
-                            e.target.value
-                          )
-                        }
-                        className="outline outline-1 p-1 "
-                      />
-                    )}
-                  </div>
-                </div>
-                <div className="flex flex-col gap-6 lg:flex-row">
-                  <div className="flex flex-col w-full gap-1">
-                    <p>Company ID</p>
-                    <p className="dark:text-white/60 text-black/60">
-                      Your Company ID that is assigned to you from ConnectWise
-                    </p>
-                    {mspIntegrations?.connectWiseManageIntegration
-                      ?.companyId ? (
-                      <p className="p-1">
-                        {convertHideIntegrationKeys(
-                          mspIntegrations?.connectWiseManageIntegration
-                            ?.companyId
-                        )}
-                      </p>
-                    ) : (
-                      <input
-                        value={integrationInputs.companyId}
-                        onChange={(e) =>
-                          setIntegrationInputs(
-                            "text",
-                            "companyId",
                             e.target.value
                           )
                         }
@@ -225,9 +170,36 @@ const Manage = () => {
                     )}
                   </div>
                 </div>
+
+                <div className="flex flex-col w-full gap-1">
+                  <p>Company ID</p>
+                  <p className="dark:text-white/60 text-black/60">
+                    Your Company ID that is assigned to you from ConnectWise
+                  </p>
+                  {mspIntegrations?.connectWiseManageIntegration?.companyId ? (
+                    <p className="p-1">
+                      {convertHideIntegrationKeys(
+                        mspIntegrations?.connectWiseManageIntegration?.companyId
+                      )}
+                    </p>
+                  ) : (
+                    <input
+                      value={integrationInputs.companyId}
+                      onChange={(e) =>
+                        setIntegrationInputs(
+                          "text",
+                          "companyId",
+                          e.target.value
+                        )
+                      }
+                      className="outline outline-1 p-1 "
+                    />
+                  )}
+                </div>
+
                 {!mspIntegrations?.connectWiseManageIntegrator && (
                   <>
-                    {mspIntegrations?.connectWiseManageIntegration?.clientId ? (
+                    {mspIntegrations?.connectWiseManageIntegration?.publicKey ? (
                       <button
                         onClick={() =>
                           handleRemoveManageKeys(user?.mspCustomDomain)

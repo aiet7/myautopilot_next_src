@@ -12,6 +12,7 @@ const ViewActiveEmployees = () => {
     errorMessage,
     addEmployee,
     activeEmployees,
+    employeesTierOptions,
     employeesRoleOptions,
     setSelectedEmployee,
     setAddEmployee,
@@ -50,6 +51,7 @@ const ViewActiveEmployees = () => {
                       </th>
 
                       <th className="p-2 border-t border-b border-r">Roles</th>
+                      <th className="p-2 border-t border-b border-r">Tier</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -61,6 +63,7 @@ const ViewActiveEmployees = () => {
                         lastName,
                         phoneNumber,
                         roleId,
+                        tierLevel,
                       } = employee;
                       return (
                         <tr key={id}>
@@ -109,6 +112,27 @@ const ViewActiveEmployees = () => {
                                     </option>
                                   );
                                 })}
+                              </select>
+                            </div>
+                          </td>
+                          <td className="p-2 truncate border-r border-b">
+                            <div className="flex flex-col">
+                              <select
+                                value={tierLevel}
+                                onChange={(e) =>
+                                  setSelectedEmployee(
+                                    id,
+                                    "tierLevel",
+                                    e.target.value,
+                                    true
+                                  )
+                                }
+                              >
+                                {employeesTierOptions.map((tier) => (
+                                  <option key={tier} value={tier}>
+                                    {tier}
+                                  </option>
+                                ))}
                               </select>
                             </div>
                           </td>
