@@ -29,7 +29,7 @@ const AssistantRail = dynamic(() =>
 const DashboardPage = ({}) => {
   const session = Cookies.get("session_token");
   const router = useRouter();
-
+  
   const { initializeApp } = useInitializeAppStore();
   const { initializeUser } = useUserStore();
   const { initializeUserType } = useMspStore();

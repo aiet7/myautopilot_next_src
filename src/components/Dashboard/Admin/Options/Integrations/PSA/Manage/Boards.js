@@ -53,6 +53,8 @@ const Board = () => {
 
   const boardData = customBoard ? customBoardMerge : connectwiseMerge;
 
+  console.log(boardData)
+
   useEffect(() => {
     if (
       boardData &&
@@ -158,7 +160,7 @@ const Board = () => {
             onChange={(e) =>
               handleGetBoardDetails(e.target.value, user?.mspCustomDomain)
             }
-            className="border rounded-lg shadow-lg p-2 cursor-pointer text-black"
+            className="dark:bg-white border rounded-lg shadow-lg p-2 cursor-pointer text-black"
           >
             <option value="" disabled selected>
               Select Board

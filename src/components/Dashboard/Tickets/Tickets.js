@@ -88,9 +88,8 @@ const Tickets = ({}) => {
             const { id, category, subcategory, ticketId } = ticket;
             return (
               <div
-                onClick={() => handleTicketMode("Support", ticketId)}
                 key={ticketId}
-                className="dark:bg-white/30 dark:text-white dark:border-white/20 cursor-pointer text-sm flex flex-col justify-between gap-1 border rounded-md text-black bg-white px-2 py-3 mb-2"
+                className="dark:bg-white/30 dark:text-white dark:border-white/20  text-sm flex flex-col justify-between gap-1 border rounded-md text-black bg-white px-2 py-3 mb-2"
               >
                 <div className="flex justify-between items-center">
                   <p className="break-words whitespace-pre-wrap">

@@ -10,8 +10,6 @@ const ViewEmployees = () => {
     successMessage,
     errorMessage,
     employees,
-    employeesTierOptions,
-    setSelectedEmployee,
     handleSaveEmployee,
   } = useEmployeesStore();
 
@@ -39,7 +37,6 @@ const ViewEmployees = () => {
                       <th className="p-2 border-t border-b border-r">
                         Phone Number
                       </th>
-                      <th className="p-2 border-t border-b border-r">Tier</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -53,7 +50,7 @@ const ViewEmployees = () => {
                         firstName,
                         lastName,
                         connectWiseMembersId,
-                        tier,
+                       
                       } = employee;
                       return (
                         <tr key={id}>
@@ -80,26 +77,7 @@ const ViewEmployees = () => {
                           <td className="p-2 truncate border-r border-b">
                             {mobilePhone || officePhone}
                           </td>
-                          <td className="p-2 truncate border-r border-b">
-                            <div className="flex flex-col">
-                              <select
-                                value={tier}
-                                onChange={(e) =>
-                                  setSelectedEmployee(
-                                    id,
-                                    "tier",
-                                    e.target.value
-                                  )
-                                }
-                              >
-                                {employeesTierOptions.map((tier) => (
-                                  <option key={tier} value={tier}>
-                                    {tier}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                          </td>
+                          
                         </tr>
                       );
                     })}

@@ -1,6 +1,5 @@
 import { create } from "zustand";
 
-
 const isBrowser = typeof window !== "undefined";
 const initialWidth = isBrowser ? window.innerWidth : 1023;
 
@@ -13,9 +12,8 @@ const useUiStore = create((set, get) => ({
   openDocs: initialWidth > 1023 ? true : false,
   openAdmin: initialWidth > 1023 ? true : false,
   openTickets: initialWidth > 1023 ? true : false,
+  openQueue: initialWidth > 1023 ? true : false,
   openSettings: false,
-
- 
 
   setActiveTab: (tab) => set({ activeTab: tab }),
   setHoverTab: (tab) => set({ hoverTab: tab }),
@@ -31,7 +29,7 @@ const useUiStore = create((set, get) => ({
   handleToggleSettings: (toggle) => set({ openSettings: toggle }),
 
   handleHistoryMenu: () => {
-    const { openHistory, openDocs, openAdmin, openTickets } = get();
+    const { openHistory, openDocs, openAdmin, openTickets, openQueue } = get();
 
     if (openHistory) {
       set({ openHistory: false });
@@ -46,6 +44,9 @@ const useUiStore = create((set, get) => ({
     if (openTickets) {
       set({ openTickets: false });
     } else set({ openTickets: true });
+    if (openQueue) {
+      set({ openQueue: false });
+    } else set({ openQueue: true });
   },
 
   handleAssistantMenu: () => {

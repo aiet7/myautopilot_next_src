@@ -5,13 +5,16 @@ import { BsFiletypeDoc } from "react-icons/bs";
 import { FaMoneyBillAlt } from "react-icons/fa";
 import { AiFillTool } from "react-icons/ai";
 import { MdScreenShare, MdPassword, MdPolicy } from "react-icons/md";
+import { BsPersonWorkspace } from "react-icons/bs";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 
 import { IoTicketSharp } from "react-icons/io5";
 import useIntegrationsStore from "@/utils/store/admin/control/integrations/integrationsStore";
+import useMspStore from "@/utils/store/auth/msp/mspStore";
 
 const AssistantRail = ({}) => {
+  const { userType } = useMspStore();
   const { mspIntegrations } = useIntegrationsStore();
   const { openAssistant } = useUiStore();
   const {
@@ -42,6 +45,24 @@ const AssistantRail = ({}) => {
           } else return;
         }}
       />
+      {userType === "tech" && (
+        <BsPersonWorkspace
+          className={`${
+            mspIntegrations?.connectWiseManageIntegrator
+              ? "dark:hover:bg-white/20 hover:bg-black/20 cursor-pointer"
+              : "dark:text-white/10 text-black/20"
+          } ${
+            activeAssistantTab === "Queue" && "text-blue-800"
+          } rounded-full px-2 outline-none`}
+          size={35}
+          onClick={() => {
+            if (mspIntegrations?.connectWiseManageIntegrator) {
+              handleAssistantTabChange("Queue");
+              handleUIAssistantTabChange("Queue");
+            } else return;
+          }}
+        />
+      )}
 
       <BsFiletypeDoc
         className={`dark:text-white/10 text-black/20 ${

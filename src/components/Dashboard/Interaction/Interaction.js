@@ -5,8 +5,6 @@ import { useEffect } from "react";
 import { HiOutlineArrowSmallDown } from "react-icons/hi2";
 import { FaSpinner } from "react-icons/fa";
 
-import Default from "./Mode/Default.js";
-
 import useUiStore from "@/utils/store/ui/uiStore.js";
 import useFormsStore from "@/utils/store/interaction/forms/formsStore.js";
 import useInteractionStore from "@/utils/store/interaction/interactionsStore.js";
@@ -14,11 +12,14 @@ import useInteractionStore from "@/utils/store/interaction/interactionsStore.js"
 import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
 
 import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore.js";
-import Support from "./Mode/Support.js";
 import Input from "./Input.js";
+import TicketCreation from "./Interfaces/TicketCreation.js";
+import EngineerChat from "./Interfaces/EngineerChat.js";
+import QueueManagement from "./Interfaces/TicketWorkspace/TicketWorkspace.js";
 
 const Interaction = ({}) => {
   const {
+    openQueue,
     openTickets,
     openDocs,
     openHistory,
@@ -61,18 +62,19 @@ const Interaction = ({}) => {
           openAssistant && handleAssistantMenu(false);
         }
       }}
-      className={`relative flex flex-col h-full w-full ${
-        (openDocs || openHistory || openTickets) &&
+      className={`relative flex flex-col h-full w-full  ${
+        (openDocs || openHistory || openTickets || openQueue) &&
         openAssistant &&
         "xl:mr-[350px]"
       }  ${
-        ((openDocs || openHistory || openTickets) &&
+        ((openDocs || openHistory || openTickets || openQueue) &&
           (activeUIAssistantTab === "Engineer" ||
             activeUIAssistantTab === "Document" ||
-            activeUIAssistantTab === "Tickets") &&
+            activeUIAssistantTab === "Tickets" ||
+            activeUIAssistantTab === "Queue") &&
           "lg:opacity-100 opacity-5 xl:ml-[350px]") ||
         (openAssistant && "lg:opacity-100 opacity-5 xl:mr-[350px]")
-      } dark:bg-black transition-all duration-300 ease bg-white`}
+      } dark:bg-black transition-all duration-300 ease bg-white `}
     >
       {!isAtBottom && isOverflowed && activeTicketMode === "Default" && (
         <button
@@ -82,11 +84,10 @@ const Interaction = ({}) => {
           <HiOutlineArrowSmallDown className="m-1" size={18} />
         </button>
       )}
-      {activeTicketMode === "Support" && activeUIAssistantTab === "Tickets" ? (
-        <Support />
-      ) : (
-        <Default />
-      )}
+
+      {activeUIAssistantTab === "Tickets" && <TicketCreation />}
+      {activeUIAssistantTab === "Engineer" && <EngineerChat />}
+      {activeUIAssistantTab === "Queue" && <QueueManagement />}
       <div className="px-4 py-2">
         {isServerError ? (
           <p className="text-red-600 text-xs">Server Error, try again please</p>

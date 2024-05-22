@@ -92,6 +92,7 @@ const useEmployeesStore = create((set, get) => ({
       },
     }));
   },
+
   handleSaveActiveEmployee: async (mspCustomDomain, employeeId) => {
     const { activeEmployees } = get();
 
@@ -109,18 +110,19 @@ const useEmployeesStore = create((set, get) => ({
           body: JSON.stringify({
             email: employeeToUpdate.email,
             roleId: employeeToUpdate.roleId,
+            tierLevel: employeeToUpdate.tierLevel,
           }),
         }
       );
 
       if (response.status === 200) {
-        console.log("Role Updated!");
+        console.log("Role And Tier Updated!");
         set({
           successMessage: true,
           errorMessage: false,
         });
       } else {
-        console.log("Role Updated Failed!");
+        console.log("Role And Tier Updated Failed!");
         set({
           successMessage: false,
           errorMessage: true,

@@ -71,7 +71,6 @@ const useManageStore = create((set, get) => ({
     connectWiseManageIntegrator: false,
     microsoftGraphIntegrator: false,
     emailIntegrator: false,
-    clientId: "",
     companyId: "",
     publicKey: "",
     privateKey: "",
@@ -719,6 +718,7 @@ const useManageStore = create((set, get) => ({
       emailIntegrator,
       ...connectWiseManageIntegration
     } = integrationInputs;
+
     try {
       const response = await fetch(
         `${dbServiceUrl}/${mspCustomDomain}/integrations/update`,
@@ -774,7 +774,6 @@ const useManageStore = create((set, get) => ({
           body: JSON.stringify({
             mspCustomDomain: mspCustomDomain,
             connectWiseManageIntegration: {
-              clientId: "",
               companyId: "",
               publicKey: "",
               privateKey: "",
@@ -914,7 +913,6 @@ const useManageStore = create((set, get) => ({
           body: JSON.stringify({
             mspCustomDomain: mspCustomDomain,
             connectWiseManageIntegration: {
-              clientId: "",
               companyId: "",
               publicKey: "",
               privateKey: "",
@@ -1745,7 +1743,6 @@ const useManageStore = create((set, get) => ({
         connectWiseManageIntegrator: false,
         microsoftGraphIntegrator: false,
         emailIntegrator: false,
-        clientId: "",
         companyId: "",
         publicKey: "",
         privateKey: "",
