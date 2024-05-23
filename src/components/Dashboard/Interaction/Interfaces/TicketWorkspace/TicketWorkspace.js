@@ -34,7 +34,7 @@ const TicketWorkspace = () => {
       };
     }
   }, []);
-
+  
   const renderComponent = () => {
     switch (option) {
       case "MyActivities":
@@ -62,7 +62,7 @@ const TicketWorkspace = () => {
                     handleShowMyActivities(user?.mspCustomDomain, user?.id)
                   }
                   className={`${
-                    option === "MyActivities" && "bg-blue-400"
+                    option === "MyActivities" && "bg-red-700"
                   } hover:bg-blue-500 border border-white/30 bg-blue-800 w-[125px] py-1 text-white`}
                 >
                   My Activites
@@ -70,7 +70,7 @@ const TicketWorkspace = () => {
                 <button
                   onClick={() => handleShowAllActivities(user?.mspCustomDomain)}
                   className={`${
-                    option === "AllActivities" && "bg-blue-400"
+                    option === "AllActivities" && "bg-red-700"
                   } hover:bg-blue-500 border border-white/30 bg-blue-800 w-[125px] py-1 text-white`}
                 >
                   All Activities
@@ -80,7 +80,7 @@ const TicketWorkspace = () => {
                     handleShowAllQueueTickets(user?.mspCustomDomain)
                   }
                   className={`${
-                    option === "AllQueueTickets" && "bg-blue-400"
+                    option === "AllQueueTickets" && "bg-red-700"
                   } hover:bg-blue-500 border border-white/30 bg-blue-800 w-[125px] py-1 text-white`}
                 >
                   All Tickets
@@ -94,7 +94,7 @@ const TicketWorkspace = () => {
                     )
                   }
                   className={`${
-                    option === "MyQueueTicket" && "bg-blue-400"
+                    option === "MyQueueTicket" && "bg-red-700"
                   } hover:bg-blue-500 border border-white/30 bg-blue-800 w-[125px] py-1 text-white`}
                 >
                   Work On Ticket
