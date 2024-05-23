@@ -12,7 +12,7 @@ const Troubleshoot = () => {
       <p className="text-lg font-bold px-2">Troubleshooting Guide</p>
       <div
         className={`${
-          !isMobile && "overflow-y-auto max-h-[395px] scrollbar-thin"
+          !isMobile && "overflow-y-auto max-h-[450px] scrollbar-thin"
         }`}
       >
         {troubleshootMessage ? (

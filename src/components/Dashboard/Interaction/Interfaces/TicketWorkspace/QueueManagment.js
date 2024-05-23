@@ -65,7 +65,7 @@ const QueueManagment = () => {
                     </div>
                     <div>
                       <span className="font-bold">Description</span>
-                      <input
+                      <textarea
                         value={myQueueTicket?.ticketInformation || ""}
                         maxLength={100}
                         className="h-[50px] border outline-blue-500 w-full px-4"
@@ -140,10 +140,10 @@ const QueueManagment = () => {
                 </div>
                 <div>
                   <span className="font-bold">Description</span>
-                  <input
+                  <textarea
                     value={myQueueTicket?.ticketInformation || ""}
                     maxLength={100}
-                    className="h-[50px] border outline-blue-500 w-full px-4"
+                    className="max-h-[200px] min-h-[100px] border outline-blue-500 w-full px-4"
                     readOnly
                   />
                 </div>
