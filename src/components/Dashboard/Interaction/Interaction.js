@@ -39,7 +39,6 @@ const Interaction = ({}) => {
   } = useInteractionStore();
 
   const { activeUIAssistantTab } = useAssistantStore();
-  const { activeTicketMode } = useTicketsStore();
 
   useEffect(() => {
     if (
@@ -76,14 +75,17 @@ const Interaction = ({}) => {
         (openAssistant && "lg:opacity-100 opacity-5 xl:mr-[350px]")
       } dark:bg-black transition-all duration-300 ease bg-white `}
     >
-      {!isAtBottom && isOverflowed && activeTicketMode === "Default" && (
-        <button
-          onClick={handleScrollToBottom}
-          className={`dark:border-white/10 dark:bg-white/10 dark:text-gray-200 absolute bottom-28 right-4 rounded-full border border-gray-200 bg-gray-50 text-gray-600`}
-        >
-          <HiOutlineArrowSmallDown className="m-1" size={18} />
-        </button>
-      )}
+      {!isAtBottom &&
+        isOverflowed &&
+        (activeUIAssistantTab === "Engineer" ||
+          activeUIAssistantTab === "Tickets") && (
+          <button
+            onClick={handleScrollToBottom}
+            className={`dark:border-white/10 dark:bg-white/10 dark:text-gray-200 absolute bottom-28 right-4 rounded-full border border-gray-200 bg-gray-50 text-gray-600`}
+          >
+            <HiOutlineArrowSmallDown className="m-1" size={18} />
+          </button>
+        )}
 
       {activeUIAssistantTab === "Tickets" && <TicketCreation />}
       {activeUIAssistantTab === "Engineer" && <EngineerChat />}

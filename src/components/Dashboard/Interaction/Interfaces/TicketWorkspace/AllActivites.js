@@ -4,7 +4,7 @@ import useQueueStore from "@/utils/store/interaction/queue/useQueueStore";
 
 const AllActivities = () => {
   const { allActivities } = useQueueStore();
-  console.log(allActivities)
+  
   return (
     <div className="">
       {allActivities?.length !== 0 ? (

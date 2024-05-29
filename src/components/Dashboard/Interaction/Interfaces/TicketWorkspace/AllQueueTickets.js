@@ -19,7 +19,6 @@ const AllQueueTickets = () => {
                 <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
                   <thead className="dark:text-white dark:bg-gray-700 sticky top-0  text-lg text-black/60 bg-[#F5F8FA]">
                     <tr className="">
-                      <th className="p-2 border-l border-t border-b"></th>
                       <th className="p-2 border-l border-t border-b border-r ">
                         Score
                       </th>
@@ -49,7 +48,6 @@ const AllQueueTickets = () => {
                       } = tickets;
                       return (
                         <tr key={id}>
-                          <td className="p-2 truncate border-l  border-b"></td>
                           <td className="p-2 truncate border-l  border-r border-b">
                             {compositeScore.toFixed(2)}
                           </td>
