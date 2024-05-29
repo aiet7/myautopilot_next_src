@@ -16,10 +16,12 @@ const QueueManagment = () => {
     handleRequeueTicket,
     handleCloseTicket,
   } = useQueueStore();
-
+  
   return (
     <div
-      className={`${isMobile ? "flex-col" : "flex-row"} flex gap-6 items-start`}
+      className={`${
+        isMobile ? "flex-col" : "flex-row"
+      } flex gap-6 items-start `}
     >
       {isMobile ? (
         <>

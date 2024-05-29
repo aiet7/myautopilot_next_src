@@ -326,6 +326,7 @@ const useFormsStore = create((set, get) => ({
           connectWiseCompanyId: currentTicketCWCompanyId,
         };
 
+
         if (userType === "tech") {
           body.technicianId = userStore.user.id;
           body.connectWiseCompanyId = currentTicketCWCompanyId;

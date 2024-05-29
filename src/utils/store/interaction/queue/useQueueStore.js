@@ -14,7 +14,13 @@ const useQueueStore = create((set, get) => ({
   isMobile: initialWidth < 1023,
   activeSectionButton: "Form",
   currentQueueIndex: 0,
-  option: "",
+  options: [
+    "myActivities",
+    "allActivities",
+    "allQueueTickets",
+    "myQueueTickets",
+  ],
+  currentOption: "myActivities",
   noTicketsInQueue: false,
   ticketRequeued: false,
   ticketClosed: false,
@@ -24,22 +30,29 @@ const useQueueStore = create((set, get) => ({
   },
   setActiveSectionButton: (button) => set({ activeSectionButton: button }),
 
-  handleNextTicketInQueue: () => {
-    set((prevState) => ({
-      currentQueueIndex:
-        prevState.currentQueueIndex < prevState.ticketQueue.length - 1
-          ? prevState.currentQueueIndex + 1
-          : prevState.currentQueueIndex,
-    }));
-  },
+  handleWorkspaceOptionSelected: async (option, mspCustomDomain, tier, techId) => {
+    const {
+      handleShowMyActivities,
+      handleShowAllActivities,
+      handleShowAllQueueTickets,
+      handleNextQueueTicket,
+    } = get();
+    set({ currentOption: option });
 
-  handlePreviousTicketInQueue: () => {
-    set((prevState) => ({
-      currentQueueIndex:
-        prevState.currentQueueIndex > 0
-          ? prevState.currentQueueIndex - 1
-          : prevState.currentQueueIndex,
-    }));
+    if (option === "myActivities") {
+      await handleShowMyActivities(mspCustomDomain, techId);
+    }
+    if (option === "allActivities") {
+      await handleShowAllActivities(mspCustomDomain);
+    }
+
+    if (option === "allQueueTickets") {
+      await handleShowAllQueueTickets(mspCustomDomain);
+    }
+
+    if (option === "myQueueTickets") {
+      await handleNextQueueTicket(mspCustomDomain, tier, techId);
+    }
   },
 
   handleShowMyActivities: async (mspCustomDomain, techId) => {
@@ -52,7 +65,10 @@ const useQueueStore = create((set, get) => ({
 
       if (response.status === 200) {
         const myActivities = await response.json();
-        set({ option: "MyActivities", myActivities: myActivities });
+        set({
+          myActivities: myActivities,
+          noTicketsInQueue: false,
+        });
         console.log("SUCCESS GETTING MY ACTIVITES");
       } else {
         console.log("GETTING MY ACTIVITIES FAILED");
@@ -72,7 +88,10 @@ const useQueueStore = create((set, get) => ({
 
       if (response.status === 200) {
         const allActivities = await response.json();
-        set({ option: "AllActivities", allActivities: allActivities });
+        set({
+          allActivities: allActivities,
+          noTicketsInQueue: false,
+        });
         console.log("SUCCESS GETTING ALL ACTIVITIES");
       } else {
         console.log("GETTING ALL ACTIVITIES FAILED");
@@ -90,7 +109,10 @@ const useQueueStore = create((set, get) => ({
 
       if (response.status === 200) {
         const allQueueTickets = await response.json();
-        set({ option: "AllQueueTickets", allQueueTickets: allQueueTickets });
+        set({
+          allQueueTickets: allQueueTickets,
+          noTicketsInQueue: false,
+        });
         console.log("SUCCESS GETTING ALL QUEUE TICKETS");
       } else {
         console.log("GETTING ALL QUEUE TICKETS FAILED");
@@ -163,7 +185,6 @@ const useQueueStore = create((set, get) => ({
           set({ noTicketsInQueue: true });
         } else {
           set({
-            option: "MyQueueTicket",
             myQueueTicket: myQueueTicket,
             ticketClosed: false,
             ticketRequeued: false,
@@ -189,7 +210,13 @@ const useQueueStore = create((set, get) => ({
       isMobile: initialWidth < 1023,
       activeSectionButton: "Form",
       currentQueueIndex: 0,
-      option: "",
+      options: [
+        "myActivities",
+        "allActivities",
+        "allQueueTickets",
+        "myQueueTickets",
+      ],
+      currentOption: "myActivities",
       noTicketsInQueue: false,
       ticketRequeued: false,
       ticketClosed: false,

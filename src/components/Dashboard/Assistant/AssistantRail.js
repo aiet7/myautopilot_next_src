@@ -12,8 +12,11 @@ import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import { IoTicketSharp } from "react-icons/io5";
 import useIntegrationsStore from "@/utils/store/admin/control/integrations/integrationsStore";
 import useMspStore from "@/utils/store/auth/msp/mspStore";
+import useQueueStore from "@/utils/store/interaction/queue/useQueueStore";
+import useUserStore from "@/utils/store/user/userStore";
 
 const AssistantRail = ({}) => {
+  const { user } = useUserStore();
   const { userType } = useMspStore();
   const { mspIntegrations } = useIntegrationsStore();
   const { openAssistant } = useUiStore();
@@ -22,6 +25,7 @@ const AssistantRail = ({}) => {
     handleUIAssistantTabChange,
     handleAssistantTabChange,
   } = useAssistantStore();
+  const { handleWorkspaceOptionSelected } = useQueueStore();
 
   return (
     <div
@@ -59,6 +63,12 @@ const AssistantRail = ({}) => {
             if (mspIntegrations?.connectWiseManageIntegrator) {
               handleAssistantTabChange("Queue");
               handleUIAssistantTabChange("Queue");
+              handleWorkspaceOptionSelected(
+                "myActivities",
+                user?.mspCustomDomain,
+                null,
+                user?.id
+              );
             } else return;
           }}
         />
