@@ -65,7 +65,6 @@ const useQueueStore = create((set, get) => ({
 
       if (response.status === 200) {
         const myActivities = await response.json();
-        console.log(myActivities);
         set({
           myActivities: myActivities,
           noTicketsInQueue: false,
