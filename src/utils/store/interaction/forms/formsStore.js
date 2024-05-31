@@ -153,6 +153,7 @@ const useFormsStore = create((set, get) => ({
       );
       if (response.status === 200) {
         const ticketMerge = await response.json();
+        console.log(ticketMerge)
         set((state) => ({
           ticket: { ...state.ticket, categories: ticketMerge },
         }));

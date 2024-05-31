@@ -64,7 +64,7 @@ const AssistantRail = ({}) => {
               handleAssistantTabChange("Queue");
               handleUIAssistantTabChange("Queue");
               handleWorkspaceOptionSelected(
-                "myActivities",
+                "activities",
                 user?.mspCustomDomain,
                 null,
                 user?.id

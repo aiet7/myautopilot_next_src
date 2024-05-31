@@ -6,17 +6,32 @@ import useUserStore from "@/utils/store/user/userStore";
 const QueueManagment = () => {
   const { user } = useUserStore();
   const {
+    editTicket,
+    ticketCategories,
+    ticketPriorities,
+    ticketStatuses,
     ticketRequeued,
     ticketClosed,
+    severityOptions,
+    impactOptions,
+    tierOptions,
+    editingMyQueueTicket,
     myQueueTicket,
     isMobile,
     activeSectionButton,
     setActiveSectionButton,
+    setEditTicket,
+    setCancelEdit,
     handleNextQueueTicket,
     handleRequeueTicket,
     handleCloseTicket,
+    handleEditTicket,
+    handleSaveTicket,
   } = useQueueStore();
-  
+
+  console.log(editingMyQueueTicket);
+  console.log(myQueueTicket);
+
   return (
     <div
       className={`${
@@ -68,7 +83,7 @@ const QueueManagment = () => {
                     <div>
                       <span className="font-bold">Description</span>
                       <textarea
-                        value={myQueueTicket?.ticketInformation || ""}
+                        value={myQueueTicket?.description || ""}
                         maxLength={100}
                         className="h-[50px] border outline-blue-500 w-full px-4"
                         readOnly
@@ -89,6 +104,19 @@ const QueueManagment = () => {
                         className="h-[50px] border outline-blue-500 w-full px-4"
                         readOnly
                       />
+                    </div>
+
+                    <div>
+                      <span className="font-bold">Date Created</span>
+                      <p>
+                        {new Date(
+                          myQueueTicket?.creationTime
+                        ).toLocaleDateString() +
+                          " " +
+                          new Date(
+                            myQueueTicket?.creationTime
+                          ).toLocaleTimeString()}
+                      </p>
                     </div>
                     {myQueueTicket?.holdUntil && (
                       <div>
@@ -143,29 +171,261 @@ const QueueManagment = () => {
                 <div>
                   <span className="font-bold">Description</span>
                   <textarea
-                    value={myQueueTicket?.ticketInformation || ""}
+                    value={
+                      editTicket
+                        ? editingMyQueueTicket?.description
+                        : myQueueTicket?.description
+                    }
                     maxLength={100}
                     className="max-h-[200px] min-h-[100px] border outline-blue-500 w-full px-4"
-                    readOnly
+                    readOnly={!editTicket}
+                    onChange={(e) => {
+                      if (editTicket) {
+                        setEditTicket({ description: e.target.value });
+                      }
+                    }}
                   />
                 </div>
+                <div>
+                  <span className="font-bold">Category</span>
+                  {editTicket ? (
+                    <select
+                      className="h-[50px] border outline-blue-500 w-full px-4"
+                      value={editingMyQueueTicket?.categoryId || ""}
+                      onChange={(e) => {
+                        const categoryId = parseInt(e.target.value, 10);
+                        const category =
+                          ticketCategories?.mspConnectWiseManageCategorizations?.find(
+                            (category) => category.categoryId === categoryId
+                          );
+                        setEditTicket({
+                          categoryId: categoryId,
+                          categoryName: category?.categoryName,
+                          subCategoryId: null,
+                          subCategories:
+                            category?.mspConnectWiseManageSubCategorizations ||
+                            [],
+                        });
+                      }}
+                    >
+                      <option value="" disabled>
+                        {!editingMyQueueTicket?.categoryId &&
+                          "Please select a category"}
+                      </option>
+                      {ticketCategories?.mspConnectWiseManageCategorizations?.map(
+                        (category) => (
+                          <option
+                            key={category.categoryId}
+                            value={category.categoryId}
+                          >
+                            {category.categoryName}
+                          </option>
+                        )
+                      )}
+                    </select>
+                  ) : (
+                    <input
+                      disabled
+                      className="h-[50px] border outline-blue-500 w-full px-4"
+                      value={myQueueTicket?.categoryName || ""}
+                    />
+                  )}
+                </div>
+                <div>
+                  <span className="font-bold">Subcategory</span>
+                  {editTicket ? (
+                    <select
+                      className="h-[50px] border outline-blue-500 w-full px-4"
+                      value={editingMyQueueTicket?.subCategoryId || ""}
+                      onChange={(e) => {
+                        const subCategoryId = parseInt(e.target.value, 10);
+                        const subCategory =
+                          editingMyQueueTicket?.subCategories.find(
+                            (sub) => sub.subCategoryId === subCategoryId
+                          );
+                        setEditTicket({
+                          subCategoryId: subCategoryId,
+                          subCategoryName: subCategory?.subCategoryName,
+                          priority: subCategory?.priority,
+                          priorityId: subCategory?.priorityId,
+                          impact: subCategory?.impact,
+                          severity: subCategory?.severity,
+                          tier: subCategory?.tier,
+                          durationToResolve: subCategory?.durationToResolve,
+                        });
+                      }}
+                    >
+                      <option value="" disabled>
+                        {editingMyQueueTicket?.categoryId &&
+                          "Please select a subcategory"}
+                      </option>
+                      {editingMyQueueTicket?.categoryId &&
+                        editingMyQueueTicket?.subCategories.map(
+                          (subCategory) => (
+                            <option
+                              key={subCategory.subCategoryId}
+                              value={subCategory.subCategoryId}
+                            >
+                              {subCategory.subCategoryName}
+                            </option>
+                          )
+                        )}
+                    </select>
+                  ) : (
+                    <input
+                      disabled
+                      className="h-[50px] border outline-blue-500 w-full px-4"
+                      value={myQueueTicket?.subCategoryName || ""}
+                    />
+                  )}
+                </div>
 
+                <div>
+                  <span className="font-bold">Priority</span>
+                  {editTicket ? (
+                    <select
+                      className="h-[50px] border outline-blue-500 w-full px-4"
+                      value={editingMyQueueTicket?.priorityId || ""}
+                      onChange={(e) => {
+                        const priorityId = parseInt(e.target.value, 10);
+                        const priority = ticketPriorities?.find(
+                          (p) => p.id === priorityId
+                        );
+                        setEditTicket({
+                          priorityId: priorityId,
+                          priority: priority?.name,
+                        });
+                      }}
+                    >
+                      <option value="" disabled>
+                        Please select a priority
+                      </option>
+                      {ticketPriorities?.map((priority) => (
+                        <option key={priority.id} value={priority.id}>
+                          {priority.name}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      disabled
+                      className="h-[50px] border outline-blue-500 w-full px-4"
+                      value={myQueueTicket?.priority || ""}
+                    />
+                  )}
+                </div>
+                <div>
+                  <span className="font-bold">Impact</span>
+                  {editTicket ? (
+                    <select
+                      className="h-[50px] border outline-blue-500 w-full px-4"
+                      value={editingMyQueueTicket?.impact || ""}
+                      onChange={(e) =>
+                        setEditTicket({ impact: e.target.value })
+                      }
+                    >
+                      <option value="" disabled>
+                        Please select an impact
+                      </option>
+                      {impactOptions.map((impact) => (
+                        <option key={impact} value={impact}>
+                          {impact}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      disabled
+                      className="h-[50px] border outline-blue-500 w-full px-4"
+                      value={myQueueTicket?.impact || ""}
+                    />
+                  )}
+                </div>
+                <div>
+                  <span className="font-bold">Severity</span>
+                  {editTicket ? (
+                    <select
+                      className="h-[50px] border outline-blue-500 w-full px-4"
+                      value={editingMyQueueTicket?.severity || ""}
+                      onChange={(e) =>
+                        setEditTicket({ severity: e.target.value })
+                      }
+                    >
+                      <option value="" disabled>
+                        Please select a severity
+                      </option>
+                      {severityOptions.map((severity) => (
+                        <option key={severity} value={severity}>
+                          {severity}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      disabled
+                      className="h-[50px] border outline-blue-500 w-full px-4"
+                      value={myQueueTicket?.severity || ""}
+                    />
+                  )}
+                </div>
                 <div>
                   <span className="font-bold">Tier</span>
-                  <input
-                    value={myQueueTicket?.tier || ""}
-                    disabled
-                    className="h-[50px] border outline-blue-500 w-full px-4"
-                  />
+                  {editTicket ? (
+                    <select
+                      className="h-[50px] border outline-blue-500 w-full px-4"
+                      value={editingMyQueueTicket?.tier || ""}
+                      onChange={(e) => setEditTicket({ tier: e.target.value })}
+                    >
+                      <option value="" disabled>
+                        Please select a tier
+                      </option>
+                      {tierOptions.map((tier) => (
+                        <option key={tier} value={tier}>
+                          {tier}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      disabled
+                      className="h-[50px] border outline-blue-500 w-full px-4"
+                      value={myQueueTicket?.tier || ""}
+                    />
+                  )}
                 </div>
-
                 <div>
-                  <span className="font-bold">Assigned Technician</span>
-                  <input
-                    value={myQueueTicket?.assignedTech || ""}
-                    className="h-[50px] border outline-blue-500 w-full px-4"
-                    readOnly
-                  />
+                  <span className="font-bold">Status</span>
+                  {editTicket ? (
+                    <select
+                      className="h-[50px] border outline-blue-500 w-full px-4"
+                      value={editingMyQueueTicket?.statusId || ""}
+                      onChange={(e) => {
+                        const statusId = parseInt(e.target.value, 10);
+                        const status = ticketStatuses?.find(
+                          (s) => s.id === statusId
+                        );
+                        setEditTicket({
+                          statusId: statusId,
+                          status: status?.name,
+                        });
+                      }}
+                    >
+                      <option value="" disabled>
+                        Please select a status
+                      </option>
+                      {ticketStatuses?.map((status) => (
+                        <option key={status.id} value={status.id}>
+                          {status.name}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      disabled
+                      className="h-[50px] border outline-blue-500 w-full px-4"
+                      value={myQueueTicket?.status || ""}
+                    />
+                  )}
                 </div>
                 <div>
                   <span className="font-bold">Date Created</span>
@@ -188,43 +448,79 @@ const QueueManagment = () => {
                 )}
               </div>
             </div>
-
-            <div className="flex w-full gap-4 my-4">
-              {!(ticketRequeued || ticketClosed) ? (
-                <>
+            <div>
+              <div className="flex w-full gap-4 my-4">
+                {!editTicket && (
+                  <>
+                    {!(ticketRequeued || ticketClosed) ? (
+                      <>
+                        <button
+                          onClick={() =>
+                            handleRequeueTicket(
+                              user?.mspCustomDomain,
+                              myQueueTicket
+                            )
+                          }
+                          className="hover:bg-blue-500 border border-white/30 bg-blue-800 w-[150px] py-1 text-white"
+                        >
+                          Requeue
+                        </button>
+                        <button
+                          onClick={() =>
+                            handleCloseTicket(
+                              user?.mspCustomDomain,
+                              myQueueTicket?.ticketId,
+                              user?.id
+                            )
+                          }
+                          className="hover:bg-blue-500 border border-white/30 bg-blue-800 w-[150px] py-1 text-white"
+                        >
+                          Close Ticket
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={() =>
+                          handleNextQueueTicket(
+                            user?.mspCustomDomain,
+                            user?.tierLevel,
+                            user?.id
+                          )
+                        }
+                        className="hover:bg-blue-500 border border-white/30 bg-blue-800 w-[150px] py-1 text-white"
+                      >
+                        Next
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+              {editTicket ? (
+                <div className="flex w-full gap-4">
                   <button
                     onClick={() =>
-                      handleRequeueTicket(user?.mspCustomDomain, myQueueTicket)
-                    }
-                    className="hover:bg-blue-500 border border-white/30 bg-blue-800 w-[150px] py-1 text-white"
-                  >
-                    Requeue
-                  </button>
-                  <button
-                    onClick={() =>
-                      handleCloseTicket(
+                      handleSaveTicket(
                         user?.mspCustomDomain,
-                        myQueueTicket?.ticketId,
-                        user?.id
+                        myQueueTicket?.ticketId
                       )
                     }
                     className="hover:bg-blue-500 border border-white/30 bg-blue-800 w-[150px] py-1 text-white"
                   >
-                    Close Ticket
+                    Save
                   </button>
-                </>
+                  <button
+                    onClick={setCancelEdit}
+                    className="hover:bg-blue-500 border border-white/30 bg-blue-800 w-[150px] py-1 text-white"
+                  >
+                    Cancel
+                  </button>
+                </div>
               ) : (
                 <button
-                  onClick={() =>
-                    handleNextQueueTicket(
-                      user?.mspCustomDomain,
-                      user?.tierLevel,
-                      user?.id
-                    )
-                  }
+                  onClick={() => handleEditTicket(user?.mspCustomDomain)}
                   className="hover:bg-blue-500 border border-white/30 bg-blue-800 w-[150px] py-1 text-white"
                 >
-                  Next
+                  Edit
                 </button>
               )}
             </div>
