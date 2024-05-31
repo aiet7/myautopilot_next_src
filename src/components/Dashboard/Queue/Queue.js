@@ -3,7 +3,6 @@
 import useQueueStore from "@/utils/store/interaction/queue/useQueueStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useUserStore from "@/utils/store/user/userStore";
-import { TbDeviceAnalytics } from "react-icons/tb";
 import { GrAnalytics } from "react-icons/gr";
 import { MdOutlineQueuePlayNext } from "react-icons/md";
 import { BsPersonWorkspace } from "react-icons/bs";
@@ -15,9 +14,7 @@ const Queue = ({}) => {
 
   const renderIcon = (option) => {
     switch (option) {
-      case "myActivities":
-        return <TbDeviceAnalytics size={20} />;
-      case "allActivities":
+      case "activities":
         return <GrAnalytics size={20} />;
       case "allQueueTickets":
         return <MdOutlineQueuePlayNext size={20} />;

@@ -686,10 +686,16 @@ const useMspStore = create((set, get) => ({
   handleActivateTechnician: async (navigator, mspCustomDomain) => {
     const { signupInputs, selectedTechnician } = get();
     const { techInfo } = signupInputs;
+
+    const { id, connectWiseMembersId, primaryEmail, ...restTechnicianDetails } =
+      selectedTechnician;
+
     const payload = {
-      ...selectedTechnician,
-      email: selectedTechnician.primaryEmail,
+      ...restTechnicianDetails,
+      email: primaryEmail,
       password: techInfo.password,
+      connectWiseMembersAutopilotDbId: id,
+      connectWiseTechnicanId: connectWiseMembersId,
     };
 
     try {

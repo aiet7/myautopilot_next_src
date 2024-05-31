@@ -10,11 +10,7 @@ const Troubleshoot = () => {
   return (
     <>
       <p className="text-lg font-bold px-2">Troubleshooting Guide</p>
-      <div
-        className={`${
-          !isMobile && "overflow-y-auto max-h-[450px] scrollbar-thin"
-        }`}
-      >
+      <div>
         {troubleshootMessage ? (
           <MarkedTroubleshoot markdown={troubleshootMessage} />
         ) : (

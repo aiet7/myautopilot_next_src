@@ -8,42 +8,63 @@ const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 
 const useQueueStore = create((set, get) => ({
   myQueueTicket: null,
+  editingMyQueueTicket: null,
   allQueueTickets: null,
   myActivities: null,
   allActivities: null,
   isMobile: initialWidth < 1023,
   activeSectionButton: "Form",
   currentQueueIndex: 0,
-  options: [
-    "myActivities",
-    "allActivities",
-    "allQueueTickets",
-    "myQueueTickets",
-  ],
-  currentOption: "myActivities",
+  options: ["activities", "allQueueTickets", "myQueueTickets"],
+  currentActivitiesOption: "myActivities",
+  currentOption: "activities",
   noTicketsInQueue: false,
   ticketRequeued: false,
   ticketClosed: false,
+  editTicket: false,
+  ticketCategories: null,
+  ticketPriorities: null,
+  ticketStatuses: null,
+  severityOptions: ["Low", "Medium", "High"],
+  impactOptions: ["Low", "Medium", "High"],
+  tierOptions: ["Tier1", "Tier2", "Tier3", "No Dispatching"],
 
   setIsMobile: (value) => {
     set({ isMobile: value });
   },
   setActiveSectionButton: (button) => set({ activeSectionButton: button }),
 
-  handleWorkspaceOptionSelected: async (option, mspCustomDomain, tier, techId) => {
+  setEditTicket: (updates) => {
+    set((prevState) => ({
+      editingMyQueueTicket: {
+        ...prevState.editingMyQueueTicket,
+        ...updates,
+      },
+    }));
+  },
+
+  setCancelEdit: () => {
+    set({
+      editTicket: false,
+      editingMyQueueTicket: null,
+    });
+  },
+
+  handleWorkspaceOptionSelected: async (
+    option,
+    mspCustomDomain,
+    tier,
+    techId
+  ) => {
     const {
       handleShowMyActivities,
-      handleShowAllActivities,
       handleShowAllQueueTickets,
       handleNextQueueTicket,
     } = get();
     set({ currentOption: option });
 
-    if (option === "myActivities") {
+    if (option === "activities") {
       await handleShowMyActivities(mspCustomDomain, techId);
-    }
-    if (option === "allActivities") {
-      await handleShowAllActivities(mspCustomDomain);
     }
 
     if (option === "allQueueTickets") {
@@ -68,6 +89,7 @@ const useQueueStore = create((set, get) => ({
         set({
           myActivities: myActivities,
           noTicketsInQueue: false,
+          currentActivitiesOption: "myActivities",
         });
         console.log("SUCCESS GETTING MY ACTIVITES");
       } else {
@@ -91,6 +113,7 @@ const useQueueStore = create((set, get) => ({
         set({
           allActivities: allActivities,
           noTicketsInQueue: false,
+          currentActivitiesOption: "allActivities",
         });
         console.log("SUCCESS GETTING ALL ACTIVITIES");
       } else {
@@ -150,7 +173,7 @@ const useQueueStore = create((set, get) => ({
   handleCloseTicket: async (mspCustomDomain, ticketId, techId) => {
     try {
       const response = await fetch(
-        `${dbServiceUrl}/api/ticketQueue/endActivity?ticketId=${ticketId}&mspCustomDomain=${mspCustomDomain}&techId=${techId}`,
+        `${dbServiceUrl}/api/ticketQueue/complete?ticketId=${ticketId}&mspCustomDomain=${mspCustomDomain}&techId=${techId}`,
         {
           method: "POST",
           headers: {
@@ -176,7 +199,7 @@ const useQueueStore = create((set, get) => ({
       useTicketConversationsStore.getState();
     try {
       const response = await fetch(
-        `${dbServiceUrl}/api/ticketQueue/next/?tier=${tier}&mspCustomDomain=${mspCustomDomain}&techId=${techId}`
+        `${dbServiceUrl}/api/ticketQueue/next?tier=${tier}&mspCustomDomain=${mspCustomDomain}&techId=${techId}`
       );
 
       if (response.status === 200) {
@@ -201,25 +224,154 @@ const useQueueStore = create((set, get) => ({
     }
   },
 
+  handleEditTicket: async (mspCustomDomain) => {
+    const {
+      handleEditTicketCategories,
+      handleEditTicketPriorites,
+      handleEditTicketStatuses,
+    } = get();
+    set({
+      editTicket: true,
+    });
+
+    const boardId = await handleEditTicketCategories(mspCustomDomain);
+
+    if (boardId) {
+      try {
+        await Promise.all([
+          handleEditTicketPriorites(mspCustomDomain),
+          handleEditTicketStatuses(boardId, mspCustomDomain),
+        ]);
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      console.log(console.log("No BoardID"));
+      set({
+        editTicket: false,
+      });
+    }
+  },
+
+  handleEditTicketCategories: async (mspCustomDomain) => {
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/${mspCustomDomain}/connectWiseManageDetails`
+      );
+      if (response.status === 200) {
+        const ticketCategories = await response.json();
+        set({
+          ticketCategories: ticketCategories,
+        });
+        console.log("GOT CATEGORIES");
+        return ticketCategories.boardId;
+      } else {
+        console.log("failed fetching details");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleEditTicketPriorites: async (mspCustomDomain) => {
+    try {
+      const response = await fetch(
+        `${connectWiseServiceUrl}/getConnectWisePriorities?mspCustomDomain=${mspCustomDomain}`
+      );
+      if (response.status === 200) {
+        const ticketPriorities = await response.json();
+        console.log("GOT PRIORITIES");
+        set({
+          ticketPriorities: ticketPriorities,
+        });
+      } else {
+        console.log("failed fetching details");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleEditTicketStatuses: async (boardId, mspCustomDomain) => {
+    try {
+      const response = await fetch(
+        `${connectWiseServiceUrl}/getConnectWiseStatuses?boardId=${boardId}&mspCustomDomain=${mspCustomDomain}`
+      );
+      if (response.status === 200) {
+        const ticketStatuses = await response.json();
+        set({
+          ticketStatuses: ticketStatuses,
+        });
+        console.log("GOT STATUSES");
+      } else {
+        console.log("failed fetching details");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleSaveTicket: async (mspCustomDomain, ticketId) => {
+    const { myQueueTicket, editingMyQueueTicket } = get();
+    try {
+      const response = await fetch(
+        `${connectWiseServiceUrl}/updateTicket/${ticketId}?mspCustomDomain=${mspCustomDomain}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: myQueueTicket.title,
+            description: editingMyQueueTicket.description,
+            categoryName: editingMyQueueTicket.categoryName,
+            categoryId: editingMyQueueTicket.categoryId,
+            subCategoryName: editingMyQueueTicket.subCategoryName,
+            subCategoryId: editingMyQueueTicket.subCategoryId,
+            priority: editingMyQueueTicket.priotity,
+            priorityId: editingMyQueueTicket.priorityId,
+            impact: editingMyQueueTicket.impact,
+            severity: editingMyQueueTicket.severity,
+            tier: editingMyQueueTicket.tier,
+            status: editingMyQueueTicket.status,
+            statusId: editingMyQueueTicket.statusId,
+          }),
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("Ticket Saved!");
+      } else {
+        console.log("Ticket Saving Failed");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
   clearQueue: () => {
     set({
       myQueueTicket: null,
+      editingMyQueueTicket: null,
       allQueueTickets: null,
       myActivities: null,
       allActivities: null,
       isMobile: initialWidth < 1023,
       activeSectionButton: "Form",
       currentQueueIndex: 0,
-      options: [
-        "myActivities",
-        "allActivities",
-        "allQueueTickets",
-        "myQueueTickets",
-      ],
-      currentOption: "myActivities",
+      options: ["activities", "allQueueTickets", "myQueueTickets"],
+      currentActivitiesOption: "myActivities",
+      currentOption: "activities",
       noTicketsInQueue: false,
       ticketRequeued: false,
       ticketClosed: false,
+      editTicket: false,
+      ticketCategories: null,
+      ticketPriorities: null,
+      ticketStatuses: null,
+      severityOptions: ["Low", "Medium", "High"],
+      impactOptions: ["Low", "Medium", "High"],
+      tierOptions: ["Tier1", "Tier2", "Tier3", "No Dispatching"],
     });
   },
 }));
