@@ -7,9 +7,6 @@ const QueueManagment = () => {
   const { user } = useUserStore();
   const {
     editTicket,
-    ticketCategories,
-    ticketPriorities,
-    ticketStatuses,
     ticketRequeued,
     ticketClosed,
     severityOptions,
@@ -28,9 +25,7 @@ const QueueManagment = () => {
     handleEditTicket,
     handleSaveTicket,
   } = useQueueStore();
-
   console.log(editingMyQueueTicket);
-  console.log(myQueueTicket);
 
   return (
     <div
@@ -194,10 +189,9 @@ const QueueManagment = () => {
                       value={editingMyQueueTicket?.categoryId || ""}
                       onChange={(e) => {
                         const categoryId = parseInt(e.target.value, 10);
-                        const category =
-                          ticketCategories?.mspConnectWiseManageCategorizations?.find(
-                            (category) => category.categoryId === categoryId
-                          );
+                        const category = editingMyQueueTicket?.categories?.find(
+                          (category) => category.categoryId === categoryId
+                        );
                         setEditTicket({
                           categoryId: categoryId,
                           categoryName: category?.categoryName,
@@ -208,20 +202,14 @@ const QueueManagment = () => {
                         });
                       }}
                     >
-                      <option value="" disabled>
-                        {!editingMyQueueTicket?.categoryId &&
-                          "Please select a category"}
-                      </option>
-                      {ticketCategories?.mspConnectWiseManageCategorizations?.map(
-                        (category) => (
-                          <option
-                            key={category.categoryId}
-                            value={category.categoryId}
-                          >
-                            {category.categoryName}
-                          </option>
-                        )
-                      )}
+                      {editingMyQueueTicket?.categories?.map((category) => (
+                        <option
+                          key={category.categoryId}
+                          value={category.categoryId}
+                        >
+                          {category.categoryName}
+                        </option>
+                      ))}
                     </select>
                   ) : (
                     <input
@@ -255,10 +243,6 @@ const QueueManagment = () => {
                         });
                       }}
                     >
-                      <option value="" disabled>
-                        {editingMyQueueTicket?.categoryId &&
-                          "Please select a subcategory"}
-                      </option>
                       {editingMyQueueTicket?.categoryId &&
                         editingMyQueueTicket?.subCategories.map(
                           (subCategory) => (
@@ -288,7 +272,7 @@ const QueueManagment = () => {
                       value={editingMyQueueTicket?.priorityId || ""}
                       onChange={(e) => {
                         const priorityId = parseInt(e.target.value, 10);
-                        const priority = ticketPriorities?.find(
+                        const priority = editingMyQueueTicket?.priorities.find(
                           (p) => p.id === priorityId
                         );
                         setEditTicket({
@@ -297,10 +281,7 @@ const QueueManagment = () => {
                         });
                       }}
                     >
-                      <option value="" disabled>
-                        Please select a priority
-                      </option>
-                      {ticketPriorities?.map((priority) => (
+                      {editingMyQueueTicket?.priorities.map((priority) => (
                         <option key={priority.id} value={priority.id}>
                           {priority.name}
                         </option>
@@ -320,13 +301,10 @@ const QueueManagment = () => {
                     <select
                       className="h-[50px] border outline-blue-500 w-full px-4"
                       value={editingMyQueueTicket?.impact || ""}
-                      onChange={(e) =>
-                        setEditTicket({ impact: e.target.value })
-                      }
+                      onChange={(e) => {
+                        setEditTicket({ impact: e.target.value });
+                      }}
                     >
-                      <option value="" disabled>
-                        Please select an impact
-                      </option>
                       {impactOptions.map((impact) => (
                         <option key={impact} value={impact}>
                           {impact}
@@ -351,9 +329,6 @@ const QueueManagment = () => {
                         setEditTicket({ severity: e.target.value })
                       }
                     >
-                      <option value="" disabled>
-                        Please select a severity
-                      </option>
                       {severityOptions.map((severity) => (
                         <option key={severity} value={severity}>
                           {severity}
@@ -376,9 +351,6 @@ const QueueManagment = () => {
                       value={editingMyQueueTicket?.tier || ""}
                       onChange={(e) => setEditTicket({ tier: e.target.value })}
                     >
-                      <option value="" disabled>
-                        Please select a tier
-                      </option>
                       {tierOptions.map((tier) => (
                         <option key={tier} value={tier}>
                           {tier}
@@ -401,7 +373,7 @@ const QueueManagment = () => {
                       value={editingMyQueueTicket?.statusId || ""}
                       onChange={(e) => {
                         const statusId = parseInt(e.target.value, 10);
-                        const status = ticketStatuses?.find(
+                        const status = editingMyQueueTicket?.statuses.find(
                           (s) => s.id === statusId
                         );
                         setEditTicket({
@@ -410,10 +382,7 @@ const QueueManagment = () => {
                         });
                       }}
                     >
-                      <option value="" disabled>
-                        Please select a status
-                      </option>
-                      {ticketStatuses?.map((status) => (
+                      {editingMyQueueTicket?.statuses.map((status) => (
                         <option key={status.id} value={status.id}>
                           {status.name}
                         </option>
