@@ -8,11 +8,15 @@ import AssistantControl from "./AssistantControl.js";
 import InternalPilot from "./Sections/Internal/InternalPilot.js";
 
 import { useTheme } from "next-themes";
+import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
+import ExternalPilot from "./Sections/External/ExternalPilot.js";
 
 const Assistant = ({}) => {
+  const { activeAssistantTab } = useAssistantStore();
   const { ticketStatus } = useFormsStore();
   const { openAssistant } = useUiStore();
   const { theme } = useTheme();
+
   return (
     <div
       className={` absolute z-10 top-0 bottom-0 right-0 ${
@@ -36,9 +40,16 @@ const Assistant = ({}) => {
       <div className="flex flex-col w-full">
         <AssistantControl />
         <div className="relative flex flex-col overflow-hidden h-full ">
-          <InternalPilot />
-
-          {ticketStatus.ticketCreated && <Progress />}
+          {activeAssistantTab === "Tickets" ||
+          activeAssistantTab === "Engineer" ||
+          activeAssistantTab === "Queue" ? (
+            <>
+              <InternalPilot />
+              {ticketStatus.ticketCreated && <Progress />}
+            </>
+          ) : (
+            <ExternalPilot />
+          )}
         </div>
       </div>
     </div>

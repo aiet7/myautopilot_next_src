@@ -229,24 +229,43 @@ const useQueueStore = create((set, get) => ({
       handleEditTicketCategories,
       handleEditTicketPriorites,
       handleEditTicketStatuses,
+      myQueueTicket,
     } = get();
+
     set({
       editTicket: true,
     });
 
-    const boardId = await handleEditTicketCategories(mspCustomDomain);
+    const ticketCategories = await handleEditTicketCategories(mspCustomDomain);
 
-    if (boardId) {
+    if (ticketCategories) {
       try {
-        await Promise.all([
+        const [priorities, statuses] = await Promise.all([
           handleEditTicketPriorites(mspCustomDomain),
-          handleEditTicketStatuses(boardId, mspCustomDomain),
+          handleEditTicketStatuses(ticketCategories.boardId, mspCustomDomain),
         ]);
+
+        const category =
+          ticketCategories.mspConnectWiseManageCategorizations.find(
+            (cat) => cat.categoryId === myQueueTicket.categoryId
+          );
+
+        set({
+          editingMyQueueTicket: {
+            ...myQueueTicket,
+            subCategories:
+              category.mspConnectWiseManageSubCategorizations || [],
+            categories:
+              ticketCategories.mspConnectWiseManageCategorizations || [],
+            priorities: priorities || [],
+            statuses: statuses || [],
+          },
+        });
       } catch (e) {
         console.log(e);
       }
     } else {
-      console.log(console.log("No BoardID"));
+      console.log("No BoardID");
       set({
         editTicket: false,
       });
@@ -264,7 +283,7 @@ const useQueueStore = create((set, get) => ({
           ticketCategories: ticketCategories,
         });
         console.log("GOT CATEGORIES");
-        return ticketCategories.boardId;
+        return ticketCategories;
       } else {
         console.log("failed fetching details");
       }
@@ -281,9 +300,7 @@ const useQueueStore = create((set, get) => ({
       if (response.status === 200) {
         const ticketPriorities = await response.json();
         console.log("GOT PRIORITIES");
-        set({
-          ticketPriorities: ticketPriorities,
-        });
+        return ticketPriorities;
       } else {
         console.log("failed fetching details");
       }
@@ -299,10 +316,8 @@ const useQueueStore = create((set, get) => ({
       );
       if (response.status === 200) {
         const ticketStatuses = await response.json();
-        set({
-          ticketStatuses: ticketStatuses,
-        });
         console.log("GOT STATUSES");
+        return ticketStatuses;
       } else {
         console.log("failed fetching details");
       }
@@ -313,6 +328,7 @@ const useQueueStore = create((set, get) => ({
 
   handleSaveTicket: async (mspCustomDomain, ticketId) => {
     const { myQueueTicket, editingMyQueueTicket } = get();
+
     try {
       const response = await fetch(
         `${connectWiseServiceUrl}/updateTicket/${ticketId}?mspCustomDomain=${mspCustomDomain}`,

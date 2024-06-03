@@ -74,12 +74,12 @@ const AssistantRail = ({}) => {
         />
       )}
 
-      <BsFiletypeDoc
+      {/* <BsFiletypeDoc
         className={`dark:text-white/10 text-black/20 ${
           activeAssistantTab === "Document" && "text-blue-800"
         }  rounded-full px-2 outline-none`}
         size={35}
-      />
+      /> */}
 
       <SiOpenai
         className={`${

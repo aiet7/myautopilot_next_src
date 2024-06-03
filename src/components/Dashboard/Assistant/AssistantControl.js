@@ -13,7 +13,6 @@ const AssistantControl = () => {
         {activeAssistantTab} Support
       </p>
       <div className="dark:text-white flex items-center text-black gap-2">
-        <BsThreeDotsVertical size={20} className="cursor-pointer" />
         {window.innerWidth > 1023 && (
           <AiOutlineClose
             onClick={handleAssistantMenu}
