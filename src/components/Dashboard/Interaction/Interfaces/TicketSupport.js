@@ -3,7 +3,7 @@ import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
 import { BsStars } from "react-icons/bs";
 import { convertTicketText, convertDate } from "@/utils/conversions";
 
-const Support = () => {
+const TicketSupport = () => {
   const { showTicket, ticketNotes, handleTicketMode } = useTicketsStore();
 
   return (
@@ -85,4 +85,4 @@ const Support = () => {
   );
 };
 
-export default Support;
+export default TicketSupport;

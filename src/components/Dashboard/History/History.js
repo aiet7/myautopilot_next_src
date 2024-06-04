@@ -19,12 +19,14 @@ const History = ({}) => {
 
   const { troubleshootContinue } = useTicketConversationsStore();
   const {
+    searchValue,
     editing,
     deleting,
     tempTitle,
     tempPrompt,
     conversationHistories,
     currentConversationIndex,
+    setSearchValue,
     setDeleting,
     setTempTitle,
     setTempPrompt,
@@ -40,12 +42,24 @@ const History = ({}) => {
 
   const { openHistory } = useUiStore();
   const { activeUIAssistantTab } = useAssistantStore();
-  
+
   useEffect(() => {
     if (activeUIAssistantTab === "Engineer" && !troubleshootContinue) {
       initializeConversations();
     }
   }, [user, activeUIAssistantTab]);
+
+  const filteredConversationHistories = conversationHistories.filter(
+    (conversation) => {
+      if (!searchValue) return true;
+      if (
+        conversation.conversationName.includes(searchValue) ||
+        conversation.conversationName.toLowerCase().includes(searchValue)
+      )
+        return true;
+    }
+  );
+
 
   return (
     <div
@@ -66,8 +80,14 @@ const History = ({}) => {
       >
         + New Chat
       </button>
-      <div className="overflow-y-auto h-full scrollbar-thin mt-4">
-        {conversationHistories.map((conversation, index) => {
+      <input
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+        className="my-3 p-2 rounded-md border"
+        placeholder="Search Conversation"
+      />
+      <div className="overflow-y-auto h-full scrollbar-thin ">
+        {filteredConversationHistories.map((conversation, index) => {
           const { id, userId, conversationName, customPrompt } = conversation;
           return (
             <div key={index} className="flex flex-col items-start my-1">

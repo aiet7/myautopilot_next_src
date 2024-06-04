@@ -15,7 +15,7 @@ const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 const useConversationStore = create((set, get) => ({
   conversationHistories: [],
   currentConversationIndex: 0,
-
+  searchValue: "",
   editing: false,
   deleting: false,
   tempTitle: "",
@@ -26,6 +26,12 @@ const useConversationStore = create((set, get) => ({
   setEditing: (isEditing) => set((state) => ({ ...state, editing: isEditing })),
   setDeleting: (isDeleting) =>
     set((state) => ({ ...state, deleting: isDeleting })),
+  
+  setSearchValue: (value) =>
+    set((state) => ({
+      ...state,
+      searchValue: value,
+    })),
 
   initializeConversations: async () => {
     const { initializeMessages } = get();
