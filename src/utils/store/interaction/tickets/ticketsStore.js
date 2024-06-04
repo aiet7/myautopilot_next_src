@@ -9,6 +9,7 @@ const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 
 const useTicketsStore = create((set, get) => ({
+  searchValue: "",
   tickets: null,
   ticketStatus: null,
   ticketNotes: null,
@@ -38,6 +39,12 @@ const useTicketsStore = create((set, get) => ({
       set({ tickets: newTickets });
     }
   },
+
+  setSearchValue: (value) =>
+    set((state) => ({
+      ...state,
+      searchValue: value,
+    })),
 
   setActiveTicketButton: (button) => set({ activeTicketButton: button }),
 

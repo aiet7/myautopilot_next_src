@@ -12,7 +12,7 @@ const useQueueStore = create((set, get) => ({
   allQueueTickets: null,
   myActivities: null,
   allActivities: null,
-  isMobile: initialWidth < 1023,
+  isMobile: initialWidth < 1350,
   activeSectionButton: "Form",
   currentQueueIndex: 0,
   options: ["activities", "allQueueTickets", "myQueueTickets"],
@@ -145,10 +145,10 @@ const useQueueStore = create((set, get) => ({
     }
   },
 
-  handleRequeueTicket: async (mspCustomDomain, ticket) => {
+  handleRequeueTicket: async (mspCustomDomain, ticket, techId) => {
     try {
       const response = await fetch(
-        `${dbServiceUrl}/api/ticketQueue/requeue?mspCustomDomain=${mspCustomDomain}&holdTimeInHours=${""}&assignedFlag=${""}&techId=${""}&newTier=${""}`,
+        `${dbServiceUrl}/api/ticketQueue/requeue?mspCustomDomain=${mspCustomDomain}&holdTimeInHours=${""}&assignedFlag=${""}&techId=${techId}&newTier=${""}`,
         {
           method: "POST",
           headers: {

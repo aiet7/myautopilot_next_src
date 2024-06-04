@@ -9,17 +9,41 @@ const Tickets = ({}) => {
   const { openTickets } = useUiStore();
   const { userType } = useMspStore();
   const {
+    searchValue,
     tickets,
     ticketStatus,
     ticketStatusLoading,
     activeTicketButton,
     setActiveTicketButton,
-    handleTicketMode,
+    setSearchValue,
     handleGetTicketStatus,
+    handleTicketMode,
     initializeMSPTickets,
     initializeClientTickets,
   } = useTicketsStore();
 
+  const filteredAndSortedTickets = tickets
+    ?.filter(
+      (ticket) =>
+        (activeTicketButton === "Opened" && !ticket.closed) ||
+        (activeTicketButton === "Closed" && ticket.closed)
+    )
+    ?.filter((ticket) => {
+      if (!searchValue) return true;
+      if (
+        ticket.category.includes(searchValue) ||
+        ticket.category.toLowerCase().includes(searchValue) ||
+        ticket.subcategory.includes(searchValue) ||
+        ticket.subcategory.toLowerCase().includes(searchValue) ||
+        ticket.ticketId.includes(searchValue) ||
+        ticket.title.includes(searchValue) ||
+        ticket.title.toLowerCase().includes(searchValue) ||
+        ticket.description.includes(searchValue) ||
+        ticket.description.toLowerCase().includes(searchValue)
+      )
+        return true;
+    })
+    ?.sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp));
 
   return (
     <div
@@ -48,22 +72,30 @@ const Tickets = ({}) => {
           Closed
         </button>
       </div>
-      <div
-        onClick={() => {
-          if (userType === "tech") {
-            initializeMSPTickets();
-          } else if (userType === "client") {
-            initializeClientTickets();
-          }
-        }}
-        className="pt-4 flex justify-end "
-      >
-        <div className="flex items-center gap-2 cursor-pointer">
-          <p className="text-sm italic">Refresh your tickets</p>
-          <FiRefreshCcw size={15} />
+      <div className="flex flex-col gap-1 my-3">
+        <input
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+          className=" p-2 rounded-md border"
+          placeholder="Search Tickets"
+        />
+        <div
+          onClick={() => {
+            if (userType === "tech") {
+              initializeMSPTickets();
+            } else if (userType === "client") {
+              initializeClientTickets();
+            }
+          }}
+          className=" flex justify-end "
+        >
+          <div className="flex items-center gap-2 cursor-pointer">
+            <p className="text-sm italic">Refresh your tickets</p>
+            <FiRefreshCcw size={15} />
+          </div>
         </div>
       </div>
-      <div className="overflow-y-auto h-full scrollbar-thin mt-4">
+      <div className="overflow-y-auto h-full scrollbar-thin ">
         {activeTicketButton === "Opened" &&
           tickets?.filter((ticket) => !ticket.closed).length === 0 && (
             <p className="dark:text-white/40 text-black/40 italic">
@@ -78,49 +110,48 @@ const Tickets = ({}) => {
             </p>
           )}
 
-        {tickets
-          ?.filter(
-            (ticket) =>
-              (activeTicketButton === "Opened" && !ticket.closed) ||
-              (activeTicketButton === "Closed" && ticket.closed)
-          )
-          ?.map((ticket, index) => {
-            const { id, category, subcategory, ticketId } = ticket;
-            return (
-              <div
-                key={ticketId}
-                className="dark:bg-white/30 dark:text-white dark:border-white/20  text-sm flex flex-col justify-between gap-1 border rounded-md text-black bg-white px-2 py-3 mb-2"
-              >
-                <div className="flex justify-between items-center">
-                  <p className="break-words whitespace-pre-wrap">
-                    <span className="font-bold">STATUS: </span>
-                    {ticketStatus && ticketStatus?.[ticketId]?.status.name}
-                  </p>
-                  <FiRefreshCcw
-                    size={15}
-                    className={`${
-                      ticketStatusLoading?.[ticketId] && "animate-spin"
-                    } cursor-pointer`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleGetTicketStatus(ticketId);
-                    }}
-                  />
-                </div>
-
+        {filteredAndSortedTickets?.map((ticket, index) => {
+          const { id, category, subcategory, ticketId, timeStamp } = ticket;
+          return (
+            <div
+              onClick={() => handleTicketMode("Support", ticketId)}
+              key={ticketId}
+              className="dark:bg-white/30 dark:text-white dark:border-white/20 cursor-pointer  text-sm flex flex-col justify-between gap-1 border rounded-md text-black bg-white px-2 py-3 mb-2"
+            >
+              <div className="flex justify-between items-center">
                 <p className="break-words whitespace-pre-wrap">
-                  <span className="font-bold">Ticket ID:</span> #{ticketId}
+                  <span className="font-bold">STATUS: </span>
+                  {ticketStatus && ticketStatus?.[ticketId]?.status.name}
                 </p>
-
-                <p className="break-words whitespace-pre-wrap">
-                  <span className="font-bold">Category:</span> {category}
-                </p>
-                <p className="break-words whitespace-pre-wrap">
-                  <span className="font-bold">Subcategroy:</span> {subcategory}
-                </p>
+                <FiRefreshCcw
+                  size={15}
+                  className={`${
+                    ticketStatusLoading?.[ticketId] && "animate-spin"
+                  } cursor-pointer`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleGetTicketStatus(ticketId);
+                  }}
+                />
               </div>
-            );
-          })}
+
+              <p className="break-words whitespace-pre-wrap">
+                <span className="font-bold">Ticket ID:</span> #{ticketId}
+              </p>
+
+              <p className="break-words whitespace-pre-wrap">
+                <span className="font-bold">Category:</span> {category}
+              </p>
+              <p className="break-words whitespace-pre-wrap">
+                <span className="font-bold">Subcategroy:</span> {subcategory}
+              </p>
+              <p className="break-words whitespace-pre-wrap">
+                <span className="font-bold">Date Created:</span>{" "}
+                {new Date(timeStamp).toLocaleDateString()}
+              </p>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

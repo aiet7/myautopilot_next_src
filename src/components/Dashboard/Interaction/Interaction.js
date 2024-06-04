@@ -16,8 +16,10 @@ import Input from "./Input.js";
 import TicketCreation from "./Interfaces/TicketCreation.js";
 import EngineerChat from "./Interfaces/EngineerChat.js";
 import QueueManagement from "./Interfaces/TicketWorkspace/TicketWorkspace.js";
+import TicketSupport from "./Interfaces/TicketSupport.js";
 
 const Interaction = ({}) => {
+  const { activeTicketMode } = useTicketsStore();
   const {
     openQueue,
     openTickets,
@@ -87,7 +89,15 @@ const Interaction = ({}) => {
           </button>
         )}
 
-      {activeUIAssistantTab === "Tickets" && <TicketCreation />}
+      {activeUIAssistantTab === "Tickets" && (
+        <>
+          {activeTicketMode === "Support" ? (
+            <TicketSupport />
+          ) : (
+            <TicketCreation />
+          )}
+        </>
+      )}
       {activeUIAssistantTab === "Engineer" && <EngineerChat />}
       {activeUIAssistantTab === "Queue" && <QueueManagement />}
       <div className="px-4 py-2">
