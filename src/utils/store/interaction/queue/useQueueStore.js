@@ -1,18 +1,23 @@
 import { create } from "zustand";
-import useTicketConversationsStore from "../conversations/ticketConversationsStore";
+import useRefStore from "../ref/refStore";
+import useConversationStore from "../conversations/conversationsStore";
+import useUserStore from "../../user/userStore";
 
 const isBrowser = typeof window !== "undefined";
 const initialWidth = isBrowser ? window.innerWidth : 1023;
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
+const gptServiceUrl = process.env.NEXT_PUBLIC_GPT_SERVICE_URL;
 
 const useQueueStore = create((set, get) => ({
+  troubleshootMessages: [],
   myQueueTicket: null,
+  myQueueNotes: null,
   editingMyQueueTicket: null,
   allQueueTickets: null,
   myActivities: null,
   allActivities: null,
-  isMobile: initialWidth < 1350,
+  isMobile: initialWidth < 1420,
   activeSectionButton: "Form",
   currentQueueIndex: 0,
   options: ["activities", "allQueueTickets", "myQueueTickets"],
@@ -57,6 +62,7 @@ const useQueueStore = create((set, get) => ({
     techId
   ) => {
     const {
+      myQueueTicket,
       handleShowMyActivities,
       handleShowAllQueueTickets,
       handleNextQueueTicket,
@@ -72,7 +78,9 @@ const useQueueStore = create((set, get) => ({
     }
 
     if (option === "myQueueTickets") {
-      await handleNextQueueTicket(mspCustomDomain, tier, techId);
+      if (!myQueueTicket) {
+        await handleNextQueueTicket(mspCustomDomain, tier, techId);
+      }
     }
   },
 
@@ -195,8 +203,10 @@ const useQueueStore = create((set, get) => ({
   },
 
   handleNextQueueTicket: async (mspCustomDomain, tier, techId) => {
-    const { handleAddTroubleShootMessage } =
-      useTicketConversationsStore.getState();
+    set({
+      troubleshootMessages: [],
+    });
+    const { handleAddTroubleShootMessage, handleNextQueueTicketNotes } = get();
     try {
       const response = await fetch(
         `${dbServiceUrl}/api/ticketQueue/next?tier=${tier}&mspCustomDomain=${mspCustomDomain}&techId=${techId}`
@@ -214,10 +224,41 @@ const useQueueStore = create((set, get) => ({
             noTicketsInQueue: false,
           });
           console.log("SUCCESS GETTING MY QUEUE TICKET");
-          await handleAddTroubleShootMessage(myQueueTicket.ticketInformation);
+
+          try {
+            await Promise.all([
+              handleNextQueueTicketNotes(
+                mspCustomDomain,
+                myQueueTicket.ticketId
+              ),
+              handleAddTroubleShootMessage(
+                myQueueTicket.ticketInformation,
+                myQueueTicket.ticketId
+              ),
+            ]);
+          } catch (e) {
+            console.log(e);
+          }
         }
       } else {
         console.log("GETTING MY QUEUE TICKET FAILED");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleNextQueueTicketNotes: async (mspCustomDomain, ticketId) => {
+    try {
+      const response = await fetch(
+        `${connectWiseServiceUrl}/getConnectWiseTicketNotesById?mspCustomDomain=${mspCustomDomain}&ticketId=${ticketId}`
+      );
+
+      if (response.status === 200) {
+        const queueNotes = await response.json();
+        console.log("SUCCESS GETTING MY QUEUE TICKET NOTES");
+      } else {
+        console.log("ERROR GETTING MY QUEUE TICKET NOTES");
       }
     } catch (e) {
       console.log(e);
@@ -365,14 +406,100 @@ const useQueueStore = create((set, get) => ({
     }
   },
 
+  handleAddTroubleShootMessage: async (message, ticketId) => {
+    const { inputRef, messageIdRef } = useRefStore.getState();
+
+    const { handleIfConversationExists } = useConversationStore.getState();
+    const userStore = useUserStore.getState();
+    let currentConversation = await handleIfConversationExists(ticketId, true);
+    if (message.trim() !== "" && currentConversation) {
+      inputRef.current.focus();
+      try {
+        const response = await fetch(`${gptServiceUrl}/jarvis`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            text: message,
+            conversationId: currentConversation.id,
+            technicianId: userStore.user.id,
+          }),
+        });
+
+        if (response.status === 200) {
+          const responseBody = await response.json();
+          messageIdRef.current = responseBody.id;
+
+          set((prevState) => {
+            const newMessage = {
+              id: responseBody.id + "-assistant",
+              content: responseBody.aiContent,
+              role: "assistant",
+              timeStamp: new Date().toISOString(),
+            };
+            return {
+              ...prevState,
+              troubleshootMessages: [
+                ...prevState.troubleshootMessages,
+                newMessage,
+              ],
+            };
+          });
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  },
+
+  handleAddUserTroubleshootMessage: async (message) => {
+    set((prevState) => {
+      const newUserMessage = {
+        id: Date.now() + "-user",
+        content: message,
+        role: "user",
+        timeStamp: new Date().toISOString(),
+      };
+
+      return {
+        ...prevState,
+        troubleshootMessages: [
+          ...prevState.troubleshootMessages,
+          newUserMessage,
+        ],
+      };
+    });
+  },
+  handleAddAssistantTroubleshootMessage: (message) => {
+    const { messageIdRef } = useRefStore.getState();
+    set((prevState) => {
+      const newAssistantMessage = {
+        id: messageIdRef.current + "-assistant",
+        content: message,
+        role: "assistant",
+        timeStamp: new Date().toISOString(),
+      };
+      return {
+        ...prevState,
+        troubleshootMessages: [
+          ...prevState.troubleshootMessages,
+          newAssistantMessage,
+        ],
+      };
+    });
+  },
+
   clearQueue: () => {
     set({
+      troubleshootMessages: [],
       myQueueTicket: null,
+      myQueueNotes: null,
       editingMyQueueTicket: null,
       allQueueTickets: null,
       myActivities: null,
       allActivities: null,
-      isMobile: initialWidth < 1023,
+      isMobile: initialWidth < 1420,
       activeSectionButton: "Form",
       currentQueueIndex: 0,
       options: ["activities", "allQueueTickets", "myQueueTickets"],

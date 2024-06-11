@@ -67,6 +67,33 @@ const useUiStore = create((set, get) => ({
 
     set({ activeTab: tab });
   },
+
+  handleCloseIntroMenus: () => {
+    set({
+      openHistory: false,
+      openAssistant: false,
+      openDocs: false,
+      openAdmin: false,
+      openTickets: false,
+      openQueue: false,
+      openSettings: false,
+    });
+  },
+
+  clearUI: () => {
+    set({
+      height: null,
+      activeTab: null,
+      hoverTab: null,
+      openHistory: false,
+      openAssistant: false,
+      openDocs: false,
+      openAdmin: false,
+      openTickets: false,
+      openQueue: false,
+      openSettings: false,
+    });
+  },
 }));
 
 export default useUiStore;

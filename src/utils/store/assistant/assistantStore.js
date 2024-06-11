@@ -8,20 +8,32 @@ const useAssistantStore = create((set, get) => ({
   activeUIAssistantTab: "Tickets",
   activeAssistantTab: "Tickets",
   showProgress: true,
+  isIntroScreen: false,
 
   initializeAssistant: async (msp) => {
+    const { activeUIAssistantTab, activeAssistantTab, isIntroScreen } = get();
     const { initializeMSPIntegrations } = useIntegrationsStore.getState();
+    const { handleCloseIntroMenus } = useUiStore.getState();
     const integrations = await initializeMSPIntegrations(msp);
-    if (integrations?.connectWiseManageIntegrator) {
+
+    if (isIntroScreen) {
       set({
-        activeUIAssistantTab: "Tickets",
-        activeAssistantTab: "Tickets",
+        activeUIAssistantTab: "",
+        activeAssistantTab: "",
       });
-    } else {
-      set({
-        activeUIAssistantTab: "Engineer",
-        activeAssistantTab: "Engineer",
-      });
+      handleCloseIntroMenus();
+    } else if (!activeUIAssistantTab && !activeAssistantTab) {
+      if (integrations?.connectWiseManageIntegrator) {
+        set({
+          activeUIAssistantTab: "Tickets",
+          activeAssistantTab: "Tickets",
+        });
+      } else {
+        set({
+          activeUIAssistantTab: "Engineer",
+          activeAssistantTab: "Engineer",
+        });
+      }
     }
   },
 
@@ -47,7 +59,7 @@ const useAssistantStore = create((set, get) => ({
     if (!openAssistant) {
       handleAssistantMenu();
     }
-    set({ activeUIAssistantTab: tab });
+    set({ activeUIAssistantTab: tab, isIntroScreen: false });
   },
 
   handleAssistantTabChange: (tab) => {
@@ -56,7 +68,7 @@ const useAssistantStore = create((set, get) => ({
       handleAssistantMenu();
     }
 
-    set({ activeAssistantTab: tab });
+    set({ activeAssistantTab: tab, isIntroScreen: false });
   },
 
   clearAssistant: () => {

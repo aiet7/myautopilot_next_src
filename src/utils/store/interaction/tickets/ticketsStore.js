@@ -132,6 +132,7 @@ const useTicketsStore = create((set, get) => ({
 
   clearTickets: async () => {
     set({
+      searchValue: "",
       tickets: null,
       ticketStatus: null,
       ticketNotes: null,

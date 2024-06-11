@@ -18,11 +18,13 @@ const Input = () => {
     handleCreateTicketMessage,
     handleCreateTicketNote,
     handleSendDocumentMessage,
+    handleSendTroubleshootMessage,
     handleSendMessage,
   } = useInteractionStore();
   const { activeUIAssistantTab } = useAssistantStore();
   const { currentOption } = useQueueStore();
   const { showTicket, activeTicketMode } = useTicketsStore();
+  const { myQueueTicket } = useQueueStore();
 
   const { inputRef } = useRefStore();
 
@@ -168,13 +170,22 @@ const Input = () => {
             <textarea
               ref={inputRef}
               onChange={handleTextAreaChange}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleSendTroubleshootMessage(
+                    userInput,
+                    myQueueTicket?.ticketId
+                  );
+                }
+              }}
               value={userInput}
-             
               className="dark:border-white/30 dark:shadow-white/30 dark:bg-black border-black/10 shadow-xl shadow-black/30  outline-none bg-white border w-full p-4 pr-32 resize-none no-scrollbar"
               style={{
                 height: textAreaHeight,
                 maxHeight: "200px",
               }}
+              placeholder="Continue troubleshooting..."
             />
 
             <div className="flex items-center gap-3 absolute right-6 pr-2 flex items-center bottom-0 top-0">
@@ -185,6 +196,12 @@ const Input = () => {
                     ? "dark:text-white dark:hover:text-blue-500 hover:text-blue-500 text-black cursor-pointer"
                     : "dark:text-gray-500 text-gray-300 select-none"
                 } `}
+                onClick={() =>
+                  handleSendTroubleshootMessage(
+                    userInput,
+                    myQueueTicket?.ticketId
+                  )
+                }
               />
             </div>
           </div>

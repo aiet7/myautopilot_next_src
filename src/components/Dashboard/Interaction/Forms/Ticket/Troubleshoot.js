@@ -1,18 +1,23 @@
 import MarkedTroubleshoot from "@/components/Dashboard/Marked/MarkedTroubleshoot";
 
 import useTicketConversationsStore from "@/utils/store/interaction/conversations/ticketConversationsStore";
+import useQueueStore from "@/utils/store/interaction/queue/useQueueStore";
 import { FaSpinner } from "react-icons/fa";
 
 const Troubleshoot = () => {
-  const { isMobile, troubleshootMessage, handleTroubleShootingConvo } =
-    useTicketConversationsStore();
+  const { troubleshootMessages } = useQueueStore();
 
   return (
     <>
       <p className="text-lg font-bold px-2">Troubleshooting Guide</p>
       <div>
-        {troubleshootMessage ? (
-          <MarkedTroubleshoot markdown={troubleshootMessage} />
+        {troubleshootMessages?.length !== 0 ? (
+          <>
+            {troubleshootMessages?.map((messages) => {
+              const { id, content } = messages;
+              return <MarkedTroubleshoot key={id} markdown={content} />;
+            })}
+          </>
         ) : (
           <div className="flex items-center gap-2 px-2">
             <p>Generating optimum troubleshooting steps...</p>
@@ -20,16 +25,7 @@ const Troubleshoot = () => {
           </div>
         )}
       </div>
-      {troubleshootMessage && (
-        <div className="flex items-center gap-4 py-2">
-          <button
-            onClick={handleTroubleShootingConvo}
-            className="hover:bg-blue-500 border border-white/30 bg-blue-800 px-3 py-1 text-white"
-          >
-            Continue Troubleshooting
-          </button>
-        </div>
-      )}
+    
     </>
   );
 };

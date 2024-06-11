@@ -8,6 +8,8 @@ import {
 } from "@/utils/api/serverProps";
 import useTicketConversationsStore from "./ticketConversationsStore";
 import useUserStore from "../../user/userStore";
+import useQueueStore from "../queue/useQueueStore";
+import useAssistantStore from "../../assistant/assistantStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
@@ -15,6 +17,7 @@ const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 const useConversationStore = create((set, get) => ({
   conversationHistories: [],
   currentConversationIndex: 0,
+  troubleshootingConversationId: null,
   searchValue: "",
   editing: false,
   deleting: false,
@@ -26,7 +29,7 @@ const useConversationStore = create((set, get) => ({
   setEditing: (isEditing) => set((state) => ({ ...state, editing: isEditing })),
   setDeleting: (isDeleting) =>
     set((state) => ({ ...state, deleting: isDeleting })),
-  
+
   setSearchValue: (value) =>
     set((state) => ({
       ...state,
@@ -197,34 +200,65 @@ const useConversationStore = create((set, get) => ({
     return previousResponseBodyForForms[conversationId];
   },
 
-  handleIfConversationExists: async () => {
+  handleIfConversationExists: async (ticketId, forceNew = false) => {
     const {
       conversationHistories,
       currentConversationIndex,
       handleNewConversation,
+      troubleshootingConversationId,
     } = get();
 
-    const { troubleshootContinue } = useTicketConversationsStore.getState();
+    let currentConversation;
 
-    let currentConversation = conversationHistories[currentConversationIndex];
+    if (ticketId) {
+      if (!forceNew) {
+        if (troubleshootingConversationId) {
+          currentConversation = conversationHistories.find(
+            (conv) => conv.id === troubleshootingConversationId
+          );
+        }
 
-    if (!currentConversation || troubleshootContinue) {
-      const newConversation = await handleNewConversation(
-        conversationHistories.length
-      );
-      return newConversation;
+        if (!currentConversation) {
+          currentConversation = conversationHistories.find(
+            (conv) => conv.ticketId === ticketId
+          );
+        }
+      }
+
+      if (currentConversation) {
+        return currentConversation;
+      } else {
+        const newConversation = await handleNewConversation(
+          conversationHistories.length,
+          ticketId
+        );
+        return newConversation;
+      }
+    } else {
+      currentConversation = conversationHistories[currentConversationIndex];
+
+      if (currentConversation) {
+        return currentConversation;
+      } else {
+        const newConversation = await handleNewConversation(
+          conversationHistories.length
+        );
+        return newConversation;
+      }
     }
-
-    return currentConversation;
   },
 
-  handleNewConversation: async (index) => {
+  handleNewConversation: async (index, ticketId) => {
     const userStore = useUserStore.getState();
-
+    const { activeUIAssistantTab } = useAssistantStore.getState();
     const { selectedAgent } = useInitializeAppStore.getState();
+
     const newConversation = {
       userId: userStore.user.id,
-      conversationName: `Chat ${index + 1}`,
+      conversationName:
+        activeUIAssistantTab !== "Queue"
+          ? `Chat ${index + 1}`
+          : `${ticketId} Ticket Chat`,
       agentID: selectedAgent,
     };
 
@@ -241,14 +275,22 @@ const useConversationStore = create((set, get) => ({
       );
       if (response.ok) {
         const addedConversation = await response.json();
+        addedConversation.ticketId = ticketId || null;
 
-        set((state) => ({
-          conversationHistories: [
+        set((state) => {
+          const updatedHistories = [
             ...state.conversationHistories,
             addedConversation,
-          ],
-          currentConversationIndex: state.conversationHistories.length,
-        }));
+          ];
+          return {
+            conversationHistories: updatedHistories,
+            currentConversationIndex: updatedHistories.length - 1,
+            troubleshootingConversationId: ticketId
+              ? addedConversation.id
+              : state.troubleshootingConversationId,
+          };
+        });
+
         return addedConversation;
       }
     } catch (e) {
@@ -334,7 +376,7 @@ const useConversationStore = create((set, get) => ({
     set({
       conversationHistories: [],
       currentConversationIndex: 0,
-
+      searchValue: "",
       editing: false,
       deleting: false,
       tempTitle: "",

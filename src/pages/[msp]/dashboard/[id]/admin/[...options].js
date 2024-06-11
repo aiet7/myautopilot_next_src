@@ -70,7 +70,6 @@ const OptionPages = () => {
   const renderComponent = () => {
     if (options && options.length > 0) {
       const componentKey = options[0].toLowerCase();
-      console.log(componentKey)
       const permissionMap = {
         branding: user?.permissions?.mspBranding,
         "msp-integrations": user?.permissions?.mspIntegrations,

@@ -21,6 +21,8 @@ import useBoardStore from "../admin/control/board/boardStore";
 import useAdminStore from "../admin/adminStore";
 import useContactsStore from "../admin/control/contacts/contactsStore";
 import useQueueStore from "../interaction/queue/useQueueStore";
+import useToolsStore from "../assistant/sections/external/downloads/downloadStore";
+import useUiStore from "../ui/uiStore";
 
 const useUserStore = create((set, get) => ({
   user: null,
@@ -88,6 +90,8 @@ const useUserStore = create((set, get) => ({
     const { clearAdmin } = useAdminStore.getState();
     const { clearContacts } = useContactsStore.getState();
     const { clearQueue } = useQueueStore.getState();
+    const { clearTools } = useToolsStore.getState();
+    const { clearUI } = useUiStore.getState();
 
     await clearTickets();
 
@@ -113,6 +117,8 @@ const useUserStore = create((set, get) => ({
     clearAdmin();
     clearContacts();
     clearQueue();
+    clearTools();
+    clearUI();
 
     navigator("/auth/login");
   },

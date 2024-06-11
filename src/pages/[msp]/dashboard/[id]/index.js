@@ -18,6 +18,10 @@ import useMspStore from "@/utils/store/auth/msp/mspStore";
 const Interaction = dynamic(() =>
   import("@/components/Dashboard/Interaction/Interaction.js")
 );
+
+const Introduction = dynamic(() =>
+  import("@/components/Dashboard/Introduction.js")
+);
 const Assistant = dynamic(() =>
   import("@/components/Dashboard/Assistant/Assistant.js")
 );
@@ -29,7 +33,7 @@ const AssistantRail = dynamic(() =>
 const DashboardPage = ({}) => {
   const session = Cookies.get("session_token");
   const router = useRouter();
-  
+
   const { initializeApp } = useInitializeAppStore();
   const { initializeUser } = useUserStore();
   const { initializeUserType } = useMspStore();
@@ -40,7 +44,8 @@ const DashboardPage = ({}) => {
   const { currentConversationIndex } = useConversationStore();
   const { currentDocumentConversationIndex } = useDocConversationsStore();
   const { activeTab } = useUiStore();
-  const { activeAssistantTab, activeUIAssistantTab } = useAssistantStore();
+  const { activeAssistantTab, activeUIAssistantTab, isIntroScreen } =
+    useAssistantStore();
 
   useEffect(() => {
     if (router.isReady) {
@@ -50,8 +55,8 @@ const DashboardPage = ({}) => {
       if (msp && id && session) {
         initializeApp();
         initializeUser(msp, id);
-        initializeAssistant(msp);
         initializeUserType();
+        initializeAssistant(msp);
       } else {
         router.push("/auth/login");
       }
@@ -77,7 +82,7 @@ const DashboardPage = ({}) => {
 
   return (
     <>
-      <Interaction />
+      {isIntroScreen ? <Introduction /> : <Interaction />}
       {window.innerWidth > 1023 && <AssistantRail />}
       <Assistant />
     </>

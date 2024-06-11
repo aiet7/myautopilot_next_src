@@ -175,7 +175,6 @@ export const handleGetClientTickets = async (clientId) => {
   return response.json();
 };
 
-
 export const handleGetMSPs = async (customDomain) => {
   const response = await fetch(
     `${dbServiceUrl}/msp?customDomain=${encodeURIComponent(customDomain)}`
@@ -185,6 +184,13 @@ export const handleGetMSPs = async (customDomain) => {
 
 export const handleGetAgents = async () => {
   const response = await fetch(`${dbServiceUrl}/getAgents`);
+  return response.json();
+};
+
+export const handleGetMspTools = async (msp) => {
+  const response = await fetch(
+    `${dbServiceUrl}/applications/msp/${encodeURIComponent(msp)}`
+  );
   return response.json();
 };
 
