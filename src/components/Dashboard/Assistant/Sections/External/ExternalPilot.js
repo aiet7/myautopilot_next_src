@@ -4,8 +4,9 @@ import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import Passwords from "./Passwords";
 import RemoteAccess from "./RemoteAccess";
 import Billing from "./Billing";
-import Tools from "./Tools";
+import Tools from "./Downloads";
 import Policies from "./Policies";
+import Downloads from "./Downloads";
 
 const ExternalPilot = () => {
   const { activeAssistantTab } = useAssistantStore();
@@ -18,8 +19,8 @@ const ExternalPilot = () => {
         return <Passwords />;
       case "Billing":
         return <Billing />;
-      case "Tools":
-        return <Tools />;
+      case "Downloads":
+        return <Downloads />;
       case "Policies":
         return <Policies />;
       default:

@@ -73,6 +73,9 @@ const AddEmployee = () => {
                       )
                     }
                   >
+                    <option value="Select Open Status" disabled selected>
+                      Select Email Type
+                    </option>
                     {emailTypes.map((type) => {
                       const { id, description } = type;
                       return (
@@ -101,6 +104,9 @@ const AddEmployee = () => {
                       )
                     }
                   >
+                    <option value="Select Open Status" disabled selected>
+                      Select Phone Type
+                    </option>
                     {phoneTypes.map((type) => {
                       const { id, description } = type;
                       return (

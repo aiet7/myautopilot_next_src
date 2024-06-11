@@ -4,29 +4,13 @@ import useQueueStore from "@/utils/store/interaction/queue/useQueueStore";
 import { useEffect } from "react";
 
 import AllQueueTickets from "./AllQueueTickets";
-import QueueManagment from "./QueueManagment";
+import QueueManagment from "./QueueManagment/QueueManagment";
 import useUserStore from "@/utils/store/user/userStore";
 import Activities from "./Activities";
 
 const TicketWorkspace = () => {
   const { user } = useUserStore();
-  const { currentOption, handleShowMyActivities, setIsMobile } =
-    useQueueStore();
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const handleResize = () => {
-        setIsMobile(window.innerWidth < 1350);
-      };
-      handleResize();
-
-      window.addEventListener("resize", handleResize);
-
-      return () => {
-        window.removeEventListener("resize", handleResize);
-      };
-    }
-  }, []);
+  const { currentOption, handleShowMyActivities } = useQueueStore();
 
   useEffect(() => {
     if (currentOption === "myActivities") {

@@ -15,6 +15,7 @@ const MSPPage = ({}) => {
   const { mspSubDomain, initializeSubDomain } = useInitializeAppStore();
 
   const {
+    loginInputs,
     userType,
     current2FA,
     errorMessage,
@@ -107,7 +108,11 @@ const MSPPage = ({}) => {
                   ) : (
                     <p>Client Login</p>
                   )}
-                  <button className="hover:underline" type="button" onClick={handleSwitchMspLoginFlow}>
+                  <button
+                    className="hover:underline"
+                    type="button"
+                    onClick={handleSwitchMspLoginFlow}
+                  >
                     Switch
                   </button>
                 </div>
@@ -139,6 +144,11 @@ const MSPPage = ({}) => {
                         }
                       }
                     }}
+                    value={
+                      userType === "tech"
+                        ? loginInputs.techInfo.login2FA
+                        : loginInputs.clientInfo.login2FA
+                    }
                     type="text"
                     placeholder="Enter 2FA Token"
                     className="w-full p-2 border border-gray-300 bg-white text-black"

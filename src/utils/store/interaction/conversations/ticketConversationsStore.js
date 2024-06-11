@@ -26,7 +26,6 @@ const useTicketConversationsStore = create((set, get) => ({
   setActiveSectionButton: (button) => set({ activeSectionButton: button }),
 
   handleAddUserMessage: async (message) => {
-    const { handleAddTroubleShootMessage } = get();
     set((state) => {
       const newUserMessage = {
         id: Date.now() + "-user",
@@ -37,7 +36,6 @@ const useTicketConversationsStore = create((set, get) => ({
 
       return { ...state, messages: [...state.messages, newUserMessage] };
     });
-    await handleAddTroubleShootMessage(message);
   },
 
   handleAddAssistantMessage: (message, formType) => {
@@ -57,56 +55,56 @@ const useTicketConversationsStore = create((set, get) => ({
     });
   },
 
-  handleAddTroubleShootMessage: async (message) => {
-    const { prependTroubleshootText } = get();
-    const completeMessage = prependTroubleshootText + message;
+  // handleAddTroubleShootMessage: async (message) => {
+  //   const { prependTroubleshootText } = get();
+  //   const completeMessage = prependTroubleshootText + message;
 
-    set({ troubleshootMessage: "" });
+  //   set({ troubleshootMessage: "" });
 
-    try {
-      const response = await fetch(`${gptServiceUrl}/message`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: completeMessage,
-        }),
-      });
+  //   try {
+  //     const response = await fetch(`${gptServiceUrl}/message`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         message: completeMessage,
+  //       }),
+  //     });
 
-      if (response.status === 200) {
-        const responseBody = await response.json();
-        set({
-          troubleshootMessage: responseBody.choices[0]?.message?.content,
-        });
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  },
+  //     if (response.status === 200) {
+  //       const responseBody = await response.json();
+  //       set({
+  //         troubleshootMessage: responseBody.choices[0]?.message?.content,
+  //       });
+  //     }
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // },
 
-  handleTroubleShootingConvo: async () => {
-    const { troubleshootMessage } = get();
-    const { handleSendPromptGenerator } = useEngineerStore.getState();
-    const { handleSendMessage } = useInteractionStore.getState();
-    const { handleAssistantTabChange, handleUIAssistantTabChange } =
-      useAssistantStore.getState();
+  // handleTroubleShootingConvo: async () => {
+  //   const { troubleshootMessage } = get();
+  //   const { handleSendPromptGenerator } = useEngineerStore.getState();
+  //   const { handleSendMessage } = useInteractionStore.getState();
+  //   const { handleAssistantTabChange, handleUIAssistantTabChange } =
+  //     useAssistantStore.getState();
 
-    set({ troubleshootContinue: true });
+  //   set({ troubleshootContinue: true });
 
-    handleAssistantTabChange("Engineer");
-    handleUIAssistantTabChange("Engineer");
+  //   handleAssistantTabChange("Engineer");
+  //   handleUIAssistantTabChange("Engineer");
 
-    try {
-      await Promise.all([
-        handleSendMessage(troubleshootMessage + " Continue from last step."),
-        handleSendPromptGenerator(),
-      ]);
-    } catch (e) {
-      console.log(e);
-    }
-    set({ troubleshootContinue: false });
-  },
+  //   try {
+  //     await Promise.all([
+  //       handleSendMessage(troubleshootMessage + " Continue from last step."),
+  //       handleSendPromptGenerator(),
+  //     ]);
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  //   set({ troubleshootContinue: false });
+  // },
 
   handleAddForm: (formType) => {
     const formId = Date.now();

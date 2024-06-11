@@ -21,8 +21,6 @@ const useLocalStorageStore = create((set, get) => ({
 
     useUserStore.setState({ user: parsedLastActiveDirectory });
 
-    
-
     useAdminStore.setState({
       currentOption:
         parsedLastUI.currentOption || (isOnAdminRoute ? option : "employees"),
@@ -34,8 +32,12 @@ const useLocalStorageStore = create((set, get) => ({
     });
 
     useAssistantStore.setState({
-      activeAssistantTab: parsedLastUI.activeAssistantTab || "Tickets",
-      activeUIAssistantTab: parsedLastUI.activeUIAssistantTab || "Tickets",
+      activeAssistantTab: parsedLastUI.activeAssistantTab || "",
+      activeUIAssistantTab: parsedLastUI.activeUIAssistantTab || "",
+      isIntroScreen:
+        parsedLastUI.isIntroScreen !== undefined
+          ? parsedLastUI.isIntroScreen
+          : true, 
     });
 
     useConversationStore.setState({
@@ -51,7 +53,7 @@ const useLocalStorageStore = create((set, get) => ({
     const { user } = useUserStore.getState();
     const { currentOption } = useAdminStore.getState();
     const { activeTab } = useUiStore.getState();
-    const { activeAssistantTab, activeUIAssistantTab } =
+    const { activeAssistantTab, activeUIAssistantTab, isIntroScreen } =
       useAssistantStore.getState();
     const { currentConversationIndex } = useConversationStore.getState();
     const { currentDocumentConversationIndex } =
@@ -65,6 +67,7 @@ const useLocalStorageStore = create((set, get) => ({
         activeTab,
         activeAssistantTab,
         activeUIAssistantTab,
+        isIntroScreen,
       })
     );
     localStorage.setItem(
@@ -98,6 +101,7 @@ const useLocalStorageStore = create((set, get) => ({
         activeTab: "iTAgent",
         activeAssistantTab: "Tickets",
         activeUIAssistantTab: "Tickets",
+        isIntroScreen: true,
       },
       conversation: {
         currentConversationIndex: 0,
@@ -111,8 +115,11 @@ const useLocalStorageStore = create((set, get) => ({
     });
     useUiStore.setState({
       activeTab: defaultStates.ui.activeTab,
+    });
+    useAssistantStore.setState({
       activeAssistantTab: defaultStates.ui.activeAssistantTab,
       activeUIAssistantTab: defaultStates.ui.activeUIAssistantTab,
+      isIntroScreen: defaultStates.ui.isIntroScreen,
     });
     useConversationStore.setState({
       currentConversationIndex:

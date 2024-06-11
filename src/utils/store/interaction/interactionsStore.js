@@ -7,6 +7,7 @@ import useTicketConversationsStore from "./conversations/ticketConversationsStor
 import useUserStore from "../user/userStore";
 import useMspStore from "../auth/msp/mspStore";
 import useTicketsStore from "./tickets/ticketsStore";
+import useQueueStore from "./queue/useQueueStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
@@ -262,6 +263,57 @@ const useInteractionStore = create((set, get) => ({
           const responseBody = await response.json();
           messageIdRef.current = responseBody.id;
           handleAddJarvisAssistantMessage(responseBody.aiContent, null);
+        }
+      } catch (e) {
+        console.log(e);
+      } finally {
+        set({
+          isWaiting: false,
+        });
+      }
+    }
+  },
+
+  handleSendTroubleshootMessage: async (message, ticketId) => {
+    const { inputRef, messageIdRef } = useRefStore.getState();
+    const userStore = useUserStore.getState();
+    const { handleIfConversationExists } = useConversationStore.getState();
+
+    let currentConversation = await handleIfConversationExists(ticketId);
+    const {
+      handleAddUserTroubleshootMessage,
+      handleAddAssistantTroubleshootMessage,
+    } = useQueueStore.getState();
+
+
+    if (message.trim() !== "" && currentConversation) {
+      inputRef.current.focus();
+      handleAddUserTroubleshootMessage(message);
+      
+      set({
+        isWaiting: true,
+        isServerError: false,
+        userInput: "",
+      });
+
+      try {
+        const response = await fetch(`${gptServiceUrl}/jarvis`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            text: message,
+            conversationId: currentConversation.id,
+            technicianId: userStore.user.id,
+          }),
+        });
+
+        if (response.status === 200) {
+          const responseBody = await response.json();
+          messageIdRef.current = responseBody.id;
+
+          handleAddAssistantTroubleshootMessage(responseBody.aiContent);
         }
       } catch (e) {
         console.log(e);

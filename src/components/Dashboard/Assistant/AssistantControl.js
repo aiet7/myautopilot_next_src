@@ -10,7 +10,7 @@ const AssistantControl = () => {
   return (
     <div className="dark:border-white/10 relative border-b border-black/10  py-4 px-4 flex justify-between items-center transition-all duration-300 ease">
       <p className="dark:text-white text-xl text-black">
-        {activeAssistantTab} Support
+        {activeAssistantTab}
       </p>
       <div className="dark:text-white flex items-center text-black gap-2">
         {window.innerWidth > 1023 && (

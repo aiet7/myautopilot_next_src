@@ -1629,7 +1629,6 @@ const useManageStore = create((set, get) => ({
   },
 
   handleSetDefaultCompany: async (mspCustomDomain, companyName, companyId) => {
-    console.log(companyId);
     try {
       const response = await fetch(
         `${dbServiceUrl}/${mspCustomDomain}/connectWiseManageDetails/update`,

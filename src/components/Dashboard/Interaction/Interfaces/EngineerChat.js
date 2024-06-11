@@ -11,8 +11,11 @@ import { SiOpenai } from "react-icons/si";
 
 const EngineerChat = () => {
   const { user } = useUserStore();
-  const { conversationHistories, currentConversationIndex } =
-    useConversationStore();
+  const {
+    conversationHistories,
+    currentConversationIndex,
+    troubleshootingConversationId,
+  } = useConversationStore();
   const { handleScrollToBottom, handleCheckScroll } = useInteractionStore();
   const { latestMessageRef, chatContainerRef } = useRefStore();
 
@@ -24,6 +27,7 @@ const EngineerChat = () => {
     handleScrollToBottom(false);
   }, [currentConversationIndex]);
 
+ 
   return (
     <div
       className="flex-grow overflow-auto scrollbar-thin"

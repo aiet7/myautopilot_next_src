@@ -1,7 +1,6 @@
 "use client";
 
 import { SiOpenai } from "react-icons/si";
-import { BsFiletypeDoc } from "react-icons/bs";
 import { FaMoneyBillAlt } from "react-icons/fa";
 import { AiFillTool } from "react-icons/ai";
 import { MdScreenShare, MdPassword, MdPolicy } from "react-icons/md";
@@ -63,6 +62,7 @@ const AssistantRail = ({}) => {
             if (mspIntegrations?.connectWiseManageIntegrator) {
               handleAssistantTabChange("Queue");
               handleUIAssistantTabChange("Queue");
+
               handleWorkspaceOptionSelected(
                 "activities",
                 user?.mspCustomDomain,
@@ -74,12 +74,7 @@ const AssistantRail = ({}) => {
         />
       )}
 
-      {/* <BsFiletypeDoc
-        className={`dark:text-white/10 text-black/20 ${
-          activeAssistantTab === "Document" && "text-blue-800"
-        }  rounded-full px-2 outline-none`}
-        size={35}
-      /> */}
+ 
 
       <SiOpenai
         className={`${
@@ -120,10 +115,10 @@ const AssistantRail = ({}) => {
 
       <AiFillTool
         className={`${
-          activeAssistantTab === "Tools" && "text-blue-800"
+          activeAssistantTab === "Downloads" && "text-blue-800"
         } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
         size={35}
-        onClick={() => handleAssistantTabChange("Tools")}
+        onClick={() => handleAssistantTabChange("Downloads")}
       />
 
       <MdPolicy
