@@ -55,9 +55,20 @@ const useAssistantStore = create((set, get) => ({
   },
 
   handleUIAssistantTabChange: (tab) => {
-    const { openAssistant, handleAssistantMenu } = useUiStore.getState();
+    const {
+      openHistory,
+      openTickets,
+      openQueue,
+      openAssistant,
+      handleAssistantMenu,
+      handleHistoryMenu,
+    } = useUiStore.getState();
     if (!openAssistant) {
       handleAssistantMenu();
+    }
+
+    if (!openHistory || !openTickets || !openQueue) {
+      handleHistoryMenu();
     }
     set({ activeUIAssistantTab: tab, isIntroScreen: false });
   },
@@ -68,7 +79,7 @@ const useAssistantStore = create((set, get) => ({
       handleAssistantMenu();
     }
 
-    set({ activeAssistantTab: tab,  });
+    set({ activeAssistantTab: tab });
   },
 
   clearAssistant: () => {
