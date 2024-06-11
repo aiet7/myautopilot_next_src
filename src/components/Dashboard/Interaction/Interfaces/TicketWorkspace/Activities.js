@@ -22,7 +22,7 @@ const Activities = () => {
   const activities =
     currentActivitiesOption === "myActivities" ? myActivities : allActivities;
   
-    return (
+  return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-2">
         <button
@@ -30,16 +30,20 @@ const Activities = () => {
             handleShowMyActivities(user?.mspCustomDomain, user?.id)
           }
           className={`${
-            currentActivitiesOption === "myActivities" && "bg-blue-400"
-          } hover:bg-blue-500 bg-blue-800 text-white rounded-lg py-2 px-6 font-bold`}
+            currentActivitiesOption === "myActivities"
+              ? "bg-blue-500"
+              : "bg-blue-800"
+          } hover:bg-blue-500 text-white rounded-lg py-2 px-6 font-bold`}
         >
           My Activities
         </button>
         <button
           onClick={() => handleShowAllActivities(user?.mspCustomDomain)}
           className={`${
-            currentActivitiesOption === "allActivities" && "bg-blue-400"
-          } hover:bg-blue-500 bg-blue-800 text-white rounded-lg py-2 px-6 font-bold`}
+            currentActivitiesOption === "allActivities"
+              ? "bg-blue-500"
+              : "bg-blue-800"
+          } hover:bg-blue-500 text-white rounded-lg py-2 px-6 font-bold`}
         >
           All Activities
         </button>
