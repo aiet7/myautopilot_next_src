@@ -68,7 +68,7 @@ const useAssistantStore = create((set, get) => ({
       handleAssistantMenu();
     }
 
-    set({ activeAssistantTab: tab, isIntroScreen: false });
+    set({ activeAssistantTab: tab,  });
   },
 
   clearAssistant: () => {

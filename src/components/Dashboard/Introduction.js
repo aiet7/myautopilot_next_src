@@ -27,7 +27,7 @@ const Introduction = () => {
           alt="Logo"
         />
         <div className="flex flex-col items-center gap-12">
-          <h2 className="text-3xl font-semibold">Let's Get Started</h2>
+          <h2 className="text-3xl font-semibold">Let&#39;s Get Started</h2>
           <div className="flex flex-col gap-10 md:flex-row">
             <div className="flex flex-col gap-4">
               <p className="text-2xl">
