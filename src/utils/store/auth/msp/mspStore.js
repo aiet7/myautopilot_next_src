@@ -373,7 +373,6 @@ const useMspStore = create((set, get) => ({
   },
 
   handleTechnicianCheck: async (navigator) => {
-    console.log("firing off");
     const { loginInputs, errorMessage } = get();
     const { techInfo } = loginInputs;
     if (techInfo.email === "") {
@@ -715,7 +714,7 @@ const useMspStore = create((set, get) => ({
         });
       }
     } catch (e) {
-      console.log();
+      console.log(e);
     }
   },
 
