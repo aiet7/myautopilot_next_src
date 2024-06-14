@@ -99,6 +99,9 @@ const MSPPage = ({}) => {
               {errorMessage?.emptyFields && (
                 <p className="text-red-500">Please fill out required field*.</p>
               )}
+              {errorMessage?.login2FA && (
+                <p className="text-red-500">2FA Code Incorrect.</p>
+              )}
             </div>
             <div className="flex flex-col gap-4 w-full">
               {!current2FA && (
@@ -146,8 +149,8 @@ const MSPPage = ({}) => {
                     }}
                     value={
                       userType === "tech"
-                        ? loginInputs.techInfo.login2FA
-                        : loginInputs.clientInfo.login2FA
+                        ? loginInputs.techInfo.login2FA || ""
+                        : loginInputs.clientInfo.login2FA || ""
                     }
                     type="text"
                     placeholder="Enter 2FA Token"
@@ -193,6 +196,11 @@ const MSPPage = ({}) => {
                         }
                       }
                     }}
+                    value={
+                      userType === "tech"
+                        ? loginInputs.techInfo.email || ""
+                        : loginInputs.clientInfo.email || ""
+                    }
                     type="email"
                     placeholder="Enter your email"
                     className="w-full p-2 border border-gray-300 bg-white text-black"
@@ -216,6 +224,11 @@ const MSPPage = ({}) => {
                           }
                         }
                       }}
+                      value={
+                        userType === "tech"
+                          ? loginInputs.techInfo.password || ""
+                          : loginInputs.clientInfo.password || ""
+                      }
                       type={showPassword ? "text" : "password"}
                       placeholder="Enter your password"
                       className="w-full p-2 border border-gray-300  bg-white text-black"
