@@ -68,6 +68,9 @@ const useMspStore = create((set, get) => ({
     fileMissing: false,
     emptyFields: false,
     emailCheck: false,
+    clientEmailCheck: false,
+    techEmailCheck: false,
+    login2FA: false,
   },
 
   successMessage: false,
@@ -176,16 +179,29 @@ const useMspStore = create((set, get) => ({
   },
 
   handleActiveTechnicianTab: () => {
+    const { errorMessage } = get();
     localStorage.setItem("lastActiveUserType", "tech");
     set({
       userType: "tech",
+      errorMessage: {
+        ...errorMessage,
+        clientEmailCheck: false,
+        techEmailCheck: false,
+      },
     });
   },
 
   handleActiveClientTab: () => {
+    const { errorMessage } = get();
+
     localStorage.setItem("lastActiveUserType", "client");
     set({
       userType: "client",
+      errorMessage: {
+        ...errorMessage,
+        clientEmailCheck: false,
+        techEmailCheck: false,
+      },
     });
   },
 
@@ -576,7 +592,7 @@ const useMspStore = create((set, get) => ({
         set({
           errorMessage: {
             ...errorMessage,
-            emailCheck: false,
+            login2FA: false,
             emptyFields: false,
           },
         });
@@ -587,7 +603,7 @@ const useMspStore = create((set, get) => ({
         set({
           errorMessage: {
             ...errorMessage,
-            emailCheck: true,
+            login2FA: true,
             emptyFields: false,
           },
         });
@@ -621,7 +637,7 @@ const useMspStore = create((set, get) => ({
         set({
           errorMessage: {
             ...errorMessage,
-            emailCheck: false,
+            login2FA: false,
             emptyFields: false,
           },
         });
@@ -632,7 +648,7 @@ const useMspStore = create((set, get) => ({
         set({
           errorMessage: {
             ...errorMessage,
-            emailCheck: true,
+            login2FA: true,
             emptyFields: false,
           },
         });
@@ -643,7 +659,7 @@ const useMspStore = create((set, get) => ({
   },
 
   handleActivateTechnicianCheck: async (mspCustomDomain) => {
-    const { signupInputs } = get();
+    const { signupInputs, errorMessage } = get();
     const { techInfo } = signupInputs;
     try {
       const response = await fetch(
@@ -653,9 +669,19 @@ const useMspStore = create((set, get) => ({
         const technicians = await response.json();
         set({
           technicianList: technicians,
+          errorMessage: {
+            ...errorMessage,
+            techEmailCheck: false,
+          },
         });
       } else {
         console.log("Error");
+        set({
+          errorMessage: {
+            ...errorMessage,
+            techEmailCheck: true,
+          },
+        });
       }
     } catch (e) {
       console.log();
@@ -663,7 +689,7 @@ const useMspStore = create((set, get) => ({
   },
 
   handleActivateClientCheck: async (mspCustomDomain) => {
-    const { signupInputs } = get();
+    const { signupInputs, errorMessage } = get();
     const { clientInfo } = signupInputs;
     try {
       const response = await fetch(
@@ -674,12 +700,21 @@ const useMspStore = create((set, get) => ({
         const clients = await response.json();
         set({
           clientList: clients,
+          errorMessage: {
+            ...errorMessage,
+            clientEmailCheck: false,
+          },
         });
       } else {
-        console.log("Error");
+        set({
+          errorMessage: {
+            ...errorMessage,
+            clientEmailCheck: true,
+          },
+        });
       }
     } catch (e) {
-      console.log();
+      console.log(e);
     }
   },
 

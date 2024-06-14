@@ -3,6 +3,7 @@
 import useQueueStore from "@/utils/store/interaction/queue/useQueueStore";
 import useUserStore from "@/utils/store/user/userStore";
 import Troubleshoot from "../../../Forms/Ticket/Troubleshoot";
+import QueueNotes from "./QueueNotes";
 
 const LargeScreenQueue = () => {
   const { user } = useUserStore();
@@ -296,6 +297,7 @@ const LargeScreenQueue = () => {
                   </div>
                 )}
               </div>
+              <QueueNotes />
             </div>
             <div>
               <div className="flex w-full gap-4 my-4">

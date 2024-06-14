@@ -11,6 +11,7 @@ const ActivatePage = () => {
   const { msp } = router.query;
   const { height, setHeight } = useUiStore();
   const {
+    errorMessage,
     userType,
     selectedTechnician,
     selectedClient,
@@ -28,7 +29,7 @@ const ActivatePage = () => {
     handleNavigateMSPSignup,
     initializeUserType,
   } = useMspStore();
-
+  
   useEffect(() => {
     if (typeof window !== "undefined") {
       setHeight(window.innerHeight);
@@ -188,6 +189,18 @@ const ActivatePage = () => {
                         <p className="text-black/60">
                           Please fill out all of the required fields*
                         </p>
+                        {errorMessage.clientEmailCheck && (
+                          <p className="text-sm text-red-500">
+                            Please contact MSP manager to send invite to proceed
+                            with client account activiation.
+                          </p>
+                        )}
+                        {errorMessage.techEmailCheck && (
+                          <p className="text-sm text-red-500">
+                            Please contact MSP manager to send invite to proceed
+                            with technician account activiation.
+                          </p>
+                        )}
                       </div>
                       <input
                         onChange={(e) =>
