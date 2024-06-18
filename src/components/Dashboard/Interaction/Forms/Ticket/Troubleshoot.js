@@ -19,7 +19,7 @@ const Troubleshoot = () => {
             {troubleshootMessages?.map((messages) => {
               const { id, content, role } = messages;
               return (
-                <div className="flex items-start gap-2">
+                <div key={id} className="flex items-start gap-2">
                   <span>
                     {role === "user" ? (
                       <div className="w-7 h-7 text-sm bg-blue-800 flex justify-center items-center text-white">
@@ -31,7 +31,7 @@ const Troubleshoot = () => {
                       </div>
                     )}
                   </span>
-                  <MarkedTroubleshoot key={id} markdown={content} />
+                  <MarkedTroubleshoot markdown={content} />
                 </div>
               );
             })}
