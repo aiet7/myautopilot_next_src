@@ -35,11 +35,11 @@ const TicketWorkspace = () => {
   };
 
   return (
-    <div className="flex-grow overflow-auto scrollbar-thin ">
+    <div className="flex-grow overflow-auto scrollbar-thin">
       <div className="px-4 py-4 text-md w-full ">
         <div className="max-w-[1400px] flex items-start gap-4 mx-auto ">
           <div className="flex-grow min-w-[0] ">
-            <div className="flex flex-col gap-6">{renderComponent()}</div>
+            <div className="flex flex-col gap-6 ">{renderComponent()}</div>
           </div>
         </div>
       </div>

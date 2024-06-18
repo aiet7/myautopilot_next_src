@@ -16,6 +16,7 @@ const LargeScreenQueue = () => {
     tierOptions,
     ticketRequeued,
     ticketClosed,
+    ticketSaved,
     setCancelEdit,
     setEditTicket,
     handleEditTicket,
@@ -381,6 +382,9 @@ const LargeScreenQueue = () => {
             )}
             {ticketClosed && (
               <p className="font-semibold">Ticket Has Been Closed!</p>
+            )}
+            {ticketSaved && (
+              <p className="font-semibold">Ticket Has Been Saved!</p>
             )}
           </div>
           <div className="flex-1 max-h-[800px] overflow-auto scrollbar-thin px-2">

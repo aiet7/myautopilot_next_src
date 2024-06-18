@@ -6,7 +6,7 @@ import LargeScreenQueue from "./LargeScreenQueue";
 
 const QueueManagment = () => {
   const { myQueueTicket, isMobile, setIsMobile } = useQueueStore();
-  
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const handleResize = () => {
@@ -24,18 +24,21 @@ const QueueManagment = () => {
 
   return (
     <div className={`${isMobile ? "flex-col" : "flex-row"} flex `}>
-      {myQueueTicket ? (<>
-        {isMobile ? (
-          <SmallScreenQueue />
-        ) : (
-          <>
-            <LargeScreenQueue />
-          </>
-        )}
-      </>) : (
-          <p className="dark:text-white/40 text-semibold text-2xl text-black/30">Currently No Tickets In Queue</p>
+      {myQueueTicket ? (
+        <>
+          {isMobile ? (
+            <SmallScreenQueue />
+          ) : (
+            <>
+              <LargeScreenQueue />
+            </>
+          )}
+        </>
+      ) : (
+        <p className="dark:text-white/40 text-semibold text-2xl text-black/30">
+          Currently No Tickets In Queue
+        </p>
       )}
-      
     </div>
   );
 };

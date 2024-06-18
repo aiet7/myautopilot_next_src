@@ -14,7 +14,7 @@ const MarkedTroubleshoot = ({ markdown }) => {
 
   return (
     <div
-      className="flex flex-col gap-2 p-2"
+      className="flex flex-col gap-2"
       dangerouslySetInnerHTML={{
         __html: marked(markdown, { headerIds: false, mangle: false }),
       }}

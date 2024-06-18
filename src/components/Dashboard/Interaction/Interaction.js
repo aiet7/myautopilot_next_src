@@ -63,7 +63,7 @@ const Interaction = ({}) => {
           openAssistant && handleAssistantMenu(false);
         }
       }}
-      className={`relative flex flex-col h-full w-full  ${
+      className={`relative flex flex-col h-full w-full   ${
         (openDocs || openHistory || openTickets || openQueue) &&
         openAssistant &&
         "xl:mr-[350px]"
