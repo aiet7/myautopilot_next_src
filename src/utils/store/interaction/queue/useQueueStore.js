@@ -26,6 +26,7 @@ const useQueueStore = create((set, get) => ({
   noTicketsInQueue: false,
   ticketRequeued: false,
   ticketClosed: false,
+  ticketSaved: false,
   editTicket: false,
   ticketCategories: null,
   ticketPriorities: null,
@@ -221,6 +222,7 @@ const useQueueStore = create((set, get) => ({
             myQueueTicket: myQueueTicket,
             ticketClosed: false,
             ticketRequeued: false,
+            ticketSaved: false,
             noTicketsInQueue: false,
           });
           console.log("SUCCESS GETTING MY QUEUE TICKET");
@@ -398,8 +400,15 @@ const useQueueStore = create((set, get) => ({
 
       if (response.status === 200) {
         console.log("Ticket Saved!");
+        set({
+          ticketSaved: true,
+          editTicket: false,
+        });
       } else {
         console.log("Ticket Saving Failed");
+        set({
+          ticketSaved: false,
+        });
       }
     } catch (e) {
       console.log(e);

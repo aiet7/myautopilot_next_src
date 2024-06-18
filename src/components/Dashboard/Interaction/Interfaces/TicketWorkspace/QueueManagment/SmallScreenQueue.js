@@ -16,6 +16,7 @@ const SmallScreenQueue = () => {
     editTicket,
     ticketRequeued,
     ticketClosed,
+    ticketSaved,
     setActiveSectionButton,
     setCancelEdit,
     setEditTicket,
@@ -46,7 +47,7 @@ const SmallScreenQueue = () => {
           Troubleshoot
         </button>
       </div>
-      <div className="w-full">
+      <div className="w-full py-4">
         {activeSectionButton === "Form" && (
           <div className="flex-1">
             <div className="flex  flex-col gap-2">
@@ -418,6 +419,9 @@ const SmallScreenQueue = () => {
             )}
             {ticketClosed && (
               <p className="font-semibold">Ticket Has Been Closed!</p>
+            )}
+            {ticketSaved && (
+              <p className="font-semibold">Ticket Has Been Saved!</p>
             )}
           </div>
         )}
