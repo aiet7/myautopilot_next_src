@@ -419,8 +419,10 @@ const useQueueStore = create((set, get) => ({
       );
 
       if (response.status === 200) {
-        console.log("Ticket Saved!");
+        const newQueueTicket = await response.json();
+
         set({
+          myQueueTicket: newQueueTicket,
           ticketSaved: true,
           editTicket: false,
         });
@@ -434,8 +436,6 @@ const useQueueStore = create((set, get) => ({
       console.log(e);
     }
   },
-
- 
 
   handleAddTroubleShootMessage: async (message, ticketId) => {
     const { inputRef, messageIdRef } = useRefStore.getState();
