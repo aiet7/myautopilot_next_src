@@ -29,7 +29,7 @@ const ExternalPilot = () => {
   };
 
   return (
-    <div className="relative flex-grow flex flex-col items-center py-10 px-6 gap-14 overflow-auto scrollbar-thin">
+    <div className="relative flex-grow flex flex-col items-center py-10 px-2 gap-14 overflow-auto scrollbar-thin">
       {renderComponent()}
     </div>
   );

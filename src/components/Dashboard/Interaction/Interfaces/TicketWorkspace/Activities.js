@@ -1,6 +1,6 @@
 "use client";
 
-import useQueueStore from "@/utils/store/interaction/queue/useQueueStore";
+import useQueueStore from "@/utils/store/interaction/queue/queueStore";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
@@ -21,7 +21,7 @@ const Activities = () => {
 
   const activities =
     currentActivitiesOption === "myActivities" ? myActivities : allActivities;
-  
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-2">
@@ -33,7 +33,7 @@ const Activities = () => {
             currentActivitiesOption === "myActivities"
               ? "bg-blue-500"
               : "bg-blue-800"
-          } hover:bg-blue-500 text-white rounded-lg py-2 px-6 font-bold`}
+          } hover:bg-blue-500 text-white rounded-lg py-1 px-4 font-bold`}
         >
           My Activities
         </button>
@@ -43,7 +43,7 @@ const Activities = () => {
             currentActivitiesOption === "allActivities"
               ? "bg-blue-500"
               : "bg-blue-800"
-          } hover:bg-blue-500 text-white rounded-lg py-2 px-6 font-bold`}
+          } hover:bg-blue-500 text-white rounded-lg py-1 px-4 font-bold`}
         >
           All Activities
         </button>
@@ -59,7 +59,7 @@ const Activities = () => {
         }))}
         startAccessor="start"
         endAccessor="end"
-        style={{ height: "100%" }}
+        style={{ height: "100%", fontSize: "12px" }}
         views={[Views.DAY]}
         defaultView={[Views.DAY]}
         defaultDate={new Date()}

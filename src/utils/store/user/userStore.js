@@ -20,7 +20,7 @@ import useAssistantStore from "../assistant/assistantStore";
 import useBoardStore from "../admin/control/board/boardStore";
 import useAdminStore from "../admin/adminStore";
 import useContactsStore from "../admin/control/contacts/contactsStore";
-import useQueueStore from "../interaction/queue/useQueueStore";
+import useQueueStore from "../interaction/queue/queueStore";
 import useToolsStore from "../assistant/sections/external/downloads/downloadStore";
 import useUiStore from "../ui/uiStore";
 

@@ -7,7 +7,7 @@ import useTicketConversationsStore from "./conversations/ticketConversationsStor
 import useUserStore from "../user/userStore";
 import useMspStore from "../auth/msp/mspStore";
 import useTicketsStore from "./tickets/ticketsStore";
-import useQueueStore from "./queue/useQueueStore";
+import useQueueStore from "./queue/queueStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
@@ -245,7 +245,6 @@ const useInteractionStore = create((set, get) => ({
         isServerError: false,
         userInput: "",
       });
-
       try {
         const response = await fetch(`${gptServiceUrl}/jarvis`, {
           method: "POST",
@@ -273,6 +272,37 @@ const useInteractionStore = create((set, get) => ({
       }
     }
   },
+  handleSendQueueTicketNote: async (message, ticketId) => {
+    const userStore = useUserStore.getState();
+    let formattedPrepend;
+    formattedPrepend = `Technician: (${userStore.user.id}): ${message}`;
+
+    try {
+      const response = await fetch(
+        `${connectWiseServiceUrl}/addNoteToTicket?mspCustomDomain=${userStore.user.mspCustomDomain}&ticketId=${ticketId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            info: formattedPrepend,
+            text: message,
+          }),
+        }
+      );
+
+      if (response.status === 200) {
+        const responseBody = await response.json();
+        console.log(responseBody);
+        console.log("Note Added");
+      } else {
+        console.log("Failed to Add Note");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
 
   handleSendTroubleshootMessage: async (message, ticketId) => {
     const { inputRef, messageIdRef } = useRefStore.getState();
@@ -285,11 +315,10 @@ const useInteractionStore = create((set, get) => ({
       handleAddAssistantTroubleshootMessage,
     } = useQueueStore.getState();
 
-
     if (message.trim() !== "" && currentConversation) {
       inputRef.current.focus();
       handleAddUserTroubleshootMessage(message);
-      
+
       set({
         isWaiting: true,
         isServerError: false,

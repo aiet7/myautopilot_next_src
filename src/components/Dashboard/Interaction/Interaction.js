@@ -63,18 +63,18 @@ const Interaction = ({}) => {
           openAssistant && handleAssistantMenu(false);
         }
       }}
-      className={`relative flex flex-col h-full w-full   ${
+      className={`relative flex flex-col h-full w-full text-sm ${
         (openDocs || openHistory || openTickets || openQueue) &&
         openAssistant &&
-        "xl:mr-[350px]"
+        "xl:mr-[250px]"
       }  ${
         ((openDocs || openHistory || openTickets || openQueue) &&
           (activeUIAssistantTab === "Engineer" ||
             activeUIAssistantTab === "Document" ||
             activeUIAssistantTab === "Tickets" ||
             activeUIAssistantTab === "Queue") &&
-          "lg:opacity-100 opacity-5 xl:ml-[350px]") ||
-        (openAssistant && "lg:opacity-100 opacity-5 xl:mr-[350px]")
+          "lg:opacity-100 opacity-5 xl:ml-[250px]") ||
+        (openAssistant && "lg:opacity-100 opacity-5 xl:mr-[250px]")
       } dark:bg-black transition-all duration-300 ease bg-white `}
     >
       {!isAtBottom &&

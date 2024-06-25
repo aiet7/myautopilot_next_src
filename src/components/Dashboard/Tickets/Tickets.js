@@ -47,11 +47,11 @@ const Tickets = ({}) => {
 
   return (
     <div
-      className={`absolute z-10 top-0 bottom-0 left-0  
+      className={`absolute z-10 top-0 bottom-0 left-0 text-xs
       ${
         openTickets
-          ? "translate-x-0 w-full md:w-[350px]"
-          : "-translate-x-full w-full md:w-[350px]"
+          ? "translate-x-0 w-full md:w-[250px]"
+          : "-translate-x-full w-full md:w-[250px]"
       } dark:bg-[#111111] dark:border-white/10 bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease md:border-r md:border-black/10`}
     >
       <div className="dark:bg-black dark:text-white dark:shadow-white/40 flex items-center w-full rounded-lg bg-white p-1 shadow-lg">
@@ -59,7 +59,7 @@ const Tickets = ({}) => {
           onClick={() => setActiveTicketButton("Opened")}
           className={`${
             activeTicketButton === "Opened" && "bg-blue-800 text-white"
-          } w-full rounded-lg py-4 `}
+          } w-full rounded-lg py-2 `}
         >
           Open
         </button>
@@ -67,7 +67,7 @@ const Tickets = ({}) => {
           onClick={() => setActiveTicketButton("Closed")}
           className={`${
             activeTicketButton === "Closed" && "bg-blue-800 text-white"
-          } w-full rounded-lg py-4 `}
+          } w-full rounded-lg py-2 `}
         >
           Closed
         </button>
@@ -90,7 +90,7 @@ const Tickets = ({}) => {
           className=" flex justify-end "
         >
           <div className="flex items-center gap-2 cursor-pointer">
-            <p className="text-sm italic">Refresh your tickets</p>
+            <p className="italic">Refresh your tickets</p>
             <FiRefreshCcw size={15} />
           </div>
         </div>
@@ -116,7 +116,7 @@ const Tickets = ({}) => {
             <div
               onClick={() => handleTicketMode("Support", ticketId)}
               key={ticketId}
-              className="dark:bg-white/30 dark:text-white dark:border-white/20 cursor-pointer  text-sm flex flex-col justify-between gap-1 border rounded-md text-black bg-white px-2 py-3 mb-2"
+              className="dark:bg-white/30 dark:text-white dark:border-white/20 cursor-pointer  flex flex-col justify-between gap-1 border rounded-md text-black bg-white px-2 py-3 mb-2"
             >
               <div className="flex justify-between items-center">
                 <p className="break-words whitespace-pre-wrap">

@@ -8,7 +8,7 @@ import {
 } from "@/utils/api/serverProps";
 import useTicketConversationsStore from "./ticketConversationsStore";
 import useUserStore from "../../user/userStore";
-import useQueueStore from "../queue/useQueueStore";
+import useQueueStore from "../queue/queueStore";
 import useAssistantStore from "../../assistant/assistantStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;

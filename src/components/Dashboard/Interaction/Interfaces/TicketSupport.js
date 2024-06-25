@@ -17,7 +17,7 @@ const TicketSupport = () => {
           <span>Create Ticket</span>
         </button>
         {showTicket && (
-          <div className="text-lg lg:text-2xl">
+          <div className="">
             <h2>
               <strong>Status:</strong> {showTicket?.closed ? "Closed" : "New"}
             </h2>
@@ -63,13 +63,13 @@ const TicketSupport = () => {
                         : "dark:bg-white/50 bg-red-50"
                     } rounded-lg shadow-md p-3`}
                   >
-                    <p className="font-bold text-lg">
+                    <p className="font-bold ">
                       {text.startsWith("Technician: ")
                         ? "Technician"
                         : "Client"}
                     </p>
                     <p>{convertTicketText(text)}</p>
-                    <p className="text-xs">{convertDate(dateCreated)}</p>
+                    <p className="">{convertDate(dateCreated)}</p>
                   </div>
                 );
               })}

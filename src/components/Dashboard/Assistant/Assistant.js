@@ -19,10 +19,10 @@ const Assistant = ({}) => {
 
   return (
     <div
-      className={` absolute z-10 top-0 bottom-0 right-0 ${
+      className={` absolute z-10 top-0 bottom-0 right-0 text-sm  ${
         openAssistant
-          ? "translate-x-0 w-full md:w-[350px]"
-          : "translate-x-full w-full md:w-[350px]"
+          ? "translate-x-0 w-full md:w-[250px]"
+          : "translate-x-full w-full md:w-[250px]"
       } flex transition-all duration-300 ease`}
     >
       <div

@@ -63,11 +63,11 @@ const History = ({}) => {
 
   return (
     <div
-      className={`absolute z-10 top-0 bottom-0 left-0  
+      className={`absolute z-10 top-0 bottom-0 left-0 text-sm
       ${
         openHistory
-          ? "translate-x-0 w-full md:w-[350px]"
-          : "-translate-x-full w-full md:w-[350px]"
+          ? "translate-x-0 w-full md:w-[250px]"
+          : "-translate-x-full w-full md:w-[250px]"
       } dark:bg-[#111111] dark:border-white/10  bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease md:border-r md:border-black/10`}
     >
       <button
@@ -76,7 +76,7 @@ const History = ({}) => {
             conversationHistories ? conversationHistories.length : 0
           )
         }
-        className="dark:shadow-white/40 hover:bg-blue-500 w-full px-4 py-5 bg-blue-800 text-white rounded-lg shadow-lg"
+        className="dark:shadow-white/40 hover:bg-blue-500 w-full px-4 py-3 bg-blue-800 text-white rounded-lg shadow-lg"
       >
         + New Chat
       </button>
@@ -99,12 +99,12 @@ const History = ({}) => {
                 }`} dark:text-white dark:hover:bg-white/40 hover:bg-black/20 text-black w-full flex items-center justify-between px-4 py-3 cursor-pointer rounded-lg`}
               >
                 <div className="flex items-center">
-                  <div className="w-8">
-                    <IoChatboxOutline size={20} />
+                  <div className="w-6">
+                    <IoChatboxOutline size={15} />
                   </div>
                   <div
                     className={`${
-                      currentConversationIndex === index ? "w-48" : "w-64"
+                      currentConversationIndex === index ? "w-28" : "w-44"
                     } truncate flex`}
                   >
                     {currentConversationIndex === index && editing ? (
@@ -124,14 +124,14 @@ const History = ({}) => {
                   {currentConversationIndex === index && editing && (
                     <div className="flex items-center gap-2">
                       <AiOutlineCheck
-                        size={20}
+                        size={18}
                         onClick={(e) => {
                           e.stopPropagation();
                           handleSaveConversationTitle(id, userId);
                         }}
                       />
                       <AiOutlineClose
-                        size={20}
+                        size={18}
                         onClick={(e) => {
                           e.stopPropagation();
                           handleCancelEditConversationTitle();
@@ -142,7 +142,7 @@ const History = ({}) => {
                   {currentConversationIndex === index && deleting && (
                     <div className="flex items-center gap-2">
                       <AiOutlineCheck
-                        size={20}
+                        size={18}
                         onClick={(e) => {
                           e.stopPropagation();
                           handleDeleteConversation(id);
@@ -150,7 +150,7 @@ const History = ({}) => {
                         }}
                       />
                       <AiOutlineClose
-                        size={20}
+                        size={18}
                         onClick={(e) => {
                           e.stopPropagation();
                           setDeleting(false);
@@ -163,7 +163,7 @@ const History = ({}) => {
                     !deleting && (
                       <div className="flex items-center gap-2">
                         <AiFillEdit
-                          size={20}
+                          size={18}
                           onClick={(e) => {
                             e.stopPropagation();
                             handleEditConversationTitle();
@@ -171,7 +171,7 @@ const History = ({}) => {
                           }}
                         />
                         <AiFillDelete
-                          size={20}
+                          size={18}
                           onClick={(e) => {
                             e.stopPropagation();
                             setDeleting(true);

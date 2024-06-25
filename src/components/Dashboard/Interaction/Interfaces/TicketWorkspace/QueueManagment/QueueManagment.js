@@ -1,8 +1,9 @@
 "use client";
-import useQueueStore from "@/utils/store/interaction/queue/useQueueStore";
+import useQueueStore from "@/utils/store/interaction/queue/queueStore";
 import { useEffect } from "react";
 import SmallScreenQueue from "./SmallScreenQueue";
 import LargeScreenQueue from "./LargeScreenQueue";
+import QueueNav from "./QueueNav";
 
 const QueueManagment = () => {
   const { myQueueTicket, isMobile, setIsMobile } = useQueueStore();
@@ -10,7 +11,7 @@ const QueueManagment = () => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const handleResize = () => {
-        setIsMobile(window.innerWidth < 1420);
+        setIsMobile(window.innerWidth < 1600);
       };
       handleResize();
 
@@ -23,22 +24,25 @@ const QueueManagment = () => {
   }, []);
 
   return (
-    <div className={`${isMobile ? "flex-col" : "flex-row"} flex `}>
-      {myQueueTicket ? (
-        <>
-          {isMobile ? (
-            <SmallScreenQueue />
-          ) : (
-            <>
-              <LargeScreenQueue />
-            </>
-          )}
-        </>
-      ) : (
-        <p className="dark:text-white/40 text-semibold text-2xl text-black/30">
-          Currently No Tickets In Queue
-        </p>
-      )}
+    <div className="">
+      <QueueNav />
+      <div className={`${isMobile ? "flex-col" : "flex-row"} flex text-xs `}>
+        {myQueueTicket ? (
+          <>
+            {isMobile ? (
+              <SmallScreenQueue />
+            ) : (
+              <>
+                <LargeScreenQueue />
+              </>
+            )}
+          </>
+        ) : (
+          <p className="dark:text-white/40 text-semibold text-2xl text-black/30 pt-9">
+            Currently No Tickets In Queue
+          </p>
+        )}
+      </div>
     </div>
   );
 };

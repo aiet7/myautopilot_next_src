@@ -1,7 +1,6 @@
 import MarkedTroubleshoot from "@/components/Dashboard/Marked/MarkedTroubleshoot";
 
-import useTicketConversationsStore from "@/utils/store/interaction/conversations/ticketConversationsStore";
-import useQueueStore from "@/utils/store/interaction/queue/useQueueStore";
+import useQueueStore from "@/utils/store/interaction/queue/queueStore";
 import useUserStore from "@/utils/store/user/userStore";
 import { FaSpinner } from "react-icons/fa";
 import { SiOpenai } from "react-icons/si";
@@ -12,7 +11,7 @@ const Troubleshoot = () => {
 
   return (
     <>
-      <p className="text-lg font-bold ">Troubleshooting Guide</p>
+      <p className="text-lg font-bold pb-8">Troubleshooting Guide</p>
       <div className="flex flex-col gap-8">
         {troubleshootMessages?.length !== 0 ? (
           <>

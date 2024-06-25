@@ -6,7 +6,7 @@ import useInteractionStore from "@/utils/store/interaction/interactionsStore";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import useRefStore from "@/utils/store/interaction/ref/refStore";
 import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
-import useQueueStore from "@/utils/store/interaction/queue/useQueueStore";
+import useQueueStore from "@/utils/store/interaction/queue/queueStore";
 
 const Input = () => {
   const { documentConversationHistories, currentDocumentConversationIndex } =
@@ -14,20 +14,23 @@ const Input = () => {
   const {
     textAreaHeight,
     userInput,
+
     handleTextAreaChange,
     handleCreateTicketMessage,
     handleCreateTicketNote,
     handleSendDocumentMessage,
     handleSendTroubleshootMessage,
+    handleSendQueueTicketNote,
     handleSendMessage,
   } = useInteractionStore();
   const { activeUIAssistantTab } = useAssistantStore();
   const { currentOption } = useQueueStore();
   const { showTicket, activeTicketMode } = useTicketsStore();
-  const { myQueueTicket } = useQueueStore();
+  const { myQueueTicket, ticketQueueMode, setActiveTicketQueueMode } =
+    useQueueStore();
 
   const { inputRef } = useRefStore();
-
+  
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.style.height = "24px";
@@ -166,17 +169,37 @@ const Input = () => {
 
       {activeUIAssistantTab === "Queue" &&
         currentOption === "myQueueTickets" && (
-          <div className="relative flex items-center px-4 py-2">
+          <div className="relative flex items-center px-4 py-2 gap-2">
+            <button
+              onClick={() => {
+                if (ticketQueueMode === "Troubleshoot") {
+                  setActiveTicketQueueMode("Note");
+                } else {
+                  setActiveTicketQueueMode("Troubleshoot");
+                }
+              }}
+              className="hover:bg-blue-500 bg-blue-800  text-white py-1 px-2 font-semibold w-[250px]"
+            >
+              Switch Chat Mode To{" "}
+              {ticketQueueMode === "Troubleshoot" ? "Note" : "Troubleshoot"}
+            </button>
             <textarea
               ref={inputRef}
               onChange={handleTextAreaChange}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
-                  handleSendTroubleshootMessage(
-                    userInput,
-                    myQueueTicket?.ticketId
-                  );
+                  if (ticketQueueMode === "Troubleshoot") {
+                    handleSendTroubleshootMessage(
+                      userInput,
+                      myQueueTicket?.ticketId
+                    );
+                  } else {
+                    handleSendQueueTicketNote(
+                      userInput,
+                      myQueueTicket?.ticketId
+                    );
+                  }
                 }
               }}
               value={userInput}
@@ -185,9 +208,12 @@ const Input = () => {
                 height: textAreaHeight,
                 maxHeight: "200px",
               }}
-              placeholder="Continue troubleshooting..."
+              placeholder={
+                ticketQueueMode === "Troubleshoot"
+                  ? "Continue troubleshooting..."
+                  : "Add your note..."
+              }
             />
-
             <div className="flex items-center gap-3 absolute right-6 pr-2 flex items-center bottom-0 top-0">
               <BsFillSendFill
                 size={25}
@@ -196,12 +222,19 @@ const Input = () => {
                     ? "dark:text-white dark:hover:text-blue-500 hover:text-blue-500 text-black cursor-pointer"
                     : "dark:text-gray-500 text-gray-300 select-none"
                 } `}
-                onClick={() =>
-                  handleSendTroubleshootMessage(
-                    userInput,
-                    myQueueTicket?.ticketId
-                  )
-                }
+                onClick={() => {
+                  if (ticketQueueMode === "Troubleshoot") {
+                    handleSendTroubleshootMessage(
+                      userInput,
+                      myQueueTicket?.ticketId
+                    );
+                  } else {
+                    handleSendQueueTicketNote(
+                      userInput,
+                      myQueueTicket?.ticketId
+                    );
+                  }
+                }}
               />
             </div>
           </div>
