@@ -11,7 +11,7 @@ import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import { IoTicketSharp } from "react-icons/io5";
 import useIntegrationsStore from "@/utils/store/admin/control/integrations/integrationsStore";
 import useMspStore from "@/utils/store/auth/msp/mspStore";
-import useQueueStore from "@/utils/store/interaction/queue/useQueueStore";
+import useQueueStore from "@/utils/store/interaction/queue/queueStore";
 import useUserStore from "@/utils/store/user/userStore";
 
 const AssistantRail = ({}) => {
@@ -29,7 +29,7 @@ const AssistantRail = ({}) => {
   return (
     <div
       className={`${
-        openAssistant && window.innerWidth > 1023 ? "translate-x-[-350px]" : ""
+        openAssistant && window.innerWidth > 1023 ? "translate-x-[-250px]" : ""
       }  dark:bg-[#373737] dark:border-white/10 relative  bg-[#eaf1fb] px-1 py-7 flex flex-col gap-4 items-center  transition-all duration-300 ease border-r border-l border-black/10`}
     >
       <IoTicketSharp
@@ -73,8 +73,6 @@ const AssistantRail = ({}) => {
           }}
         />
       )}
-
- 
 
       <SiOpenai
         className={`${

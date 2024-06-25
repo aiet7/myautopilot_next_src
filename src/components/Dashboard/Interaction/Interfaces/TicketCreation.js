@@ -34,11 +34,11 @@ const TicketCreation = () => {
             <div className="max-w-[1250px] flex items-start gap-4 mx-auto">
               <span>
                 {item.role === "user" ? (
-                  <div className="w-7 h-7 text-sm bg-blue-800 flex justify-center items-center text-white">
+                  <div className="w-7 h-7 bg-blue-800 flex justify-center items-center text-white">
                     {user?.firstName[0]}
                   </div>
                 ) : (
-                  <div className="w-7 h-7 text-sm bg-[#00AEEE] flex justify-center items-center text-white">
+                  <div className="w-7 h-7  bg-[#00AEEE] flex justify-center items-center text-white">
                     E7
                   </div>
                 )}

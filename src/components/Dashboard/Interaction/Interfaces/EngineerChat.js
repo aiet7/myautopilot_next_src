@@ -41,7 +41,7 @@ const EngineerChat = () => {
           return (
             <div
               key={item.id}
-              className={`px-4 py-4 text-md w-full ${
+              className={`px-4 py-4  w-full ${
                 item.role === "user"
                   ? "dark:border-white/40 bg-black/5 border-b"
                   : "dark:bg-white/10 dark:border-white/40 border-b"
@@ -51,11 +51,11 @@ const EngineerChat = () => {
               <div className="max-w-[450px] 2xl:max-w-[700px] flex items-start gap-4 mx-auto">
                 <span>
                   {item.role === "user" ? (
-                    <div className="w-7 h-7 text-sm bg-blue-800 flex justify-center items-center text-white">
+                    <div className="w-7 h-7  bg-blue-800 flex justify-center items-center text-white">
                       {user?.firstName[0]}
                     </div>
                   ) : (
-                    <div className="w-7 h-7 text-sm bg-[#ab68ff]  flex justify-center items-center text-white">
+                    <div className="w-7 h-7  bg-[#ab68ff]  flex justify-center items-center text-white">
                       <SiOpenai />
                     </div>
                   )}

@@ -10,6 +10,7 @@ const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 const gptServiceUrl = process.env.NEXT_PUBLIC_GPT_SERVICE_URL;
 
 const useQueueStore = create((set, get) => ({
+  ticketQueueMode: "Troubleshoot",
   troubleshootMessages: [],
   myQueueTicket: null,
   myQueueNotes: null,
@@ -17,8 +18,10 @@ const useQueueStore = create((set, get) => ({
   allQueueTickets: null,
   myActivities: null,
   allActivities: null,
-  isMobile: initialWidth < 1420,
+  isMobile: initialWidth < 1600,
   activeSectionButton: "Form",
+  activeNoteCategory: "Description",
+  activeQueueTicketButton: "QueueTicket",
   currentQueueIndex: 0,
   options: ["activities", "allQueueTickets", "myQueueTickets"],
   currentActivitiesOption: "myActivities",
@@ -40,6 +43,11 @@ const useQueueStore = create((set, get) => ({
   },
   setActiveSectionButton: (button) => set({ activeSectionButton: button }),
 
+  setActiveQueueTicketButton: (button) =>
+    set({ activeQueueTicketButton: button }),
+
+  setActiveTicketQueueMode: (mode) => set({ ticketQueueMode: mode }),
+
   setEditTicket: (updates) => {
     set((prevState) => ({
       editingMyQueueTicket: {
@@ -55,6 +63,11 @@ const useQueueStore = create((set, get) => ({
       editingMyQueueTicket: null,
     });
   },
+
+  setActiveNoteCategory: (category) =>
+    set({
+      activeNoteCategory: category,
+    }),
 
   handleWorkspaceOptionSelected: async (
     option,
@@ -237,6 +250,10 @@ const useQueueStore = create((set, get) => ({
                 myQueueTicket.ticketInformation,
                 myQueueTicket.ticketId
               ),
+              handleNextQueueTicketNotes(
+                mspCustomDomain,
+                myQueueTicket.ticketId
+              ),
             ]);
           } catch (e) {
             console.log(e);
@@ -253,14 +270,17 @@ const useQueueStore = create((set, get) => ({
   handleNextQueueTicketNotes: async (mspCustomDomain, ticketId) => {
     try {
       const response = await fetch(
-        `${connectWiseServiceUrl}/getConnectWiseTicketNotesById?mspCustomDomain=${mspCustomDomain}&ticketId=${ticketId}`
+        `${connectWiseServiceUrl}/getAllConnectWiseTicketNotesById?mspCustomDomain=${mspCustomDomain}&ticketId=${ticketId}`
       );
 
       if (response.status === 200) {
-        const queueNotes = await response.json();
-        console.log("SUCCESS GETTING MY QUEUE TICKET NOTES");
+        const myQueueNotes = await response.json(0);
+        console.log("GOT TICKET NOTES");
+        set({
+          myQueueNotes: myQueueNotes,
+        });
       } else {
-        console.log("ERROR GETTING MY QUEUE TICKET NOTES");
+        console.log("FAILED TO GET TICKET NOTES");
       }
     } catch (e) {
       console.log(e);
@@ -415,6 +435,8 @@ const useQueueStore = create((set, get) => ({
     }
   },
 
+ 
+
   handleAddTroubleShootMessage: async (message, ticketId) => {
     const { inputRef, messageIdRef } = useRefStore.getState();
 
@@ -501,6 +523,7 @@ const useQueueStore = create((set, get) => ({
 
   clearQueue: () => {
     set({
+      ticketQueueMode: "Note",
       troubleshootMessages: [],
       myQueueTicket: null,
       myQueueNotes: null,
@@ -508,8 +531,10 @@ const useQueueStore = create((set, get) => ({
       allQueueTickets: null,
       myActivities: null,
       allActivities: null,
-      isMobile: initialWidth < 1420,
+      isMobile: initialWidth < 1600,
       activeSectionButton: "Form",
+      activeNoteCategory: "Description",
+      activeQueueTicketButton: "QueueTicket",
       currentQueueIndex: 0,
       options: ["activities", "allQueueTickets", "myQueueTickets"],
       currentActivitiesOption: "myActivities",
@@ -517,6 +542,7 @@ const useQueueStore = create((set, get) => ({
       noTicketsInQueue: false,
       ticketRequeued: false,
       ticketClosed: false,
+      ticketSaved: false,
       editTicket: false,
       ticketCategories: null,
       ticketPriorities: null,
