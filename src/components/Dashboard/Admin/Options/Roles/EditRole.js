@@ -45,13 +45,13 @@ const EditRole = () => {
                         <p className="font-semibold text-black/30 italic">
                           Created {convertDate(timeStamp)}
                         </p>
-                        <p className=" font-semibold text-black/30 italic">
+                        <p className="font-semibold text-black/30 italic">
                           Custom: {custom ? "True" : "False"}
                         </p>
                       </div>
 
-                      <div className="text-xl flex flex-col items-start w-full gap-3">
-                        <p className="w-24 font-bold">Permissions</p>
+                      <div className="flex flex-col items-start w-full gap-3">
+                        <p className="font-bold">Permissions</p>
                         {Object.entries(roleInputs.selectedPermissions).map(
                           (permission) => {
                             const [permissionKey, permissionValue] = permission;

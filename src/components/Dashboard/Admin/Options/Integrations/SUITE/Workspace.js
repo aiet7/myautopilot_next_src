@@ -23,8 +23,8 @@ const Workspace = () => {
           openAdmin && handleHistoryMenu(false);
         }
       }}
-      className={`relative flex flex-col h-full w-full ${
-        openAdmin && "lg:opacity-100 opacity-5 xl:ml-[350px]"
+      className={`relative flex flex-col h-full w-full text-sm ${
+        openAdmin && "lg:opacity-100 opacity-5 xl:ml-[250px]"
       }  dark:bg-black transition-all duration-300 ease bg-white`}
     >
       <div className="w-full h-full flex flex-col">
@@ -58,7 +58,7 @@ const Workspace = () => {
                     Integration Center
                   </button>
                 </Link>
-                <button className="bg-blue-500 text-white px-4 py-2  w-full text-sm text-left border-b">
+                <button className="bg-blue-500 text-white px-4 py-2  w-full text-left border-b">
                   API Settings
                 </button>
                 <div className="flex flex-col  p-4">
@@ -66,7 +66,7 @@ const Workspace = () => {
                   <a
                     target="_blank"
                     href="https://support.google.com/a/users/answer/1631886?hl=en"
-                    className="hover:underline text-sm text-blue-800"
+                    className="hover:underline  text-blue-800"
                   >
                     Google Workspace Documentation
                   </a>
@@ -82,7 +82,7 @@ const Workspace = () => {
                 </p>
                 <p>API Setup</p>
               </div>
-              <div className="flex flex-col p-4 gap-6 text-sm">
+              <div className="flex flex-col p-4 gap-6 ">
                 <div className="flex flex-col gap-6 lg:flex-row ">
                   <div className="flex flex-col w-full gap-1">
                     <p>Client ID</p>

@@ -30,7 +30,7 @@ const Configuration = () => {
   };
 
   return (
-    <div className="dark:bg-black/80 absolute bg-black/60 z-[99] top-0 bottom-0 right-0 left-0 flex  items-center justify-center p-2 lg:p-10">
+    <div className="dark:bg-black/80 absolute bg-black/60 z-[99] top-0 bottom-0 right-0 left-0 flex items-center justify-center p-2 lg:p-10">
       <div className="flex flex-col items-end bg-white w-full h-full p-4 rounded-lg text-black">
         <AiOutlineClose
           className="cursor-pointer"

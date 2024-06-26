@@ -35,16 +35,16 @@ const Contacts = () => {
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      <div className="flex flex-col text-xl overflow-hidden">
+      <div className="flex flex-col  overflow-hidden">
         {currentContacts?.length !== 0 ? (
-          <div className="flex flex-col gap-7 text-xl overflow-hidden">
+          <div className="flex flex-col gap-7  overflow-hidden">
             {loadingContacts ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 text-lg">
                 <p className="font-bold">Loading your Contacts</p>
                 <FaSpinner className="animate-spin" size={20} />
               </div>
             ) : (
-              <div className="flex flex-col">
+              <div className="flex flex-col text-lg">
                 <p className="font-bold">Your Current Contacts</p>
                 <p className="text-xs">
                   Select Contacts you want to integrate and press next.
@@ -58,9 +58,9 @@ const Contacts = () => {
                     <p className="text-red-500">Error Saving Contacts</p>
                   )}
                 </div>
-                <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full ">
+                <div className="block toverflow-auto scrollbar-thin max-h-full max-w-full ">
                   <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
-                    <thead className="sticky top-0 bg-white text-lg text-black/60">
+                    <thead className="sticky top-0 bg-white  text-black/60">
                       <tr className="">
                         <th className="p-2 border-l border-t border-b border-r">
                           <input
@@ -173,7 +173,7 @@ const Contacts = () => {
                 <button
                   id="manageAuthenticated-saveContacts"
                   onClick={() => handleAddManageContacts(user?.mspCustomDomain)}
-                  className="text-sm self-end  bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+                  className="self-end  bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
                 >
                   Save
                 </button>
@@ -197,7 +197,7 @@ const Contacts = () => {
             </p>
             <button
               onClick={() => setFinishedIntegratingToast(false)}
-              className="text-sm self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+              className="self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
             >
               Close
             </button>

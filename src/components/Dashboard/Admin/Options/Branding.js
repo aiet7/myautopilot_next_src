@@ -23,8 +23,8 @@ const Branding = () => {
           openAdmin && handleHistoryMenu(false);
         }
       }}
-      className={`relative flex flex-col h-full w-full ${
-        openAdmin && "lg:opacity-100 opacity-5 xl:ml-[350px]"
+      className={`relative flex flex-col h-full w-full text-sm ${
+        openAdmin && "lg:opacity-100 opacity-5 xl:ml-[250px]"
       }  dark:bg-black transition-all duration-300 ease bg-white`}
     >
       <div className="dark:border-b-white/20 border-b p-4">
@@ -36,7 +36,7 @@ const Branding = () => {
             <div className="flex flex-col overflow-hidden px-4">
               <div className="flex flex-col items-start py-4 gap-1">
                 <h2 className="text-xl font-bold">Add your own unique style</h2>
-                <p className="text-sm">
+                <p className="">
                   Add your own logo, brand colors, images and your subdomain.
                   You can change this whenever you want.
                 </p>

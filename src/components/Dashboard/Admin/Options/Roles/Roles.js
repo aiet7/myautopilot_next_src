@@ -36,8 +36,8 @@ const Roles = ({}) => {
           openAdmin && handleHistoryMenu(false);
         }
       }}
-      className={`relative flex flex-col h-full w-full ${
-        openAdmin && "lg:opacity-100 opacity-5 xl:ml-[350px]"
+      className={`relative flex flex-col h-full w-full text-sm ${
+        openAdmin && "lg:opacity-100 opacity-5 xl:ml-[250px]"
       }  dark:bg-black transition-all duration-300 ease bg-white`}
     >
       {activeRole && <EditRole />}
@@ -46,9 +46,9 @@ const Roles = ({}) => {
         <h1 className="text-2xl">Roles</h1>
       </div>
       <div className="flex flex-col h-full overflow-hidden pb-4">
-        <div className="flex flex-col text-xl overflow-hidden">
+        <div className="flex flex-col overflow-hidden">
           {roles?.length !== 0 ? (
-            <div className="flex flex-col gap-7 text-xl overflow-hidden">
+            <div className="flex flex-col gap-7 overflow-hidden">
               {roles && (
                 <div className="flex  flex-col overflow-hidden px-4">
                   <div className="flex items-center justify-start gap-2 py-4">
@@ -61,7 +61,7 @@ const Roles = ({}) => {
                   </div>
                   <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
                     <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
-                      <thead className="dark:text-white dark:bg-gray-700 sticky top-0 text-lg text-black/60 bg-[#F5F8FA]">
+                      <thead className="dark:text-white dark:bg-gray-700 sticky top-0 text-black/60 bg-[#F5F8FA]">
                         <tr className="">
                           <th className="p-2 border-l border-t border-b border-r"></th>
                           <th className="p-2 border-t border-b border-r">
@@ -78,7 +78,7 @@ const Roles = ({}) => {
                           return (
                             <tr key={id}>
                               <td className="p-2 truncate border-l  border-r border-b">
-                                <div className="flex gap-3">
+                                <div className="flex gap-3 w-44 xl:w-8">
                                   <button
                                     onClick={() =>
                                       handleCloneRole(id, user?.mspCustomDomain)

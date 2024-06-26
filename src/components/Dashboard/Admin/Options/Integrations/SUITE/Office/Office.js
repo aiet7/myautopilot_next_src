@@ -42,8 +42,8 @@ const Office = () => {
           openAdmin && handleHistoryMenu(false);
         }
       }}
-      className={`relative flex flex-col h-full w-full ${
-        openAdmin && "lg:opacity-100 opacity-5 xl:ml-[350px]"
+      className={`relative flex flex-col h-full w-full text-sm ${
+        openAdmin && "lg:opacity-100 opacity-5 xl:ml-[250px]"
       }  dark:bg-black transition-all duration-300 ease bg-white`}
     >
       {activeConfig && <ViewOfficeUsers />}
@@ -74,12 +74,12 @@ const Office = () => {
                 >
                   <button
                     onClick={() => handleIntegrationsCard("cards", isMSP)}
-                    className="dark:text-white dark:hover:bg-white/20 hover:bg-black/5 text-black px-4 py-2 w-full text-left text-sm border-b"
+                    className="dark:text-white dark:hover:bg-white/20 hover:bg-black/5 text-black px-4 py-2 w-full text-left border-b"
                   >
                     Integration Center
                   </button>
                 </Link>
-                <button className="bg-blue-500 text-white px-4 py-2  w-full text-sm text-left border-b">
+                <button className="bg-blue-500 text-white px-4 py-2  w-full text-left border-b">
                   API Settings
                 </button>
                 <div className="flex flex-col  p-4">
@@ -87,7 +87,7 @@ const Office = () => {
                   <a
                     target="_blank"
                     href="https://learn.microsoft.com/en-us/microsoft-365/?view=o365-worldwide"
-                    className="hover:underline text-sm text-blue-800"
+                    className="hover:underline  text-blue-800"
                   >
                     Microsoft 365 Documentation
                   </a>
@@ -103,7 +103,7 @@ const Office = () => {
                 </p>
                 <p>API Setup</p>
               </div>
-              <div className="flex flex-col p-4 gap-6 text-sm">
+              <div className="flex flex-col p-4 gap-6 ">
                 <div className="flex flex-col gap-6 lg:flex-row ">
                   <div className="flex flex-col w-full gap-1">
                     <p>Tenant ID</p>

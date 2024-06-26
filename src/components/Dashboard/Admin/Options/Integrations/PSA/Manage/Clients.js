@@ -57,7 +57,7 @@ const Clients = () => {
 
   return (
     <div className="relative flex flex-col h-full overflow-hidden">
-      <div className="flex flex-col text-xl overflow-hidden">
+      <div className="flex flex-col  overflow-hidden">
         <div className="flex flex-col self-end gap-1">
           {clientAndContactTypes && (
             <div
@@ -94,7 +94,7 @@ const Clients = () => {
                     selectedAutoSyncType.name
                   )
                 }
-                className="text-sm self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+                className=" self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
               >
                 Auto Sync Clients and Contacts
               </button>
@@ -102,15 +102,15 @@ const Clients = () => {
           )}
         </div>
         {currentClients?.length !== 0 ? (
-          <div className="flex flex-col gap-7 text-xl overflow-hidden">
+          <div className="flex flex-col gap-7  overflow-hidden">
             {loadingClients ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 text-lg">
                 <p className="font-bold">Loading your Clients</p>
                 <FaSpinner className="animate-spin" size={20} />
               </div>
             ) : (
-              <div className="flex flex-col">
-                <p className="font-bold">Your Current Clients</p>
+              <div className="flex flex-col text-lg">
+                <p className="font-bold ">Your Current Clients</p>
                 <p className="text-xs">
                   Select Clients you want to integrate and press next. Your
                   Contacts will be based of the Clients you integrated.
@@ -125,9 +125,9 @@ const Clients = () => {
                     <p className="text-red-500">Error Saving Clients</p>
                   )}
                 </div>
-                <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full ">
+                <div className="block  overflow-auto scrollbar-thin max-h-full max-w-full ">
                   <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
-                    <thead className="sticky top-0 bg-white text-lg text-black/60">
+                    <thead className="sticky top-0 bg-white  text-black/60">
                       <tr className="">
                         <th className="p-2 border-l border-t border-b border-r">
                           <input
@@ -289,7 +289,7 @@ const Clients = () => {
                 <button
                   id="manageAuthenticated-saveClients"
                   onClick={() => handleAddManageClients(user?.mspCustomDomain)}
-                  className="text-sm self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+                  className="self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
                 >
                   Save
                 </button>
@@ -320,14 +320,14 @@ const Clients = () => {
               {autoSyncLoading ? (
                 <button
                   onClick={() => setAutoSyncToast(false, null)}
-                  className="text-sm self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+                  className=" self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
                 >
                   Hide
                 </button>
               ) : (
                 <button
                   onClick={() => setAutoSyncToast(false, false)}
-                  className="text-sm self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+                  className="self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
                 >
                   OK
                 </button>

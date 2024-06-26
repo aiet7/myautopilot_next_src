@@ -134,7 +134,7 @@ const Board = () => {
 
   return (
     <div className="flex flex-col gap-4 h-full overflow-hidden">
-      <div className="flex flex-col gap-8 pb-2 justify-between items-start text-xl font-semibold italic text-black/30 md:flex-row">
+      <div className="flex flex-col gap-8 pb-2 justify-between items-start text-lg font-semibold italic text-black/30 md:flex-row">
         {loadingMerge ? (
           <div className="flex items-center gap-2">
             <p>Loading your board.</p>
@@ -338,7 +338,7 @@ const Board = () => {
       {customBoardMetadata && (
         <div className="flex flex-wrap items-center gap-2 text-xs">
           {customBoard ? (
-            <div className="flex items-center gap-1 text-sm">
+            <div className="flex items-center gap-1 ">
               <h2 className="font-bold">Title:</h2>
               <p>{customBoardTitle}</p>
             </div>
@@ -360,7 +360,7 @@ const Board = () => {
             />
           )}
           {customBoard ? (
-            <div className="flex items-center gap-1 text-sm">
+            <div className="flex items-center gap-1">
               <h2 className="font-bold">Department:</h2>
               <p>{customBoardDepartment?.name}</p>
             </div>
@@ -400,7 +400,7 @@ const Board = () => {
             </select>
           )}
           {customBoard ? (
-            <div className="flex items-center gap-1 text-sm">
+            <div className="flex items-center gap-1 ">
               <h2 className="font-bold">Location:</h2>
               <p>{customBoardLocation?.name}</p>
             </div>
@@ -451,14 +451,14 @@ const Board = () => {
           )}
         </div>
       )}
-      <div className="flex flex-col text-xl overflow-hidden">
+      <div className="flex flex-col  overflow-hidden">
         {boardData && boardData.mspConnectWiseManageCategorizations && (
           <div
             id={`${customBoard && "manageAuthenticated-customTemplate"}`}
             className="block text-sm overflow-auto scrollbar-thin  max-h-full max-w-full"
           >
             <table className=" min-w-full table-fixed border-separate border-spacing-0 text-left">
-              <thead className="sticky top-0 bg-white text-lg text-black/60">
+              <thead className="sticky top-0 bg-white  text-black/60">
                 <tr className="">
                   <th className="p-2 border-l border-t border-b border-r ">
                     <div
