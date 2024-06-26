@@ -37,7 +37,7 @@ const CreateRole = () => {
                 </p>
               </div>
               <div className="flex items-center w-full gap-4">
-                <p className="text-lg w-24 font-bold">Role Title</p>
+                <p className="w-20 font-bold">Role Title</p>
                 <input
                   value={roleInputs.roleTitle}
                   onChange={(e) =>
@@ -46,8 +46,8 @@ const CreateRole = () => {
                   className="p-1 w-full border rounded"
                 />
               </div>
-              <div className="text-xl flex flex-col items-start w-full gap-3">
-                <p className="w-24 font-bold">Permissions</p>
+              <div className="flex flex-col items-start w-full gap-3">
+                <p className="font-bold">Permissions</p>
                 {permissions.map((permission) => {
                   return (
                     <label className="flex items-center gap-2" key={permission}>

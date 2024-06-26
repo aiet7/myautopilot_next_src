@@ -14,10 +14,10 @@ const ViewPSAEmployees = () => {
   return (
     <>
       {companyPSAEmployees?.length !== 0 ? (
-        <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
+        <div className="block  overflow-auto scrollbar-thin max-h-full max-w-full">
           {companyPSAEmployees && (
             <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
-              <thead className="dark:text-white dark:bg-gray-700 sticky top-0 text-lg text-black/60 bg-[#F5F8FA]">
+              <thead className="dark:text-white dark:bg-gray-700 sticky top-0 text-black/60 bg-[#F5F8FA]">
                 <tr className="">
                   <th className="p-2 border-l border-t border-b  "></th>
                   <th className="p-2 border-l border-t border-b border-r">

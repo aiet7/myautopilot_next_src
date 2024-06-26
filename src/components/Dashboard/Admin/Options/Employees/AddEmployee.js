@@ -34,7 +34,7 @@ const AddEmployee = () => {
               </div>
               <div className="flex flex-col items-center w-full gap-4">
                 <div className="flex items-center gap-2 w-full">
-                  <p className="w-1/4 min-w-[80px]">First Name</p>
+                  <p className="w-1/6 min-w-[80px]">First Name</p>
                   <input
                     type="text"
                     className="flex-1 border p-1"
@@ -44,7 +44,7 @@ const AddEmployee = () => {
                   />
                 </div>
                 <div className="flex items-center gap-2 w-full">
-                  <p className="w-1/4 min-w-[80px]">Last Name</p>
+                  <p className="w-1/6 min-w-[80px]">Last Name</p>
                   <input
                     type="text"
                     className="flex-1 border p-1"
@@ -54,7 +54,7 @@ const AddEmployee = () => {
                   />
                 </div>
                 <div className="flex items-center gap-2 w-full">
-                  <p className="w-1/4 min-w-[80px]">Email</p>
+                  <p className="w-1/6 min-w-[80px]">Email</p>
                   <input
                     type="email"
                     className="flex-1  border p-1"
@@ -64,7 +64,7 @@ const AddEmployee = () => {
                   />
                 </div>
                 <div className="flex items-center gap-2 w-full">
-                  <p className="w-1/4 min-w-[80px]">Phone</p>
+                  <p className="w-1/6 min-w-[80px]">Phone</p>
                   <input
                     type="text"
                     className="flex-1 border p-1"
@@ -74,7 +74,7 @@ const AddEmployee = () => {
                   />
                 </div>
                 <div className="flex items-center gap-2 w-full">
-                  <p className="w-1/4 min-w-[80px]">Password</p>
+                  <p className="w-1/6 min-w-[80px]">Password</p>
                   <input
                     type="password"
                     className="flex-1 border p-1"

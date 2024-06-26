@@ -49,8 +49,8 @@ const Cards = () => {
           openAdmin && handleHistoryMenu(false);
         }
       }}
-      className={`relative flex flex-col h-full w-full ${
-        openAdmin && "lg:opacity-100 opacity-5 xl:ml-[350px]"
+      className={`relative flex flex-col h-full w-full text-sm ${
+        openAdmin && "lg:opacity-100 opacity-5 xl:ml-[250px]"
       }  dark:bg-black transition-all duration-300 ease bg-white`}
     >
       <div className="w-full h-full flex flex-col">

@@ -9,16 +9,13 @@ import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
 import useQueueStore from "@/utils/store/interaction/queue/queueStore";
 
 const Input = () => {
-  const { documentConversationHistories, currentDocumentConversationIndex } =
-    useDocConversationsStore();
+ 
   const {
     textAreaHeight,
     userInput,
-
     handleTextAreaChange,
     handleCreateTicketMessage,
     handleCreateTicketNote,
-    handleSendDocumentMessage,
     handleSendTroubleshootMessage,
     handleSendQueueTicketNote,
     handleSendMessage,
@@ -30,7 +27,7 @@ const Input = () => {
     useQueueStore();
 
   const { inputRef } = useRefStore();
-  
+
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.style.height = "24px";
@@ -124,65 +121,34 @@ const Input = () => {
         </div>
       )}
 
-      {/* {activeUIAssistantTab === "Document" && (
-        <div className="relative flex items-center px-4 py-2">
-          <textarea
-            ref={inputRef}
-            onChange={handleTextAreaChange}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                handleSendDocumentMessage(userInput);
-              }
-            }}
-            value={userInput}
-            placeholder={
-              documentConversationHistories[currentDocumentConversationIndex]
-                ?.data
-                ? "Ask About Your Document..."
-                : "Add New Document To Upload..."
-            }
-            className="dark:border-white/30 dark:shadow-white/30 dark:bg-black border-black/10 shadow-xl shadow-black/30  outline-none bg-white border w-full p-4 pr-32 resize-none no-scrollbar"
-            style={{
-              height: textAreaHeight,
-              maxHeight: "200px",
-            }}
-            disabled={
-              !documentConversationHistories[currentDocumentConversationIndex]
-                ?.data
-            }
-          />
-
-          <div className="flex items-center gap-3 absolute right-6 pr-2 flex items-center bottom-0 top-0">
-            <BsFillSendFill
-              onClick={() => handleSendDocumentMessage(userInput)}
-              size={25}
-              className={`outline-none ${
-                userInput !== ""
-                  ? "dark:text-white dark:hover:text-blue-500 hover:text-blue-500 text-black cursor-pointer"
-                  : "dark:text-gray-500 text-gray-300 select-none"
-              } `}
-            />
-          </div>
-        </div>
-      )} */}
-
       {activeUIAssistantTab === "Queue" &&
         currentOption === "myQueueTickets" && (
           <div className="relative flex items-center px-4 py-2 gap-2">
-            <button
-              onClick={() => {
-                if (ticketQueueMode === "Troubleshoot") {
-                  setActiveTicketQueueMode("Note");
-                } else {
-                  setActiveTicketQueueMode("Troubleshoot");
-                }
-              }}
-              className="hover:bg-blue-500 bg-blue-800  text-white py-1 px-2 font-semibold w-[250px]"
-            >
-              Switch Chat Mode To{" "}
-              {ticketQueueMode === "Troubleshoot" ? "Note" : "Troubleshoot"}
-            </button>
+            <div className="flex flex-col items-center w-32">
+              <p className="font-semibold">{ticketQueueMode}</p>
+              <label className="inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="hidden"
+                  checked={ticketQueueMode === "Note"}
+                  onChange={() => {
+                    if (ticketQueueMode === "Troubleshoot") {
+                      setActiveTicketQueueMode("Note");
+                    } else {
+                      setActiveTicketQueueMode("Troubleshoot");
+                    }
+                  }}
+                />
+                <span className="relative">
+                  <span className="block w-10 h-6 bg-gray-400 rounded-full shadow-inner"></span>
+                  <span
+                    className={`absolute block w-4 h-4 mt-1 ml-1 transform bg-white rounded-full shadow inset-y-0 left-0 transition-transform ${
+                      ticketQueueMode === "Note" ? "translate-x-4" : ""
+                    }`}
+                  ></span>
+                </span>
+              </label>
+            </div>
             <textarea
               ref={inputRef}
               onChange={handleTextAreaChange}
@@ -210,8 +176,8 @@ const Input = () => {
               }}
               placeholder={
                 ticketQueueMode === "Troubleshoot"
-                  ? "Continue troubleshooting..."
-                  : "Add your note..."
+                  ? "Continue Troubleshooting..."
+                  : "Add Your Note..."
               }
             />
             <div className="flex items-center gap-3 absolute right-6 pr-2 flex items-center bottom-0 top-0">

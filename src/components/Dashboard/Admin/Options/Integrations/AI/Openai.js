@@ -24,8 +24,8 @@ const Openai = () => {
           openAdmin && handleHistoryMenu(false);
         }
       }}
-      className={`relative flex flex-col h-full w-full ${
-        openAdmin && "lg:opacity-100 opacity-5 xl:ml-[350px]"
+      className={`relative flex flex-col h-full w-full text-sm ${
+        openAdmin && "lg:opacity-100 opacity-5 xl:ml-[250px]"
       }  dark:bg-black transition-all duration-300 ease bg-white`}
     >
       <div className="w-full h-full flex flex-col">
@@ -54,12 +54,12 @@ const Openai = () => {
                 >
                   <button
                     onClick={() => handleIntegrationsCard("cards", isMSP)}
-                    className="dark:text-white dark:hover:bg-white/20 hover:bg-black/5 text-black px-4 py-2 w-full text-left text-sm border-b"
+                    className="dark:text-white dark:hover:bg-white/20 hover:bg-black/5 text-black px-4 py-2 w-full text-left border-b"
                   >
                     Integration Center
                   </button>
                 </Link>
-                <button className="bg-blue-500 text-white px-4 py-2  w-full text-sm text-left border-b">
+                <button className="bg-blue-500 text-white px-4 py-2  w-full text-left border-b">
                   API Settings
                 </button>
                 <div className="flex flex-col  p-4">
@@ -67,7 +67,7 @@ const Openai = () => {
                   <a
                     target="_blank"
                     href="https://platform.openai.com/docs/introduction"
-                    className="hover:underline text-sm text-blue-800"
+                    className="hover:underline  text-blue-800"
                   >
                     Creating a Public Key
                   </a>
@@ -80,11 +80,11 @@ const Openai = () => {
               <div className="flex flex-col p-4 border-b h-28">
                 <p className="text-xl">Openai Configuration Settings</p>
                 <p>API Setup</p>
-                <p className="text-sm">
+                <p className="">
                   You must create a Public Api Key from Openai.
                 </p>
               </div>
-              <div className="flex flex-col p-4 gap-6 text-sm">
+              <div className="flex flex-col p-4 gap-6 ">
                 <div className="flex flex-col gap-6 lg:flex-row ">
                   <div className="flex flex-col w-full gap-1">
                     <p>Public Key</p>

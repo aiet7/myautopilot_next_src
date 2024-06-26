@@ -7,11 +7,11 @@ const TicketSupport = () => {
   const { showTicket, ticketNotes, handleTicketMode } = useTicketsStore();
 
   return (
-    <div className="flex flex-col w-full flex-grow p-4 overflow-hidden">
+    <div className="flex flex-col w-full flex-grow p-4 overflow-hidden max-w-[1250px] mx-auto">
       <div className="flex flex-col gap-6 overflow-hidden">
         <button
           onClick={() => handleTicketMode("Default", null)}
-          className="dark:border-white hover:bg-blue-800 hover:text-white  flex items-center justify-center border border-black px-12 py-2 rounded-lg font-bold "
+          className="dark:border-white hover:bg-blue-800 hover:text-white  flex self-start items-center justify-center border border-black px-12 py-2 rounded-lg font-bold "
         >
           <BsStars size={15} />
           <span>Create Ticket</span>
@@ -48,7 +48,7 @@ const TicketSupport = () => {
           </div>
         )}
         <div className="border-b" />
-        <div className="flex flex-col  overflow-hidden">
+        <div className="flex flex-col overflow-hidden">
           <h2 className="font-bold text-xl">Ticket Notes</h2>
           {ticketNotes ? (
             <div className="flex flex-col gap-4 py-4 overflow-y-auto scrollbar-thin">

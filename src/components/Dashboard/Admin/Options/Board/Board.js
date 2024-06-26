@@ -23,53 +23,53 @@ const Board = () => {
           openAdmin && handleHistoryMenu(false);
         }
       }}
-      className={`relative flex flex-col h-full w-full ${
-        openAdmin && "lg:opacity-100 opacity-5 xl:ml-[350px]"
+      className={`relative flex flex-col h-full w-full text-sm ${
+        openAdmin && "lg:opacity-100 opacity-5 xl:ml-[250px]"
       }  dark:bg-black transition-all duration-300 ease bg-white`}
     >
       <div className="dark:border-b-white/20 border-b p-4">
         <h1 className="text-2xl">Board</h1>
       </div>
       <div className="flex flex-col h-full overflow-hidden pb-4">
-        <div className="flex flex-col text-xl overflow-hidden">
+        <div className="flex flex-col  overflow-hidden">
           {board ? (
-            <div className="flex flex-col gap-7 text-xl overflow-hidden">
+            <div className="flex flex-col gap-7  overflow-hidden">
               <div className="flex  flex-col overflow-hidden px-4">
                 <div className="flex flex-wrap items-center justify-start gap-4 py-4">
-                  <button className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1">
+                  <button className=" bg-blue-800 text-white font-bold px-5 rounded-lg py-1">
                     Configure Board
                   </button>
-                  <p className="text-sm">
+                  <p className="">
                     <strong>Board ID: </strong>
                     {`${board?.boardId}`}
                   </p>
-                  <p className="text-sm">
+                  <p className="">
                     <strong>Board Name: </strong>
                     {`${board?.boardName}`}
                   </p>
 
-                  <p className="text-sm">
+                  <p className="">
                     <strong>Company ID: </strong>
                     {`${board?.defaultCompanyId}`}
                   </p>
-                  <p className="text-sm">
+                  <p className="">
                     <strong>Company: </strong>
                     {`${board?.defaultCompanyName}`}
                   </p>
-                  <p className="text-sm">
+                  <p className="">
                     <strong>Open Status: </strong>
                     {`${board?.newCreatingTicketStatus}`}
                   </p>
-                  <p className="text-sm">
+                  <p className="">
                     <strong>Closed Status: </strong>
                     {`${board?.closingTicketStatus}`}
                   </p>
 
-                  <p className="text-sm"></p>
+                  <p className=""></p>
                 </div>
-                <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
+                <div className="block  overflow-auto scrollbar-thin max-h-full max-w-full">
                   <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
-                    <thead className="dark:text-white dark:bg-gray-700 sticky top-0 text-lg text-black/60 bg-[#F5F8FA]">
+                    <thead className="dark:text-white dark:bg-gray-700 sticky top-0  text-black/60 bg-[#F5F8FA]">
                       <tr className="">
                         <th className="p-2 border-t border-b border-r border-l">
                           Category Name

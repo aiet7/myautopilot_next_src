@@ -34,17 +34,17 @@ const Technician = () => {
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      <div className="flex flex-col text-xl overflow-hidden">
+      <div className="flex flex-col  overflow-hidden">
         {currentTechs?.length !== 0 ? (
-          <div className="flex flex-col gap-7 text-xl overflow-hidden">
+          <div className="flex flex-col gap-7 overflow-hidden">
             {loadingTechnicians ? (
               <div className="flex items-center gap-2">
                 <p className="font-bold">Loading your Technicians</p>
                 <FaSpinner className="animate-spin" size={20} />
               </div>
             ) : (
-              <div className="flex flex-col">
-                <p className="font-bold">Your Current Technicians</p>
+              <div className="flex flex-col text-lg">
+                <p className="font-bold ">Your Current Technicians</p>
                 <p className="text-xs">
                   Select Technicians you want to integrate and press next.
                 </p>
@@ -58,9 +58,9 @@ const Technician = () => {
                     <p className="text-red-500">Error Saving Technicians</p>
                   )}
                 </div>
-                <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
+                <div className="block overflow-auto scrollbar-thin max-h-full max-w-full">
                   <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
-                    <thead className="sticky top-0 bg-white text-lg text-black/60">
+                    <thead className="sticky top-0 bg-white  text-black/60">
                       <tr className="">
                         <th className="p-2 border-l border-t border-b border-r">
                           <input
@@ -216,7 +216,7 @@ const Technician = () => {
                   onClick={() =>
                     handleAddManageTechnician(user?.mspCustomDomain)
                   }
-                  className="text-sm self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+                  className=" self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
                 >
                   Save
                 </button>

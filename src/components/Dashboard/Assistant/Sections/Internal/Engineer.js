@@ -34,19 +34,18 @@ const Engineer = () => {
           placeholder="A well-crafted prompt can make all the difference.  Provide us any IT topic!"
         />
 
-        <div className="bg-[#10a37f] w-full flex items-center justify-center p-2 rounded-lg">
+        <div
+          onClick={handleSendPromptGenerator}
+          className={`${
+            userInput !== ""
+              ? "hover:text-blue-600 text-white cursor-pointer"
+              : "text-white/20 select-none"
+          } bg-[#10a37f] w-full flex items-center justify-center p-2 rounded-lg`}
+        >
           {isWaiting ? (
             <FaSpinner size={20} className="animate-spin text-white" />
           ) : (
-            <SiOpenai
-              size={20}
-              className={` ${
-                userInput !== ""
-                  ? "hover:text-blue-600 text-white cursor-pointer"
-                  : "text-white/20 select-none"
-              }`}
-              onClick={handleSendPromptGenerator}
-            />
+            <SiOpenai size={20} />
           )}
         </div>
       </div>

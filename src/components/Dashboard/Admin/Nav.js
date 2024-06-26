@@ -39,11 +39,11 @@ const Nav = ({}) => {
 
   return (
     <div
-      className={`absolute z-10 top-0 bottom-0 left-0  
+      className={`absolute z-10 top-0 bottom-0 left-0 text-sm
       ${
         openAdmin
-          ? "translate-x-0 w-full md:w-[350px]"
-          : "-translate-x-full w-full md:w-[350px]"
+          ? "translate-x-0 w-full md:w-[250px]"
+          : "-translate-x-full w-full md:w-[250px]"
       } dark:bg-[#111111] dark:border-white/10  bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease md:border-r md:border-black/10`}
     >
       <div className="overflow-y-auto h-full scrollbar-thin">
@@ -84,8 +84,8 @@ const Nav = ({}) => {
                     }`} dark:text-white dark:hover:bg-white/40 hover:bg-black/20  text-black w-full flex items-center justify-between px-4 py-5 cursor-pointer rounded-lg`}
                   >
                     <div className="flex items-center">
-                      <div className="w-8">{renderIcon(option)}</div>
-                      <div className="w-64 truncate flex">
+                      <div className="w-6">{renderIcon(option)}</div>
+                      <div className="w-44 truncate flex">
                         <span className="px-1">
                           {{
                             "msp-integrations": "MSP Integrations",
