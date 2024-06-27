@@ -9,6 +9,7 @@ const QueueNotes = () => {
     setActiveNoteCategory,
   } = useQueueStore();
 
+
   const filteredNotes = myQueueNotes?.filter((notes) => {
     if (activeNoteCategory === "Description" && notes.detailDescriptionFlag)
       return true;
@@ -47,7 +48,7 @@ const QueueNotes = () => {
           Resolution
         </button>
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 ">
         {filteredNotes?.map((notes) => {
           const {
             id,

@@ -34,7 +34,7 @@ const SmallScreenQueue = () => {
           onClick={() => setActiveSectionButton("Form")}
           className={`${
             activeSectionButton === "Form" && "bg-blue-800 text-white"
-          } w-full rounded p-2`}
+          } w-full rounded p-2 font-bold`}
         >
           Form
         </button>
@@ -42,7 +42,7 @@ const SmallScreenQueue = () => {
           onClick={() => setActiveSectionButton("Troubleshoot")}
           className={`${
             activeSectionButton === "Troubleshoot" && "bg-blue-800 text-white"
-          } w-full rounded p-2`}
+          } w-full rounded p-2 font-bold`}
         >
           Troubleshoot
         </button>

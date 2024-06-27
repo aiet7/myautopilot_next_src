@@ -7,13 +7,13 @@ const EngineerGuide = () => {
   const { handleSendMessage } = useInteractionStore();
 
   return (
-    <div className="flex flex-col items-center justify-between p-4 text-md h-full  max-w-[700px] mx-auto">
+    <div className="flex flex-col items-center justify-between p-4 h-full max-w-[700px] mx-auto text-xs">
       <div className="dark:border-white flex items-center justify-center border border-black px-12 py-2 rounded-lg font-bold">
         <BsStars size={15} />
         <span>Autopilot</span>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 text-sm">
+      <div className="grid grid-cols-2 gap-2 ">
         <div
           onClick={() =>
             handleSendMessage(
