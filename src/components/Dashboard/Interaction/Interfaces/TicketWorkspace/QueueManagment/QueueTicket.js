@@ -12,7 +12,7 @@ const QueueTicket = () => {
     tierOptions,
     setEditTicket,
   } = useQueueStore();
-  console.log(myQueueTicket);
+  
   return (
     <div className="flex flex-col gap-2">
       <div>

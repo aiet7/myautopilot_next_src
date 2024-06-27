@@ -484,6 +484,12 @@ const useQueueStore = create((set, get) => ({
     }
   },
 
+  handleAddTechnicianNoteMessage: async (note) => {
+    set((prevState) => ({
+      myQueueNotes: [...prevState.myQueueNotes, note],
+    }));
+  },
+
   handleAddUserTroubleshootMessage: async (message) => {
     set((prevState) => {
       const newUserMessage = {
@@ -523,7 +529,7 @@ const useQueueStore = create((set, get) => ({
 
   clearQueue: () => {
     set({
-      ticketQueueMode: "Note",
+      ticketQueueMode: "Troubleshoot",
       troubleshootMessages: [],
       myQueueTicket: null,
       myQueueNotes: null,

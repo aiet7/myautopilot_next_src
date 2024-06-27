@@ -7,12 +7,12 @@ const TicketGuide = () => {
   const { handleCreateTicketMessage } = useInteractionStore();
 
   return (
-    <div className="flex flex-col items-center justify-between p-4 text-md h-full  max-w-[700px] mx-auto">
+    <div className="flex flex-col items-center justify-between p-4 text-xs h-full  max-w-[700px] mx-auto">
       <div className="dark:border-white flex items-center justify-center border border-black px-12 py-2 rounded-lg font-bold mb-4">
         <BsStars size={15} />
         <span>ET 7</span>
       </div>
-      <div className="grid grid-cols-2 gap-2 text-sm">
+      <div className="grid grid-cols-2 gap-2 ">
         <div
           onClick={() =>
             handleCreateTicketMessage(

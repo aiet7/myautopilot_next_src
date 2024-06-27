@@ -274,33 +274,42 @@ const useInteractionStore = create((set, get) => ({
   },
   handleSendQueueTicketNote: async (message, ticketId) => {
     const userStore = useUserStore.getState();
+    const { handleAddTechnicianNoteMessage } = useQueueStore.getState();
+    const { inputRef } = useRefStore.getState();
+
     let formattedPrepend;
-    formattedPrepend = `Technician: (${userStore.user.id}): ${message}`;
+    formattedPrepend = `Technician: (${userStore.user.id}): `;
 
-    try {
-      const response = await fetch(
-        `${connectWiseServiceUrl}/addNoteToTicket?mspCustomDomain=${userStore.user.mspCustomDomain}&ticketId=${ticketId}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            info: formattedPrepend,
-            text: message,
-          }),
+    if (message.trim() !== "") {
+      inputRef.current.focus();
+      set({
+        userInput: "",
+      });
+      try {
+        const response = await fetch(
+          `${connectWiseServiceUrl}/addNoteToTicketObject?mspCustomDomain=${userStore.user.mspCustomDomain}&ticketId=${ticketId}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              info: formattedPrepend,
+              text: message,
+            }),
+          }
+        );
+
+        if (response.status === 200) {
+          const responseBody = await response.json();
+          handleAddTechnicianNoteMessage(responseBody);
+          console.log("Note Added");
+        } else {
+          console.log("Failed to Add Note");
         }
-      );
-
-      if (response.status === 200) {
-        const responseBody = await response.json();
-        console.log(responseBody);
-        console.log("Note Added");
-      } else {
-        console.log("Failed to Add Note");
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.log(e);
     }
   },
 
