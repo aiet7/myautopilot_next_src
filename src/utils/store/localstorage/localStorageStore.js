@@ -29,15 +29,14 @@ const useLocalStorageStore = create((set, get) => ({
     useUiStore.setState({
       activeTab:
         parsedLastUI.activeTab || (isOnAdminRoute ? "admin" : "iTAgent"),
+      currentNavOption: parsedLastUI.currentNavOption || "Tickets",
     });
 
     useAssistantStore.setState({
-      activeAssistantTab: parsedLastUI.activeAssistantTab || "",
-      activeUIAssistantTab: parsedLastUI.activeUIAssistantTab || "",
       isIntroScreen:
         parsedLastUI.isIntroScreen !== undefined
           ? parsedLastUI.isIntroScreen
-          : true, 
+          : true,
     });
 
     useConversationStore.setState({
@@ -52,9 +51,8 @@ const useLocalStorageStore = create((set, get) => ({
   setStorage: () => {
     const { user } = useUserStore.getState();
     const { currentOption } = useAdminStore.getState();
-    const { activeTab } = useUiStore.getState();
-    const { activeAssistantTab, activeUIAssistantTab, isIntroScreen } =
-      useAssistantStore.getState();
+    const { activeTab, currentNavOption } = useUiStore.getState();
+    const { isIntroScreen } = useAssistantStore.getState();
     const { currentConversationIndex } = useConversationStore.getState();
     const { currentDocumentConversationIndex } =
       useDocConversationsStore.getState();
@@ -64,9 +62,8 @@ const useLocalStorageStore = create((set, get) => ({
       "lastUI",
       JSON.stringify({
         currentOption,
+        currentNavOption,
         activeTab,
-        activeAssistantTab,
-        activeUIAssistantTab,
         isIntroScreen,
       })
     );
@@ -98,9 +95,9 @@ const useLocalStorageStore = create((set, get) => ({
       user: {},
       ui: {
         currentOption: "employees",
+        currentNavOption: "Tickets",
         activeTab: "iTAgent",
-        activeAssistantTab: "Tickets",
-        activeUIAssistantTab: "Tickets",
+
         isIntroScreen: true,
       },
       conversation: {
@@ -115,10 +112,9 @@ const useLocalStorageStore = create((set, get) => ({
     });
     useUiStore.setState({
       activeTab: defaultStates.ui.activeTab,
+      currentNavOption: defaultStates.ui.currentNavOption,
     });
     useAssistantStore.setState({
-      activeAssistantTab: defaultStates.ui.activeAssistantTab,
-      activeUIAssistantTab: defaultStates.ui.activeUIAssistantTab,
       isIntroScreen: defaultStates.ui.isIntroScreen,
     });
     useConversationStore.setState({

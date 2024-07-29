@@ -12,18 +12,31 @@ import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
 import ExternalPilot from "./Sections/External/ExternalPilot.js";
 
 const Assistant = ({}) => {
-  const { activeAssistantTab } = useAssistantStore();
   const { ticketStatus } = useFormsStore();
   const { openAssistant } = useUiStore();
   const { theme } = useTheme();
+  const { assistantWidth, activeAssistantTab } = useAssistantStore();
+
+  const renderWidth = () => {
+    switch (assistantWidth) {
+      case 400:
+        return "md:w-[400px]";
+      case 700:
+        return "md:w-[700px]";
+      case 900:
+        return "md:w-[900px]";
+      default:
+        return "md:w-[400px]";
+    }
+  };
 
   return (
     <div
-      className={` absolute z-10 top-0 bottom-0 right-0 text-sm  ${
+      className={`absolute z-10 top-0 bottom-0 right-0 lg:right-10 text-sm ${
         openAssistant
-          ? "translate-x-0 w-full md:w-[250px]"
-          : "translate-x-full w-full md:w-[250px]"
-      } flex transition-all duration-300 ease`}
+          ? "translate-x-0 w-full " + renderWidth()
+          : "translate-x-full w-full md:w-[400px]"
+      } flex transition-all duration-300 ease dark:border-white/10 lg:border-l lg:border-black/10`}
     >
       <div
         className={`absolute top-0 bottom-0 right-0 left-0 transition-opacity duration-300 ease ${
@@ -37,19 +50,13 @@ const Assistant = ({}) => {
       />
       {window.innerWidth < 1023 && <AssistantRail />}
 
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col w-full h-full">
         <AssistantControl />
-        <div className="relative flex flex-col overflow-hidden h-full ">
-          {activeAssistantTab === "Tickets" ||
-          activeAssistantTab === "Engineer" ||
-          activeAssistantTab === "Queue" ? (
-            <>
-              <InternalPilot />
-              {ticketStatus.ticketCreated && <Progress />}
-            </>
-          ) : (
-            <ExternalPilot />
-          )}
+       
+        <div className="relative flex flex-col  overflow-hidden h-full ">
+          <InternalPilot />
+          {activeAssistantTab && <ExternalPilot />}
+          {ticketStatus.ticketCreated && <Progress />}
         </div>
       </div>
     </div>

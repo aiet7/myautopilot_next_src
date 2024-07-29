@@ -14,7 +14,6 @@ const EngineerChat = () => {
   const {
     conversationHistories,
     currentConversationIndex,
-    troubleshootingConversationId,
   } = useConversationStore();
   const { handleScrollToBottom, handleCheckScroll } = useInteractionStore();
   const { latestMessageRef, chatContainerRef } = useRefStore();
@@ -48,7 +47,7 @@ const EngineerChat = () => {
               }`}
               ref={index === arr.length - 1 ? latestMessageRef : null}
             >
-              <div className="max-w-[450px] 2xl:max-w-[700px] flex items-start gap-4 mx-auto">
+              <div className="max-w-[1250px] flex items-start gap-4 mx-auto">
                 <span>
                   {item.role === "user" ? (
                     <div className="w-7 h-7  bg-blue-800 flex justify-center items-center text-white">

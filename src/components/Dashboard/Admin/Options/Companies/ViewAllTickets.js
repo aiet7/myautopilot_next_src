@@ -3,8 +3,9 @@
 import useCompaniesStore from "@/utils/store/admin/control/companies/companiesStore";
 
 const ViewAllTickets = () => {
+
   const { companyAllTickets } = useCompaniesStore();
-  
+
   return (
     <div className="flex flex-col overflow-hidden">
       <div className="flex flex-col gap-7  overflow-hidden">

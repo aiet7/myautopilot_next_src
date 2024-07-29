@@ -10,15 +10,21 @@ const Troubleshoot = () => {
   const { troubleshootMessages } = useQueueStore();
 
   return (
-    <>
-      <p className="text-lg font-bold pb-8">Troubleshooting Guide</p>
-      <div className="flex flex-col gap-8">
-        {troubleshootMessages?.length !== 0 ? (
-          <>
-            {troubleshootMessages?.map((messages) => {
-              const { id, content, role } = messages;
-              return (
-                <div key={id} className="flex items-start gap-2">
+    <div className="flex-grow overflow-auto scrollbar-thin">
+      {troubleshootMessages?.length !== 0 ? (
+        <>
+          {troubleshootMessages?.map((messages) => {
+            const { id, content, role } = messages;
+            return (
+              <div
+                key={id}
+                className={`px-4 py-4 w-full ${
+                  role === "user"
+                    ? "dark:border-white/40 bg-black/5 border-b"
+                    : "dark:bg-white/10 dark:border-white/40 border-b"
+                } `}
+              >
+                <div className="max-w-[1250px] flex items-start gap-4 mx-auto">
                   <span>
                     {role === "user" ? (
                       <div className="w-7 h-7 text-sm bg-blue-800 flex justify-center items-center text-white">
@@ -30,19 +36,21 @@ const Troubleshoot = () => {
                       </div>
                     )}
                   </span>
-                  <MarkedTroubleshoot markdown={content} />
+                  <div className="flex-grow min-w-[0]">
+                    <MarkedTroubleshoot markdown={content} />
+                  </div>
                 </div>
-              );
-            })}
-          </>
-        ) : (
-          <div className="flex items-center gap-2">
-            <p>Generating optimum troubleshooting steps...</p>
-            <FaSpinner className="animate-spin" />
-          </div>
-        )}
-      </div>
-    </>
+              </div>
+            );
+          })}
+        </>
+      ) : (
+        <div className="flex items-center gap-2 p-4 font-bold">
+          <p>Generating optimum troubleshooting steps...</p>
+          <FaSpinner className="animate-spin" />
+        </div>
+      )}
+    </div>
   );
 };
 

@@ -19,9 +19,6 @@ const Interaction = dynamic(() =>
   import("@/components/Dashboard/Interaction/Interaction.js")
 );
 
-const Introduction = dynamic(() =>
-  import("@/components/Dashboard/Introduction.js")
-);
 const Assistant = dynamic(() =>
   import("@/components/Dashboard/Assistant/Assistant.js")
 );
@@ -43,9 +40,7 @@ const DashboardPage = ({}) => {
 
   const { currentConversationIndex } = useConversationStore();
   const { currentDocumentConversationIndex } = useDocConversationsStore();
-  const { activeTab } = useUiStore();
-  const { activeAssistantTab, activeUIAssistantTab, isIntroScreen } =
-    useAssistantStore();
+  const { activeTab, currentNavOption } = useUiStore();
 
   useEffect(() => {
     if (router.isReady) {
@@ -73,17 +68,17 @@ const DashboardPage = ({}) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    currentNavOption,
     activeTab,
-    activeAssistantTab,
-    activeUIAssistantTab,
     currentConversationIndex,
     currentDocumentConversationIndex,
   ]);
 
   return (
     <>
-      {isIntroScreen ? <Introduction /> : <Interaction />}
+      <Interaction />
       {window.innerWidth > 1023 && <AssistantRail />}
+
       <Assistant />
     </>
   );

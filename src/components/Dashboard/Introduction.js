@@ -2,7 +2,6 @@
 
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import useUiStore from "@/utils/store/ui/uiStore";
-import { BsStars } from "react-icons/bs";
 import { GiRobotAntennas, GiRobotHelmet } from "react-icons/gi";
 import Image from "next/image";
 
@@ -12,11 +11,11 @@ const Introduction = () => {
   const { openAssistant } = useUiStore();
   return (
     <div
-      className={`relative flex flex-col h-full w-full  ${
+      className={`relative flex flex-col h-full w-full text-sm ${
         openAssistant && "lg:opacity-100 opacity-5 xl:mr-[350px]"
       } dark:bg-black transition-all duration-300 ease bg-white `}
     >
-      <div className="flex flex-col gap-20 items-center p-4 text-md h-full overflow-auto scrollbar-thin max-w-[900px] mx-auto">
+      <div className="flex flex-col gap-20 items-center p-4  h-full overflow-auto scrollbar-thin max-w-[900px] mx-auto">
         <h1 className="text-5xl font-bold text-center">
           Welcome to AI Autopilot!
         </h1>
@@ -28,11 +27,11 @@ const Introduction = () => {
           alt="Logo"
         />
         <div className="flex flex-col items-center gap-12">
-          <h2 className="text-3xl font-semibold">Let&#39;s Get Started</h2>
+          <h2 className="text-xl font-semibold">Let&#39;s Get Started</h2>
           <div className="flex flex-col gap-10 md:flex-row">
             <div className="flex flex-col items-center gap-4">
-              <GiRobotAntennas size={75} />
-              <p className="text-2xl text-center">
+              <GiRobotAntennas size={60} />
+              <p className="text-xl text-center">
                 Create support ticket with Jarvis
               </p>
               <p>
@@ -47,14 +46,14 @@ const Introduction = () => {
                   handleUIAssistantTabChange("Tickets");
                   handleAssistantTabChange("Tickets");
                 }}
-                className="dark:shadow-white/40 hover:bg-blue-500 w-full py-5 bg-blue-800 text-white rounded-lg shadow-lg text-xl"
+                className="dark:shadow-white/40 hover:bg-blue-500 w-full py-5 bg-blue-800 text-white rounded-lg shadow-lg"
               >
                 Create Ticket With Jarvis
               </button>
             </div>
             <div className="flex flex-col items-center gap-4">
-              <GiRobotHelmet size={75} />
-              <p className="text-2xl text-center">
+              <GiRobotHelmet size={60} />
+              <p className="text-xl text-center">
                 Consult with our assistant Vision
               </p>
               <p>
@@ -69,7 +68,7 @@ const Introduction = () => {
                   handleUIAssistantTabChange("Engineer");
                   handleAssistantTabChange("Engineer");
                 }}
-                className="dark:shadow-white/40 hover:bg-blue-500 w-full py-5 bg-blue-800 text-white rounded-lg shadow-lg text-xl"
+                className="dark:shadow-white/40 hover:bg-blue-500 w-full py-5 bg-blue-800 text-white rounded-lg shadow-lg "
               >
                 Consult with Vision
               </button>

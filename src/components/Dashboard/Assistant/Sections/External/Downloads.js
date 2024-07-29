@@ -26,7 +26,7 @@ const Downloads = () => {
   const selectedToolDownload = tools?.find((tool) => tool.id === selectedTool);
 
   return (
-    <div className="flex-grow flex flex-col  overflow-hidden w-full">
+    <div className="flex-grow flex flex-col   overflow-hidden w-full">
       <div className="flex-grow overflow-y-auto scrollbar-thin ">
         <div className="flex flex-grow flex-col ">
           <div className="flex flex-col gap-6 ">
@@ -37,7 +37,7 @@ const Downloads = () => {
               </p>
             </div>
             <select
-              className="p-2 rounded"
+              className="p-2 rounded border cursor-pointer"
               onChange={(e) => {
                 setSelectedTool(e.target.value);
               }}
@@ -73,7 +73,7 @@ const Downloads = () => {
                 </a>
               </div>
             )}
-            <div className="flex flex-col overflow-hidden">
+            <div className="flex flex-col overflow-hidden gap-4">
               <label
                 onDragOver={(e) => {
                   e.preventDefault();
@@ -114,7 +114,7 @@ const Downloads = () => {
                 value={toolToUpload.descriptions}
                 placeholder="Add Tool Description Here..."
                 maxLength={100}
-                className="max-h-[200px] min-h-[100px]  outline-blue-500 w-full p-2"
+                className="max-h-[200px] border min-h-[100px]  outline-blue-500 w-full p-2"
                 onChange={(e) => setToolToUpload("description", e.target.value)}
               />
               <button

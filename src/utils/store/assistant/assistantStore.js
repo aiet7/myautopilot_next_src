@@ -5,15 +5,16 @@ import useIntegrationsStore from "../admin/control/integrations/integrationsStor
 
 const useAssistantStore = create((set, get) => ({
   promptAssistantInput: "",
-  activeUIAssistantTab: "Tickets",
-  activeAssistantTab: "Tickets",
+  activeAssistantTab: null,
   showProgress: true,
   isIntroScreen: false,
+  assistantWidth: 400,
+  assistantWidthOptions: [400, 700, 900],
+  assistantWidthOpen: false,
 
   initializeAssistant: async (msp) => {
     const { activeUIAssistantTab, activeAssistantTab, isIntroScreen } = get();
     const { initializeMSPIntegrations } = useIntegrationsStore.getState();
-    const { handleCloseIntroMenus } = useUiStore.getState();
     const integrations = await initializeMSPIntegrations(msp);
 
     if (isIntroScreen) {
@@ -21,7 +22,6 @@ const useAssistantStore = create((set, get) => ({
         activeUIAssistantTab: "",
         activeAssistantTab: "",
       });
-      handleCloseIntroMenus();
     } else if (!activeUIAssistantTab && !activeAssistantTab) {
       if (integrations?.connectWiseManageIntegrator) {
         set({
@@ -35,6 +35,22 @@ const useAssistantStore = create((set, get) => ({
         });
       }
     }
+  },
+
+  setAssistantWidth: (width) => {
+    const { handleCloseNavWhenResizing } = useUiStore.getState();
+    set({ assistantWidth: width });
+    handleCloseNavWhenResizing();
+  },
+
+  setAssistantWidthOpen: (open) => set({ assistantWidthOpen: open }),
+
+  setCloseExternalApps: () => set({ activeAssistantTab: null }),
+
+  handleAdjustAssistantWidth: () => {
+    set({
+      assistantWidth: 50,
+    });
   },
 
   handleShowProgress: () => {
@@ -54,25 +70,6 @@ const useAssistantStore = create((set, get) => ({
     }, 0);
   },
 
-  handleUIAssistantTabChange: (tab) => {
-    const {
-      openHistory,
-      openTickets,
-      openQueue,
-      openAssistant,
-      handleAssistantMenu,
-      handleHistoryMenu,
-    } = useUiStore.getState();
-    if (!openAssistant) {
-      handleAssistantMenu();
-    }
-
-    if (!openHistory || !openTickets || !openQueue) {
-      handleHistoryMenu();
-    }
-    set({ activeUIAssistantTab: tab, isIntroScreen: false });
-  },
-
   handleAssistantTabChange: (tab) => {
     const { openAssistant, handleAssistantMenu } = useUiStore.getState();
     if (!openAssistant) {
@@ -85,9 +82,12 @@ const useAssistantStore = create((set, get) => ({
   clearAssistant: () => {
     set({
       promptAssistantInput: "",
-      activeUIAssistantTab: "Tickets",
-      activeAssistantTab: "Tickets",
+      activeAssistantTab: null,
       showProgress: true,
+      isIntroScreen: false,
+      assistantWidth: 400,
+      assistantWidthOptions: [400, 700, 900],
+      assistantWidthOpen: false,
     });
   },
 }));

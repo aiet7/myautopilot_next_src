@@ -184,7 +184,7 @@ const useFormsStore = create((set, get) => ({
       name,
       phoneNumber,
     } = responseBody;
-
+    
     const companies = await handleGetManageDBClients(
       userStore.user.mspCustomDomain
     );
@@ -326,7 +326,6 @@ const useFormsStore = create((set, get) => ({
           connectWiseCompanyId: currentTicketCWCompanyId,
         };
 
-
         if (userType === "tech") {
           body.technicianId = userStore.user.id;
           body.connectWiseCompanyId = currentTicketCWCompanyId;
@@ -409,6 +408,7 @@ const useFormsStore = create((set, get) => ({
             category: currentTicketCategory,
             subcategory: currentTicketSubCategory,
             closed: false,
+            title: currentTicketTitle,
             timeStamp: Date.now(),
           });
         }
@@ -421,6 +421,39 @@ const useFormsStore = create((set, get) => ({
             ticketForm: false,
           },
           formError: "",
+          ticket: {
+            currentCompanies: null,
+            currentTicketTitle: "",
+            currentTicketCWCompanyId: "",
+            currentTicketDescription: "",
+
+            currentTicketCategory: "",
+            currentTicketCategoryId: null,
+            categories: null,
+
+            currentTicketSubCategory: "",
+            currentTicketSubCategoryId: null,
+
+            currentTicketPriority: "",
+            currentTicketPriorityId: null,
+
+            currentTicketDurationToResolve: null,
+            currentTicketSeverity: "",
+            currentTicketImpact: "",
+            currentTicketTier: "",
+            currentTicketName: "",
+            currentTicketEmailId: "",
+            currentTicketPhoneNumber: "",
+
+            onBoarding: {
+              currentTicketNewFirstName: "",
+              currentTicketNewLastName: "",
+              currentTicketNewEmailId: "",
+              currentTicketEmailOwner: "",
+              currentTicketNewPhoneNumber: "",
+              currentTicketLicenseId: "E3",
+            },
+          },
         }));
         handleRemoveForm(formId);
       }
@@ -439,6 +472,39 @@ const useFormsStore = create((set, get) => ({
           userEmailCreated: undefined,
         },
         formError: "",
+        ticket: {
+          currentCompanies: null,
+          currentTicketTitle: "",
+          currentTicketCWCompanyId: "",
+          currentTicketDescription: "",
+
+          currentTicketCategory: "",
+          currentTicketCategoryId: null,
+          categories: null,
+
+          currentTicketSubCategory: "",
+          currentTicketSubCategoryId: null,
+
+          currentTicketPriority: "",
+          currentTicketPriorityId: null,
+
+          currentTicketDurationToResolve: null,
+          currentTicketSeverity: "",
+          currentTicketImpact: "",
+          currentTicketTier: "",
+          currentTicketName: "",
+          currentTicketEmailId: "",
+          currentTicketPhoneNumber: "",
+
+          onBoarding: {
+            currentTicketNewFirstName: "",
+            currentTicketNewLastName: "",
+            currentTicketNewEmailId: "",
+            currentTicketEmailOwner: "",
+            currentTicketNewPhoneNumber: "",
+            currentTicketLicenseId: "E3",
+          },
+        },
       }));
     }
   },

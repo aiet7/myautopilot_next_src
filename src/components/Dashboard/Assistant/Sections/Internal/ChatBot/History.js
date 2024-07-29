@@ -5,20 +5,22 @@ import {
   AiFillEdit,
   AiOutlineCheck,
   AiOutlineClose,
+  AiOutlinePlus,
 } from "react-icons/ai";
 import { IoChatboxOutline } from "react-icons/io5";
 
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
-import useUiStore from "@/utils/store/ui/uiStore";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import useUserStore from "@/utils/store/user/userStore";
 import useTicketConversationsStore from "@/utils/store/interaction/conversations/ticketConversationsStore";
+import useUiStore from "@/utils/store/ui/uiStore";
 
 const History = ({}) => {
   const { user } = useUserStore();
 
   const { troubleshootContinue } = useTicketConversationsStore();
   const {
+    filterChatMode,
     searchValue,
     editing,
     deleting,
@@ -26,7 +28,6 @@ const History = ({}) => {
     tempPrompt,
     conversationHistories,
     currentConversationIndex,
-    setSearchValue,
     setDeleting,
     setTempTitle,
     setTempPrompt,
@@ -40,35 +41,50 @@ const History = ({}) => {
     initializeConversations,
   } = useConversationStore();
 
-  const { openHistory } = useUiStore();
-  const { activeUIAssistantTab } = useAssistantStore();
+  const { currentNavOption } = useUiStore();
 
   useEffect(() => {
-    if (activeUIAssistantTab === "Engineer" && !troubleshootContinue) {
+    if (currentNavOption === "Engineer" && !troubleshootContinue) {
       initializeConversations();
+      console.log("firing off");
     }
-  }, [user, activeUIAssistantTab]);
+  }, [user, currentNavOption]);
 
-  const filteredConversationHistories = conversationHistories.filter(
-    (conversation) => {
+  const filteredConversationHistories = conversationHistories
+    ?.filter((conversation) => {
       if (!searchValue) return true;
       if (
         conversation.conversationName.includes(searchValue) ||
         conversation.conversationName.toLowerCase().includes(searchValue)
       )
         return true;
-    }
-  );
+    })
+    ?.sort((a, b) => {
+      switch (filterChatMode) {
+        case "Most Recent":
+          return new Date(b.timeStamp) - new Date(a.timeStamp);
+        case "Oldest":
+          return new Date(a.timeStamp) - new Date(b.timeStamp);
+        case "A-Z":
+          return a.conversationName.localeCompare(b.conversationName);
+        case "Z-A":
+          return b.conversationName.localeCompare(a.conversationName);
+        default:
+          return 0;
+      }
+    });
 
+  console.log(filteredConversationHistories);
 
   return (
     <div
-      className={`absolute z-10 top-0 bottom-0 left-0 text-sm
-      ${
-        openHistory
-          ? "translate-x-0 w-full md:w-[250px]"
-          : "-translate-x-full w-full md:w-[250px]"
-      } dark:bg-[#111111] dark:border-white/10  bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease md:border-r md:border-black/10`}
+      className="flex flex-col h-full"
+      // className={`absolute z-10 top-0 bottom-0 left-0 text-sm
+      // ${
+      //   openHistory
+      //     ? "translate-x-0 w-full md:w-[250px]"
+      //     : "-translate-x-full w-full md:w-[250px]"
+      // } dark:bg-[#111111] dark:border-white/10  bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease md:border-r md:border-black/10`}
     >
       <button
         onClick={() =>
@@ -76,17 +92,13 @@ const History = ({}) => {
             conversationHistories ? conversationHistories.length : 0
           )
         }
-        className="dark:shadow-white/40 hover:bg-blue-500 w-full px-4 py-3 bg-blue-800 text-white rounded-lg shadow-lg"
+        className="dark:shadow-white/40 hover:bg-blue-500 flex items-center gap-1 self-start font-semibold px-4 py-3 mb-3 bg-blue-800 text-white rounded-lg shadow-lg"
       >
-        + New Chat
+        <AiOutlinePlus size={15} />
+        <span>New Chat</span>
       </button>
-      <input
-        value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}
-        className="my-3 p-2 rounded-md border"
-        placeholder="Search Conversation"
-      />
-      <div className="overflow-y-auto h-full scrollbar-thin ">
+
+      <div className="flex-grow overflow-y-auto scrollbar-thin">
         {filteredConversationHistories.map((conversation, index) => {
           const { id, userId, conversationName, customPrompt } = conversation;
           return (

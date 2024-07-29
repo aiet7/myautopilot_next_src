@@ -5,11 +5,7 @@ import {
   AiOutlinePoweroff,
   AiOutlineMenu,
 } from "react-icons/ai";
-import {
-  MdOutlineAccountCircle,
-  MdOutlineDarkMode,
-  MdOutlineLightMode,
-} from "react-icons/md";
+import { MdOutlineDarkMode, MdOutlineLightMode } from "react-icons/md";
 
 import { RiAdminLine } from "react-icons/ri";
 
@@ -17,7 +13,6 @@ import { useTheme } from "next-themes";
 
 import useUiStore from "@/utils/store/ui/uiStore.js";
 
-import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import Link from "next/link";
 import useUserStore from "@/utils/store/user/userStore";
 import useAdminStore from "@/utils/store/admin/adminStore";
@@ -27,13 +22,13 @@ const TabNavRail = ({}) => {
   const router = useRouter();
 
   const { user, handleLogout } = useUserStore();
-  const { activeUIAssistantTab } = useAssistantStore();
   const { handleOptionSelected } = useAdminStore();
   const {
+    currentNavOption,
     openSettings,
     activeTab,
     handleTabChange,
-    handleHistoryMenu,
+    handleNavMenu,
     handleToggleSettings,
   } = useUiStore();
   const { theme, setTheme } = useTheme();
@@ -43,15 +38,15 @@ const TabNavRail = ({}) => {
   return (
     <div className="dark:bg-[#373737] dark:border-white/10 bg-[#eaf1fb] flex items-center justify-evenly p-3 gap-4 transition-all duration-300 ease lg:relative lg:flex-col lg:justify-start lg:border-r lg:border-black/10">
       {((activeTab === "iTAgent" &&
-        (activeUIAssistantTab === "Engineer" ||
-          activeUIAssistantTab === "Document" ||
-          activeUIAssistantTab === "Tickets" ||
-          activeUIAssistantTab === "Queue")) ||
+        (currentNavOption === "Engineer" ||
+        currentNavOption === "Document" ||
+        currentNavOption === "Tickets" ||
+        currentNavOption === "Queue")) ||
         activeTab === "admin") && (
         <>
           <AiOutlineMenu
             data-tooltip-id="History Menu"
-            onClick={handleHistoryMenu}
+            onClick={handleNavMenu}
             size={20}
             className="hidden cursor-pointer outline-none lg:flex"
           />
@@ -139,7 +134,7 @@ const TabNavRail = ({}) => {
           {user?.firstName?.[0]}
         </div>
         {openSettings && (
-          <div className="dark:bg-black dark:border-white/40 dark:border rounded-lg bg-white border border-black/10 absolute z-[99] bottom-[52px] right-0 w-full lg:bottom-0 lg:left-[37px] lg:w-[351px]">
+          <div className="dark:bg-black dark:border-white/40 dark:border rounded-lg bg-white border border-black/10 absolute z-[99] bottom-[52px] right-0 w-full lg:bottom-0 lg:left-[37px] lg:w-[251px]">
             <div className="flex flex-col">
               <div
                 onClick={handleTheme}

@@ -10,6 +10,8 @@ const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 const gptServiceUrl = process.env.NEXT_PUBLIC_GPT_SERVICE_URL;
 
 const useQueueStore = create((set, get) => ({
+  searchValue: "",
+  ticketNote: "",
   ticketQueueMode: "Troubleshoot",
   troubleshootMessages: [],
   myQueueTicket: null,
@@ -37,6 +39,8 @@ const useQueueStore = create((set, get) => ({
   severityOptions: ["Low", "Medium", "High"],
   impactOptions: ["Low", "Medium", "High"],
   tierOptions: ["Tier1", "Tier2", "Tier3", "No Dispatching"],
+
+  setTicketNote: (value) => set({ ticketNote: value }),
 
   setIsMobile: (value) => {
     set({ isMobile: value });
@@ -69,34 +73,11 @@ const useQueueStore = create((set, get) => ({
       activeNoteCategory: category,
     }),
 
-  handleWorkspaceOptionSelected: async (
-    option,
-    mspCustomDomain,
-    tier,
-    techId
-  ) => {
-    const {
-      myQueueTicket,
-      handleShowMyActivities,
-      handleShowAllQueueTickets,
-      handleNextQueueTicket,
-    } = get();
-    set({ currentOption: option });
-
-    if (option === "activities") {
-      await handleShowMyActivities(mspCustomDomain, techId);
-    }
-
-    if (option === "allQueueTickets") {
-      await handleShowAllQueueTickets(mspCustomDomain);
-    }
-
-    if (option === "myQueueTickets") {
-      if (!myQueueTicket) {
-        await handleNextQueueTicket(mspCustomDomain, tier, techId);
-      }
-    }
-  },
+  setSearchValue: (value) =>
+    set((state) => ({
+      ...state,
+      searchValue: value,
+    })),
 
   handleShowMyActivities: async (mspCustomDomain, techId) => {
     try {
@@ -434,6 +415,45 @@ const useQueueStore = create((set, get) => ({
       }
     } catch (e) {
       console.log(e);
+    }
+  },
+
+  handleAddQueueTicketNote: async (ticketId) => {
+    const userStore = useUserStore.getState();
+    const { ticketNote, handleAddTechnicianNoteMessage } =
+      useQueueStore.getState();
+
+    let formattedPrepend;
+    formattedPrepend = `Technician: (${userStore.user.id}): `;
+    if (ticketNote.trim() !== "") {
+      set({
+        ticketNote: "",
+      });
+      try {
+        const response = await fetch(
+          `${connectWiseServiceUrl}/addNoteToTicketObject?mspCustomDomain=${userStore.user.mspCustomDomain}&ticketId=${ticketId}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              info: formattedPrepend,
+              text: ticketNote,
+            }),
+          }
+        );
+
+        if (response.status === 200) {
+          const responseBody = await response.json();
+          handleAddTechnicianNoteMessage(responseBody);
+          console.log("Note Added");
+        } else {
+          console.log("Failed to Add Note");
+        }
+      } catch (e) {
+        console.log(e);
+      }
     }
   },
 
