@@ -15,18 +15,19 @@ const Assistant = ({}) => {
   const { ticketStatus } = useFormsStore();
   const { openAssistant } = useUiStore();
   const { theme } = useTheme();
-  const { assistantWidth, activeAssistantTab } = useAssistantStore();
+  const { assistantWidth, activeAssistantTab, activeAssistantTabOpen } =
+    useAssistantStore();
 
   const renderWidth = () => {
     switch (assistantWidth) {
       case 400:
-        return "md:w-[400px]";
+        return "md:w-[400px] lg:w-[600px]";
       case 700:
-        return "md:w-[700px]";
+        return "md:w-[700px] lg:w-[900px]";
       case 900:
-        return "md:w-[900px]";
+        return "md:w-[900px] lg:w-[1100px]";
       default:
-        return "md:w-[400px]";
+        return "md:w-[400px] lg:w-[600px]";
     }
   };
 
@@ -52,10 +53,10 @@ const Assistant = ({}) => {
 
       <div className="flex flex-col w-full h-full">
         <AssistantControl />
-       
+
         <div className="relative flex flex-col  overflow-hidden h-full ">
           <InternalPilot />
-          {activeAssistantTab && <ExternalPilot />}
+          {activeAssistantTabOpen && <ExternalPilot />}
           {ticketStatus.ticketCreated && <Progress />}
         </div>
       </div>

@@ -6,6 +6,7 @@ import useIntegrationsStore from "../admin/control/integrations/integrationsStor
 const useAssistantStore = create((set, get) => ({
   promptAssistantInput: "",
   activeAssistantTab: null,
+  activeAssistantTabOpen: false,
   showProgress: true,
   isIntroScreen: false,
   assistantWidth: 400,
@@ -45,7 +46,7 @@ const useAssistantStore = create((set, get) => ({
 
   setAssistantWidthOpen: (open) => set({ assistantWidthOpen: open }),
 
-  setCloseExternalApps: () => set({ activeAssistantTab: null }),
+  setCloseExternalApps: () => set({ activeAssistantTab: null, activeAssistantTabOpen: false }),
 
   handleAdjustAssistantWidth: () => {
     set({
@@ -76,7 +77,7 @@ const useAssistantStore = create((set, get) => ({
       handleAssistantMenu();
     }
 
-    set({ activeAssistantTab: tab });
+    set({ activeAssistantTab: tab, activeAssistantTabOpen: true });
   },
 
   clearAssistant: () => {

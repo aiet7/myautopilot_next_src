@@ -49,19 +49,19 @@ const Interaction = ({}) => {
     handleScrollToBottom(false);
   }, [window.innerWidth]);
 
+
   const renderWidth = () => {
     switch (assistantWidth) {
       case 400:
-        return "xl:mr-[400px]";
+        return "md:mr-[400px] lg:mr-[600px]";
       case 700:
-        return "xl:mr-[700px]";
+        return "md:mr-[700px] lg:mr-[900px]";
       case 900:
-        return "xl:mr-[900px]";
+        return "md:mr-[900px] lg:mr-[1100px]";
       default:
-        return "xl:mr-[400px]";
+        return "md:mr-[400px] lg:mr-[600px]";
     }
   };
-
   return (
     <div
       onClick={() => {

@@ -23,6 +23,9 @@ const useInteractionStore = create((set, get) => ({
   isOverflowed: false,
   feedback: {},
   textAreaheight: "24px",
+  interactionMenuOpen: false,
+
+  setInteractionMenuOpen: (open) => set({interactionMenuOpen: open}),
 
   handleTextAreaChange: (e) => {
     set({
@@ -272,7 +275,6 @@ const useInteractionStore = create((set, get) => ({
       }
     }
   },
- 
 
   handleSendTroubleshootMessage: async (message, ticketId) => {
     const { inputRef, messageIdRef } = useRefStore.getState();

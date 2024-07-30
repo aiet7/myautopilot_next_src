@@ -1,3 +1,5 @@
+"use client"
+
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import { AiOutlineMenu } from "react-icons/ai";
