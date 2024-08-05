@@ -25,7 +25,7 @@ const useInteractionStore = create((set, get) => ({
   textAreaheight: "24px",
   interactionMenuOpen: false,
 
-  setInteractionMenuOpen: (open) => set({interactionMenuOpen: open}),
+  setInteractionMenuOpen: (open) => set({ interactionMenuOpen: open }),
 
   handleTextAreaChange: (e) => {
     set({
@@ -141,6 +141,8 @@ const useInteractionStore = create((set, get) => ({
     const { inputRef, messageIdRef } = useRefStore.getState();
     const { handleAddUserMessage } = useTicketConversationsStore.getState();
     const { handleCreateTicketProcess } = useFormsStore.getState();
+    const { setActiveTicketBotMode } = useTicketsStore.getState();
+
     if (message.trim() !== "") {
       inputRef.current.focus();
       handleAddUserMessage(message);
@@ -152,7 +154,7 @@ const useInteractionStore = create((set, get) => ({
 
       try {
         const response = await fetch(
-          `${connectWiseServiceUrl}/getTicketCategorization`,
+          `${connectWiseServiceUrl}/getTicketBoardCategorization`,
           {
             method: "POST",
             headers: {
@@ -170,6 +172,7 @@ const useInteractionStore = create((set, get) => ({
           const responseBody = await response.json();
           messageIdRef.current = Date.now();
           handleCreateTicketProcess(responseBody);
+          setActiveTicketBotMode("Ticket");
         } else if (response.status === 500) {
           set({
             isServerError: true,

@@ -25,6 +25,8 @@ const useFormsStore = create((set, get) => ({
     currentTicketCWCompanyId: "",
     currentTicketDescription: "",
 
+    currentTicketBoard: "",
+    currentTicketBoardId: null,
     currentTicketCategory: "",
     currentTicketCategoryId: null,
     categories: null,
@@ -34,10 +36,13 @@ const useFormsStore = create((set, get) => ({
 
     currentTicketPriority: "",
     currentTicketPriorityId: null,
+    currentTicketPriorityScore: null,
 
     currentTicketDurationToResolve: null,
     currentTicketSeverity: "",
+    currentTicketSeverityScore: null,
     currentTicketImpact: "",
+    currentTicketImpactScore: null,
     currentTicketTier: "",
     currentTicketName: "",
     currentTicketEmailId: "",
@@ -64,12 +69,16 @@ const useFormsStore = create((set, get) => ({
   setTicket: (
     field,
     value,
+    boardId,
     categoryId,
     subCategoryId,
     priority,
     priorityId,
+    priorityScore,
     impact,
+    impactScore,
     severity,
+    severityScore,
     tier,
     durationToResolve
   ) => {
@@ -83,42 +92,79 @@ const useFormsStore = create((set, get) => ({
         updatedTicket[field] = value;
       }
 
+      if (boardId !== null) {
+        updatedTicket.currentTicketBoardId = boardId;
+        updatedTicket.currentTicketBoardName =
+          state.ticket.categories.boardDetails.find(
+            (board) => board.boardId === boardId
+          )?.boardName || "";
+
+        updatedTicket.currentTicketCategoryId = null;
+        updatedTicket.currentTicketCategory = "";
+        updatedTicket.currentTicketSubCategoryId = null;
+        updatedTicket.currentTicketSubCategory = "";
+        updatedTicket.currentTicketPriority = "";
+        updatedTicket.currentTicketPriorityId = null;
+        updatedTicket.currentTicketPriorityScore = null;
+        updatedTicket.currentTicketTier = "";
+        updatedTicket.currentTicketDurationToResolve = null;
+      }
+
       if (categoryId !== null) {
         updatedTicket.currentTicketCategoryId = categoryId;
         updatedTicket.currentTicketCategory =
-          state.ticket.categories.mspConnectWiseManageCategorizations.find(
-            (category) => category.categoryId === categoryId
-          )?.categoryName || "";
+          state.ticket.categories.boardDetails
+            .find((board) => board.boardId === boardId)
+            ?.mspConnectWiseBoardTypes.find(
+              (type) => type.typeId === categoryId
+            )?.typeName || "";
 
         updatedTicket.currentTicketSubCategoryId = null;
         updatedTicket.currentTicketSubCategory = "";
         updatedTicket.currentTicketPriority = "";
         updatedTicket.currentTicketPriorityId = null;
-        updatedTicket.currentTicketImpact = "";
-        updatedTicket.currentTicketSeverity = "";
+        updatedTicket.currentTicketPriorityScore = null;
         updatedTicket.currentTicketTier = "";
+        updatedTicket.currentTicketDurationToResolve = null;
       }
 
       if (subCategoryId !== null) {
-        const selectedCategory =
-          state.ticket.categories.mspConnectWiseManageCategorizations.find(
-            (category) => category.categoryId === categoryId
+        const selectedBoard = state.ticket.categories.boardDetails.find(
+          (board) => board.boardId === boardId
+        );
+
+        const selectedType = selectedBoard?.mspConnectWiseBoardTypes.find(
+          (type) => type.typeId === categoryId
+        );
+
+        if (selectedType) {
+          const selectedSubType = selectedType.mspConnectWiseBoardSubTypes.find(
+            (sub) => sub.subTypeId === subCategoryId
           );
-        if (selectedCategory) {
+
           updatedTicket.currentTicketSubCategoryId = subCategoryId;
           updatedTicket.currentTicketSubCategory =
-            selectedCategory.mspConnectWiseManageSubCategorizations.find(
-              (sub) => sub.subCategoryId === subCategoryId
-            )?.subCategoryName || "";
+            selectedSubType.subTypeName || "";
+          updatedTicket.currentTicketPriority = selectedSubType.priority || "";
+          updatedTicket.currentTicketPriorityId =
+            selectedSubType.priorityId || null;
+          updatedTicket.currentTicketPriorityScore =
+            selectedSubType.priorityScore || null;
+          updatedTicket.currentTicketTier = selectedSubType.tier || "";
+          updatedTicket.currentTicketDurationToResolve =
+            selectedSubType.slaDeadLineInHours || null;
         }
       }
 
       if (priority !== null) updatedTicket.currentTicketPriority = priority;
       if (priorityId !== null)
         updatedTicket.currentTicketPriorityId = priorityId;
-
-      if (impact !== null) updatedTicket.currentTicketImpact = impact;
-      if (severity !== null) updatedTicket.currentTicketSeverity = severity;
+      if (priorityScore !== null)
+        updatedTicket.currentTicketPriorityScore = priorityScore;
+      if (impactScore !== null)
+        updatedTicket.currentTicketImpactScore = impactScore;
+      if (severityScore !== null)
+        updatedTicket.currentTicketSeverityScore = severityScore;
       if (tier !== null) updatedTicket.currentTicketTier = tier;
       if (durationToResolve !== null)
         updatedTicket.currentTicketDurationToResolve = durationToResolve;
@@ -149,7 +195,7 @@ const useFormsStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `${dbServiceUrl}/${userStore.user.mspCustomDomain}/connectWiseManageDetails`
+        `${dbServiceUrl}/${userStore.user.mspCustomDomain}/connectWiseBoardDetails`
       );
       if (response.status === 200) {
         const ticketMerge = await response.json();
@@ -173,18 +219,21 @@ const useFormsStore = create((set, get) => ({
       priority,
       priorityId,
       impact,
+      impactScore,
       severity,
+      severityScore,
       tier,
-      categoryName,
-      categoryId,
-      subCategoryName,
-      subCategoryId,
+      typeName,
+      typeId,
+      subTypeName,
+      subTypeId,
       durationToResolve,
       emailId,
       name,
       phoneNumber,
+      boardId,
+      boardName,
     } = responseBody;
-    
     const companies = await handleGetManageDBClients(
       userStore.user.mspCustomDomain
     );
@@ -202,14 +251,18 @@ const useFormsStore = create((set, get) => ({
       ticket: {
         ...state.ticket,
         currentCompanies: companies || null,
-        currentTicketCategoryId: categoryId || null,
-        currentTicketSubCategoryId: subCategoryId || null,
+        currentTicketBoardId: boardId || null,
+        currentTicketBoardName: boardName || "",
+        currentTicketCategoryId: typeId || null,
+        currentTicketSubCategoryId: subTypeId || null,
         currentTicketPriorityId: priorityId || null,
+        currentTicketImpactScore: impactScore || null,
+        currentTicketSeverityScore: severityScore || null,
         currentTicketDurationToResolve: durationToResolve || null,
         currentTicketTitle: title || "",
         currentTicketDescription: description || "",
-        currentTicketCategory: categoryName || "",
-        currentTicketSubCategory: subCategoryName || "",
+        currentTicketCategory: typeName || "",
+        currentTicketSubCategory: subTypeName || "",
         currentTicketPriority: priority || "",
         currentTicketImpact: impact || "",
         currentTicketSeverity: severity || "",
@@ -232,8 +285,8 @@ const useFormsStore = create((set, get) => ({
 
     handleAddForm("ticketForm");
     if (
-      categoryName === "TRAINING_OR_ONBOARDING" &&
-      subCategoryName === "NEW_EMPLOYEE_ONBOARDING"
+      typeName === "TRAINING_OR_ONBOARDING" &&
+      subTypeName === "NEW_EMPLOYEE_ONBOARDING"
     ) {
       set({
         ticketStatus: {
@@ -262,6 +315,10 @@ const useFormsStore = create((set, get) => ({
     const { addTicket } = useTicketsStore.getState();
     const { userType } = useMspStore.getState();
     const {
+      currentTicketImpactScore,
+      currentTicketSeverityScore,
+      currentTicketBoardId,
+      currentTicketBoardName,
       currentTicketTitle,
       currentTicketCWCompanyId,
       currentTicketDescription,
@@ -306,14 +363,16 @@ const useFormsStore = create((set, get) => ({
           userStore.user.mspCustomDomain
         );
 
-        let url = `${connectWiseServiceUrl}/createTicket?mspCustomDomain=${encodedDomain}`;
+        let url = `${connectWiseServiceUrl}/createBoardTicket?mspCustomDomain=${encodedDomain}`;
         let body = {
+          boardId: currentTicketBoardId,
+          boardName: currentTicketBoardName,
           title: currentTicketTitle,
           description: currentTicketDescription,
-          categoryName: currentTicketCategory,
-          categoryId: currentTicketCategoryId,
-          subCategoryName: currentTicketSubCategory,
-          subCategoryId: currentTicketSubCategoryId,
+          typeName: currentTicketCategory,
+          typeId: currentTicketCategoryId,
+          subTypeName: currentTicketSubCategory,
+          subTypeId: currentTicketSubCategoryId,
           durationToResolve: currentTicketDurationToResolve,
           priority: currentTicketPriority,
           priorityId: currentTicketPriorityId,
@@ -324,6 +383,8 @@ const useFormsStore = create((set, get) => ({
           emailId: currentTicketEmailId,
           phoneNumber: currentTicketPhoneNumber,
           connectWiseCompanyId: currentTicketCWCompanyId,
+          impactScore: currentTicketImpactScore,
+          severityScore: currentTicketSeverityScore,
         };
 
         if (userType === "tech") {
@@ -427,19 +488,24 @@ const useFormsStore = create((set, get) => ({
             currentTicketCWCompanyId: "",
             currentTicketDescription: "",
 
+            currentTicketBoard: "",
+            currentTicketBoardId: null,
             currentTicketCategory: "",
             currentTicketCategoryId: null,
-            categories: null,
+            categories: state.ticket.categories,
 
             currentTicketSubCategory: "",
             currentTicketSubCategoryId: null,
 
             currentTicketPriority: "",
             currentTicketPriorityId: null,
+            currentTicketPriorityScore: null,
 
             currentTicketDurationToResolve: null,
             currentTicketSeverity: "",
+            currentTicketSeverityScore: null,
             currentTicketImpact: "",
+            currentTicketImpactScore: null,
             currentTicketTier: "",
             currentTicketName: "",
             currentTicketEmailId: "",
@@ -472,25 +538,31 @@ const useFormsStore = create((set, get) => ({
           userEmailCreated: undefined,
         },
         formError: "",
+
         ticket: {
           currentCompanies: null,
           currentTicketTitle: "",
           currentTicketCWCompanyId: "",
           currentTicketDescription: "",
 
+          currentTicketBoard: "",
+          currentTicketBoardId: null,
           currentTicketCategory: "",
           currentTicketCategoryId: null,
-          categories: null,
+          categories: state.ticket.categories,
 
           currentTicketSubCategory: "",
           currentTicketSubCategoryId: null,
 
           currentTicketPriority: "",
           currentTicketPriorityId: null,
+          currentTicketPriorityScore: null,
 
           currentTicketDurationToResolve: null,
           currentTicketSeverity: "",
+          currentTicketSeverityScore: null,
           currentTicketImpact: "",
+          currentTicketImpactScore: null,
           currentTicketTier: "",
           currentTicketName: "",
           currentTicketEmailId: "",

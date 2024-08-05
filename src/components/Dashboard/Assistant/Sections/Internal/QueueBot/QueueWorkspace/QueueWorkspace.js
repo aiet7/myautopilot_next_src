@@ -21,9 +21,10 @@ const QueueWorkspace = () => {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="relative flex flex-col h-full ">
       <QueueNav />
-      <div className="flex flex-col gap-4 p-4">
+
+      <div className="relative flex flex-col gap-4 m-4 overflow-auto scrollbar-thin">
         <TicketNav />
         {renderComponent()}
       </div>

@@ -33,13 +33,13 @@ const Assistant = ({}) => {
 
   return (
     <div
-      className={`absolute z-10 top-0 bottom-0 right-0 lg:right-10 text-sm ${
+      className={`dark:bg-[#111111] absolute z-10 top-0 bottom-0 right-0 lg:right-10 text-sm bg-gray-200 ${
         openAssistant
           ? "translate-x-0 w-full " + renderWidth()
           : "translate-x-full w-full md:w-[400px]"
       } flex transition-all duration-300 ease dark:border-white/10 lg:border-l lg:border-black/10`}
     >
-      <div
+      {/* <div
         className={`absolute top-0 bottom-0 right-0 left-0 transition-opacity duration-300 ease ${
           theme === "light" ? "opacity-100" : "opacity-0"
         } bg-gradient-to-r from-[#eaf1fb] to-blue-200`}
@@ -48,13 +48,13 @@ const Assistant = ({}) => {
         className={`absolute top-0 bottom-0 right-0 left-0  transition-opacity duration-300 ease ${
           theme === "dark" ? "opacity-100" : "opacity-0"
         } bg-gradient-to-r from-[#373737] to-[#111111]`}
-      />
+      /> */}
       {window.innerWidth < 1023 && <AssistantRail />}
 
       <div className="flex flex-col w-full h-full">
         <AssistantControl />
 
-        <div className="relative flex flex-col  overflow-hidden h-full ">
+        <div className="relative flex flex-col overflow-hidden h-full ">
           <InternalPilot />
           {activeAssistantTabOpen && <ExternalPilot />}
           {ticketStatus.ticketCreated && <Progress />}

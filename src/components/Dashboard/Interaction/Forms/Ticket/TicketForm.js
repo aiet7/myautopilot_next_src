@@ -1,12 +1,10 @@
 import useFormsStore from "@/utils/store/interaction/forms/formsStore";
 import TicketOnboarding from "./TicketOnboarding";
-
 import { useEffect } from "react";
 import useMspStore from "@/utils/store/auth/msp/mspStore";
 
 const TicketForm = ({ itemId }) => {
   const { userType } = useMspStore();
-
   const {
     loading,
     formError,
@@ -19,7 +17,6 @@ const TicketForm = ({ itemId }) => {
   useEffect(() => {
     handleCreateTicketCategories();
   }, []);
-
   return (
     <div>
       {ticket?.currentTicketTitle === "" ? (
@@ -52,11 +49,15 @@ const TicketForm = ({ itemId }) => {
                       null,
                       null,
                       null,
+                      null,
+                      null,
+                      null,
+                      null,
                       null
                     );
                   }}
                 >
-                  <option value="" disabled selected>
+                  <option value="" disabled>
                     Select Company
                   </option>
                   {ticket.currentCompanies?.map((company) => {
@@ -73,6 +74,43 @@ const TicketForm = ({ itemId }) => {
                 </select>
               </div>
             )}
+            {userType === "tech" && (
+              <div>
+                <span className="font-bold">Board</span>
+                <select
+                  className="h-[50px] border outline-blue-500 w-full px-3"
+                  value={ticket.currentTicketBoardId || ""}
+                  onChange={(e) => {
+                    const newBoardId = parseInt(e.target.value, 10);
+                    setTicket(
+                      "currentTicketBoardId",
+                      newBoardId,
+                      newBoardId,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null
+                    );
+                  }}
+                >
+                  <option value="" disabled>
+                    Select Board
+                  </option>
+                  {ticket.categories?.boardDetails?.map((board) => (
+                    <option key={board.boardId} value={board.boardId}>
+                      {board.boardName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
             <div>
               <span className="font-bold">Ticket Name</span>
               <p className="text-xs text-red-500">{formError}</p>
@@ -83,6 +121,10 @@ const TicketForm = ({ itemId }) => {
                   setTicket(
                     "currentTicketTitle",
                     e.target.value,
+                    null,
+                    null,
+                    null,
+                    null,
                     null,
                     null,
                     null,
@@ -112,6 +154,10 @@ const TicketForm = ({ itemId }) => {
                     null,
                     null,
                     null,
+                    null,
+                    null,
+                    null,
+                    null,
                     null
                   )
                 }
@@ -119,21 +165,28 @@ const TicketForm = ({ itemId }) => {
             </div>
             <div className="flex gap-4">
               <div className="w-full">
-                <span className="font-bold">Category</span>
+                <span className="font-bold">Type</span>
                 <select
                   className="h-[50px] border outline-blue-500 w-full px-3"
                   value={ticket.currentTicketCategoryId || ""}
                   onChange={(e) => {
-                    const selectedCategory =
-                      ticket.categories.mspConnectWiseManageCategorizations.find(
-                        (category) =>
-                          category.categoryId === parseInt(e.target.value, 10)
+                    const newCategoryId = parseInt(e.target.value, 10);
+                    const selectedCategory = ticket.categories?.boardDetails
+                      ?.find(
+                        (board) => board.boardId === ticket.currentTicketBoardId
+                      )
+                      ?.mspConnectWiseBoardTypes.find(
+                        (type) => type?.typeId === newCategoryId
                       );
 
                     setTicket(
                       "currentTicketCategoryId",
-                      selectedCategory.categoryId,
-                      selectedCategory.categoryId,
+                      selectedCategory?.typeName,
+                      ticket.currentTicketBoardId,
+                      newCategoryId,
+                      null,
+                      null,
+                      null,
                       null,
                       null,
                       null,
@@ -144,73 +197,86 @@ const TicketForm = ({ itemId }) => {
                     );
                   }}
                 >
-                  {ticket.categories?.mspConnectWiseManageCategorizations.map(
-                    (category) => {
-                      const { categoryId, categoryName } = category;
-                      return (
-                        <option key={categoryId} value={categoryId}>
-                          {categoryName}
-                        </option>
-                      );
-                    }
-                  )}
+                  <option value="" disabled>
+                    Select a type
+                  </option>
+                  {ticket.categories?.boardDetails
+                    ?.find(
+                      (board) => board.boardId === ticket.currentTicketBoardId
+                    )
+                    ?.mspConnectWiseBoardTypes?.map((type) => (
+                      <option key={type?.typeId} value={type?.typeId}>
+                        {type?.typeName}
+                      </option>
+                    ))}
                 </select>
               </div>
 
               <div className="w-full">
-                <span className="font-bold">Subcategory</span>
+                <span className="font-bold">Subtype</span>
                 <select
                   className="h-[50px] border outline-blue-500 w-full px-3"
                   value={ticket.currentTicketSubCategoryId || ""}
                   onChange={(e) => {
-                    const selectedSubcategory =
-                      ticket.categories.mspConnectWiseManageCategorizations
-                        .find(
-                          (category) =>
-                            category.categoryId ===
-                            ticket.currentTicketCategoryId
+                    const newSubCategoryId = parseInt(e.target.value, 10);
+                    const selectedBoard = ticket.categories?.boardDetails?.find(
+                      (board) =>
+                        board?.mspConnectWiseBoardTypes?.some(
+                          (type) =>
+                            type?.typeId === ticket.currentTicketCategoryId
                         )
-                        ?.mspConnectWiseManageSubCategorizations.find(
-                          (sub) =>
-                            sub.subCategoryId === parseInt(e.target.value, 10)
+                    );
+                    const selectedSubcategory =
+                      selectedBoard?.mspConnectWiseBoardTypes
+                        ?.find(
+                          (type) =>
+                            type?.typeId === ticket.currentTicketCategoryId
+                        )
+                        ?.mspConnectWiseBoardSubTypes?.find(
+                          (sub) => sub?.subTypeId === newSubCategoryId
                         );
 
-                    setTicket(
-                      "currentTicketSubCategoryId",
-                      selectedSubcategory.subCategoryName,
-                      ticket.currentTicketCategoryId,
-                      selectedSubcategory.subCategoryId,
-                      selectedSubcategory.priority,
-                      selectedSubcategory.priorityId,
-                      selectedSubcategory.impact,
-                      selectedSubcategory.severity,
-                      selectedSubcategory.tier,
-                      selectedSubcategory.durationToResolve
-                    );
+                    if (selectedSubcategory) {
+                      setTicket(
+                        "currentTicketSubCategoryId",
+                        selectedSubcategory?.subTypeName,
+                        ticket.currentTicketBoardId,
+                        ticket.currentTicketCategoryId,
+                        newSubCategoryId,
+                        selectedSubcategory?.priority,
+                        selectedSubcategory?.priorityId,
+                        selectedSubcategory?.priorityScore,
+                        selectedSubcategory?.impact,
+                        selectedSubcategory?.impactScore,
+                        selectedSubcategory?.severity,
+                        selectedSubcategory?.severityScore,
+                        selectedSubcategory?.tier,
+                        selectedSubcategory?.slaDeadLineInHours
+                      );
+                    }
                   }}
                 >
-                  <option value="" disabled selected>
-                    {ticket.currentTicketCategoryId &&
-                      "Please select a subcategory"}
+                  <option value="" disabled>
+                    {ticket.currentTicketCategoryId
+                      ? "Please select a subtype"
+                      : "Select a type first"}
                   </option>
-
                   {ticket.currentTicketCategoryId &&
-                    ticket.categories?.mspConnectWiseManageCategorizations
-                      .find(
-                        (category) =>
-                          category.categoryId === ticket.currentTicketCategoryId
+                    ticket.categories?.boardDetails
+                      ?.find(
+                        (board) => board.boardId === ticket.currentTicketBoardId
                       )
-                      ?.mspConnectWiseManageSubCategorizations.map(
-                        (subCategory) => {
-                          const { subCategoryId, subCategoryName } =
-                            subCategory;
-                          return (
-                            <option key={subCategoryId} value={subCategoryId}>
-                              {subCategoryName}
-                            </option>
-                          );
-                        }
-                      )}
+                      ?.mspConnectWiseBoardTypes?.find(
+                        (type) => type.typeId === ticket.currentTicketCategoryId
+                      )
+                      ?.mspConnectWiseBoardSubTypes?.map((sub, index) => (
+                        <option
+                          key={`${sub?.subTypeId}-${index}`}
+                          value={sub?.subTypeId}
+                        >
+                          {sub?.subTypeName}
+                        </option>
+                      ))}
                 </select>
               </div>
             </div>
@@ -248,6 +314,59 @@ const TicketForm = ({ itemId }) => {
                 value={ticket.currentTicketTier || ""}
               />
             </div>
+            {userType === "tech" && (
+              <div className="flex gap-4">
+                <div className="w-full">
+                  <span className="font-bold">Impact Score</span>
+                  <input
+                    className="h-[50px] border outline-blue-500 w-full px-4"
+                    value={ticket.currentTicketImpactScore || ""}
+                    onChange={(e) =>
+                      setTicket(
+                        "currentTicketImpactScore",
+                        e.target.value,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        e.target.value,
+                        null,
+                        null,
+                        null,
+                        null
+                      )
+                    }
+                  />
+                </div>
+                <div className="w-full">
+                  <span className="font-bold">Severity Score</span>
+                  <input
+                    className="h-[50px] border outline-blue-500 w-full px-4"
+                    value={ticket.currentTicketSeverityScore || ""}
+                    onChange={(e) =>
+                      setTicket(
+                        "currentTicketSeverityScore",
+                        e.target.value,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        e.target.value,
+                        null
+                      )
+                    }
+                  />
+                </div>
+              </div>
+            )}
 
             {ticket.currentTicketCategory === "TRAINING_OR_ONBOARDING" &&
               ticket.currentTicketSubCategory === "NEW_EMPLOYEE_ONBOARDING" && (
@@ -262,6 +381,10 @@ const TicketForm = ({ itemId }) => {
                   setTicket(
                     "currentTicketName",
                     e.target.value,
+                    null,
+                    null,
+                    null,
+                    null,
                     null,
                     null,
                     null,
@@ -290,6 +413,10 @@ const TicketForm = ({ itemId }) => {
                     null,
                     null,
                     null,
+                    null,
+                    null,
+                    null,
+                    null,
                     null
                   )
                 }
@@ -304,6 +431,10 @@ const TicketForm = ({ itemId }) => {
                   setTicket(
                     "currentTicketPhoneNumber",
                     e.target.value,
+                    null,
+                    null,
+                    null,
+                    null,
                     null,
                     null,
                     null,

@@ -49,7 +49,7 @@ const Engineer = () => {
           )}
         </div>
       </div>
-      <div className="flex-grow overflow-y-auto scrollbar-thin py-2">
+      <div className="flex-grow overflow-y-auto scrollbar-thin py-2 ">
         <div className="flex flex-grow flex-col gap-4 ">
           <MarkedAssistant markdown={prompts} />
         </div>

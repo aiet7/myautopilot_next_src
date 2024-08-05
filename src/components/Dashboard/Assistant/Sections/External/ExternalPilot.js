@@ -33,11 +33,11 @@ const ExternalPilot = () => {
   };
 
   return (
-    <div className="relative flex-grow  flex flex-col gap-4 h-full overflow-auto scrollbar-thin">
+    <div className="relative flex-grow flex flex-col gap-4 h-full text-sm">
       <TopExternalMenu />
-      <div className="p-6">{renderComponent()}</div>
-
-      <BottomExternalMenu />
+      <div className="relative flex flex-col flex-grow h-0 overflow-auto scrollbar-thin p-4">
+        {renderComponent()}
+      </div>
     </div>
   );
 };

@@ -32,6 +32,7 @@ const TicketMenus = () => {
           size={20}
           className="cursor-pointer "
         />
+        
         {activeTicketBotModeOpen && (
           <div className="absolute flex flex-col  font-semibold top-6 right-8  bg-white border rounded-lg shadow-lg w-[100px] p-1 z-[100] ">
             {activeTicketOptions.map((option) => (

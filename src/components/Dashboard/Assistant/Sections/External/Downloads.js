@@ -26,12 +26,11 @@ const Downloads = () => {
   const selectedToolDownload = tools?.find((tool) => tool.id === selectedTool);
 
   return (
-    <div className="flex-grow flex flex-col   overflow-hidden w-full">
+    <div className="flex-grow flex flex-col overflow-hidden w-full">
       <div className="flex-grow overflow-y-auto scrollbar-thin ">
         <div className="flex flex-grow flex-col ">
-          <div className="flex flex-col gap-6 ">
+          <div className="flex flex-col gap-4 ">
             <div>
-              <p className="text-2xl">Manage Your Tools</p>
               <p className="dark:text-white/60 text-lg text-black/60">
                 Access and download the specific tools you need
               </p>

@@ -2,6 +2,7 @@
 
 import useInteractionStore from "@/utils/store/interaction/interactionsStore";
 import { BsStars } from "react-icons/bs";
+import { GiRobotHelmet } from "react-icons/gi";
 
 const TicketGuide = () => {
   const { handleCreateTicketMessage } = useInteractionStore();
@@ -11,6 +12,14 @@ const TicketGuide = () => {
       <div className="dark:border-white flex items-center justify-center border border-black px-12 py-2 rounded-lg font-bold mb-4">
         <BsStars size={15} />
         <span>ET 7</span>
+      </div>
+      <div className="flex flex-col gap-6 items-center">
+        <GiRobotHelmet size={70} />
+        <p className="text-lg font-semibold">Hi, I Am Jarvis</p>
+        <div className="flex flex-col items-center">
+          <h2 className="text-2xl font-bold">Your Tech Support Engineer</h2>
+          <p className="text-lg font-semibold">I Can Help You Open Tickets</p>
+        </div>
       </div>
       <div className="grid grid-cols-2 gap-2 ">
         <div

@@ -57,7 +57,7 @@ const AssistantControl = () => {
   };
 
   return (
-    <div className="dark:border-white/10 relative border-b border-black/10 gap-4  py-2 px-4 flex  items-center ">
+    <div className="dark:bg-black dark:border-white/10 relative border-b border-black/10 gap-4 py-2 px-4 flex items-center bg-gray-100  ">
       <p className="dark:text-white text-lg text-black">{currentNavOption}</p>
 
       {renderSearchComponent()}

@@ -64,7 +64,11 @@ const Input = () => {
                   : "dark:text-gray-500 text-gray-300 select-none"
               } `}
             />
-            <BsThreeDotsVertical size={20} />
+            <BsThreeDotsVertical
+              className="cursor-pointer"
+              onClick={() => setInteractionMenuOpen(!interactionMenuOpen)}
+              size={20}
+            />
           </div>
         </div>
       )}
@@ -116,6 +120,7 @@ const Input = () => {
               {activeTicketMode === "Support" ? "Leave Note" : "Open Ticket"}
             </button>
             <BsThreeDotsVertical
+              className="cursor-pointer"
               onClick={() => setInteractionMenuOpen(!interactionMenuOpen)}
               size={20}
             />
@@ -162,7 +167,11 @@ const Input = () => {
                   );
                 }}
               />
-              <BsThreeDotsVertical size={20} />
+              <BsThreeDotsVertical
+                className="cursor-pointer"
+                onClick={() => setInteractionMenuOpen(!interactionMenuOpen)}
+                size={20}
+              />
             </div>
           </div>
         )}

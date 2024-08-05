@@ -16,7 +16,7 @@ const InternalPilot = () => {
     <div
       className={`flex-grow ${
         activeAssistantTab ? "h-1/2" : "h-full"
-      } flex flex-col text-xs`}
+      } flex flex-col  text-xs`}
     >
       {currentNavOption === "Tickets" && <TicketBot />}
       {currentNavOption === "Engineer" && <ChatBot />}
