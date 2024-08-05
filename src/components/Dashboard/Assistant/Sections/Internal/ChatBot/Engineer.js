@@ -1,6 +1,6 @@
 "use client";
 
-import MarkedAssistant from "../../../Marked/MarkedAssistant";
+import MarkedAssistant from "../../../../Marked/MarkedAssistant";
 
 import { FaSpinner } from "react-icons/fa";
 import { SiOpenai } from "react-icons/si";
@@ -18,7 +18,7 @@ const Engineer = () => {
   } = useEngineerStore();
 
   return (
-    <div className="flex-grow flex flex-col gap-4 px-2 w-full ">
+    <div className="flex-grow flex flex-col w-full ">
       <div className="w-full flex flex-col items-center rounded gap-1">
         <textarea
           value={userInput}
@@ -49,7 +49,7 @@ const Engineer = () => {
           )}
         </div>
       </div>
-      <div className="flex-grow overflow-y-auto scrollbar-thin">
+      <div className="flex-grow overflow-y-auto scrollbar-thin py-2 ">
         <div className="flex flex-grow flex-col gap-4 ">
           <MarkedAssistant markdown={prompts} />
         </div>

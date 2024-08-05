@@ -8,6 +8,10 @@ import Tools from "./Downloads";
 import Policies from "./Policies";
 import Downloads from "./Downloads";
 
+import { AiOutlineClose } from "react-icons/ai";
+import BottomExternalMenu from "./BottomExternalMenu";
+import TopExternalMenu from "./TopExternalMenu";
+
 const ExternalPilot = () => {
   const { activeAssistantTab } = useAssistantStore();
 
@@ -29,8 +33,11 @@ const ExternalPilot = () => {
   };
 
   return (
-    <div className="relative flex-grow flex flex-col items-center py-10 px-2 gap-14 overflow-auto scrollbar-thin">
-      {renderComponent()}
+    <div className="relative flex-grow flex flex-col gap-4 h-full text-sm">
+      <TopExternalMenu />
+      <div className="relative flex flex-col flex-grow h-0 overflow-auto scrollbar-thin p-4">
+        {renderComponent()}
+      </div>
     </div>
   );
 };

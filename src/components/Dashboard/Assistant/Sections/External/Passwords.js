@@ -8,9 +8,8 @@ const Passwords = () => {
   return (
     <div className="flex-grow flex flex-col gap-8 overflow-hidden">
       <div className="flex-grow overflow-y-auto scrollbar-thin">
-        <div className="flex flex-grow flex-col gap-8">
+        <div className="flex flex-grow flex-col gap-4">
           <div className="flex flex-col">
-            <p className="text-2xl">Manage your privileged access securely</p>
             <p className="dark:text-white/60 text-lg text-black/60">
               Passportal™ empowers safe, privileged access management across
               your devices, networks, and applications while helping you create,

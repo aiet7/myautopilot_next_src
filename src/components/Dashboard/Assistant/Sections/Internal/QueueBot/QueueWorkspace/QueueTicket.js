@@ -11,10 +11,13 @@ const QueueTicket = () => {
     severityOptions,
     tierOptions,
     setEditTicket,
+    ticketRequeued,
+    ticketClosed,
+    ticketSaved
   } = useQueueStore();
-  
+
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 ">
       <div>
         <span className="font-bold">Ticket ID</span>
         <input
@@ -71,7 +74,7 @@ const QueueTicket = () => {
           ) : (
             <input
               disabled
-              className="h-[50px] border outline-blue-500 w-full px-4"
+              className="h-[50px] border outline-blue-500 w-full px-4 "
               value={myQueueTicket?.categoryName || ""}
             />
           )}
@@ -265,6 +268,11 @@ const QueueTicket = () => {
           </span>
         </div>
       )}
+      {ticketRequeued && (
+        <p className="font-semibold">Ticket Added Back Into The Queue!</p>
+      )}
+      {ticketClosed && <p className="font-semibold">Ticket Has Been Closed!</p>}
+      {ticketSaved && <p className="font-semibold">Ticket Has Been Saved!</p>}
     </div>
   );
 };

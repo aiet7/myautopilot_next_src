@@ -9,7 +9,7 @@ import useAdminStore from "@/utils/store/admin/adminStore";
 import Link from "next/link";
 import useUserStore from "@/utils/store/user/userStore";
 
-const Nav = ({}) => {
+const AdminNav = ({}) => {
   const { user } = useUserStore();
   const { openAdmin } = useUiStore();
   const { options, currentOption, handleOptionSelected } = useAdminStore();
@@ -111,4 +111,4 @@ const Nav = ({}) => {
   );
 };
 
-export default Nav;
+export default AdminNav;

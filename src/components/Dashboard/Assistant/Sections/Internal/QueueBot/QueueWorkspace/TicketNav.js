@@ -7,7 +7,7 @@ const TicketNav = () => {
     useQueueStore();
 
   return (
-    <div className="flex gap-4 text-base font-semibold">
+    <div className="flex  gap-4 text-base font-semibold">
       <div
         className={`${
           activeQueueTicketButton === "QueueTicket"

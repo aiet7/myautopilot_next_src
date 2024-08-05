@@ -18,11 +18,19 @@ const useConversationStore = create((set, get) => ({
   conversationHistories: [],
   currentConversationIndex: 0,
   troubleshootingConversationId: null,
+  activeChatBotMode: "History",
+  filterChatMode: "Most Recent",
   searchValue: "",
   editing: false,
   deleting: false,
   tempTitle: "",
   tempPrompt: "",
+
+  activeChatBotModeOpen: false,
+  filterChatModeOpen: false,
+
+  activeChatOptions: ["Engineer", "History"],
+  filterChatOptions: ["Most Recent", "Oldest", "A-Z", "Z-A"],
 
   setTempTitle: (title) => set((state) => ({ ...state, tempTitle: title })),
   setTempPrompt: (prompt) => set((state) => ({ ...state, tempPrompt: prompt })),
@@ -35,6 +43,14 @@ const useConversationStore = create((set, get) => ({
       ...state,
       searchValue: value,
     })),
+
+  setActiveChatBotMode: (mode) => set({ activeChatBotMode: mode }),
+
+  setActiveFilterMode: (mode) => set({ filterChatMode: mode }),
+
+  setActiveChatBotModeOpen: (open) => set({ activeChatBotModeOpen: open }),
+
+  setActiveChatFilterModeOpen: (open) => set({ filterChatModeOpen: open }),
 
   initializeConversations: async () => {
     const { initializeMessages } = get();
@@ -111,6 +127,13 @@ const useConversationStore = create((set, get) => ({
         return { conversationHistories: updatedHistories };
       });
     }
+  },
+
+  handleToggleChatMenus: (toggle) => {
+    set({
+      activeChatBotModeOpen: toggle,
+      filterChatModeOpen: toggle,
+    });
   },
 
   handleSaveConversationTitle: async (id, userId) => {
@@ -376,11 +399,20 @@ const useConversationStore = create((set, get) => ({
     set({
       conversationHistories: [],
       currentConversationIndex: 0,
+      troubleshootingConversationId: null,
+      activeChatBotMode: "History",
+      filterChatMode: "Most Recent",
       searchValue: "",
       editing: false,
       deleting: false,
       tempTitle: "",
       tempPrompt: "",
+
+      activeChatBotModeOpen: false,
+      filterChatModeOpen: false,
+
+      activeChatOptions: ["Engineer", "History"],
+      filterChatOptions: ["Most Recent", "Oldest", "A-Z", "Z-A"],
     });
   },
 }));

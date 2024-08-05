@@ -23,7 +23,7 @@ const Activities = () => {
     currentActivitiesOption === "myActivities" ? myActivities : allActivities;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 h-full overflow-hidden p-4">
       <div className="flex items-center gap-2">
         <button
           onClick={() =>
@@ -33,7 +33,7 @@ const Activities = () => {
             currentActivitiesOption === "myActivities"
               ? "bg-blue-500"
               : "bg-blue-800"
-          } hover:bg-blue-500 text-white rounded-lg py-1 px-4 font-bold`}
+          } hover:bg-blue-500 text-white rounded-lg py-2 font-bold w-[100px]`}
         >
           My Activities
         </button>
@@ -43,27 +43,29 @@ const Activities = () => {
             currentActivitiesOption === "allActivities"
               ? "bg-blue-500"
               : "bg-blue-800"
-          } hover:bg-blue-500 text-white rounded-lg py-1 px-4 font-bold`}
+          } hover:bg-blue-500 text-white rounded-lg py-2 font-bold w-[100px]`}
         >
           All Activities
         </button>
       </div>
-      <Calendar
-        localizer={localizer}
-        events={activities?.map((activity) => ({
-          title: `Ticket ID: ${activity.ticketId}`,
-          start: new Date(activity.sessions[0].startTime),
-          end: new Date(activity.sessions[0].endTime),
-          allDay: false,
-          resource: activity.techId,
-        }))}
-        startAccessor="start"
-        endAccessor="end"
-        style={{ height: "100%", fontSize: "12px" }}
-        views={[Views.DAY]}
-        defaultView={[Views.DAY]}
-        defaultDate={new Date()}
-      />
+      <div className="flex-1 overflow-auto ">
+        <Calendar
+          localizer={localizer}
+          events={activities?.map((activity) => ({
+            title: `Ticket ID: ${activity.ticketId}`,
+            start: new Date(activity.sessions[0].startTime),
+            end: new Date(activity.sessions[0].endTime),
+            allDay: false,
+            resource: activity.techId,
+          }))}
+          startAccessor="start"
+          endAccessor="end"
+          style={{ height: "100%", fontSize: "12px" }}
+          views={[Views.DAY]}
+          defaultView={Views.DAY}
+          defaultDate={new Date()}
+        />
+      </div>
     </div>
   );
 };

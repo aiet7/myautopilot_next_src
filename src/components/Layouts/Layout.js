@@ -3,23 +3,32 @@ import { ThemeProvider } from "next-themes";
 import dynamic from "next/dynamic";
 
 import useUiStore from "@/utils/store/ui/uiStore";
-import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import { useEffect } from "react";
 
 import SettingsRail from "../Dashboard/SettingsRail";
-import Nav from "../Dashboard/Admin/Nav";
-import History from "../Dashboard/History/History";
-import Documents from "../Dashboard/Documents/Documents";
 import TabNavRail from "../Dashboard/TabNavRail";
-import Tickets from "../Dashboard/Tickets/Tickets";
-import Queue from "../Dashboard/Queue/Queue";
+import Nav from "../Dashboard/Nav";
+import AdminNav from "../Dashboard/Admin/AdminNav";
+import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
 
 const Account = dynamic(() => import("@/components/Dashboard/Account"));
 
 const Layout = ({ children }) => {
-  const { height, activeTab, openSettings, setHeight, handleToggleSettings } =
-    useUiStore();
-  const { activeUIAssistantTab } = useAssistantStore();
+  const {
+    height,
+    activeTab,
+    openSettings,
+    showQueueSubMenu,
+    setHeight,
+    handleToggleQueueSubMenu,
+    handleToggleSettings,
+  } = useUiStore();
+
+  const {
+    activeTicketBotModeOpen,
+    filterTicketModeOpen,
+    handleToggleTicketMenus,
+  } = useTicketsStore();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -37,7 +46,12 @@ const Layout = ({ children }) => {
     <ThemeProvider defaultTheme="light" attribute="class">
       {height && (
         <div
-          onClick={() => openSettings && handleToggleSettings(false)}
+          onClick={() => {
+            openSettings && handleToggleSettings(false);
+            showQueueSubMenu && handleToggleQueueSubMenu(false);
+            (activeTicketBotModeOpen || filterTicketModeOpen) &&
+              handleToggleTicketMenus(false);
+          }}
           className="flex flex-col h-full w-full "
           style={{ height: `calc(${height}px - 1px)` }}
         >
@@ -45,15 +59,9 @@ const Layout = ({ children }) => {
             <div className="flex flex-col h-full w-full overflow-hidden">
               {activeTab !== "settings" && <SettingsRail />}
               <div className="flex flex-1 relative overflow-hidden">
-                {activeTab === "admin" && <Nav />}
-                {activeTab === "iTAgent" &&
-                  activeUIAssistantTab === "Engineer" && <History />}
-                {activeTab === "iTAgent" &&
-                  activeUIAssistantTab === "Document" && <Documents />}
-                {activeTab === "iTAgent" &&
-                  activeUIAssistantTab === "Tickets" && <Tickets />}
-                {activeTab === "iTAgent" &&
-                  activeUIAssistantTab === "Queue" && <Queue />}
+                {activeTab === "admin" && <AdminNav />}
+                {activeTab === "iTAgent" && <Nav />}
+
                 {children}
               </div>
               {activeTab === "settings" && (

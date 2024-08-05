@@ -4,11 +4,14 @@ import useQueueStore from "@/utils/store/interaction/queue/queueStore";
 
 const QueueNotes = () => {
   const {
+    ticketNote,
     myQueueNotes,
+    myQueueTicket,
     activeNoteCategory,
+    setTicketNote,
     setActiveNoteCategory,
+    handleAddQueueTicketNote,
   } = useQueueStore();
-
 
   const filteredNotes = myQueueNotes?.filter((notes) => {
     if (activeNoteCategory === "Description" && notes.detailDescriptionFlag)
@@ -19,10 +22,10 @@ const QueueNotes = () => {
       return true;
     return false;
   });
-
+  
   return (
-    <div className="w-full ">
-      <div className="flex gap-2 text-sm py-4">
+    <div className="w-full flex flex-col gap-4 ">
+      <div className="flex gap-2 text-sm ">
         <button
           className={`hover:bg-blue-500 ${
             activeNoteCategory === "Description" ? "bg-blue-500" : "bg-blue-800"
@@ -48,12 +51,25 @@ const QueueNotes = () => {
           Resolution
         </button>
       </div>
+      <div>
+        <textarea
+          value={ticketNote || ""}
+          className="w-full p-2 scrollbar-thin min-h-[100px] max-h-[200px] rounded"
+          placeholder="Add Note..."
+          onChange={(e) => setTicketNote(e.target.value)}
+        />
+        <button
+          onClick={() => handleAddQueueTicketNote(myQueueTicket?.ticketId)}
+          className="text-white py-1 px-3 rounded bg-blue-800"
+        >
+          Submit
+        </button>
+      </div>
       <div className="flex flex-col gap-2 ">
         {filteredNotes?.map((notes) => {
           const {
             id,
             dateCreated,
-
             text,
             ticketId,
           } = notes;

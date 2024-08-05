@@ -8,26 +8,23 @@ import { FaSpinner } from "react-icons/fa";
 import useUiStore from "@/utils/store/ui/uiStore.js";
 import useFormsStore from "@/utils/store/interaction/forms/formsStore.js";
 import useInteractionStore from "@/utils/store/interaction/interactionsStore.js";
-
-import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
-
 import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore.js";
 import Input from "./Input.js";
 import TicketCreation from "./Interfaces/TicketCreation.js";
 import EngineerChat from "./Interfaces/EngineerChat.js";
-import QueueManagement from "./Interfaces/TicketWorkspace/TicketWorkspace.js";
 import TicketSupport from "./Interfaces/TicketSupport.js";
+import Troubleshoot from "./Forms/Ticket/Troubleshoot.js";
+import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
 
 const Interaction = ({}) => {
   const { activeTicketMode } = useTicketsStore();
   const {
-    openQueue,
-    openTickets,
-    openDocs,
-    openHistory,
+    openNav,
+    currentNavOption,
+    currentQueueNavOption,
     openAssistant,
-    handleHistoryMenu,
     handleAssistantMenu,
+    handleNavMenu,
   } = useUiStore();
 
   const { isServerError } = useFormsStore();
@@ -40,47 +37,53 @@ const Interaction = ({}) => {
     handleScrollToBottom,
   } = useInteractionStore();
 
-  const { activeUIAssistantTab } = useAssistantStore();
+  const { assistantWidth } = useAssistantStore();
 
   useEffect(() => {
-    if (
-      activeUIAssistantTab === "Engineer" ||
-      activeUIAssistantTab === "Document"
-    ) {
+    if (currentNavOption === "Engineer" || currentNavOption === "Document") {
       handleScrollToBottom(false);
     }
-  }, [activeUIAssistantTab]);
+  }, [currentNavOption]);
 
   useEffect(() => {
     handleScrollToBottom(false);
   }, [window.innerWidth]);
 
+
+  const renderWidth = () => {
+    switch (assistantWidth) {
+      case 400:
+        return "md:mr-[400px] lg:mr-[600px]";
+      case 700:
+        return "md:mr-[700px] lg:mr-[900px]";
+      case 900:
+        return "md:mr-[900px] lg:mr-[1100px]";
+      default:
+        return "md:mr-[400px] lg:mr-[600px]";
+    }
+  };
   return (
     <div
       onClick={() => {
         if (window.innerWidth < 1023) {
-          (openDocs || openHistory || openTickets) && handleHistoryMenu(false);
+          openNav && handleNavMenu(false);
           openAssistant && handleAssistantMenu(false);
         }
       }}
       className={`relative flex flex-col h-full w-full text-sm ${
-        (openDocs || openHistory || openTickets || openQueue) &&
-        openAssistant &&
-        "xl:mr-[250px]"
+        openNav && openAssistant && `${renderWidth()}`
       }  ${
-        ((openDocs || openHistory || openTickets || openQueue) &&
-          (activeUIAssistantTab === "Engineer" ||
-            activeUIAssistantTab === "Document" ||
-            activeUIAssistantTab === "Tickets" ||
-            activeUIAssistantTab === "Queue") &&
+        (openNav &&
+          (currentNavOption === "Engineer" ||
+            currentNavOption === "Tickets" ||
+            currentNavOption === "Queue") &&
           "lg:opacity-100 opacity-5 xl:ml-[250px]") ||
-        (openAssistant && "lg:opacity-100 opacity-5 xl:mr-[250px]")
+        (openAssistant && `lg:opacity-100 opacity-5 ${renderWidth()}`)
       } dark:bg-black transition-all duration-300 ease bg-white `}
     >
       {!isAtBottom &&
         isOverflowed &&
-        (activeUIAssistantTab === "Engineer" ||
-          activeUIAssistantTab === "Tickets") && (
+        (currentNavOption === "Engineer" || currentNavOption === "Tickets") && (
           <button
             onClick={handleScrollToBottom}
             className={`dark:border-white/10 dark:bg-white/10 dark:text-gray-200 absolute bottom-28 right-4 rounded-full border border-gray-200 bg-gray-50 text-gray-600`}
@@ -89,7 +92,7 @@ const Interaction = ({}) => {
           </button>
         )}
 
-      {activeUIAssistantTab === "Tickets" && (
+      {currentNavOption === "Tickets" && (
         <>
           {activeTicketMode === "Support" ? (
             <TicketSupport />
@@ -98,8 +101,9 @@ const Interaction = ({}) => {
           )}
         </>
       )}
-      {activeUIAssistantTab === "Engineer" && <EngineerChat />}
-      {activeUIAssistantTab === "Queue" && <QueueManagement />}
+      {currentNavOption === "Engineer" && <EngineerChat />}
+      {currentNavOption === "Queue" &&
+        currentQueueNavOption === "Workspace" && <Troubleshoot />}
       <div className="px-4 py-2">
         {isServerError ? (
           <p className="text-red-600 text-xs">Server Error, try again please</p>

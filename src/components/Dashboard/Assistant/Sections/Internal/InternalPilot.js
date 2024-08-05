@@ -1,29 +1,31 @@
 "use client";
 
-import Image from "next/image";
-import Engineer from "./Engineer";
-import { useTheme } from "next-themes";
+import useUiStore from "@/utils/store/ui/uiStore";
+import TicketBot from "./TicketBot/TicketBot";
+import ChatBot from "./ChatBot/ChatBot";
+import Activities from "./QueueBot/Activities";
+import AllQueueTickets from "./QueueBot/AllQueueTickets";
+import QueueWorkspace from "./QueueBot/QueueWorkspace/QueueWorkspace";
+import useAssistantStore from "@/utils/store/assistant/assistantStore";
 
 const InternalPilot = () => {
-  const { theme } = useTheme();
-  return (
-    <div className="relative flex-grow flex flex-col items-center py-10 gap-14 overflow-auto scrollbar-thin">
-      <div className="flex flex-col items-center">
-        <Image
-          priority={true}
-          src={
-            theme === "light"
-              ? "/images/autopilot_logo_light.png"
-              : "/images/autopilot_logo_dark.png"
-          }
-          alt="Etech7_Login_Logo"
-          width={35}
-          height={35}
-        />
-        <h2 className="text-xl font-semibold">AutoPilot</h2>
-      </div>
+  const { currentNavOption, currentQueueNavOption } = useUiStore();
+  const { activeAssistantTab } = useAssistantStore();
 
-      <Engineer />
+  return (
+    <div
+      className={`flex-grow ${
+        activeAssistantTab ? "h-1/2" : "h-full"
+      } flex flex-col  text-xs`}
+    >
+      {currentNavOption === "Tickets" && <TicketBot />}
+      {currentNavOption === "Engineer" && <ChatBot />}
+      {currentNavOption === "Queue" &&
+        currentQueueNavOption === "Activities" && <Activities />}
+      {currentNavOption === "Queue" &&
+        currentQueueNavOption === "Queue Tickets" && <AllQueueTickets />}
+      {currentNavOption === "Queue" &&
+        currentQueueNavOption === "Workspace" && <QueueWorkspace />}
     </div>
   );
 };

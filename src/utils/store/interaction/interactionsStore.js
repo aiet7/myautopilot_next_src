@@ -23,6 +23,9 @@ const useInteractionStore = create((set, get) => ({
   isOverflowed: false,
   feedback: {},
   textAreaheight: "24px",
+  interactionMenuOpen: false,
+
+  setInteractionMenuOpen: (open) => set({ interactionMenuOpen: open }),
 
   handleTextAreaChange: (e) => {
     set({
@@ -138,6 +141,8 @@ const useInteractionStore = create((set, get) => ({
     const { inputRef, messageIdRef } = useRefStore.getState();
     const { handleAddUserMessage } = useTicketConversationsStore.getState();
     const { handleCreateTicketProcess } = useFormsStore.getState();
+    const { setActiveTicketBotMode } = useTicketsStore.getState();
+
     if (message.trim() !== "") {
       inputRef.current.focus();
       handleAddUserMessage(message);
@@ -149,7 +154,7 @@ const useInteractionStore = create((set, get) => ({
 
       try {
         const response = await fetch(
-          `${connectWiseServiceUrl}/getTicketCategorization`,
+          `${connectWiseServiceUrl}/getTicketBoardCategorization`,
           {
             method: "POST",
             headers: {
@@ -167,6 +172,7 @@ const useInteractionStore = create((set, get) => ({
           const responseBody = await response.json();
           messageIdRef.current = Date.now();
           handleCreateTicketProcess(responseBody);
+          setActiveTicketBotMode("Ticket");
         } else if (response.status === 500) {
           set({
             isServerError: true,
@@ -269,46 +275,6 @@ const useInteractionStore = create((set, get) => ({
         set({
           isWaiting: false,
         });
-      }
-    }
-  },
-  handleSendQueueTicketNote: async (message, ticketId) => {
-    const userStore = useUserStore.getState();
-    const { handleAddTechnicianNoteMessage } = useQueueStore.getState();
-    const { inputRef } = useRefStore.getState();
-
-    let formattedPrepend;
-    formattedPrepend = `Technician: (${userStore.user.id}): `;
-
-    if (message.trim() !== "") {
-      inputRef.current.focus();
-      set({
-        userInput: "",
-      });
-      try {
-        const response = await fetch(
-          `${connectWiseServiceUrl}/addNoteToTicketObject?mspCustomDomain=${userStore.user.mspCustomDomain}&ticketId=${ticketId}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              info: formattedPrepend,
-              text: message,
-            }),
-          }
-        );
-
-        if (response.status === 200) {
-          const responseBody = await response.json();
-          handleAddTechnicianNoteMessage(responseBody);
-          console.log("Note Added");
-        } else {
-          console.log("Failed to Add Note");
-        }
-      } catch (e) {
-        console.log(e);
       }
     }
   },

@@ -2,6 +2,7 @@
 
 import useInteractionStore from "@/utils/store/interaction/interactionsStore";
 import { BsStars } from "react-icons/bs";
+import { GiRobotAntennas } from "react-icons/gi";
 
 const EngineerGuide = () => {
   const { handleSendMessage } = useInteractionStore();
@@ -12,7 +13,17 @@ const EngineerGuide = () => {
         <BsStars size={15} />
         <span>Autopilot</span>
       </div>
-
+      <div className="flex flex-col gap-6 items-center">
+        <GiRobotAntennas size={70} />
+        <p className="text-lg font-semibold">Hi, I Am Vision</p>
+        <div className="flex flex-col items-center">
+          <h2 className="text-2xl font-bold">Your Specialized IT Consultant</h2>
+          <p className="text-lg font-semibold">
+            What Would You Like Me To Advice You On
+          </p>
+          <p>Security & Compliance, Backup & Disaster Recovery etc...</p>
+        </div>
+      </div>
       <div className="grid grid-cols-2 gap-2 ">
         <div
           onClick={() =>
