@@ -39,6 +39,32 @@ const useQueueStore = create((set, get) => ({
   severityOptions: ["Low", "Medium", "High"],
   impactOptions: ["Low", "Medium", "High"],
   tierOptions: ["Tier1", "Tier2", "Tier3", "No Dispatching"],
+  currentPage: 1,
+  ticketsPerPage: 30,
+  viewQueueTicket: false,
+  currentQueueTicket: null,
+  filterQueueTicketMode: "High Priority",
+  filterQueueTicketModeOpen: false,
+
+  filterQueueTicketOptions: [
+    "High Priority",
+    "Low Priority",
+    "Most Recent",
+    "Oldest",
+    "A-Z",
+    "Z-A",
+  ],
+
+  setActiveFilterMode: (mode) =>
+    set({ filterQueueTicketMode: mode, currentPage: 1 }),
+
+  setActiveQueueFilterModeOpen: (open) =>
+    set({ filterQueueTicketModeOpen: open }),
+
+  setCurrentPage: (page) => set({ currentPage: page }),
+
+  setViewQueueTicket: (view) =>
+    set({ viewQueueTicket: view, currentQueueTicket: null }),
 
   setTicketNote: (value) => set({ ticketNote: value }),
 
@@ -77,6 +103,23 @@ const useQueueStore = create((set, get) => ({
     set((state) => ({
       ...state,
       searchValue: value,
+      currentPage: 1,
+    })),
+
+  handleToggleQueueTicketMenus: (toggle) => {
+    set({
+      filterQueueTicketModeOpen: toggle,
+    });
+  },
+
+  handleNextPage: () =>
+    set((state) => ({
+      currentPage: state.currentPage + 1,
+    })),
+
+  handlePreviousPage: () =>
+    set((state) => ({
+      currentPage: state.currentPage > 1 ? state.currentPage - 1 : 1,
     })),
 
   handleShowMyActivities: async (mspCustomDomain, techId) => {
@@ -146,6 +189,13 @@ const useQueueStore = create((set, get) => ({
     } catch (e) {
       console.log(e);
     }
+  },
+
+  handleViewQueueTicket: (ticket) => {
+    set({
+      viewQueueTicket: true,
+      currentQueueTicket: ticket,
+    });
   },
 
   handleRequeueTicket: async (mspCustomDomain, ticket, techId) => {
@@ -549,6 +599,8 @@ const useQueueStore = create((set, get) => ({
 
   clearQueue: () => {
     set({
+      searchValue: "",
+      ticketNote: "",
       ticketQueueMode: "Troubleshoot",
       troubleshootMessages: [],
       myQueueTicket: null,
@@ -576,6 +628,21 @@ const useQueueStore = create((set, get) => ({
       severityOptions: ["Low", "Medium", "High"],
       impactOptions: ["Low", "Medium", "High"],
       tierOptions: ["Tier1", "Tier2", "Tier3", "No Dispatching"],
+      currentPage: 1,
+      ticketsPerPage: 30,
+      viewQueueTicket: false,
+      currentQueueTicket: null,
+      filterQueueTicketMode: "High Priority",
+      filterQueueTicketModeOpen: false,
+
+      filterQueueTicketOptions: [
+        "High Priority",
+        "Low Priority",
+        "Most Recent",
+        "Oldest",
+        "A-Z",
+        "Z-A",
+      ],
     });
   },
 }));

@@ -7,12 +7,17 @@ import useMspStore from "@/utils/store/auth/msp/mspStore";
 const Tickets = ({}) => {
   const { userType } = useMspStore();
   const {
+    currentPage,
+    ticketsPerPage,
     filterTicketMode,
     searchValue,
     tickets,
     ticketStatus,
     ticketStatusLoading,
+    setCurrentPage,
     handleGetTicketStatus,
+    handleNextPage,
+    handlePreviousPage,
     handleTicketMode,
     initializeMSPTickets,
     initializeClientTickets,
@@ -59,29 +64,67 @@ const Tickets = ({}) => {
       }
     });
 
+  const indexOfLastTicket = currentPage * ticketsPerPage;
+  const indexOfFirstTicket = indexOfLastTicket - ticketsPerPage;
+  const paginatedTickets = filteredAndSortedTickets?.slice(
+    indexOfFirstTicket,
+    indexOfLastTicket
+  );
+
+  const totalPages = Math.ceil(
+    filteredAndSortedTickets?.length / ticketsPerPage
+  );
+
   return (
     <div className="flex flex-col h-full">
-      <div className="flex flex-col gap-1 my-3">
-        <div
-          onClick={() => {
-            if (userType === "tech") {
-              initializeMSPTickets();
-            } else if (userType === "client") {
-              initializeClientTickets();
-            }
-          }}
-          className=" flex justify-end "
-        >
-          <div className="flex items-center gap-2 cursor-pointer">
-            <p className="italic">Refresh your tickets</p>
+      <div className="flex flex-col gap-1 mb-4">
+        <div className="flex items-center justify-between w-full">
+          <div className="w-full flex items-center gap-1">
+            <button
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+              className="disabled:opacity-50"
+            >
+              Previous
+            </button>
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentPage(index + 1)}
+                className={`px-1 ${
+                  currentPage === index + 1 ? "bg-blue-500 text-white" : ""
+                }`}
+              >
+                {index + 1}
+              </button>
+            ))}
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              className="disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+          <div
+            onClick={() => {
+              if (userType === "tech") {
+                initializeMSPTickets();
+              } else if (userType === "client") {
+                initializeClientTickets();
+              }
+            }}
+            className="flex items-center gap-1 justify-end cursor-pointer"
+          >
+            <p className="italic whitespace-nowrap">Refresh your tickets</p>
             <FiRefreshCcw size={15} />
           </div>
         </div>
       </div>
 
       <div className="flex-grow overflow-y-auto scrollbar-thin">
-        {filteredAndSortedTickets?.map((ticket, index) => {
-          const { id, category, subcategory, ticketId, timeStamp } = ticket;
+        {paginatedTickets?.map((ticket, index) => {
+          const { id, category, subcategory, ticketId, timeStamp, title } = ticket;
           return (
             <div
               onClick={() => handleTicketMode("Support", ticketId)}
@@ -108,7 +151,9 @@ const Tickets = ({}) => {
               <p className="break-words whitespace-pre-wrap">
                 <span className="font-bold">Ticket ID:</span> #{ticketId}
               </p>
-
+              <p className="break-words whitespace-pre-wrap">
+                <span className="font-bold">Title:</span> {title}
+              </p>
               <p className="break-words whitespace-pre-wrap">
                 <span className="font-bold">Category:</span> {category}
               </p>

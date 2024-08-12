@@ -11,11 +11,12 @@ import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
 import QueueSearch from "./Sections/Internal/QueueBot/QueueSearch";
+import QueueMenus from "./Sections/Internal/QueueBot/QueueMenus";
 
 const AssistantControl = () => {
   const {
     currentNavOption,
-
+    currentQueueNavOption,
     handleAssistantMenu,
   } = useUiStore();
 
@@ -51,6 +52,8 @@ const AssistantControl = () => {
         return <TicketMenus />;
       case "Engineer":
         return <ChatMenus />;
+      case "Queue":
+        return currentQueueNavOption === "Queue Tickets" ? <QueueMenus /> : null;
       default:
         return null;
     }

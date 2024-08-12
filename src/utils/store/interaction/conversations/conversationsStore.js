@@ -6,9 +6,7 @@ import {
   handleGetConversations,
   handleGetMessages,
 } from "@/utils/api/serverProps";
-import useTicketConversationsStore from "./ticketConversationsStore";
 import useUserStore from "../../user/userStore";
-import useQueueStore from "../queue/queueStore";
 import useAssistantStore from "../../assistant/assistantStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
@@ -29,8 +27,11 @@ const useConversationStore = create((set, get) => ({
   activeChatBotModeOpen: false,
   filterChatModeOpen: false,
 
-  activeChatOptions: ["Engineer", "History"],
+  activeChatOptions: ["History", "Engineer"],
   filterChatOptions: ["Most Recent", "Oldest", "A-Z", "Z-A"],
+
+  currentPage: 1,
+  chatsPerPage: 30,
 
   setTempTitle: (title) => set((state) => ({ ...state, tempTitle: title })),
   setTempPrompt: (prompt) => set((state) => ({ ...state, tempPrompt: prompt })),
@@ -42,11 +43,14 @@ const useConversationStore = create((set, get) => ({
     set((state) => ({
       ...state,
       searchValue: value,
+      currentPage: 1,
     })),
+
+  setCurrentPage: (page) => set({ currentPage: page }),
 
   setActiveChatBotMode: (mode) => set({ activeChatBotMode: mode }),
 
-  setActiveFilterMode: (mode) => set({ filterChatMode: mode }),
+  setActiveFilterMode: (mode) => set({ filterChatMode: mode, currentPage: 1 }),
 
   setActiveChatBotModeOpen: (open) => set({ activeChatBotModeOpen: open }),
 
@@ -128,6 +132,16 @@ const useConversationStore = create((set, get) => ({
       });
     }
   },
+
+  handleNextPage: () =>
+    set((state) => ({
+      currentPage: state.currentPage + 1,
+    })),
+
+  handlePreviousPage: () =>
+    set((state) => ({
+      currentPage: state.currentPage > 1 ? state.currentPage - 1 : 1,
+    })),
 
   handleToggleChatMenus: (toggle) => {
     set({
@@ -411,8 +425,11 @@ const useConversationStore = create((set, get) => ({
       activeChatBotModeOpen: false,
       filterChatModeOpen: false,
 
-      activeChatOptions: ["Engineer", "History"],
+      activeChatOptions: ["History", "Engineer"],
       filterChatOptions: ["Most Recent", "Oldest", "A-Z", "Z-A"],
+
+      currentPage: 1,
+      chatsPerPage: 30,
     });
   },
 }));

@@ -21,7 +21,7 @@ const useTicketsStore = create((set, get) => ({
   activeTicketBotModeOpen: false,
   filterTicketModeOpen: false,
 
-  activeTicketOptions: ["Ticket", "History"],
+  activeTicketOptions: ["History", "Ticket"],
   filterTicketOptions: [
     "Most Recent",
     "Oldest",
@@ -30,6 +30,9 @@ const useTicketsStore = create((set, get) => ({
     "Open",
     "Closed",
   ],
+
+  currentPage: 1,
+  ticketsPerPage: 30,
 
   initializeMSPTickets: async () => {
     const userStore = useUserStore.getState();
@@ -53,15 +56,19 @@ const useTicketsStore = create((set, get) => ({
     }
   },
 
+  setCurrentPage: (page) => set({ currentPage: page }),
+
   setSearchValue: (value) =>
     set((state) => ({
       ...state,
       searchValue: value,
+      currentPage: 1,
     })),
 
   setActiveTicketBotMode: (mode) => set({ activeTicketBotMode: mode }),
 
-  setActiveFilterMode: (mode) => set({ filterTicketMode: mode }),
+  setActiveFilterMode: (mode) =>
+    set({ filterTicketMode: mode, currentPage: 1 }),
 
   setActiveTicketBotModeOpen: (open) => set({ activeTicketBotModeOpen: open }),
 
@@ -69,6 +76,16 @@ const useTicketsStore = create((set, get) => ({
 
   addTicket: (ticket) =>
     set((state) => ({ tickets: [...state.tickets, ticket] })),
+
+  handleNextPage: () =>
+    set((state) => ({
+      currentPage: state.currentPage + 1,
+    })),
+
+  handlePreviousPage: () =>
+    set((state) => ({
+      currentPage: state.currentPage > 1 ? state.currentPage - 1 : 1,
+    })),
 
   handleToggleTicketMenus: (toggle) => {
     set({
@@ -170,7 +187,7 @@ const useTicketsStore = create((set, get) => ({
       activeTicketBotModeOpen: false,
       filterTicketModeOpen: false,
 
-      activeTicketOptions: ["Ticket", "History"],
+      activeTicketOptions: ["History", "Ticket"],
       filterTicketOptions: [
         "Most Recent",
         "Oldest",
@@ -179,6 +196,9 @@ const useTicketsStore = create((set, get) => ({
         "Open",
         "Closed",
       ],
+
+      currentPage: 1,
+      ticketsPerPage: 30,
     });
   },
 }));

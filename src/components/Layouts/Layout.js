@@ -10,6 +10,9 @@ import TabNavRail from "../Dashboard/TabNavRail";
 import Nav from "../Dashboard/Nav";
 import AdminNav from "../Dashboard/Admin/AdminNav";
 import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
+import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
+import useAssistantStore from "@/utils/store/assistant/assistantStore";
+import useQueueStore from "@/utils/store/interaction/queue/queueStore";
 
 const Account = dynamic(() => import("@/components/Dashboard/Account"));
 
@@ -30,6 +33,14 @@ const Layout = ({ children }) => {
     handleToggleTicketMenus,
   } = useTicketsStore();
 
+  const { activeChatBotModeOpen, filterChatModeOpen, handleToggleChatMenus } =
+    useConversationStore();
+
+  const { assistantWidthOpen, handleToggleResizeMenus } = useAssistantStore();
+
+  const { filterQueueTicketModeOpen, handleToggleQueueTicketMenus } =
+    useQueueStore();
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       setHeight(window.innerHeight);
@@ -49,6 +60,10 @@ const Layout = ({ children }) => {
           onClick={() => {
             openSettings && handleToggleSettings(false);
             showQueueSubMenu && handleToggleQueueSubMenu(false);
+            assistantWidthOpen && handleToggleResizeMenus(false);
+            filterQueueTicketModeOpen && handleToggleQueueTicketMenus(false);
+            (activeChatBotModeOpen || filterChatModeOpen) &&
+              handleToggleChatMenus(false);
             (activeTicketBotModeOpen || filterTicketModeOpen) &&
               handleToggleTicketMenus(false);
           }}

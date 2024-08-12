@@ -40,17 +40,22 @@ const useAssistantStore = create((set, get) => ({
 
   setAssistantWidth: (width) => {
     const { handleCloseNavWhenResizing } = useUiStore.getState();
+
     set({ assistantWidth: width });
-    handleCloseNavWhenResizing();
+
+    if (width === 900) {
+      handleCloseNavWhenResizing();
+    }
   },
 
   setAssistantWidthOpen: (open) => set({ assistantWidthOpen: open }),
 
-  setCloseExternalApps: () => set({ activeAssistantTab: null, activeAssistantTabOpen: false }),
+  setCloseExternalApps: () =>
+    set({ activeAssistantTab: null, activeAssistantTabOpen: false }),
 
-  handleAdjustAssistantWidth: () => {
+  handleToggleResizeMenus: (toggle) => {
     set({
-      assistantWidth: 50,
+      assistantWidthOpen: toggle,
     });
   },
 
@@ -84,6 +89,7 @@ const useAssistantStore = create((set, get) => ({
     set({
       promptAssistantInput: "",
       activeAssistantTab: null,
+      activeAssistantTabOpen: false,
       showProgress: true,
       isIntroScreen: false,
       assistantWidth: 400,

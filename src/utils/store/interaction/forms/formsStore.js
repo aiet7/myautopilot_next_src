@@ -129,14 +129,9 @@ const useFormsStore = create((set, get) => ({
       }
 
       if (subCategoryId !== null) {
-        const selectedBoard = state.ticket.categories.boardDetails.find(
-          (board) => board.boardId === boardId
-        );
-
-        const selectedType = selectedBoard?.mspConnectWiseBoardTypes.find(
-          (type) => type.typeId === categoryId
-        );
-
+        const selectedType = state.ticket.categories.boardDetails
+          .find((board) => board.boardId === boardId)
+          ?.mspConnectWiseBoardTypes.find((type) => type.typeId === categoryId);
         if (selectedType) {
           const selectedSubType = selectedType.mspConnectWiseBoardSubTypes.find(
             (sub) => sub.subTypeId === subCategoryId
@@ -172,7 +167,6 @@ const useFormsStore = create((set, get) => ({
       return { ...state, ticket: updatedTicket };
     });
   },
-
   setFilteredSubCategories: (filtered) =>
     set((state) => ({ ...state, filteredSubCategories: filtered })),
 
@@ -597,6 +591,8 @@ const useFormsStore = create((set, get) => ({
         currentTicketCWCompanyId: "",
         currentTicketDescription: "",
 
+        currentTicketBoard: "",
+        currentTicketBoardId: null,
         currentTicketCategory: "",
         currentTicketCategoryId: null,
         categories: null,
@@ -606,10 +602,13 @@ const useFormsStore = create((set, get) => ({
 
         currentTicketPriority: "",
         currentTicketPriorityId: null,
+        currentTicketPriorityScore: null,
 
         currentTicketDurationToResolve: null,
         currentTicketSeverity: "",
+        currentTicketSeverityScore: null,
         currentTicketImpact: "",
+        currentTicketImpactScore: null,
         currentTicketTier: "",
         currentTicketName: "",
         currentTicketEmailId: "",
