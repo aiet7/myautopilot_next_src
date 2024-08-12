@@ -100,13 +100,7 @@ const useUiStore = create((set, get) => ({
   },
 
   handleNavMenu: () => {
-    const { assistantWidth, handleAdjustAssistantWidth } =
-      useAssistantStore.getState();
     const { openAdmin, openNav } = get();
-
-    if (assistantWidth === 75) {
-      handleAdjustAssistantWidth();
-    }
 
     if (openAdmin) {
       set({ openAdmin: false });
@@ -146,7 +140,6 @@ const useUiStore = create((set, get) => ({
     set({
       height: null,
       activeTab: null,
-      hoverTab: null,
       options: ["Tickets", "Queue", "Engineer", "Settings"],
       queueSubOptions: ["Queue Tickets", "Activities", "Workspace"],
       currentQueueNavOption: null,

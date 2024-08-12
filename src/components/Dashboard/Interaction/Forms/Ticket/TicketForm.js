@@ -14,9 +14,12 @@ const TicketForm = ({ itemId }) => {
     handleTicketConfirmation,
   } = useFormsStore();
 
+
   useEffect(() => {
     handleCreateTicketCategories();
   }, []);
+
+  
   return (
     <div>
       {ticket?.currentTicketTitle === "" ? (
@@ -204,7 +207,7 @@ const TicketForm = ({ itemId }) => {
                     ?.find(
                       (board) => board.boardId === ticket.currentTicketBoardId
                     )
-                    ?.mspConnectWiseBoardTypes?.map((type) => (
+                    ?.mspConnectWiseBoardTypes.map((type) => (
                       <option key={type?.typeId} value={type?.typeId}>
                         {type?.typeName}
                       </option>
@@ -219,41 +222,37 @@ const TicketForm = ({ itemId }) => {
                   value={ticket.currentTicketSubCategoryId || ""}
                   onChange={(e) => {
                     const newSubCategoryId = parseInt(e.target.value, 10);
-                    const selectedBoard = ticket.categories?.boardDetails?.find(
-                      (board) =>
-                        board?.mspConnectWiseBoardTypes?.some(
-                          (type) =>
-                            type?.typeId === ticket.currentTicketCategoryId
-                        )
+                    const selectedBoard = ticket.categories?.boardDetails.find(
+                      (board) => board.boardId === ticket.currentTicketBoardId
                     );
-                    const selectedSubcategory =
-                      selectedBoard?.mspConnectWiseBoardTypes
-                        ?.find(
-                          (type) =>
-                            type?.typeId === ticket.currentTicketCategoryId
-                        )
-                        ?.mspConnectWiseBoardSubTypes?.find(
-                          (sub) => sub?.subTypeId === newSubCategoryId
-                        );
 
-                    if (selectedSubcategory) {
-                      setTicket(
-                        "currentTicketSubCategoryId",
-                        selectedSubcategory?.subTypeName,
-                        ticket.currentTicketBoardId,
-                        ticket.currentTicketCategoryId,
-                        newSubCategoryId,
-                        selectedSubcategory?.priority,
-                        selectedSubcategory?.priorityId,
-                        selectedSubcategory?.priorityScore,
-                        selectedSubcategory?.impact,
-                        selectedSubcategory?.impactScore,
-                        selectedSubcategory?.severity,
-                        selectedSubcategory?.severityScore,
-                        selectedSubcategory?.tier,
-                        selectedSubcategory?.slaDeadLineInHours
+                    const selectedCategory =
+                      selectedBoard?.mspConnectWiseBoardTypes.find(
+                        (type) =>
+                          type?.typeId === ticket.currentTicketCategoryId
                       );
-                    }
+
+                    const selectedSubcategory =
+                      selectedCategory?.mspConnectWiseBoardSubTypes.find(
+                        (sub) => sub?.subTypeId === newSubCategoryId
+                      );
+
+                    setTicket(
+                      "currentTicketSubCategoryId",
+                      selectedSubcategory?.subTypeName,
+                      ticket.currentTicketBoardId,
+                      ticket.currentTicketCategoryId,
+                      newSubCategoryId,
+                      selectedSubcategory?.priority,
+                      selectedSubcategory?.priorityId,
+                      selectedSubcategory?.priorityScore,
+                      selectedSubcategory?.impact,
+                      selectedSubcategory?.impactScore,
+                      selectedSubcategory?.severity,
+                      selectedSubcategory?.severityScore,
+                      selectedSubcategory?.tier,
+                      selectedSubcategory?.slaDeadLineInHours
+                    );
                   }}
                 >
                   <option value="" disabled>
@@ -263,17 +262,16 @@ const TicketForm = ({ itemId }) => {
                   </option>
                   {ticket.currentTicketCategoryId &&
                     ticket.categories?.boardDetails
+
                       ?.find(
                         (board) => board.boardId === ticket.currentTicketBoardId
                       )
                       ?.mspConnectWiseBoardTypes?.find(
-                        (type) => type.typeId === ticket.currentTicketCategoryId
+                        (type) =>
+                          type?.typeId === ticket.currentTicketCategoryId
                       )
-                      ?.mspConnectWiseBoardSubTypes?.map((sub, index) => (
-                        <option
-                          key={`${sub?.subTypeId}-${index}`}
-                          value={sub?.subTypeId}
-                        >
+                      ?.mspConnectWiseBoardSubTypes.map((sub) => (
+                        <option key={sub?.subTypeId} value={sub?.subTypeId}>
                           {sub?.subTypeName}
                         </option>
                       ))}

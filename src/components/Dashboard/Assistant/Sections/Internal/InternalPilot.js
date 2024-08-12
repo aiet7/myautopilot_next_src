@@ -4,7 +4,7 @@ import useUiStore from "@/utils/store/ui/uiStore";
 import TicketBot from "./TicketBot/TicketBot";
 import ChatBot from "./ChatBot/ChatBot";
 import Activities from "./QueueBot/Activities";
-import AllQueueTickets from "./QueueBot/AllQueueTickets";
+import AllQueueTickets from "./QueueBot/AllQueueTickets/AllQueueTickets";
 import QueueWorkspace from "./QueueBot/QueueWorkspace/QueueWorkspace";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 

@@ -1,11 +1,13 @@
 "use client";
 
+import useMspStore from "@/utils/store/auth/msp/mspStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useUserStore from "@/utils/store/user/userStore";
 import { IoTicketSharp } from "react-icons/io5";
 import { MdAddToQueue, MdEngineering, MdOutlineSettings } from "react-icons/md";
 
 const Nav = () => {
+  const { userType } = useMspStore();
   const { user } = useUserStore();
   const {
     showQueueSubMenu,
@@ -17,8 +19,7 @@ const Nav = () => {
     handleOptionSelected,
     handleQueueSubOptionSelected,
   } = useUiStore();
-
-
+  
   const renderIcon = (option) => {
     switch (option) {
       case "Tickets":
@@ -34,6 +35,9 @@ const Nav = () => {
     }
   };
 
+  const filteredOptions = userType === "tech" ? options : options.filter(option => option !== "Queue");
+
+
   return (
     <div
       className={`absolute z-10 top-0 bottom-0 left-0 text-sm ${
@@ -43,7 +47,7 @@ const Nav = () => {
       } dark:bg-[#111111] dark:border-white/10 bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease md:border-r md:border-black/10`}
     >
       <div className="overflow-y-auto h-full scrollbar-thin">
-        {options.map((option) => (
+        {filteredOptions.map((option) => (
           <div key={option} className="flex flex-col items-start my-2">
             <div
               onClick={() => handleOptionSelected(option)}
