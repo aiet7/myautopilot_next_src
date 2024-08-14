@@ -6,6 +6,7 @@ import useUserStore from "../../user/userStore";
 import useMspStore from "../../auth/msp/mspStore";
 
 import { handleGetManageDBClients } from "@/utils/api/serverProps";
+import useInteractionStore from "../interactionsStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
@@ -206,7 +207,6 @@ const useFormsStore = create((set, get) => ({
 
   handleCreateTicketProcess: async (responseBody) => {
     const userStore = useUserStore.getState();
-    const { handleAddForm } = useTicketConversationsStore.getState();
     const {
       title,
       description,
@@ -277,7 +277,6 @@ const useFormsStore = create((set, get) => ({
       },
     }));
 
-    handleAddForm("ticketForm");
     if (
       typeName === "TRAINING_OR_ONBOARDING" &&
       subTypeName === "NEW_EMPLOYEE_ONBOARDING"
@@ -308,6 +307,7 @@ const useFormsStore = create((set, get) => ({
 
     const { addTicket } = useTicketsStore.getState();
     const { userType } = useMspStore.getState();
+    const { setResetTicketFlow } = useInteractionStore.getState();
     const {
       currentTicketImpactScore,
       currentTicketSeverityScore,
@@ -466,6 +466,7 @@ const useFormsStore = create((set, get) => ({
             title: currentTicketTitle,
             timeStamp: Date.now(),
           });
+          setResetTicketFlow();
         }
       } catch (e) {
         console.log(e);
@@ -521,6 +522,7 @@ const useFormsStore = create((set, get) => ({
       const aiContent = "Ticket Creation Cancelled.";
       handleAddAssistantMessage(aiContent, "ticketForm");
       handleRemoveForm(formId);
+      setResetTicketFlow();
       set((state) => ({
         ...state,
         ticketStatus: {

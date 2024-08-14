@@ -55,57 +55,6 @@ const useTicketConversationsStore = create((set, get) => ({
     });
   },
 
-  // handleAddTroubleShootMessage: async (message) => {
-  //   const { prependTroubleshootText } = get();
-  //   const completeMessage = prependTroubleshootText + message;
-
-  //   set({ troubleshootMessage: "" });
-
-  //   try {
-  //     const response = await fetch(`${gptServiceUrl}/message`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         message: completeMessage,
-  //       }),
-  //     });
-
-  //     if (response.status === 200) {
-  //       const responseBody = await response.json();
-  //       set({
-  //         troubleshootMessage: responseBody.choices[0]?.message?.content,
-  //       });
-  //     }
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // },
-
-  // handleTroubleShootingConvo: async () => {
-  //   const { troubleshootMessage } = get();
-  //   const { handleSendPromptGenerator } = useEngineerStore.getState();
-  //   const { handleSendMessage } = useInteractionStore.getState();
-  //   const { handleAssistantTabChange, handleUIAssistantTabChange } =
-  //     useAssistantStore.getState();
-
-  //   set({ troubleshootContinue: true });
-
-  //   handleAssistantTabChange("Engineer");
-  //   handleUIAssistantTabChange("Engineer");
-
-  //   try {
-  //     await Promise.all([
-  //       handleSendMessage(troubleshootMessage + " Continue from last step."),
-  //       handleSendPromptGenerator(),
-  //     ]);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  //   set({ troubleshootContinue: false });
-  // },
-
   handleAddForm: (formType) => {
     const formId = Date.now();
 
@@ -137,7 +86,7 @@ const useTicketConversationsStore = create((set, get) => ({
       troubleshootMessage: "",
       troubleshootContinue: false,
       prependTroubleshootText:
-        "Act as an expert IT troubleshooting bot. If there is an instance of another open ai gpt4 and you want it to function at its best. give me the best step-by-step troubleshooting guidelines, without quotation marks around the steps, that you would give it to gpt to get the best results by making sure to sure it at its best regarding ",
+        "Please provide the best IT support for this ticket description: ",
       isMobile: initialWidth < 1023,
       activeSectionButton: "Form",
     });
