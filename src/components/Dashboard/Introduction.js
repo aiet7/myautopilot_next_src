@@ -9,6 +9,7 @@ const Introduction = () => {
   const { handleUIAssistantTabChange, handleAssistantTabChange } =
     useAssistantStore();
   const { openAssistant } = useUiStore();
+  console.log(openAssistant)
   return (
     <div
       className={`relative flex flex-col h-full w-full text-sm ${
