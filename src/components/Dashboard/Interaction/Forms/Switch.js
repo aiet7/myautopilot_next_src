@@ -1,11 +1,9 @@
-import useFormsStore from "@/utils/store/interaction/forms/formsStore";
 import MarkedInteraction from "../../Marked/MarkedInteraction";
-import TicketForm from "../Forms/Ticket/TicketForm.js";
 import useTicketConversationsStore from "@/utils/store/interaction/conversations/ticketConversationsStore";
 import { useEffect } from "react";
 
 const Switch = ({ item, itemId }) => {
-  const { isMobile, setIsMobile } = useTicketConversationsStore();
+  const { setIsMobile } = useTicketConversationsStore();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -22,34 +20,6 @@ const Switch = ({ item, itemId }) => {
     }
   }, []);
 
-  if (!item || !item.content) {
-    return <div>Ticket Details Are Displayed On The Right Panel.</div>;
-  }
-
   return <MarkedInteraction id={item.id} markdown={item.content} />;
-
-  // // switch (item.type) {
-  // //   case "form":
-  // //     switch (item.formType) {
-  // //       case "ticketForm":
-  // //         return (
-  // //           <div className="flex flex-col gap-6">
-  // //             <p>Create a support ticket.</p>
-  // //             <div
-  // //               className={`${isMobile ? "flex-col" : "flex-row"} flex gap-6 `}
-  // //             >
-  // //               <div className="flex-1">
-  // //                 <TicketForm itemId={itemId} />
-  // //               </div>
-  // //             </div>
-  // //           </div>
-  // //         );
-
-  // //       default:
-  // //         return null;
-  // //     }
-  // //   default:
-  // return <MarkedInteraction id={item.id} markdown={item.content} />;
-  // // }
 };
 export default Switch;

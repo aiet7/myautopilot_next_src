@@ -14,6 +14,8 @@ const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 const gptServiceUrl = process.env.NEXT_PUBLIC_GPT_SERVICE_URL;
 
 const useInteractionStore = create((set, get) => ({
+  diagnosticMessage: "",
+  isDiagnosticStep: true,
   userInput: "",
   isWaiting: false,
   isListening: false,
@@ -26,6 +28,12 @@ const useInteractionStore = create((set, get) => ({
   interactionMenuOpen: false,
 
   setInteractionMenuOpen: (open) => set({ interactionMenuOpen: open }),
+
+  setResetTicketFlow: () =>
+    set({
+      isDiagnosticStep: true,
+      diagnosticMessage: "",
+    }),
 
   handleTextAreaChange: (e) => {
     set({
@@ -138,8 +146,10 @@ const useInteractionStore = create((set, get) => ({
 
   handleCreateTicketMessage: async (message) => {
     const userStore = useUserStore.getState();
+    const { isDiagnosticStep, diagnosticMessage } = get();
     const { inputRef, messageIdRef } = useRefStore.getState();
-    const { handleAddUserMessage } = useTicketConversationsStore.getState();
+    const { handleAddUserMessage, handleAddAssistantMessage } =
+      useTicketConversationsStore.getState();
     const { handleCreateTicketProcess } = useFormsStore.getState();
     const { setActiveTicketBotMode } = useTicketsStore.getState();
 
@@ -153,26 +163,47 @@ const useInteractionStore = create((set, get) => ({
       });
 
       try {
-        const response = await fetch(
-          `${connectWiseServiceUrl}/getTicketBoardCategorization`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              userMessage: message,
-              userId: userStore.user.id,
-              mspCustomDomain: userStore.user.mspCustomDomain,
-            }),
-          }
-        );
+        let endpointUrl = `${connectWiseServiceUrl}/getTicketBoardCategorizationDiagnostic`;
+        let userMessage = message;
+        if (!isDiagnosticStep) {
+          endpointUrl = `${connectWiseServiceUrl}/getTicketBoardCategorization`;
+          userMessage = `${diagnosticMessage}\n${message}`;
+        }
+
+        const response = await fetch(endpointUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userMessage: userMessage,
+            userId: userStore.user.id,
+            mspCustomDomain: userStore.user.mspCustomDomain,
+          }),
+        });
 
         if (response.status === 200) {
           const responseBody = await response.json();
           messageIdRef.current = Date.now();
           handleCreateTicketProcess(responseBody);
           setActiveTicketBotMode("Ticket");
+          if (isDiagnosticStep) {
+            handleAddAssistantMessage(responseBody.diagnostic, null);
+            set({
+              isDiagnosticStep: false,
+              diagnosticMessage: message,
+            });
+          } else {
+            handleAddAssistantMessage(
+              "Ticket Details Are Displayed On The Right Panel.",
+              null
+            );
+
+            set({
+              isDiagnosticStep: true,
+              diagnosticMessage: "",
+            });
+          }
         } else if (response.status === 500) {
           set({
             isServerError: true,
@@ -331,6 +362,8 @@ const useInteractionStore = create((set, get) => ({
 
   clearInteraction: () => {
     set({
+      diagnosticMessage: "",
+      isDiagnosticStep: true,
       userInput: "",
       isWaiting: false,
       isListening: false,
@@ -340,6 +373,7 @@ const useInteractionStore = create((set, get) => ({
       isOverflowed: false,
       feedback: {},
       textAreaheight: "24px",
+      interactionMenuOpen: false,
     });
   },
 }));
