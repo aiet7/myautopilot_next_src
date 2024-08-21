@@ -310,12 +310,12 @@ const useInteractionStore = create((set, get) => ({
     }
   },
 
-  handleSendTroubleshootMessage: async (message, ticketId) => {
+  handleSendTroubleshootMessage: async (message) => {
     const { inputRef, messageIdRef } = useRefStore.getState();
     const userStore = useUserStore.getState();
     const { handleIfConversationExists } = useConversationStore.getState();
 
-    let currentConversation = await handleIfConversationExists(ticketId);
+    let currentConversation = await handleIfConversationExists(false, false);
     const {
       handleAddUserTroubleshootMessage,
       handleAddAssistantTroubleshootMessage,

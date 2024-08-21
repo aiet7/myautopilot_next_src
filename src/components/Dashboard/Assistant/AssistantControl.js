@@ -12,13 +12,10 @@ import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
 import QueueSearch from "./Sections/Internal/QueueBot/QueueSearch";
 import QueueMenus from "./Sections/Internal/QueueBot/QueueMenus";
+import useQueueStore from "@/utils/store/interaction/queue/queueStore";
 
 const AssistantControl = () => {
-  const {
-    currentNavOption,
-    currentQueueNavOption,
-    handleAssistantMenu,
-  } = useUiStore();
+  const { currentNavOption, handleAssistantMenu } = useUiStore();
 
   const {
     assistantWidth,
@@ -32,6 +29,9 @@ const AssistantControl = () => {
     useTicketsStore();
   const { setActiveChatBotModeOpen, setActiveChatFilterModeOpen } =
     useConversationStore();
+
+  const { setActiveQueueFilterModeOpen, setActiveQueueBotModeOpen } =
+    useQueueStore();
 
   const renderSearchComponent = () => {
     switch (currentNavOption) {
@@ -53,7 +53,7 @@ const AssistantControl = () => {
       case "Engineer":
         return <ChatMenus />;
       case "Queue":
-        return currentQueueNavOption === "Queue Tickets" ? <QueueMenus /> : null;
+        return <QueueMenus />;
       default:
         return null;
     }
@@ -71,6 +71,8 @@ const AssistantControl = () => {
           setActiveTicketFilterModeOpen(false);
           setActiveChatBotModeOpen(false);
           setActiveChatFilterModeOpen(false);
+          setActiveQueueFilterModeOpen(false);
+          setActiveQueueBotModeOpen(false);
         }}
         size={35}
         className="cursor-pointer"

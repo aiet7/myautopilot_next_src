@@ -38,8 +38,11 @@ const Layout = ({ children }) => {
 
   const { assistantWidthOpen, handleToggleResizeMenus } = useAssistantStore();
 
-  const { filterQueueTicketModeOpen, handleToggleQueueTicketMenus } =
-    useQueueStore();
+  const {
+    activeQueueBotModeOpen,
+    filterQueueTicketModeOpen,
+    handleToggleQueueTicketMenus,
+  } = useQueueStore();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -61,7 +64,8 @@ const Layout = ({ children }) => {
             openSettings && handleToggleSettings(false);
             showQueueSubMenu && handleToggleQueueSubMenu(false);
             assistantWidthOpen && handleToggleResizeMenus(false);
-            filterQueueTicketModeOpen && handleToggleQueueTicketMenus(false);
+            (activeQueueBotModeOpen || filterQueueTicketModeOpen) &&
+              handleToggleQueueTicketMenus(false);
             (activeChatBotModeOpen || filterChatModeOpen) &&
               handleToggleChatMenus(false);
             (activeTicketBotModeOpen || filterTicketModeOpen) &&

@@ -7,19 +7,11 @@ import { IoTicketSharp } from "react-icons/io5";
 import { MdAddToQueue, MdEngineering, MdOutlineSettings } from "react-icons/md";
 
 const Nav = () => {
-  const { userType } = useMspStore();
   const { user } = useUserStore();
-  const {
-    showQueueSubMenu,
-    openNav,
-    currentNavOption,
-    currentQueueNavOption,
-    queueSubOptions,
-    options,
-    handleOptionSelected,
-    handleQueueSubOptionSelected,
-  } = useUiStore();
-  
+  const { userType } = useMspStore();
+  const { openNav, currentNavOption, options, handleOptionSelected } =
+    useUiStore();
+
   const renderIcon = (option) => {
     switch (option) {
       case "Tickets":
@@ -35,8 +27,10 @@ const Nav = () => {
     }
   };
 
-  const filteredOptions = userType === "tech" ? options : options.filter(option => option !== "Queue");
-
+  const filteredOptions =
+    userType === "tech"
+      ? options
+      : options.filter((option) => option !== "Queue");
 
   return (
     <div
@@ -50,10 +44,11 @@ const Nav = () => {
         {filteredOptions.map((option) => (
           <div key={option} className="flex flex-col items-start my-2">
             <div
-              onClick={() => handleOptionSelected(option)}
+              onClick={() =>
+                handleOptionSelected(option, user?.mspCustomDomain)
+              }
               className={`${
-                currentNavOption === option ||
-                (option === "Queue" && showQueueSubMenu)
+                currentNavOption === option
                   ? "dark:bg-white/40 bg-black/20"
                   : ""
               } dark:text-white dark:hover:bg-white/40 hover:bg-black/20 text-black w-full flex items-center justify-between px-4 py-5 cursor-pointer rounded-lg`}
@@ -65,30 +60,6 @@ const Nav = () => {
                 </div>
               </div>
             </div>
-            {option === "Queue" && showQueueSubMenu && (
-              <div className="absolute left-52 top-0 flex flex-col gap-2 h-full w-[250px] bg-white border dark:bg-[#111111] dark:border-white/10 rounded p-2">
-                {queueSubOptions.map((subOption) => (
-                  <div
-                    key={subOption}
-                    onClick={() =>
-                      handleQueueSubOptionSelected(
-                        subOption,
-                        user?.mspCustomDomain,
-                        user?.tierLevel,
-                        user?.id
-                      )
-                    }
-                    className={`${
-                      currentQueueNavOption === subOption
-                        ? "dark:bg-white/30 bg-black/10"
-                        : ""
-                    } dark:text-white dark:hover:bg-white/20 hover:bg-black/10 px-2 text-black w-full flex items-center justify-between cursor-pointer rounded`}
-                  >
-                    <span className="p-3">{subOption}</span>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
         ))}
       </div>

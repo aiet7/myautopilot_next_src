@@ -9,8 +9,6 @@ const useUiStore = create((set, get) => ({
   height: null,
   activeTab: null,
   options: ["Tickets", "Queue", "Engineer", "Settings"],
-  queueSubOptions: ["Queue Tickets", "Activities", "Workspace"],
-  currentQueueNavOption: null,
   currentNavOption: "Tickets",
   showQueueSubMenu: false,
   openHistory: initialWidth > 1023 ? true : false,
@@ -26,23 +24,18 @@ const useUiStore = create((set, get) => ({
 
   setHeight: (heightValue) => set({ height: heightValue }),
 
-  setShowQueueSubMenu: (show) => set({ showQueueSubMenu: show }),
-
   handleToggleAssistant: () =>
     set((state) => ({ openAssistant: !state.openAssistant })),
   handleToggleAdmin: () => set((state) => ({ openAdmin: !state.openAdmin })),
   handleToggleNav: () => set((state) => ({ openAdmin: !state.openNav })),
   handleToggleSettings: (toggle) => set({ openSettings: toggle }),
-  handleToggleQueueSubMenu: (toggle) => set({ showQueueSubMenu: toggle }),
 
-  handleOptionSelected: (option) => {
-    const {
-      openNav,
-      openAssistant,
-      showQueueSubMenu,
-      handleAssistantMenu,
-      handleNavMenu,
-    } = get();
+  handleOptionSelected: async (option, mspCustomDomain) => {
+    const { openNav, openAssistant, handleAssistantMenu, handleNavMenu } =
+      get();
+
+    const { activeQueueBotMode, handleShowAllQueueTickets } =
+      useQueueStore.getState();
 
     if (!openAssistant) {
       handleAssistantMenu();
@@ -52,50 +45,12 @@ const useUiStore = create((set, get) => ({
       handleNavMenu();
     }
 
-    if (option === "Queue") {
-      set({
-        showQueueSubMenu: !showQueueSubMenu,
-      });
-    } else {
-      set({
-        currentNavOption: option,
-        currentQueueNavOption: null,
-        showQueueSubMenu: false,
-      });
-    }
-  },
-
-  handleQueueSubOptionSelected: async (
-    subOption,
-    mspCustomDomain,
-    tier,
-    techId
-  ) => {
-    const {
-      myQueueTicket,
-      handleShowMyActivities,
-      handleShowAllQueueTickets,
-      handleNextQueueTicket,
-    } = useQueueStore.getState();
-
     set({
-      currentNavOption: "Queue",
-      currentQueueNavOption: subOption,
-      showQueueSubMenu: false,
+      currentNavOption: option,
     });
 
-    if (subOption === "Activities") {
-      await handleShowMyActivities(mspCustomDomain, techId);
-    }
-
-    if (subOption === "Queue Tickets") {
+    if (option === "Queue" && activeQueueBotMode === "All Queue Tickets") {
       await handleShowAllQueueTickets(mspCustomDomain);
-    }
-
-    if (subOption === "Workspace") {
-      if (!myQueueTicket) {
-        await handleNextQueueTicket(mspCustomDomain, tier, techId);
-      }
     }
   },
 
@@ -141,8 +96,6 @@ const useUiStore = create((set, get) => ({
       height: null,
       activeTab: null,
       options: ["Tickets", "Queue", "Engineer", "Settings"],
-      queueSubOptions: ["Queue Tickets", "Activities", "Workspace"],
-      currentQueueNavOption: null,
       currentNavOption: "Tickets",
       showQueueSubMenu: false,
       openHistory: initialWidth > 1023 ? true : false,
@@ -151,8 +104,7 @@ const useUiStore = create((set, get) => ({
       openAdmin: initialWidth > 1023 ? true : false,
       openTickets: initialWidth > 1023 ? true : false,
       openQueue: initialWidth > 1023 ? true : false,
-      openNav: initialWidth > 1023 ? true : false,
-      openSettings: false,
+      openNav: initialWidth > 1,
     });
   },
 }));

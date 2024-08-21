@@ -3,13 +3,11 @@
 import useUiStore from "@/utils/store/ui/uiStore";
 import TicketBot from "./TicketBot/TicketBot";
 import ChatBot from "./ChatBot/ChatBot";
-import Activities from "./QueueBot/Activities";
-import AllQueueTickets from "./QueueBot/AllQueueTickets/AllQueueTickets";
-import QueueWorkspace from "./QueueBot/QueueWorkspace/QueueWorkspace";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
+import QueueBot from "./QueueBot/QueueBot";
 
 const InternalPilot = () => {
-  const { currentNavOption, currentQueueNavOption } = useUiStore();
+  const { currentNavOption } = useUiStore();
   const { activeAssistantTab } = useAssistantStore();
 
   return (
@@ -20,12 +18,7 @@ const InternalPilot = () => {
     >
       {currentNavOption === "Tickets" && <TicketBot />}
       {currentNavOption === "Engineer" && <ChatBot />}
-      {currentNavOption === "Queue" &&
-        currentQueueNavOption === "Activities" && <Activities />}
-      {currentNavOption === "Queue" &&
-        currentQueueNavOption === "Queue Tickets" && <AllQueueTickets />}
-      {currentNavOption === "Queue" &&
-        currentQueueNavOption === "Workspace" && <QueueWorkspace />}
+      {currentNavOption === "Queue" && <QueueBot />}
     </div>
   );
 };

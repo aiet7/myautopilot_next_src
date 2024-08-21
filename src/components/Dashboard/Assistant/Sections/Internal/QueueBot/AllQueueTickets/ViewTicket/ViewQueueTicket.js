@@ -1,33 +1,24 @@
 "use client";
 
 import useQueueStore from "@/utils/store/interaction/queue/queueStore";
-import { IoMdArrowRoundBack } from "react-icons/io";
 
 const ViewQueueTicket = () => {
-  const { currentQueueTicket, setViewQueueTicket } = useQueueStore();
-
-  console.log(currentQueueTicket);
-
+  const { currentQueueTicket } = useQueueStore();
   return (
-    <div className="flex flex-col gap-2 ">
-      <IoMdArrowRoundBack
-        className="cursor-pointer"
-        onClick={() => setViewQueueTicket(false)}
-        size={30}
-      />
+    <>
       <div>
         <span className="font-bold">Ticket ID</span>
         <input
           disabled
           className="dark:bg-black h-[50px] border outline-blue-500 w-full px-4 bg-white"
-          value={currentQueueTicket?.ticketId}
+          value={currentQueueTicket?.ticketId || ""}
         />
       </div>
       <div>
         <span className="font-bold">Description</span>
         <textarea
           disabled
-          value={currentQueueTicket?.description}
+          value={currentQueueTicket?.description || ""}
           maxLength={100}
           className="dark:bg-black max-h-[200px] min-h-[100px] border outline-blue-500 w-full px-4 bg-white"
         />
@@ -139,10 +130,11 @@ const ViewQueueTicket = () => {
         <p>
           {new Date(currentQueueTicket?.creationTime).toLocaleDateString() +
             " " +
-            new Date(currentQueueTicket?.creationTime).toLocaleTimeString()}
+            new Date(currentQueueTicket?.creationTime).toLocaleTimeString() ||
+            ""}
         </p>
       </div>
-    </div>
+    </>
   );
 };
 

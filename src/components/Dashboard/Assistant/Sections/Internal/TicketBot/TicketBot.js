@@ -1,7 +1,7 @@
 "use client";
 
 import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
-import Tickets from "./Tickets";
+import Tickets from "./Tickets/Tickets";
 import TicketForm from "@/components/Dashboard/Interaction/Forms/Ticket/TicketForm";
 
 const TicketBot = () => {

@@ -1,22 +1,28 @@
 "use client";
 
 import useQueueStore from "@/utils/store/interaction/queue/queueStore";
-import ViewQueueTicket from "./ViewQueueTicket";
+
+import { LuRectangleHorizontal } from "react-icons/lu";
+import { CiViewTable } from "react-icons/ci";
+import AllQueueTicketsTable from "./AllQueueTicketsTable";
+import AllQueueTicketsCards from "./AllQueueTicketsCards";
+import ViewTicket from "./ViewTicket/ViewTicket";
 
 const AllQueueTickets = () => {
   const {
+    maxPagesToShow,
+    searchValue,
     filterQueueTicketMode,
+    cardView,
     viewQueueTicket,
     currentPage,
     ticketsPerPage,
-    searchValue,
     allQueueTickets,
     setCurrentPage,
-    handleViewQueueTicket,
+    setCardView,
     handleNextPage,
     handlePreviousPage,
   } = useQueueStore();
-
 
   const filteredAndSortedQueueTickets = allQueueTickets
     ?.filter((ticket) => {
@@ -62,122 +68,89 @@ const AllQueueTickets = () => {
       }
     });
 
-  const indexOfLastTicket = currentPage * ticketsPerPage;
-  const indexOfFirstTicket = indexOfLastTicket - ticketsPerPage;
-  const paginatedTickets = filteredAndSortedQueueTickets?.slice(
-    indexOfFirstTicket,
-    indexOfLastTicket
-  );
-
   const totalPages = Math.ceil(
     filteredAndSortedQueueTickets?.length / ticketsPerPage
   );
 
+  const startPage = Math.max(
+    Math.min(
+      currentPage - Math.floor(maxPagesToShow / 2),
+      totalPages - maxPagesToShow + 1
+    ),
+    1
+  );
+  const endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
+
+  const pagesToShow = Array.from(
+    { length: endPage - startPage + 1 },
+    (_, index) => startPage + index
+  );
+
+  const renderComponent = () => {
+    switch (cardView) {
+      case true:
+        return <AllQueueTicketsCards />;
+
+      case false:
+        return <AllQueueTicketsTable />;
+
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="flex flex-col h-full overflow-hidden p-4">
       {viewQueueTicket ? (
-        <ViewQueueTicket />
+        <ViewTicket />
       ) : (
         <>
-          <div className="w-full flex items-center gap-1 mb-3">
-            <button
-              onClick={handlePreviousPage}
-              disabled={currentPage === 1}
-              className="disabled:opacity-50"
-            >
-              Previous
-            </button>
-            {Array.from({ length: totalPages }, (_, index) => (
+          <div className="flex justify-between items-center mb-4">
+            <div className="w-full flex items-center gap-1 ">
               <button
-                key={index}
-                onClick={() => setCurrentPage(index + 1)}
-                className={`px-1 ${
-                  currentPage === index + 1 ? "bg-blue-500 text-white" : ""
-                }`}
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+                className="disabled:opacity-50"
               >
-                {index + 1}
+                Previous
               </button>
-            ))}
-            <button
-              onClick={handleNextPage}
-              disabled={currentPage === totalPages}
-              className="disabled:opacity-50"
-            >
-              Next
-            </button>
+              {pagesToShow.map((page) => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`w-6 text-center  ${
+                    currentPage === page ? "bg-blue-500 text-white" : ""
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                className="disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+            <div className="">
+              {cardView ? (
+                <CiViewTable
+                  className="cursor-pointer"
+                  size={20}
+                  onClick={() => setCardView(false)}
+                />
+              ) : (
+                <LuRectangleHorizontal
+                  className="cursor-pointer"
+                  size={20}
+                  onClick={() => setCardView(true)}
+                />
+              )}
+            </div>
           </div>
-          <div className="flex-1 overflow-auto">
-            {paginatedTickets?.length !== 0 ? (
-              <div className="block text-sm overflow-auto scrollbar-thin max-h-full min-w-[900px]">
-                {allQueueTickets && (
-                  <table className="overflow-auto w-full table-fixed border-separate   text-left">
-                    <thead className="dark:text-white dark:bg-gray-700  sticky top-0  text-black/60 bg-[#F5F8FA]">
-                      <tr className="">
-                        <th className="p-2 border-l border-t border-b border-r ">
-                          Score
-                        </th>
-                        <th className="p-2 border-t border-b border-r ">
-                          Ticket ID
-                        </th>
-                        <th className="p-2 border-t border-b border-r ">
-                          Description
-                        </th>
-                        <th className="p-2 border-t border-b border-r ">
-                          Date Created
-                        </th>
-                        <th className="p-2 border-t border-b border-r ">
-                          Hold Until Date
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {paginatedTickets?.map((tickets) => {
-                        const {
-                          id,
-                          ticketId,
-                          holdUntil,
-                          ticketInformation,
-                          creationTime,
-                          compositeScore,
-                        } = tickets;
-                        return (
-                          <tr
-                            onClick={() => handleViewQueueTicket(tickets)}
-                            key={id}
-                            className="bg-white cursor-pointer"
-                          >
-                            <td className="p-2 truncate border-l  border-r border-b">
-                              {compositeScore.toFixed(2)}
-                            </td>
-                            <td className="p-2 truncate border-r border-b">
-                              {ticketId}
-                            </td>
-                            <td className="p-2 truncate border-r border-b">
-                              {ticketInformation}
-                            </td>
-                            <td className="p-2 truncate border-r border-b">
-                              {new Date(creationTime).toLocaleTimeString() +
-                                " " +
-                                new Date(creationTime).toLocaleDateString()}
-                            </td>
-                            <td className="p-2 truncate border-r border-b">
-                              {" "}
-                              {new Date(holdUntil).toLocaleTimeString() +
-                                " " +
-                                new Date(holdUntil).toLocaleDateString()}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                )}
-              </div>
-            ) : (
-              <p className="text-xl font-bold text-black/20 w-full">
-                No Tickets Available
-              </p>
-            )}
+          <div className="flex-1 overflow-auto scrollbar-thin">
+            {renderComponent()}
           </div>
         </>
       )}

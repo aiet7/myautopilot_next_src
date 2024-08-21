@@ -13,7 +13,7 @@ const AssistantRail = ({}) => {
     <div
       className={` ${
         openAssistant && window.innerWidth > 1023 ? "translate-x-[0px]" : ""
-      }  dark:bg-[#373737] dark:border-white/10 relative z-[100] flex flex-col justify-between bg-[#eaf1fb] px-1 pb-7 pt-2  transition-all duration-300 ease border-r  lg:border-l lg:border-black/10`}
+      }  dark:bg-[#373737] dark:border-white/10 relative z-[100] flex flex-col  bg-[#eaf1fb] px-1 pt-2  transition-all duration-300 ease border-r  lg:border-l lg:border-black/10`}
     >
       <FaAlignLeft
         onClick={() => !openAssistant && handleAssistantMenu()}
@@ -24,7 +24,7 @@ const AssistantRail = ({}) => {
         } `}
         size={35}
       />
-      <div className="flex flex-col-reverse gap-4 ">
+      <div className="flex flex-col-reverse gap-4 pt-8">
         <FaPlus
           className="dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none"
           size={35}

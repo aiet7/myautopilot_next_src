@@ -10,16 +10,10 @@ import {
 import { IoChatboxOutline } from "react-icons/io5";
 
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
-import useAssistantStore from "@/utils/store/assistant/assistantStore";
-import useUserStore from "@/utils/store/user/userStore";
-import useTicketConversationsStore from "@/utils/store/interaction/conversations/ticketConversationsStore";
-import useUiStore from "@/utils/store/ui/uiStore";
 
-const History = ({}) => {
-  const { user } = useUserStore();
-
-  const { troubleshootContinue } = useTicketConversationsStore();
+const History = () => {
   const {
+    maxPagesToShow,
     currentPage,
     chatsPerPage,
     filterChatMode,
@@ -46,13 +40,10 @@ const History = ({}) => {
     initializeConversations,
   } = useConversationStore();
 
-  const { currentNavOption } = useUiStore();
 
   useEffect(() => {
-    if (currentNavOption === "Engineer" && !troubleshootContinue) {
-      initializeConversations();
-    }
-  }, [user, currentNavOption]);
+    initializeConversations();
+  }, []);
 
   const filteredConversationHistories = conversationHistories
     ?.filter((conversation) => {
@@ -62,6 +53,7 @@ const History = ({}) => {
         conversation.conversationName.toLowerCase().includes(searchValue)
       )
         return true;
+      return false;
     })
     ?.sort((a, b) => {
       switch (filterChatMode) {
@@ -89,6 +81,20 @@ const History = ({}) => {
     filteredConversationHistories?.length / chatsPerPage
   );
 
+  const startPage = Math.max(
+    Math.min(
+      currentPage - Math.floor(maxPagesToShow / 2),
+      totalPages - maxPagesToShow + 1
+    ),
+    1
+  );
+  const endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
+
+  const pagesToShow = Array.from(
+    { length: endPage - startPage + 1 },
+    (_, index) => startPage + index
+  );
+
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center w-full mb-2">
@@ -100,15 +106,15 @@ const History = ({}) => {
           >
             Previous
           </button>
-          {Array.from({ length: totalPages }, (_, index) => (
+          {pagesToShow.map((page) => (
             <button
-              key={index}
-              onClick={() => setCurrentPage(index + 1)}
-              className={`px-1 ${
-                currentPage === index + 1 ? "bg-blue-500 text-white" : ""
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`w-6 text-center ${
+                currentPage === page ? "bg-blue-500 text-white" : ""
               }`}
             >
-              {index + 1}
+              {page}
             </button>
           ))}
           <button
@@ -120,44 +126,41 @@ const History = ({}) => {
           </button>
         </div>
         <button
-          onClick={() =>
-            handleNewConversation(
-              conversationHistories ? conversationHistories.length : 0
-            )
-          }
-          className="dark:shadow-white/40 hover:bg-blue-500 flex items-center gap-1 w-[125px] font-semibold px-4 py-3  bg-blue-800 text-white rounded-lg shadow-lg"
+          onClick={handleNewConversation}
+          className="dark:shadow-white/40 hover:bg-blue-500 flex items-center gap-1 w-[125px] font-semibold px-4 py-3 bg-blue-800 text-white rounded-lg shadow-lg"
         >
           <AiOutlinePlus size={15} />
           <span>New Chat</span>
         </button>
       </div>
-      <div className="flex-grow overflow-y-auto scrollbar-thin ">
-        {paginatedChats?.map((conversation, index) => {
+      <div className="flex-grow overflow-y-auto scrollbar-thin">
+        {paginatedChats?.map((conversation) => {
           const { id, userId, conversationName, customPrompt, timeStamp } =
             conversation;
           return (
             <div
-              onClick={() => handleConversationSelected(index, id)}
-              key={index}
-              className={`${`${
-                currentConversationIndex === index &&
-                "dark:bg-white/50 bg-black/15"
-              }`} dark:bg-white/30 dark:text-white dark:border-white/20 dark:hover:bg-white/40 hover:bg-black/15  bg-white flex items-start justify-between my-2 border min-h-[75px]  px-4 py-3 cursor-pointer rounded-md`}
+              onClick={() => handleConversationSelected(id)}
+              key={id}
+              className={`${
+                currentConversationIndex === id
+                  ? "dark:bg-white/50 bg-black/15"
+                  : ""
+              } dark:bg-white/30 dark:text-white dark:border-white/20 dark:hover:bg-white/40 hover:bg-black/15 bg-white flex items-start justify-between my-2 border min-h-[75px] px-4 py-3 cursor-pointer rounded-md`}
             >
               <div className="flex items-center">
-                <div className="w-6 ">
+                <div className="w-6">
                   <IoChatboxOutline size={15} />
                 </div>
                 <div
                   className={`${
-                    currentConversationIndex === index ? "w-28" : "w-44"
+                    currentConversationIndex === id ? "w-28" : "w-44"
                   } truncate flex`}
                 >
-                  {currentConversationIndex === index && editing ? (
+                  {currentConversationIndex === id && editing ? (
                     <input
                       onClick={(e) => e.stopPropagation()}
                       value={tempTitle}
-                      className="bg-white text-black truncate flex px-1 "
+                      className="bg-white text-black truncate flex px-1"
                       onChange={(e) => setTempTitle(e.target.value)}
                     />
                   ) : (
@@ -174,7 +177,7 @@ const History = ({}) => {
               </div>
 
               <div className="w-12">
-                {currentConversationIndex === index && editing && (
+                {currentConversationIndex === id && editing && (
                   <div className="flex items-center gap-2">
                     <AiOutlineCheck
                       size={18}
@@ -192,7 +195,7 @@ const History = ({}) => {
                     />
                   </div>
                 )}
-                {currentConversationIndex === index && deleting && (
+                {currentConversationIndex === id && deleting && (
                   <div className="flex items-center gap-2">
                     <AiOutlineCheck
                       size={18}
@@ -211,29 +214,27 @@ const History = ({}) => {
                     />
                   </div>
                 )}
-                {currentConversationIndex === index &&
-                  !editing &&
-                  !deleting && (
-                    <div className="flex items-center gap-2">
-                      <AiFillEdit
-                        size={18}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditConversationTitle();
-                          handleEditConversationPrompt();
-                        }}
-                      />
-                      <AiFillDelete
-                        size={18}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setDeleting(true);
-                        }}
-                      />
-                    </div>
-                  )}
+                {currentConversationIndex === id && !editing && !deleting && (
+                  <div className="flex items-center gap-2">
+                    <AiFillEdit
+                      size={18}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditConversationTitle();
+                        handleEditConversationPrompt();
+                      }}
+                    />
+                    <AiFillDelete
+                      size={18}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleting(true);
+                      }}
+                    />
+                  </div>
+                )}
               </div>
-              {currentConversationIndex === index && editing && (
+              {currentConversationIndex === id && editing && (
                 <div className="w-full">
                   <textarea
                     placeholder={`Fine-tune your conversation.\nEx. Act as a Front End expert or speak like Albert Einstein would.`}

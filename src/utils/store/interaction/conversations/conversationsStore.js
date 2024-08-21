@@ -32,6 +32,7 @@ const useConversationStore = create((set, get) => ({
 
   currentPage: 1,
   chatsPerPage: 30,
+  maxPagesToShow: 10,
 
   setTempTitle: (title) => set((state) => ({ ...state, tempTitle: title })),
   setTempPrompt: (prompt) => set((state) => ({ ...state, tempPrompt: prompt })),
@@ -57,7 +58,6 @@ const useConversationStore = create((set, get) => ({
   setActiveChatFilterModeOpen: (open) => set({ filterChatModeOpen: open }),
 
   initializeConversations: async () => {
-    const { initializeMessages } = get();
     const userStore = useUserStore.getState();
     set({ conversationHistories: [] });
 
@@ -68,66 +68,43 @@ const useConversationStore = create((set, get) => ({
       set({
         conversationHistories: initialConversations,
       });
-
-      if (initialConversations.length > 0) {
-        await initializeMessages(null, initialConversations);
-      }
     }
   },
 
-  initializeMessages: async (
-    passedConvoId = null,
-    passedConvoHistory = null
-  ) => {
-    const { conversationHistories } = get();
-
-    const savedConvoOnInitialLoad = passedConvoHistory || conversationHistories;
-
-    const savedConversationIndex = localStorage.getItem("lastConvoIndex");
-    const parsedSavedConversationIndex = JSON.parse(savedConversationIndex);
-
-    const convoId =
-      passedConvoId ||
-      (parsedSavedConversationIndex?.currentConversationIndex !== null
-        ? savedConvoOnInitialLoad[
-            parsedSavedConversationIndex?.currentConversationIndex
-          ]?.id
-        : null);
+  initializeMessages: async (convoId) => {
     if (!convoId) {
       return;
     }
+
     const messages = await handleGetMessages(convoId);
 
     if (messages) {
       set((state) => {
-        const updatedHistories = [...state.conversationHistories];
-        const conversationToUpdateIndex = updatedHistories.findIndex(
-          (convo) => convo.id === convoId
+        const updatedHistories = state.conversationHistories.map((convo) =>
+          convo.id === convoId
+            ? {
+                ...convo,
+                messages: messages
+                  .flatMap((message) => [
+                    {
+                      id: message.id + "-user",
+                      content: message.userContent,
+                      role: "user",
+                      timeStamp: message.timeStamp,
+                    },
+                    {
+                      id: message.id + "-ai",
+                      content: message.aiContent,
+                      role: "assistant",
+                      timeStamp: message.timeStamp,
+                    },
+                  ])
+                  .sort(
+                    (a, b) => new Date(a.timeStamp) - new Date(b.timeStamp)
+                  ),
+              }
+            : convo
         );
-
-        if (conversationToUpdateIndex > -1) {
-          const updatedMessages = messages
-            .flatMap((message) => [
-              {
-                id: message.id + "-user",
-                content: message.userContent,
-                role: "user",
-                timeStamp: message.timeStamp,
-              },
-              {
-                id: message.id + "-ai",
-                content: message.aiContent,
-                role: "assistant",
-                timeStamp: message.timeStamp,
-              },
-            ])
-            .sort((a, b) => new Date(a.timeStamp) - new Date(b.timeStamp));
-
-          updatedHistories[conversationToUpdateIndex] = {
-            ...updatedHistories[conversationToUpdateIndex],
-            messages: updatedMessages,
-          };
-        }
         return { conversationHistories: updatedHistories };
       });
     }
@@ -150,19 +127,13 @@ const useConversationStore = create((set, get) => ({
     });
   },
 
-  handleSaveConversationTitle: async (id, userId) => {
+  handleSaveConversationTitle: async (convoId, userId) => {
     const { selectedAgent } = useInitializeAppStore.getState();
+    const { conversationHistories, tempTitle, tempPrompt } = get();
 
-    const {
-      conversationHistories,
-      currentConversationIndex,
-      tempTitle,
-      tempPrompt,
-    } = get();
-
-    const currentConversation = {
-      ...conversationHistories[currentConversationIndex],
-    };
+    const currentConversation = conversationHistories.find(
+      (convo) => convo.id === convoId
+    );
 
     currentConversation.conversationName = tempTitle;
     currentConversation.customPrompt = tempPrompt;
@@ -176,7 +147,7 @@ const useConversationStore = create((set, get) => ({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            id: id,
+            id: convoId,
             userId: userId,
             agentID: selectedAgent,
             conversationName: currentConversation.conversationName,
@@ -189,13 +160,12 @@ const useConversationStore = create((set, get) => ({
 
       if (response.status === 200) {
         set((state) => {
-          const newConversationHistories = [...state.conversationHistories];
-          newConversationHistories[currentConversationIndex] =
-            currentConversation;
-
+          const updatedHistories = state.conversationHistories.map((convo) =>
+            convo.id === convoId ? currentConversation : convo
+          );
           return {
             ...state,
-            conversationHistories: newConversationHistories,
+            conversationHistories: updatedHistories,
             editing: false,
           };
         });
@@ -209,93 +179,55 @@ const useConversationStore = create((set, get) => ({
 
   handleEditConversationTitle: () => {
     const { conversationHistories, currentConversationIndex } = get();
-    const title =
-      conversationHistories[currentConversationIndex].conversationName;
-    set({ tempTitle: title, editing: true });
+    const currentConversation = conversationHistories.find(
+      (convo) => convo.id === currentConversationIndex
+    );
+    set({ tempTitle: currentConversation.conversationName, editing: true });
   },
 
   handleEditConversationPrompt: () => {
     const { conversationHistories, currentConversationIndex } = get();
-    const prompt = conversationHistories[currentConversationIndex].customPrompt;
-    set({ tempPrompt: prompt, editing: true });
+    const currentConversation = conversationHistories.find(
+      (convo) => convo.id === currentConversationIndex
+    );
+    set({ tempPrompt: currentConversation.customPrompt, editing: true });
   },
 
   handleCancelEditConversationTitle: () => {
     set({ tempTitle: "", tempPrompt: "", editing: false });
   },
 
-  handleGetConversationId: () => {
-    const { selectedAgent } = useInitializeAppStore.getState();
-    const { conversationHistories, currentConversationIndices } = get();
-    const { previousResponseBodyForForms } = useFormsStore.getState();
-
-    const conversationId =
-      conversationHistories[selectedAgent]?.[
-        currentConversationIndices[selectedAgent]
-      ]?.id;
-
-    return previousResponseBodyForForms[conversationId];
-  },
-
-  handleIfConversationExists: async (ticketId, forceNew = false) => {
+  handleIfConversationExists: async (forceNew = false, highlight = true) => {
     const {
       conversationHistories,
       currentConversationIndex,
       handleNewConversation,
-      troubleshootingConversationId,
     } = get();
 
     let currentConversation;
 
-    if (ticketId) {
-      if (!forceNew) {
-        if (troubleshootingConversationId) {
-          currentConversation = conversationHistories.find(
-            (conv) => conv.id === troubleshootingConversationId
-          );
-        }
+    if (!forceNew) {
+      currentConversation = conversationHistories.find(
+        (conv) => conv.id === currentConversationIndex
+      );
+    }
 
-        if (!currentConversation) {
-          currentConversation = conversationHistories.find(
-            (conv) => conv.ticketId === ticketId
-          );
-        }
-      }
-
-      if (currentConversation) {
-        return currentConversation;
-      } else {
-        const newConversation = await handleNewConversation(
-          conversationHistories.length,
-          ticketId
-        );
-        return newConversation;
-      }
+    if (currentConversation) {
+      return currentConversation;
     } else {
-      currentConversation = conversationHistories[currentConversationIndex];
-
-      if (currentConversation) {
-        return currentConversation;
-      } else {
-        const newConversation = await handleNewConversation(
-          conversationHistories.length
-        );
-        return newConversation;
-      }
+      const newConversation = await handleNewConversation(highlight);
+      return newConversation;
     }
   },
 
-  handleNewConversation: async (index, ticketId) => {
+  handleNewConversation: async (highlight = true) => {
     const userStore = useUserStore.getState();
-    const { activeUIAssistantTab } = useAssistantStore.getState();
     const { selectedAgent } = useInitializeAppStore.getState();
+    const timestamp = new Date().toISOString().replace(/[-:.]/g, "");
 
     const newConversation = {
       userId: userStore.user.id,
-      conversationName:
-        activeUIAssistantTab !== "Queue"
-          ? `Chat ${index + 1}`
-          : `${ticketId} Ticket Chat`,
+      conversationName: `Chat - ${timestamp}`,
       agentID: selectedAgent,
     };
 
@@ -312,21 +244,16 @@ const useConversationStore = create((set, get) => ({
       );
       if (response.ok) {
         const addedConversation = await response.json();
-        addedConversation.ticketId = ticketId || null;
 
-        set((state) => {
-          const updatedHistories = [
+        set((state) => ({
+          conversationHistories: [
             ...state.conversationHistories,
             addedConversation,
-          ];
-          return {
-            conversationHistories: updatedHistories,
-            currentConversationIndex: updatedHistories.length - 1,
-            troubleshootingConversationId: ticketId
-              ? addedConversation.id
-              : state.troubleshootingConversationId,
-          };
-        });
+          ],
+          currentConversationIndex: highlight
+            ? addedConversation.id
+            : state.currentConversationIndex,
+        }));
 
         return addedConversation;
       }
@@ -335,54 +262,49 @@ const useConversationStore = create((set, get) => ({
     }
   },
 
-  handleDeleteConversation: async (conversationId) => {
+  handleDeleteConversation: async (convoId) => {
     const { conversationHistories } = get();
 
-    const conversationToDelete = conversationHistories.find(
-      (conversation) => conversation.id === conversationId
-    );
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/conversations/deleteConversation?conversationId=${convoId}`
+      );
 
-    if (conversationToDelete) {
-      try {
-        const response = await fetch(
-          `${dbServiceUrl}/conversations/deleteConversation?conversationId=${conversationToDelete.id}`
+      if (response.ok) {
+        const updatedHistories = conversationHistories.filter(
+          (conversation) => conversation.id !== convoId
         );
 
-        if (response.ok) {
-          const updatedHistories = conversationHistories.filter(
-            (conversation) => conversation.id !== conversationId
-          );
-
-          set({
-            conversationHistories: updatedHistories,
-            currentConversationIndex: null,
-          });
-        }
-      } catch (e) {
-        console.log(e);
+        set({
+          conversationHistories: updatedHistories,
+          currentConversationIndex: null,
+        });
       }
+    } catch (e) {
+      console.log(e);
     }
   },
 
-  handleConversationSelected: async (index, convoId) => {
+  handleConversationSelected: async (convoId) => {
     const { initializeMessages } = get();
-    await initializeMessages(convoId, null);
-    set({ currentConversationIndex: index });
+    await initializeMessages(convoId);
+    set({ currentConversationIndex: convoId });
   },
 
   handleAddJarvisUserMessage: async (message) => {
     set((state) => {
-      const newConversations = [...state.conversationHistories];
-
-      if (!newConversations[state.currentConversationIndex].messages) {
-        newConversations[state.currentConversationIndex].messages = [];
-      }
-
-      newConversations[state.currentConversationIndex].messages.push({
-        id: Date.now() + "-user",
-        content: message,
-        role: "user",
-        timeStamp: new Date().toISOString(),
+      const newConversations = state.conversationHistories.map((convo) => {
+        if (convo.id === state.currentConversationIndex) {
+          const updatedMessages = convo.messages || [];
+          updatedMessages.push({
+            id: Date.now() + "-user",
+            content: message,
+            role: "user",
+            timeStamp: new Date().toISOString(),
+          });
+          return { ...convo, messages: updatedMessages };
+        }
+        return convo;
       });
 
       return { conversationHistories: newConversations };
@@ -393,16 +315,21 @@ const useConversationStore = create((set, get) => ({
     const { messageIdRef } = useRefStore.getState();
 
     set((state) => {
-      const newConversations = [...state.conversationHistories];
-      const messageId = `${messageIdRef.current}-ai${
-        formType ? `-${formType}` : ""
-      }`;
-
-      newConversations[state.currentConversationIndex].messages.push({
-        id: messageId,
-        content: message,
-        role: "assistant",
-        timeStamp: new Date().toISOString(),
+      const newConversations = state.conversationHistories.map((convo) => {
+        if (convo.id === state.currentConversationIndex) {
+          const updatedMessages = convo.messages || [];
+          const messageId = `${messageIdRef.current}-ai${
+            formType ? `-${formType}` : ""
+          }`;
+          updatedMessages.push({
+            id: messageId,
+            content: message,
+            role: "assistant",
+            timeStamp: new Date().toISOString(),
+          });
+          return { ...convo, messages: updatedMessages };
+        }
+        return convo;
       });
 
       return { conversationHistories: newConversations };
@@ -430,6 +357,7 @@ const useConversationStore = create((set, get) => ({
 
       currentPage: 1,
       chatsPerPage: 30,
+      maxPagesToShow: 10,
     });
   },
 }));

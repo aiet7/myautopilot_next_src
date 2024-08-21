@@ -2,6 +2,7 @@ import { create } from "zustand";
 import useRefStore from "../ref/refStore";
 import useConversationStore from "../conversations/conversationsStore";
 import useUserStore from "../../user/userStore";
+import useUiStore from "../../ui/uiStore";
 
 const isBrowser = typeof window !== "undefined";
 const initialWidth = isBrowser ? window.innerWidth : 1023;
@@ -14,6 +15,7 @@ const useQueueStore = create((set, get) => ({
   ticketNote: "",
   ticketQueueMode: "Troubleshoot",
   troubleshootMessages: [],
+  generatingTroubleShoot: false,
   myQueueTicket: null,
   myQueueNotes: null,
   editingMyQueueTicket: null,
@@ -25,7 +27,6 @@ const useQueueStore = create((set, get) => ({
   activeNoteCategory: "Description",
   activeQueueTicketButton: "QueueTicket",
   currentQueueIndex: 0,
-  options: ["activities", "allQueueTickets", "myQueueTickets"],
   currentActivitiesOption: "myActivities",
   currentOption: "activities",
   noTicketsInQueue: false,
@@ -41,10 +42,17 @@ const useQueueStore = create((set, get) => ({
   tierOptions: ["Tier1", "Tier2", "Tier3", "No Dispatching"],
   currentPage: 1,
   ticketsPerPage: 30,
+  maxPagesToShow: 10,
   viewQueueTicket: false,
   currentQueueTicket: null,
+  currentQueueNotes: null,
+
+  activeQueueBotMode: "All Queue Tickets",
   filterQueueTicketMode: "High Priority",
   filterQueueTicketModeOpen: false,
+  activeQueueBotModeOpen: false,
+
+  activeQueueOptions: ["All Queue Tickets", "Activities", "Queue Workspace"],
 
   filterQueueTicketOptions: [
     "High Priority",
@@ -55,8 +63,20 @@ const useQueueStore = create((set, get) => ({
     "Z-A",
   ],
 
+  cardView: false,
+
+  setCardView: (view) => set({ cardView: view }),
+
+  setActiveQueueBotMode: (mode) => set({ activeQueueBotMode: mode }),
+
+  setActiveQueueBotModeOpen: (open) => set({ activeQueueBotModeOpen: open }),
+
   setActiveFilterMode: (mode) =>
-    set({ filterQueueTicketMode: mode, currentPage: 1 }),
+    set({
+      filterQueueTicketMode: mode,
+      currentPage: 1,
+      activeQueueBotMode: "All Queue Tickets",
+    }),
 
   setActiveQueueFilterModeOpen: (open) =>
     set({ filterQueueTicketModeOpen: open }),
@@ -104,11 +124,15 @@ const useQueueStore = create((set, get) => ({
       ...state,
       searchValue: value,
       currentPage: 1,
+      activeQueueBotMode: value
+        ? "All Queue Tickets"
+        : state.activeQueueBotMode,
     })),
 
   handleToggleQueueTicketMenus: (toggle) => {
     set({
       filterQueueTicketModeOpen: toggle,
+      activeQueueBotModeOpen: toggle,
     });
   },
 
@@ -121,6 +145,22 @@ const useQueueStore = create((set, get) => ({
     set((state) => ({
       currentPage: state.currentPage > 1 ? state.currentPage - 1 : 1,
     })),
+
+  handleActiveQueueBotMode: async (option, mspCustomDomain, tier, techId) => {
+    const { handleShowAllQueueTickets, handleShowMyActivities } = get();
+
+    set({
+      activeQueueBotMode: option,
+    });
+
+    if (option === "All Queue Tickets") {
+      await handleShowAllQueueTickets(mspCustomDomain);
+    }
+
+    if (option === "Activities") {
+      await handleShowMyActivities(mspCustomDomain, techId);
+    }
+  },
 
   handleShowMyActivities: async (mspCustomDomain, techId) => {
     try {
@@ -191,13 +231,6 @@ const useQueueStore = create((set, get) => ({
     }
   },
 
-  handleViewQueueTicket: (ticket) => {
-    set({
-      viewQueueTicket: true,
-      currentQueueTicket: ticket,
-    });
-  },
-
   handleRequeueTicket: async (mspCustomDomain, ticket, techId) => {
     try {
       const response = await fetch(
@@ -250,6 +283,8 @@ const useQueueStore = create((set, get) => ({
   handleNextQueueTicket: async (mspCustomDomain, tier, techId) => {
     set({
       troubleshootMessages: [],
+      activeQueueBotMode: "Queue Workspace",
+      generatingTroubleShoot: true,
     });
     const { handleAddTroubleShootMessage, handleNextQueueTicketNotes } = get();
     try {
@@ -271,6 +306,12 @@ const useQueueStore = create((set, get) => ({
           });
           console.log("SUCCESS GETTING MY QUEUE TICKET");
 
+          const fallbackTicketInformation = `Category: ${
+            myQueueTicket.categoryName || "N/A"
+          }, Subcategory: ${myQueueTicket.subCategoryName || "N/A"}, Title: ${
+            myQueueTicket.title || "N/A"
+          }`;
+
           try {
             await Promise.all([
               handleNextQueueTicketNotes(
@@ -278,8 +319,7 @@ const useQueueStore = create((set, get) => ({
                 myQueueTicket.ticketId
               ),
               handleAddTroubleShootMessage(
-                myQueueTicket.ticketInformation,
-                myQueueTicket.ticketId
+                myQueueTicket.ticketInformation || fallbackTicketInformation
               ),
               handleNextQueueTicketNotes(
                 mspCustomDomain,
@@ -305,7 +345,7 @@ const useQueueStore = create((set, get) => ({
       );
 
       if (response.status === 200) {
-        const myQueueNotes = await response.json(0);
+        const myQueueNotes = await response.json();
         console.log("GOT TICKET NOTES");
         set({
           myQueueNotes: myQueueNotes,
@@ -507,35 +547,53 @@ const useQueueStore = create((set, get) => ({
     }
   },
 
-  handleAddTroubleShootMessage: async (message, ticketId) => {
+  handleViewQueueTicket: async (mspCustomDomain, ticketId, ticket) => {
+    try {
+      const response = await fetch(
+        `${connectWiseServiceUrl}/getAllConnectWiseTicketNotesById?mspCustomDomain=${mspCustomDomain}&ticketId=${ticketId}`
+      );
+
+      if (response.status === 200) {
+        const myQueueNotes = await response.json();
+        console.log("GOT TICKET NOTES");
+        set({
+          activeQueueTicketButton: "QueueTicket",
+          currentQueueNotes: myQueueNotes,
+          viewQueueTicket: true,
+          currentQueueTicket: ticket,
+        });
+      } else {
+        console.log("FAILED TO GET TICKET NOTES");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleAddTroubleShootMessage: async (message) => {
     const { inputRef, messageIdRef } = useRefStore.getState();
 
-    const { handleIfConversationExists } = useConversationStore.getState();
-    const userStore = useUserStore.getState();
-    let currentConversation = await handleIfConversationExists(ticketId, true);
-    if (message.trim() !== "" && currentConversation) {
-      inputRef.current.focus();
+    if (message.trim() !== "") {
       try {
-        const response = await fetch(`${gptServiceUrl}/jarvis`, {
+        const response = await fetch(`${gptServiceUrl}/message`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
             text: message,
-            conversationId: currentConversation.id,
-            technicianId: userStore.user.id,
           }),
         });
 
         if (response.status === 200) {
           const responseBody = await response.json();
+
           messageIdRef.current = responseBody.id;
 
           set((prevState) => {
             const newMessage = {
               id: responseBody.id + "-assistant",
-              content: responseBody.aiContent,
+              content: responseBody.choices[0].message.content,
               role: "assistant",
               timeStamp: new Date().toISOString(),
             };
@@ -545,6 +603,7 @@ const useQueueStore = create((set, get) => ({
                 ...prevState.troubleshootMessages,
                 newMessage,
               ],
+              generatingTroubleShoot: false,
             };
           });
         }
@@ -555,9 +614,17 @@ const useQueueStore = create((set, get) => ({
   },
 
   handleAddTechnicianNoteMessage: async (note) => {
-    set((prevState) => ({
-      myQueueNotes: [...prevState.myQueueNotes, note],
-    }));
+    const { activeQueueBotMode } = get();
+
+    if (activeQueueBotMode === "Queue Workspace") {
+      set((prevState) => ({
+        myQueueNotes: [...prevState.myQueueNotes, note],
+      }));
+    } else {
+      set((prevState) => ({
+        currentQueueNotes: [...prevState.currentQueueNotes, note],
+      }));
+    }
   },
 
   handleAddUserTroubleshootMessage: async (message) => {
@@ -614,7 +681,6 @@ const useQueueStore = create((set, get) => ({
       activeNoteCategory: "Description",
       activeQueueTicketButton: "QueueTicket",
       currentQueueIndex: 0,
-      options: ["activities", "allQueueTickets", "myQueueTickets"],
       currentActivitiesOption: "myActivities",
       currentOption: "activities",
       noTicketsInQueue: false,
@@ -630,10 +696,21 @@ const useQueueStore = create((set, get) => ({
       tierOptions: ["Tier1", "Tier2", "Tier3", "No Dispatching"],
       currentPage: 1,
       ticketsPerPage: 30,
+      maxPagesToShow: 10,
       viewQueueTicket: false,
       currentQueueTicket: null,
+      currentQueueNotes: null,
+
+      activeQueueBotMode: "All Queue Tickets",
       filterQueueTicketMode: "High Priority",
       filterQueueTicketModeOpen: false,
+      activeQueueBotModeOpen: false,
+
+      activeQueueOptions: [
+        "All Queue Tickets",
+        "Activities",
+        "Queue Workspace",
+      ],
 
       filterQueueTicketOptions: [
         "High Priority",
@@ -643,6 +720,8 @@ const useQueueStore = create((set, get) => ({
         "A-Z",
         "Z-A",
       ],
+
+      cardView: false,
     });
   },
 }));

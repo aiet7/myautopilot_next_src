@@ -17,11 +17,9 @@ import Troubleshoot from "./Forms/Ticket/Troubleshoot.js";
 import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
 
 const Interaction = ({}) => {
-  const { activeTicketMode } = useTicketsStore();
   const {
     openNav,
     currentNavOption,
-    currentQueueNavOption,
     openAssistant,
     handleAssistantMenu,
     handleNavMenu,
@@ -48,7 +46,6 @@ const Interaction = ({}) => {
   useEffect(() => {
     handleScrollToBottom(false);
   }, [window.innerWidth]);
-
 
   const renderWidth = () => {
     switch (assistantWidth) {
@@ -92,18 +89,9 @@ const Interaction = ({}) => {
           </button>
         )}
 
-      {currentNavOption === "Tickets" && (
-        <>
-          {activeTicketMode === "Support" ? (
-            <TicketSupport />
-          ) : (
-            <TicketCreation />
-          )}
-        </>
-      )}
+      {currentNavOption === "Tickets" && <TicketCreation />}
       {currentNavOption === "Engineer" && <EngineerChat />}
-      {currentNavOption === "Queue" &&
-        currentQueueNavOption === "Workspace" && <Troubleshoot />}
+      {currentNavOption === "Queue" && <Troubleshoot />}
       <div className="px-4 py-2">
         {isServerError ? (
           <p className="text-red-600 text-xs">Server Error, try again please</p>

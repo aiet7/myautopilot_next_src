@@ -40,11 +40,11 @@ const useLocalStorageStore = create((set, get) => ({
     });
 
     useConversationStore.setState({
-      currentConversationIndex: parsedLastConvoIndex.currentConversationIndex,
+      currentConversationIndex: parsedLastConvoIndex.currentConversationIndex || null,
     });
     useDocConversationsStore.setState({
       currentDocumentConversationIndex:
-        parsedLastConvoIndex.currentDocumentConversationIndex,
+        parsedLastConvoIndex.currentDocumentConversationIndex || null,
     });
   },
 

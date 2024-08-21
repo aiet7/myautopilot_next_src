@@ -5,7 +5,6 @@ import { IoMdFingerPrint } from "react-icons/io";
 import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
 
 import useUserStore from "@/utils/store/user/userStore";
-import useTechStore from "@/utils/store/user/userStore";
 
 const Account = ({}) => {
   const {

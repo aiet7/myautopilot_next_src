@@ -4,15 +4,22 @@ import useQueueStore from "@/utils/store/interaction/queue/queueStore";
 import useUserStore from "@/utils/store/user/userStore";
 import { FaSpinner } from "react-icons/fa";
 import { SiOpenai } from "react-icons/si";
+import QueueGuide from "../../Guides/QueueGuide";
 
 const Troubleshoot = () => {
   const { user } = useUserStore();
-  const { troubleshootMessages } = useQueueStore();
+  const { generatingTroubleShoot, troubleshootMessages } = useQueueStore();
 
   return (
     <div className="flex-grow overflow-auto scrollbar-thin">
-      {troubleshootMessages?.length !== 0 ? (
+      {generatingTroubleShoot ? (
+        <div className="flex items-center gap-2 p-4 font-bold">
+          <p>Generating optimum troubleshooting steps...</p>
+          <FaSpinner className="animate-spin" />
+        </div>
+      ) : (
         <>
+          {troubleshootMessages?.length === 0 && <QueueGuide />}
           {troubleshootMessages?.map((messages) => {
             const { id, content, role } = messages;
             return (
@@ -44,11 +51,6 @@ const Troubleshoot = () => {
             );
           })}
         </>
-      ) : (
-        <div className="flex items-center gap-2 p-4 font-bold">
-          <p>Generating optimum troubleshooting steps...</p>
-          <FaSpinner className="animate-spin" />
-        </div>
       )}
     </div>
   );

@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { BsFillSendFill, BsThreeDotsVertical } from "react-icons/bs";
 import useInteractionStore from "@/utils/store/interaction/interactionsStore";
 import useRefStore from "@/utils/store/interaction/ref/refStore";
-import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
 import useQueueStore from "@/utils/store/interaction/queue/queueStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 
@@ -15,12 +14,10 @@ const Input = () => {
     setInteractionMenuOpen,
     handleTextAreaChange,
     handleCreateTicketMessage,
-    handleCreateTicketNote,
     handleSendTroubleshootMessage,
     handleSendMessage,
   } = useInteractionStore();
-  const { currentNavOption, currentQueueNavOption } = useUiStore();
-  const { showTicket, activeTicketMode } = useTicketsStore();
+  const { currentNavOption } = useUiStore();
   const { myQueueTicket } = useQueueStore();
 
   const { inputRef } = useRefStore();
@@ -30,7 +27,7 @@ const Input = () => {
       inputRef.current.style.height = "24px";
       inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
     }
-  }, [userInput, currentNavOption, currentQueueNavOption]);
+  }, [userInput, currentNavOption, myQueueTicket]);
 
   return (
     <div className="relative max-w-[700px] mx-auto w-full ">
@@ -81,19 +78,11 @@ const Input = () => {
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
-                if (activeTicketMode === "Support") {
-                  handleCreateTicketNote(showTicket?.ticketId, userInput);
-                } else {
-                  handleCreateTicketMessage(userInput);
-                }
+                handleCreateTicketMessage(userInput);
               }
             }}
             value={userInput}
-            placeholder={
-              activeTicketMode === "Support"
-                ? "Leave Note..."
-                : "Describe Your Issue..."
-            }
+            placeholder="Describe Your Issue..."
             className="dark:border-white/30 dark:shadow-white/30 dark:bg-black border-black/10 shadow-xl shadow-black/30  outline-none bg-white border w-full p-4 pr-32 resize-none no-scrollbar"
             style={{
               height: textAreaHeight,
@@ -105,11 +94,7 @@ const Input = () => {
             <button
               size={25}
               onClick={() => {
-                if (activeTicketMode === "Support") {
-                  handleCreateTicketNote(showTicket?.ticketId, userInput);
-                } else {
-                  handleCreateTicketMessage(userInput);
-                }
+                handleCreateTicketMessage(userInput);
               }}
               className={`p-2 ${
                 userInput !== ""
@@ -117,7 +102,7 @@ const Input = () => {
                   : "dark:text-gray-400 dark:border-white/30  text-gray-400 select-none border cursor-default"
               } `}
             >
-              {activeTicketMode === "Support" ? "Leave Note" : "Open Ticket"}
+              Open Ticket
             </button>
             <BsThreeDotsVertical
               className="cursor-pointer"
@@ -128,53 +113,52 @@ const Input = () => {
         </div>
       )}
 
-      {currentNavOption === "Queue" &&
-        currentQueueNavOption === "Workspace" && (
-          <div className="relative flex items-center px-4 py-2 gap-2">
-            <textarea
-              ref={inputRef}
-              onChange={handleTextAreaChange}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
+      {currentNavOption === "Queue" && myQueueTicket &&
+       
+        <div className="relative flex items-center px-4 py-2 gap-2">
+          <textarea
+            ref={inputRef}
+            onChange={handleTextAreaChange}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
 
-                  handleSendTroubleshootMessage(
-                    userInput,
-                    myQueueTicket?.ticketId
-                  );
-                }
-              }}
-              value={userInput}
-              className="dark:border-white/30 dark:shadow-white/30 dark:bg-black border-black/10 shadow-xl shadow-black/30  outline-none bg-white border w-full p-4 pr-32 resize-none no-scrollbar"
-              style={{
-                height: textAreaHeight,
-                maxHeight: "200px",
-              }}
-              placeholder="Continue Troubleshooting..."
-            />
-            <div className="flex items-center gap-3 absolute right-6 pr-2 flex items-center bottom-0 top-0">
-              <BsFillSendFill
-                size={25}
-                className={`outline-none ${
-                  userInput !== ""
-                    ? "dark:text-white dark:hover:text-blue-500 hover:text-blue-500 text-black cursor-pointer"
-                    : "dark:text-gray-500 text-gray-300 select-none"
+                handleSendTroubleshootMessage(
+                  userInput,
+                  myQueueTicket?.ticketId
+                );
+              }
+            }}
+            value={userInput}
+            className="dark:border-white/30 dark:shadow-white/30 dark:bg-black border-black/10 shadow-xl shadow-black/30  outline-none bg-white border w-full p-4 pr-32 resize-none no-scrollbar"
+            style={{
+              height: textAreaHeight,
+              maxHeight: "200px",
+            }}
+            placeholder="Continue Troubleshooting..."
+          />
+          <div className="flex items-center gap-3 absolute right-6 pr-2 flex items-center bottom-0 top-0">
+            <BsFillSendFill
+              size={25}
+              className={`outline-none ${userInput !== ""
+                  ? "dark:text-white dark:hover:text-blue-500 hover:text-blue-500 text-black cursor-pointer"
+                  : "dark:text-gray-500 text-gray-300 select-none"
                 } `}
-                onClick={() => {
-                  handleSendTroubleshootMessage(
-                    userInput,
-                    myQueueTicket?.ticketId
-                  );
-                }}
-              />
-              <BsThreeDotsVertical
-                className="cursor-pointer"
-                onClick={() => setInteractionMenuOpen(!interactionMenuOpen)}
-                size={20}
-              />
-            </div>
+              onClick={() => {
+                handleSendTroubleshootMessage(
+                  userInput,
+                  myQueueTicket?.ticketId
+                );
+              }}
+            />
+            <BsThreeDotsVertical
+              className="cursor-pointer"
+              onClick={() => setInteractionMenuOpen(!interactionMenuOpen)}
+              size={20}
+            />
           </div>
-        )}
+        </div>
+      }
       {interactionMenuOpen && (
         <div className="absolute flex flex-col  font-semibold bottom-12 right-0   bg-white border rounded-lg shadow-lg w-[100px] p-1 z-[100] ">
           qweqeqwe

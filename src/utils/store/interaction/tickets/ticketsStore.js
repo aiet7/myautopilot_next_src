@@ -4,6 +4,7 @@ import {
 } from "@/utils/api/serverProps";
 import { create } from "zustand";
 import useUserStore from "../../user/userStore";
+import useUiStore from "../../ui/uiStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
@@ -12,14 +13,16 @@ const useTicketsStore = create((set, get) => ({
   searchValue: "",
   tickets: null,
   ticketStatus: null,
-  ticketNotes: null,
+  ticketNote: "",
   ticketStatusLoading: {},
   activeTicketBotMode: "History",
-  showTicket: null,
+  viewTicket: false,
   activeTicketMode: "Default",
   filterTicketMode: "Most Recent",
   activeTicketBotModeOpen: false,
   filterTicketModeOpen: false,
+  activeTicketButton: "Ticket",
+  activeNoteCategory: "Description",
 
   activeTicketOptions: ["History", "Ticket"],
   filterTicketOptions: [
@@ -33,6 +36,10 @@ const useTicketsStore = create((set, get) => ({
 
   currentPage: 1,
   ticketsPerPage: 30,
+  maxPagesToShow: 10,
+
+  currentTicket: null,
+  currentNotes: null,
 
   initializeMSPTickets: async () => {
     const userStore = useUserStore.getState();
@@ -56,6 +63,14 @@ const useTicketsStore = create((set, get) => ({
     }
   },
 
+  setActiveNoteCategory: (category) =>
+    set({
+      activeNoteCategory: category,
+    }),
+  setTicketNote: (value) => set({ ticketNote: value }),
+
+  setViewTicket: (view) => set({ viewTicket: view, currentTicket: null }),
+
   setCurrentPage: (page) => set({ currentPage: page }),
 
   setSearchValue: (value) =>
@@ -64,6 +79,8 @@ const useTicketsStore = create((set, get) => ({
       searchValue: value,
       currentPage: 1,
     })),
+
+  setActiveTicketButton: (button) => set({ activeTicketButton: button }),
 
   setActiveTicketBotMode: (mode) => set({ activeTicketBotMode: mode }),
 
@@ -94,25 +111,18 @@ const useTicketsStore = create((set, get) => ({
     });
   },
 
-  handleTicketMode: async (mode, ticketId) => {
-    if (mode === "Support") {
-      const { tickets, handleGetTicketStatus, handleGetTicketNotes } = get();
+  handleViewTicket: async (ticket, ticketId) => {
+    const { handleGetTicketStatus, handleGetTicketNotes } = get();
 
-      try {
-        await Promise.all([
-          handleGetTicketStatus(ticketId),
-          handleGetTicketNotes(ticketId),
-        ]);
+    try {
+      await Promise.all([
+        handleGetTicketStatus(ticketId),
+        handleGetTicketNotes(ticketId),
+      ]);
 
-        const ticket = ticketId
-          ? tickets.find((t) => t.ticketId === ticketId)
-          : null;
-        set({ activeTicketMode: mode, showTicket: ticket });
-      } catch (e) {
-        console.log(e);
-      }
-    } else {
-      set({ activeTicketMode: mode, showTicket: null });
+      set({ currentTicket: ticket, viewTicket: true });
+    } catch (e) {
+      console.log(e);
     }
   },
 
@@ -165,7 +175,7 @@ const useTicketsStore = create((set, get) => ({
       if (ticketNotesResponse.status === 200) {
         const ticketNotes = await ticketNotesResponse.json();
         set({
-          ticketNotes: ticketNotes,
+          currentNotes: ticketNotes,
         });
       }
     } catch (e) {
@@ -173,19 +183,65 @@ const useTicketsStore = create((set, get) => ({
     }
   },
 
+  handleAddTicketNote: async (ticketId) => {
+    const userStore = useUserStore.getState();
+    const { ticketNote, handleAddTechnicianNoteMessage } = get();
+
+    let formattedPrepend;
+    formattedPrepend = `Technician: (${userStore.user.id}): `;
+    if (ticketNote.trim() !== "") {
+      set({
+        ticketNote: "",
+      });
+      try {
+        const response = await fetch(
+          `${connectWiseServiceUrl}/addNoteToTicketObject?mspCustomDomain=${userStore.user.mspCustomDomain}&ticketId=${ticketId}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              info: formattedPrepend,
+              text: ticketNote,
+            }),
+          }
+        );
+
+        if (response.status === 200) {
+          const responseBody = await response.json();
+          handleAddTechnicianNoteMessage(responseBody);
+          console.log("Note Added");
+        } else {
+          console.log("Failed to Add Note");
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  },
+
+  handleAddTechnicianNoteMessage: async (note) => {
+    set((prevState) => ({
+      currentNotes: [...prevState.currentNotes, note],
+    }));
+  },
+
   clearTickets: async () => {
     set({
       searchValue: "",
       tickets: null,
       ticketStatus: null,
-      ticketNotes: null,
+      ticketNote: "",
       ticketStatusLoading: {},
       activeTicketBotMode: "History",
-      showTicket: null,
+      viewTicket: false,
       activeTicketMode: "Default",
       filterTicketMode: "Most Recent",
       activeTicketBotModeOpen: false,
       filterTicketModeOpen: false,
+      activeTicketButton: "Ticket",
+      activeNoteCategory: "Description",
 
       activeTicketOptions: ["History", "Ticket"],
       filterTicketOptions: [
@@ -199,6 +255,10 @@ const useTicketsStore = create((set, get) => ({
 
       currentPage: 1,
       ticketsPerPage: 30,
+      maxPagesToShow: 10,
+
+      currentTicket: null,
+      currentNotes: null,
     });
   },
 }));
