@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import useQueueStore from "../interaction/queue/queueStore";
 import useAssistantStore from "../assistant/assistantStore";
+import useConversationStore from "../interaction/conversations/conversationsStore";
 
 const isBrowser = typeof window !== "undefined";
 const initialWidth = isBrowser ? window.innerWidth : 1023;
@@ -24,6 +25,8 @@ const useUiStore = create((set, get) => ({
 
   setHeight: (heightValue) => set({ height: heightValue }),
 
+  setCurrentNavOption: (option) => set({ currentNavOption: option }),
+
   handleToggleAssistant: () =>
     set((state) => ({ openAssistant: !state.openAssistant })),
   handleToggleAdmin: () => set((state) => ({ openAdmin: !state.openAdmin })),
@@ -37,6 +40,8 @@ const useUiStore = create((set, get) => ({
     const { activeQueueBotMode, handleShowAllQueueTickets } =
       useQueueStore.getState();
 
+    const { setCurrentConversationIndex } = useConversationStore.getState();
+
     if (!openAssistant) {
       handleAssistantMenu();
     }
@@ -49,8 +54,14 @@ const useUiStore = create((set, get) => ({
       currentNavOption: option,
     });
 
+    window.history.pushState({ option }, "", `#${option.toLowerCase()}`);
+
     if (option === "Queue" && activeQueueBotMode === "All Queue Tickets") {
       await handleShowAllQueueTickets(mspCustomDomain);
+    }
+
+    if (option === "Engineer") {
+      setCurrentConversationIndex(null);
     }
   },
 

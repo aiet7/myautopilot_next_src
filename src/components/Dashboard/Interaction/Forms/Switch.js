@@ -1,8 +1,9 @@
 import MarkedInteraction from "../../Marked/MarkedInteraction";
 import useTicketConversationsStore from "@/utils/store/interaction/conversations/ticketConversationsStore";
 import { useEffect } from "react";
+import TicketButtons from "./Ticket/TicketButtons";
 
-const Switch = ({ item, itemId }) => {
+const Switch = ({ item, }) => {
   const { setIsMobile } = useTicketConversationsStore();
 
   useEffect(() => {
@@ -19,6 +20,10 @@ const Switch = ({ item, itemId }) => {
       };
     }
   }, []);
+
+  if (item.type === "buttons") {
+    return <TicketButtons />;
+  }
 
   return <MarkedInteraction id={item.id} markdown={item.content} />;
 };

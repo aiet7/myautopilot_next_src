@@ -84,7 +84,7 @@ const AllQueueTicketsCards = () => {
               handleViewQueueTicket(user?.mspCustomDomain, ticketId, tickets)
             }
             key={id}
-            className="dark:bg-white/30 dark:text-white dark:border-white/20 cursor-pointer  flex flex-col justify-between gap-1 border rounded-md text-black bg-white px-2 py-3 mb-2"
+            className="dark:bg-black dark:text-white dark:hover:bg-white/40 hover:bg-black/20 bg-white cursor-pointer  flex flex-col justify-between gap-1 border rounded-md text-black bg-white px-2 py-3 mb-2"
           >
             <p className="break-words whitespace-pre-wrap">
               <span className="font-bold">Score: </span>

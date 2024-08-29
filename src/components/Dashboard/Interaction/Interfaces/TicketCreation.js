@@ -10,7 +10,7 @@ import Switch from "../Forms/Switch";
 const TicketCreation = () => {
   const { user } = useUserStore();
   const { messages } = useTicketConversationsStore();
-  const { handleCheckScroll } = useInteractionStore();
+  const {  handleCheckScroll } = useInteractionStore();
   const { latestMessageRef, chatContainerRef } = useRefStore();
 
   return (
@@ -45,7 +45,7 @@ const TicketCreation = () => {
               </span>
 
               <div className="flex-grow min-w-[0]">
-                <Switch item={item} itemId={item.id} />
+                <Switch item={item} />
               </div>
             </div>
           </div>

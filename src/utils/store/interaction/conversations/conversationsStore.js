@@ -14,7 +14,7 @@ const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 
 const useConversationStore = create((set, get) => ({
   conversationHistories: [],
-  currentConversationIndex: 0,
+  currentConversationIndex: null,
   troubleshootingConversationId: null,
   activeChatBotMode: "History",
   filterChatMode: "Most Recent",
@@ -56,6 +56,8 @@ const useConversationStore = create((set, get) => ({
   setActiveChatBotModeOpen: (open) => set({ activeChatBotModeOpen: open }),
 
   setActiveChatFilterModeOpen: (open) => set({ filterChatModeOpen: open }),
+
+  setCurrentConversationIndex: (id) => set({ currentConversationIndex: id }),
 
   initializeConversations: async () => {
     const userStore = useUserStore.getState();
@@ -339,7 +341,7 @@ const useConversationStore = create((set, get) => ({
   clearConversation: () => {
     set({
       conversationHistories: [],
-      currentConversationIndex: 0,
+      currentConversationIndex: null,
       troubleshootingConversationId: null,
       activeChatBotMode: "History",
       filterChatMode: "Most Recent",

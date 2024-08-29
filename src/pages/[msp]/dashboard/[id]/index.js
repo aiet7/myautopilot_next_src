@@ -40,12 +40,34 @@ const DashboardPage = ({}) => {
 
   const { currentConversationIndex } = useConversationStore();
   const { currentDocumentConversationIndex } = useDocConversationsStore();
-  const { activeTab, currentNavOption } = useUiStore();
+  const { activeTab, currentNavOption, setCurrentNavOption } = useUiStore();
+
+  useEffect(() => {
+    const handlePopState = (event) => {
+      const { option } = event.state || {};
+      if (option) {
+        setCurrentNavOption(option);
+      } else {
+        setCurrentNavOption("Tickets");
+        window.history.replaceState({ option: "Tickets" }, "", "#tickets");
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
 
   useEffect(() => {
     if (router.isReady) {
       const currentPath = router.asPath;
       const { msp, id } = router.query;
+
+      setCurrentNavOption("Tickets");
+      window.history.replaceState({ option: "Tickets" }, "", "#tickets");
+
       getStorage(currentPath, null);
       if (msp && id && session) {
         initializeApp();
@@ -66,7 +88,6 @@ const DashboardPage = ({}) => {
     return () => {
       window.removeEventListener("beforeunload", setStorage);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     currentNavOption,
     activeTab,

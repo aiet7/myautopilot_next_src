@@ -16,6 +16,8 @@ const gptServiceUrl = process.env.NEXT_PUBLIC_GPT_SERVICE_URL;
 const useInteractionStore = create((set, get) => ({
   diagnosticMessage: "",
   isDiagnosticStep: true,
+  userButtonsSelected: {},
+  diagnosticQuestions: [],
   userInput: "",
   isWaiting: false,
   isListening: false,
@@ -29,10 +31,34 @@ const useInteractionStore = create((set, get) => ({
 
   setInteractionMenuOpen: (open) => set({ interactionMenuOpen: open }),
 
+  setUserButtonsSelected: (question, option) =>
+    set((state) => {
+      const questionExists = state.diagnosticMessage.includes(
+        `${question}: ${option}`
+      );
+      const newUserInput = questionExists
+        ? state.userInput
+        : `${state.userInput}\n${question}: ${option}`;
+
+      const newDiagnosticMessage = questionExists
+        ? state.diagnosticMessage
+        : `${state.diagnosticMessage}\n${question}: ${option}`;
+
+      return {
+        userButtonsSelected: {
+          ...state.userButtonsSelected,
+          [question]: option,
+        },
+        userInput: newUserInput,
+        diagnosticMessage: newDiagnosticMessage,
+      };
+    }),
+
   setResetTicketFlow: () =>
     set({
       isDiagnosticStep: true,
       diagnosticMessage: "",
+      userButtonsSelected: {},
     }),
 
   handleTextAreaChange: (e) => {
@@ -146,25 +172,24 @@ const useInteractionStore = create((set, get) => ({
 
   handleCreateTicketMessage: async (message) => {
     const userStore = useUserStore.getState();
-    const { isDiagnosticStep, diagnosticMessage } = get();
-    const { inputRef, messageIdRef } = useRefStore.getState();
+    const { isDiagnosticStep, diagnosticMessage } =
+      useInteractionStore.getState();
+
+    const { inputRef } = useRefStore.getState();
     const { handleAddUserMessage, handleAddAssistantMessage } =
       useTicketConversationsStore.getState();
-    const { handleCreateTicketProcess } = useFormsStore.getState();
     const { setActiveTicketBotMode } = useTicketsStore.getState();
+    const { handleCreateTicketProcess } = useFormsStore.getState();
 
     if (message.trim() !== "") {
       inputRef.current.focus();
       handleAddUserMessage(message);
-      set({
-        isWaiting: true,
-        isServerError: false,
-        userInput: "",
-      });
+      set({ isWaiting: true, isServerError: false, userInput: "" });
 
       try {
-        let endpointUrl = `${connectWiseServiceUrl}/getTicketBoardCategorizationDiagnostic`;
+        let endpointUrl = `${connectWiseServiceUrl}/getTicketBoardCategorizationDiagnosticQandA`;
         let userMessage = message;
+
         if (!isDiagnosticStep) {
           endpointUrl = `${connectWiseServiceUrl}/getTicketBoardCategorization`;
           userMessage = `${diagnosticMessage}\n${message}`;
@@ -181,40 +206,33 @@ const useInteractionStore = create((set, get) => ({
             mspCustomDomain: userStore.user.mspCustomDomain,
           }),
         });
-
         if (response.status === 200) {
           const responseBody = await response.json();
-          messageIdRef.current = Date.now();
           handleCreateTicketProcess(responseBody);
           setActiveTicketBotMode("Ticket");
           if (isDiagnosticStep) {
-            handleAddAssistantMessage(responseBody.diagnostic, null);
-            set({
+            handleAddAssistantMessage(null, true);
+            set((state) => ({
+              diagnosticQuestions: responseBody.diagnostic,
               isDiagnosticStep: false,
-              diagnosticMessage: message,
-            });
+              diagnosticMessage: `${state.diagnosticMessage}\n${message}`,
+            }));
           } else {
             handleAddAssistantMessage(
               "Ticket Details Are Displayed On The Right Panel.",
-              null
+              false
             );
-
             set({
               isDiagnosticStep: true,
-              diagnosticMessage: "",
             });
           }
         } else if (response.status === 500) {
-          set({
-            isServerError: true,
-          });
+          set({ isServerError: true });
         }
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
-        set({
-          isWaiting: false,
-        });
+        set({ isWaiting: false });
       }
     }
   },
@@ -364,6 +382,8 @@ const useInteractionStore = create((set, get) => ({
     set({
       diagnosticMessage: "",
       isDiagnosticStep: true,
+      userButtonsSelected: {},
+      diagnosticQuestions: [],
       userInput: "",
       isWaiting: false,
       isListening: false,

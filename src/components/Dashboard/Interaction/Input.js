@@ -8,6 +8,7 @@ import useUiStore from "@/utils/store/ui/uiStore";
 
 const Input = () => {
   const {
+    isDiagnosticStep,
     textAreaHeight,
     userInput,
     interactionMenuOpen,
@@ -102,7 +103,7 @@ const Input = () => {
                   : "dark:text-gray-400 dark:border-white/30  text-gray-400 select-none border cursor-default"
               } `}
             >
-              Open Ticket
+              {isDiagnosticStep ? "Open Ticket" : "Update Ticket"}
             </button>
             <BsThreeDotsVertical
               className="cursor-pointer"
@@ -113,8 +114,7 @@ const Input = () => {
         </div>
       )}
 
-      {currentNavOption === "Queue" && myQueueTicket &&
-       
+      {currentNavOption === "Queue" && myQueueTicket && (
         <div className="relative flex items-center px-4 py-2 gap-2">
           <textarea
             ref={inputRef}
@@ -140,10 +140,11 @@ const Input = () => {
           <div className="flex items-center gap-3 absolute right-6 pr-2 flex items-center bottom-0 top-0">
             <BsFillSendFill
               size={25}
-              className={`outline-none ${userInput !== ""
+              className={`outline-none ${
+                userInput !== ""
                   ? "dark:text-white dark:hover:text-blue-500 hover:text-blue-500 text-black cursor-pointer"
                   : "dark:text-gray-500 text-gray-300 select-none"
-                } `}
+              } `}
               onClick={() => {
                 handleSendTroubleshootMessage(
                   userInput,
@@ -158,7 +159,7 @@ const Input = () => {
             />
           </div>
         </div>
-      }
+      )}
       {interactionMenuOpen && (
         <div className="absolute flex flex-col  font-semibold bottom-12 right-0   bg-white border rounded-lg shadow-lg w-[100px] p-1 z-[100] ">
           qweqeqwe

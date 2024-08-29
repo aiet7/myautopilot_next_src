@@ -301,13 +301,14 @@ const useFormsStore = create((set, get) => ({
     }
   },
 
-  handleTicketConfirmation: async (isConfirmed, formId) => {
+  handleTicketConfirmation: async (isConfirmed) => {
     const { ticket } = get();
     const userStore = useUserStore.getState();
 
-    const { addTicket } = useTicketsStore.getState();
+    const { addTicket, setActiveTicketBotMode } = useTicketsStore.getState();
     const { userType } = useMspStore.getState();
-    const { setResetTicketFlow } = useInteractionStore.getState();
+    const { diagnosticMessage, setResetTicketFlow } =
+      useInteractionStore.getState();
     const {
       currentTicketImpactScore,
       currentTicketSeverityScore,
@@ -338,12 +339,13 @@ const useFormsStore = create((set, get) => ({
       currentTicketNewPhoneNumber,
       currentTicketLicenseId,
     } = ticket.onBoarding;
-    const { handleRemoveForm, handleAddAssistantMessage } =
+    const { handleRemoveButtons, handleAddAssistantMessage } =
       useTicketConversationsStore.getState();
 
     if (isConfirmed) {
-      if (!validateTicketForm(ticket)) {
-        set({ formError: "Form inputs can not be empty." });
+      const errors = validateTicketForm(ticket);
+      if (errors !== true) {
+        set({ formError: errors });
         return;
       }
       set((state) => ({
@@ -379,6 +381,7 @@ const useFormsStore = create((set, get) => ({
           connectWiseCompanyId: currentTicketCWCompanyId,
           impactScore: currentTicketImpactScore,
           severityScore: currentTicketSeverityScore,
+          convsersation: diagnosticMessage,
         };
 
         if (userType === "tech") {
@@ -455,8 +458,8 @@ const useFormsStore = create((set, get) => ({
           const aiContent = `Ticket Created!\n\nID: ${id}\n\nTitle: ${currentTicketTitle}\n\nDescription: ${currentTicketDescription}\n\nCategory: ${currentTicketCategory}\n\nSubcategory: ${currentTicketSubCategory}\n\nPriority: ${currentTicketPriority}\n\nSeverity: ${currentTicketSeverity}\n\nImpact: ${currentTicketImpact}\n\nTier: ${currentTicketTier}\n\n${
             currentTicketCWCompanyId &&
             `ConnectWise Company ID: ${currentTicketCWCompanyId}`
-          } \n\nName: ${currentTicketName}\n\nEmail: ${currentTicketEmailId}\n\nPhone: ${currentTicketPhoneNumber}.`;
-          handleAddAssistantMessage(aiContent, "ticketForm");
+          } \n\nName: ${currentTicketName}\n\nEmail: ${currentTicketEmailId}\n\nPhone: ${currentTicketPhoneNumber}\n\n <span class="font-bold">Thank you, your ticket has been created and our team will begin the resolution process immediatly. Would you like me to help you trouble shoot your issue now?</span>`;
+          handleAddAssistantMessage(aiContent, false);
           addTicket({
             ticketId: id,
             description: currentTicketDescription,
@@ -467,6 +470,7 @@ const useFormsStore = create((set, get) => ({
             timeStamp: Date.now(),
           });
           setResetTicketFlow();
+          setActiveTicketBotMode("History");
         }
       } catch (e) {
         console.log(e);
@@ -516,13 +520,15 @@ const useFormsStore = create((set, get) => ({
             },
           },
         }));
-        handleRemoveForm(formId);
+        handleRemoveButtons();
       }
     } else {
       const aiContent = "Ticket Creation Cancelled.";
-      handleAddAssistantMessage(aiContent, "ticketForm");
-      handleRemoveForm(formId);
+      handleAddAssistantMessage(aiContent, false);
+      handleRemoveButtons();
       setResetTicketFlow();
+      setActiveTicketBotMode("History");
+
       set((state) => ({
         ...state,
         ticketStatus: {

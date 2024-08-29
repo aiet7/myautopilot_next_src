@@ -1,8 +1,5 @@
 import { create } from "zustand";
 import useRefStore from "../ref/refStore";
-import useAssistantStore from "../../assistant/assistantStore";
-import useInteractionStore from "../interactionsStore";
-import useEngineerStore from "../../assistant/sections/iternal/engineer/engineerStore";
 
 const isBrowser = typeof window !== "undefined";
 const initialWidth = isBrowser ? window.innerWidth : 1023;
@@ -38,44 +35,24 @@ const useTicketConversationsStore = create((set, get) => ({
     });
   },
 
-  handleAddAssistantMessage: (message, formType) => {
-    const { messageIdRef } = useRefStore.getState();
-    const messageId = `${messageIdRef.current}-ai${
-      formType ? `-${formType}` : ""
-    }`;
-
+  handleAddAssistantMessage: (message, buttons) => {
     set((state) => {
       const newMessage = {
-        id: messageId,
+        id: Date.now() + "-assistant",
         content: message,
         role: "assistant",
         timeStamp: new Date().toISOString(),
+        type: buttons ? "buttons" : "markdown",
       };
       return { ...state, messages: [...state.messages, newMessage] };
     });
   },
 
-  handleAddForm: (formType) => {
-    const formId = Date.now();
-
-    set((state) => {
-      const newForm = {
-        id: formId,
-        type: "form",
-        formType,
-      };
-      return { ...state, messages: [...state.messages, newForm] };
-    });
-
-    return formId;
-  },
-
-  handleRemoveForm: (formId) => {
+  handleRemoveButtons: () => {
     set((state) => {
       return {
         ...state,
-        messages: state.messages.filter((msg) => msg.id !== formId),
-        troubleshootMessage: "",
+        messages: state.messages.filter((msg) => msg.type !== "buttons"),
       };
     });
   },

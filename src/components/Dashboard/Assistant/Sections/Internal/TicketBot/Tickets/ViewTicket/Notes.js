@@ -1,6 +1,5 @@
 "use client";
 
-import useQueueStore from "@/utils/store/interaction/queue/queueStore";
 import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
 
 const Notes = () => {
@@ -13,6 +12,7 @@ const Notes = () => {
     setTicketNote,
     handleAddTicketNote,
   } = useTicketsStore();
+
 
   const filteredNotes = currentNotes?.filter((notes) => {
     if (activeNoteCategory === "Description" && notes.detailDescriptionFlag)

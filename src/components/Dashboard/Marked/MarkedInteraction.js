@@ -8,13 +8,13 @@ import useRefStore from "@/utils/store/marked/ref/refStore";
 
 import { FiThumbsUp, FiThumbsDown } from "react-icons/fi";
 import useInteractionStore from "@/utils/store/interaction/interactionsStore";
-import useAssistantStore from "@/utils/store/assistant/assistantStore";
+import useUiStore from "@/utils/store/ui/uiStore";
 
 const MarkedInteraction = ({ id, markdown }) => {
-  const { activeUIAssistantTab } = useAssistantStore();
+  const { currentNavOption } = useUiStore();
   const { feedback, handleSubmitFeedback } = useInteractionStore();
   const { copyRef } = useRefStore();
-  
+
   useEffect(() => {
     if (copyRef.current) {
       copyRef.current.querySelectorAll(".copy-code").forEach((element) => {
@@ -112,7 +112,7 @@ const MarkedInteraction = ({ id, markdown }) => {
           __html: marked(markdown, { headerIds: false, mangle: false }),
         }}
       />
-      {id.endsWith("-ai") && activeUIAssistantTab === "Engineer" ? (
+      {id.endsWith("-ai") && currentNavOption === "Engineer" ? (
         <div className="dark:text-blue-500 flex items-center justify-between pt-2 text-blue-800 max-w-[450px]">
           <div className="flex items-center gap-2">
             <FiThumbsUp

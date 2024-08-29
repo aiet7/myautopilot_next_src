@@ -40,7 +40,6 @@ const History = () => {
     initializeConversations,
   } = useConversationStore();
 
-
   useEffect(() => {
     initializeConversations();
   }, []);
@@ -69,7 +68,7 @@ const History = () => {
           return 0;
       }
     });
-
+  
   const indexOfLastChat = currentPage * chatsPerPage;
   const indexOfFirstChat = indexOfLastChat - chatsPerPage;
   const paginatedChats = filteredConversationHistories?.slice(
@@ -143,9 +142,9 @@ const History = () => {
               key={id}
               className={`${
                 currentConversationIndex === id
-                  ? "dark:bg-white/50 bg-black/15"
-                  : ""
-              } dark:bg-white/30 dark:text-white dark:border-white/20 dark:hover:bg-white/40 hover:bg-black/15 bg-white flex items-start justify-between my-2 border min-h-[75px] px-4 py-3 cursor-pointer rounded-md`}
+                  ? "dark:bg-white/40 bg-black/20"
+                  : "dark:bg-black bg-white"
+              } dark:text-white dark:hover:bg-white/40 hover:bg-black/20  flex items-start justify-between my-2 border min-h-[75px] px-4 py-3 text-black cursor-pointer rounded-md`}
             >
               <div className="flex items-center">
                 <div className="w-6">

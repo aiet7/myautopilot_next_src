@@ -170,7 +170,7 @@ const useTicketsStore = create((set, get) => ({
 
     try {
       const ticketNotesResponse = await fetch(
-        `${connectWiseServiceUrl}/getConnectWiseTicketNotesById?mspCustomDomain=${encodedDomain}&ticketId=${ticketId}`
+        `${connectWiseServiceUrl}/getAllConnectWiseTicketNotesById?mspCustomDomain=${encodedDomain}&ticketId=${ticketId}`
       );
       if (ticketNotesResponse.status === 200) {
         const ticketNotes = await ticketNotesResponse.json();
