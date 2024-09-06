@@ -2,15 +2,19 @@
 
 import useQueueStore from "@/utils/store/interaction/queue/queueStore";
 import useUserStore from "@/utils/store/user/userStore";
+import { useEffect } from "react";
 
 const AllQueueTicketsTable = () => {
   const { user } = useUserStore();
   const {
-    currentPage,
-    ticketsPerPage,
+    cardView,
+    queueTicketsPerPage,
+    currentQueueTicketsPage,
     searchValue,
     filterQueueTicketMode,
     allQueueTickets,
+    setTotalQueueTicketPages,
+    setFilteredQueueTicketCount,
     handleViewQueueTicket,
   } = useQueueStore();
 
@@ -39,31 +43,50 @@ const AllQueueTicketsTable = () => {
       )
         return true;
     })
-    ?.sort((a, b) => {
+    ?.filter((ticket) => {
       switch (filterQueueTicketMode) {
-        case "High Priority":
-          return b.compositeScore - a.compositeScore;
-        case "Low Priority":
-          return a.compositeScore - b.compositeScore;
-        case "Most Recent":
-          return new Date(b.creationTime) - new Date(a.creationTime);
+        case "Closed":
+          return ticket?.closed;
+        case "Newest":
         case "Oldest":
-          return new Date(a.creationTime) - new Date(b.creationTime);
-        case "A-Z":
-          return a.title.localeCompare(b.title);
-        case "Z-A":
-          return b.title.localeCompare(a.title);
+          return true;
         default:
-          return 0;
+          return (
+            ticket.categoryName === filterQueueTicketMode ||
+            ticket.subCategoryName === filterQueueTicketMode ||
+            ticket.priority === filterQueueTicketMode
+          );
       }
+    })
+    ?.sort((a, b) => {
+      if (filterQueueTicketMode === "Newest") {
+        return new Date(b.timeStamp) - new Date(a.timeStamp);
+      } else if (filterQueueTicketMode === "Oldest") {
+        return new Date(a.timeStamp) - new Date(b.timeStamp);
+      }
+      return 0;
     });
 
-  const indexOfLastTicket = currentPage * ticketsPerPage;
-  const indexOfFirstTicket = indexOfLastTicket - ticketsPerPage;
+  const indexOfLastTicket = currentQueueTicketsPage * queueTicketsPerPage;
+  const indexOfFirstTicket = indexOfLastTicket - queueTicketsPerPage;
   const paginatedTickets = filteredAndSortedQueueTickets?.slice(
     indexOfFirstTicket,
     indexOfLastTicket
   );
+
+  useEffect(() => {
+    const total = Math.ceil(
+      (filteredAndSortedQueueTickets?.length || 0) / queueTicketsPerPage
+    );
+    setTotalQueueTicketPages(total);
+    setFilteredQueueTicketCount(filteredAndSortedQueueTickets?.length || 0);
+  }, [
+    allQueueTickets,
+    queueTicketsPerPage,
+    searchValue,
+    cardView,
+    filterQueueTicketMode,
+  ]);
 
   return (
     <>
@@ -76,7 +99,9 @@ const AllQueueTicketsTable = () => {
                   <th className="dark:border-black p-2 border-l border-t border-b border-r ">
                     Score
                   </th>
-                  <th className="dark:border-black p-2 border-t border-b border-r ">Ticket ID</th>
+                  <th className="dark:border-black p-2 border-t border-b border-r ">
+                    Ticket ID
+                  </th>
                   <th className="dark:border-black p-2 border-t border-b border-r ">
                     Description
                   </th>

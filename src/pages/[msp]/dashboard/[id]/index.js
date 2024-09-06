@@ -14,6 +14,7 @@ import useDocConversationsStore from "@/utils/store/interaction/conversations/do
 import Cookies from "js-cookie";
 import useUserStore from "@/utils/store/user/userStore";
 import useMspStore from "@/utils/store/auth/msp/mspStore";
+import Account from "@/components/Dashboard/Account";
 
 const Interaction = dynamic(() =>
   import("@/components/Dashboard/Interaction/Interaction.js")
@@ -97,10 +98,18 @@ const DashboardPage = ({}) => {
 
   return (
     <>
-      <Interaction />
-      {window.innerWidth > 1023 && <AssistantRail />}
+      {currentNavOption === "Tickets" ||
+      currentNavOption === "Engineer" ||
+      currentNavOption === "Queue" ? (
+        <>
+          <Interaction />
+          {window.innerWidth > 1023 && <AssistantRail />}
 
-      <Assistant />
+          <Assistant />
+        </>
+      ) : (
+        <Account />
+      )}
     </>
   );
 };

@@ -13,8 +13,7 @@ import useConversationStore from "@/utils/store/interaction/conversations/conver
 
 const History = () => {
   const {
-    maxPagesToShow,
-    currentPage,
+    currentChatPage,
     chatsPerPage,
     filterChatMode,
     searchValue,
@@ -24,10 +23,11 @@ const History = () => {
     tempPrompt,
     conversationHistories,
     currentConversationIndex,
-    setCurrentPage,
     setDeleting,
     setTempTitle,
     setTempPrompt,
+    setTotalChatPages,
+    setFilteredChatCount,
     handleSaveConversationTitle,
     handleNewConversation,
     handleConversationSelected,
@@ -35,8 +35,6 @@ const History = () => {
     handleCancelEditConversationTitle,
     handleEditConversationPrompt,
     handleEditConversationTitle,
-    handleNextPage,
-    handlePreviousPage,
     initializeConversations,
   } = useConversationStore();
 
@@ -54,76 +52,41 @@ const History = () => {
         return true;
       return false;
     })
-    ?.sort((a, b) => {
+    ?.filter((conversation) => {
       switch (filterChatMode) {
-        case "Most Recent":
-          return new Date(b.timeStamp) - new Date(a.timeStamp);
+        case "Newest":
         case "Oldest":
-          return new Date(a.timeStamp) - new Date(b.timeStamp);
-        case "A-Z":
-          return a.conversationName.localeCompare(b.conversationName);
-        case "Z-A":
-          return b.conversationName.localeCompare(a.conversationName);
+          return true;
         default:
-          return 0;
+          return true;
       }
+    })
+    ?.sort((a, b) => {
+      if (filterChatMode === "Newest") {
+        return new Date(b.timeStamp) - new Date(a.timeStamp);
+      } else if (filterChatMode === "Oldest") {
+        return new Date(a.timeStamp) - new Date(b.timeStamp);
+      }
+      return 0;
     });
-  
-  const indexOfLastChat = currentPage * chatsPerPage;
+
+  const indexOfLastChat = currentChatPage * chatsPerPage;
   const indexOfFirstChat = indexOfLastChat - chatsPerPage;
   const paginatedChats = filteredConversationHistories?.slice(
     indexOfFirstChat,
     indexOfLastChat
   );
-
-  const totalPages = Math.ceil(
-    filteredConversationHistories?.length / chatsPerPage
-  );
-
-  const startPage = Math.max(
-    Math.min(
-      currentPage - Math.floor(maxPagesToShow / 2),
-      totalPages - maxPagesToShow + 1
-    ),
-    1
-  );
-  const endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
-
-  const pagesToShow = Array.from(
-    { length: endPage - startPage + 1 },
-    (_, index) => startPage + index
-  );
+  useEffect(() => {
+    const total = Math.ceil(
+      (filteredConversationHistories?.length || 0) / chatsPerPage
+    );
+    setTotalChatPages(total);
+    setFilteredChatCount(filteredConversationHistories?.length || 0);
+  }, [conversationHistories, chatsPerPage, searchValue, filterChatMode]);
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex items-center w-full mb-2">
-        <div className="w-full flex items-center gap-1 ">
-          <button
-            onClick={handlePreviousPage}
-            disabled={currentPage === 1}
-            className="disabled:opacity-50"
-          >
-            Previous
-          </button>
-          {pagesToShow.map((page) => (
-            <button
-              key={page}
-              onClick={() => setCurrentPage(page)}
-              className={`w-6 text-center ${
-                currentPage === page ? "bg-blue-500 text-white" : ""
-              }`}
-            >
-              {page}
-            </button>
-          ))}
-          <button
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages}
-            className="disabled:opacity-50"
-          >
-            Next
-          </button>
-        </div>
+    <div className="flex flex-col h-full p-4">
+      <div className="flex items-center w-full pb-4">
         <button
           onClick={handleNewConversation}
           className="dark:shadow-white/40 hover:bg-blue-500 flex items-center gap-1 w-[125px] font-semibold px-4 py-3 bg-blue-800 text-white rounded-lg shadow-lg"
@@ -132,7 +95,7 @@ const History = () => {
           <span>New Chat</span>
         </button>
       </div>
-      <div className="flex-grow overflow-y-auto scrollbar-thin">
+      <div className="flex flex-col gap-2 flex-grow overflow-y-auto scrollbar-thin">
         {paginatedChats?.map((conversation) => {
           const { id, userId, conversationName, customPrompt, timeStamp } =
             conversation;
@@ -144,28 +107,31 @@ const History = () => {
                 currentConversationIndex === id
                   ? "dark:bg-white/40 bg-black/20"
                   : "dark:bg-black bg-white"
-              } dark:text-white dark:hover:bg-white/40 hover:bg-black/20  flex items-start justify-between my-2 border min-h-[75px] px-4 py-3 text-black cursor-pointer rounded-md`}
+              } dark:text-white dark:hover:bg-white/40 hover:bg-black/20  flex items-start justify-between gap-2 border min-h-[75px] px-4 py-3 text-black cursor-pointer rounded-md`}
             >
-              <div className="flex items-center">
+              <div className="flex items-center w-full">
                 <div className="w-6">
                   <IoChatboxOutline size={15} />
                 </div>
-                <div
-                  className={`${
-                    currentConversationIndex === id ? "w-28" : "w-44"
-                  } truncate flex`}
-                >
+                <div className="w-full">
                   {currentConversationIndex === id && editing ? (
-                    <input
+                    <textarea
+                      placeholder={`Enter a title for your conversation.`}
                       onClick={(e) => e.stopPropagation()}
                       value={tempTitle}
-                      className="bg-white text-black truncate flex px-1"
+                      className="dark:bg-white/10 w-full bg-white p-2 rounded-md scrollbar-thin  min-h-[100px] max-h-[200px]"
                       onChange={(e) => setTempTitle(e.target.value)}
                     />
                   ) : (
                     <div className="flex">
                       <div className="flex flex-col">
-                        <span className="px-1">{conversationName}</span>
+                        <span
+                          className={`${
+                            currentConversationIndex === id ? "w-44" : "w-28"
+                          } truncate flex`}
+                        >
+                          {conversationName}
+                        </span>
                         <span className="px-1">
                           {new Date(timeStamp).toLocaleDateString()}
                         </span>
@@ -175,7 +141,17 @@ const History = () => {
                 </div>
               </div>
 
-              <div className="w-12">
+              <div className="w-full flex flex-col items-end">
+                {currentConversationIndex === id && editing && (
+                  <div className="w-full">
+                    <textarea
+                      placeholder={`Fine-tune your conversation.\nEx. Act as a Front End expert or speak like Albert Einstein would.`}
+                      value={tempPrompt || customPrompt || ""}
+                      className="dark:bg-white/10 w-full bg-white p-2 rounded-md scrollbar-thin  min-h-[100px] max-h-[200px]"
+                      onChange={(e) => setTempPrompt(e.target.value)}
+                    />
+                  </div>
+                )}
                 {currentConversationIndex === id && editing && (
                   <div className="flex items-center gap-2">
                     <AiOutlineCheck
@@ -214,7 +190,7 @@ const History = () => {
                   </div>
                 )}
                 {currentConversationIndex === id && !editing && !deleting && (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 ">
                     <AiFillEdit
                       size={18}
                       onClick={(e) => {
@@ -233,16 +209,6 @@ const History = () => {
                   </div>
                 )}
               </div>
-              {currentConversationIndex === id && editing && (
-                <div className="w-full">
-                  <textarea
-                    placeholder={`Fine-tune your conversation.\nEx. Act as a Front End expert or speak like Albert Einstein would.`}
-                    value={tempPrompt || customPrompt || ""}
-                    className="dark:bg-white/10 w-full bg-white p-2 rounded-bl-md rounded-br-md scrollbar-thin min-h-[100px] max-h-[200px]"
-                    onChange={(e) => setTempPrompt(e.target.value)}
-                  />
-                </div>
-              )}
             </div>
           );
         })}

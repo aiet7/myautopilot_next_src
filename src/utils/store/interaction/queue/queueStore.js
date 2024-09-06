@@ -1,8 +1,7 @@
 import { create } from "zustand";
 import useRefStore from "../ref/refStore";
-import useConversationStore from "../conversations/conversationsStore";
 import useUserStore from "../../user/userStore";
-import useUiStore from "../../ui/uiStore";
+import useTicketConversationsStore from "../conversations/ticketConversationsStore";
 
 const isBrowser = typeof window !== "undefined";
 const initialWidth = isBrowser ? window.innerWidth : 1023;
@@ -40,48 +39,42 @@ const useQueueStore = create((set, get) => ({
   severityOptions: ["Low", "Medium", "High"],
   impactOptions: ["Low", "Medium", "High"],
   tierOptions: ["Tier1", "Tier2", "Tier3", "No Dispatching"],
-  currentPage: 1,
-  ticketsPerPage: 30,
-  maxPagesToShow: 10,
+  currentQueueTicketsPage: 1,
+  queueTicketsPerPage: 30,
+  totalQueueTicketPages: 1,
+  filteredQueueTicketCount: 0,
+
   viewQueueTicket: false,
   currentQueueTicket: null,
   currentQueueNotes: null,
 
   activeQueueBotMode: "All Queue Tickets",
-  filterQueueTicketMode: "High Priority",
-  filterQueueTicketModeOpen: false,
-  activeQueueBotModeOpen: false,
+  filterQueueTicketMode: "Newest",
+  filterQueueTicketModeOpen: "",
 
   activeQueueOptions: ["All Queue Tickets", "Activities", "Queue Workspace"],
 
-  filterQueueTicketOptions: [
-    "High Priority",
-    "Low Priority",
-    "Most Recent",
-    "Oldest",
-    "A-Z",
-    "Z-A",
-  ],
-
   cardView: false,
+
+  setTotalQueueTicketPages: (pages) => set({ totalQueueTicketPages: pages }),
+  setFilteredQueueTicketCount: (count) =>
+    set({ filteredQueueTicketCount: count }),
 
   setCardView: (view) => set({ cardView: view }),
 
   setActiveQueueBotMode: (mode) => set({ activeQueueBotMode: mode }),
 
-  setActiveQueueBotModeOpen: (open) => set({ activeQueueBotModeOpen: open }),
-
   setActiveFilterMode: (mode) =>
     set({
       filterQueueTicketMode: mode,
-      currentPage: 1,
-      activeQueueBotMode: "All Queue Tickets",
+      currentQueueTicketsPage: 1,
+      filterQueueTicketModeOpen: "",
     }),
 
   setActiveQueueFilterModeOpen: (open) =>
     set({ filterQueueTicketModeOpen: open }),
 
-  setCurrentPage: (page) => set({ currentPage: page }),
+  setCurrentQueueTicketPage: (page) => set({ currentQueueTicketsPage: page }),
 
   setViewQueueTicket: (view) =>
     set({ viewQueueTicket: view, currentQueueTicket: null }),
@@ -123,7 +116,7 @@ const useQueueStore = create((set, get) => ({
     set((state) => ({
       ...state,
       searchValue: value,
-      currentPage: 1,
+      currentQueueTicketsPage: 1,
       activeQueueBotMode: value
         ? "All Queue Tickets"
         : state.activeQueueBotMode,
@@ -136,14 +129,25 @@ const useQueueStore = create((set, get) => ({
     });
   },
 
-  handleNextPage: () =>
-    set((state) => ({
-      currentPage: state.currentPage + 1,
-    })),
+  handleNextQueueTicketPage: () =>
+    set((state) => {
+      const totalPages = Math.ceil(
+        state.filteredQueueTicketCount / state.queueTicketsPerPage
+      );
+      return {
+        currentQueueTicketsPage:
+          state.currentQueueTicketsPage < totalPages
+            ? state.currentQueueTicketsPage + 1
+            : state.currentQueueTicketsPage,
+      };
+    }),
 
-  handlePreviousPage: () =>
+  handlePreviousQueueTicketPage: () =>
     set((state) => ({
-      currentPage: state.currentPage > 1 ? state.currentPage - 1 : 1,
+      currentQueueTicketsPage:
+        state.currentQueueTicketsPage > 1
+          ? state.currentQueueTicketsPage - 1
+          : 1,
     })),
 
   handleActiveQueueBotMode: async (option, mspCustomDomain, tier, techId) => {
@@ -320,10 +324,6 @@ const useQueueStore = create((set, get) => ({
               ),
               handleAddTroubleShootMessage(
                 myQueueTicket.ticketInformation || fallbackTicketInformation
-              ),
-              handleNextQueueTicketNotes(
-                mspCustomDomain,
-                myQueueTicket.ticketId
               ),
             ]);
           } catch (e) {
@@ -571,8 +571,8 @@ const useQueueStore = create((set, get) => ({
   },
 
   handleAddTroubleShootMessage: async (message) => {
-    const { inputRef, messageIdRef } = useRefStore.getState();
-
+    const { messageIdRef } = useRefStore.getState();
+    const { prependTroubleshootText } = useTicketConversationsStore.getState();
     if (message.trim() !== "") {
       try {
         const response = await fetch(`${gptServiceUrl}/message`, {
@@ -581,7 +581,8 @@ const useQueueStore = create((set, get) => ({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            text: message,
+            text: prependTroubleshootText + "Based on these details: ",
+            message,
           }),
         });
 
@@ -670,6 +671,7 @@ const useQueueStore = create((set, get) => ({
       ticketNote: "",
       ticketQueueMode: "Troubleshoot",
       troubleshootMessages: [],
+      generatingTroubleShoot: false,
       myQueueTicket: null,
       myQueueNotes: null,
       editingMyQueueTicket: null,
@@ -694,31 +696,23 @@ const useQueueStore = create((set, get) => ({
       severityOptions: ["Low", "Medium", "High"],
       impactOptions: ["Low", "Medium", "High"],
       tierOptions: ["Tier1", "Tier2", "Tier3", "No Dispatching"],
-      currentPage: 1,
-      ticketsPerPage: 30,
-      maxPagesToShow: 10,
+      currentQueueTicketsPage: 1,
+      queueTicketsPerPage: 30,
+      totalQueueTicketPages: 1,
+      filteredQueueTicketCount: 0,
+
       viewQueueTicket: false,
       currentQueueTicket: null,
       currentQueueNotes: null,
 
       activeQueueBotMode: "All Queue Tickets",
-      filterQueueTicketMode: "High Priority",
-      filterQueueTicketModeOpen: false,
-      activeQueueBotModeOpen: false,
+      filterQueueTicketMode: "Newest",
+      filterQueueTicketModeOpen: "",
 
       activeQueueOptions: [
         "All Queue Tickets",
         "Activities",
         "Queue Workspace",
-      ],
-
-      filterQueueTicketOptions: [
-        "High Priority",
-        "Low Priority",
-        "Most Recent",
-        "Oldest",
-        "A-Z",
-        "Z-A",
       ],
 
       cardView: false,

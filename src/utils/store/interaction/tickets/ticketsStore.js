@@ -4,7 +4,6 @@ import {
 } from "@/utils/api/serverProps";
 import { create } from "zustand";
 import useUserStore from "../../user/userStore";
-import useUiStore from "../../ui/uiStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
@@ -18,50 +17,63 @@ const useTicketsStore = create((set, get) => ({
   activeTicketBotMode: "History",
   viewTicket: false,
   activeTicketMode: "Default",
-  filterTicketMode: "Most Recent",
-  activeTicketBotModeOpen: false,
-  filterTicketModeOpen: false,
+  filterTicketMode: "Newest",
+  filterTicketModeOpen: "",
   activeTicketButton: "Ticket",
   activeNoteCategory: "Description",
 
   activeTicketOptions: ["History", "Ticket"],
-  filterTicketOptions: [
-    "Most Recent",
-    "Oldest",
-    "A-Z",
-    "Z-A",
-    "Open",
-    "Closed",
-  ],
 
-  currentPage: 1,
+  currentTicketPage: 1,
   ticketsPerPage: 30,
-  maxPagesToShow: 10,
+  totalTicketPages: 1,
+  filteredTicketCount: 0,
 
   currentTicket: null,
   currentNotes: null,
 
   initializeMSPTickets: async () => {
     const userStore = useUserStore.getState();
+    set({
+      tickets: null,
+    });
 
     if (userStore.user) {
-      set({ tickets: null });
-      const newTickets = await handleGetMSPTickets(
-        userStore.user.mspCustomDomain
-      );
-      set({ tickets: newTickets });
+      try {
+        const newTickets = await handleGetMSPTickets(
+          userStore.user.mspCustomDomain
+        );
+
+        set({
+          tickets: newTickets,
+        });
+      } catch (e) {
+        console.log(e);
+      }
     }
   },
 
   initializeClientTickets: async () => {
     const userStore = useUserStore.getState();
+    set({
+      tickets: null,
+    });
 
     if (userStore.user) {
-      set({ tickets: null });
-      const newTickets = await handleGetClientTickets(userStore.user.id);
-      set({ tickets: newTickets });
+      try {
+        const newTickets = await handleGetClientTickets(userStore.user.id);
+
+        set({
+          tickets: newTickets,
+        });
+      } catch (e) {
+        console.log(e);
+      }
     }
   },
+
+  setTotalTicketPages: (pages) => set({ totalTicketPages: pages }),
+  setFilteredTicketCount: (count) => set({ filteredTicketCount: count }),
 
   setActiveNoteCategory: (category) =>
     set({
@@ -71,13 +83,13 @@ const useTicketsStore = create((set, get) => ({
 
   setViewTicket: (view) => set({ viewTicket: view, currentTicket: null }),
 
-  setCurrentPage: (page) => set({ currentPage: page }),
+  setCurrentTicketPage: (page) => set({ currentTicketPage: page }),
 
   setSearchValue: (value) =>
     set((state) => ({
       ...state,
       searchValue: value,
-      currentPage: 1,
+      currentTicketPage: 1,
     })),
 
   setActiveTicketButton: (button) => set({ activeTicketButton: button }),
@@ -85,23 +97,34 @@ const useTicketsStore = create((set, get) => ({
   setActiveTicketBotMode: (mode) => set({ activeTicketBotMode: mode }),
 
   setActiveFilterMode: (mode) =>
-    set({ filterTicketMode: mode, currentPage: 1 }),
-
-  setActiveTicketBotModeOpen: (open) => set({ activeTicketBotModeOpen: open }),
+    set({
+      filterTicketMode: mode,
+      currentTicketPage: 1,
+      filterTicketModeOpen: "",
+    }),
 
   setActiveTicketFilterModeOpen: (open) => set({ filterTicketModeOpen: open }),
 
   addTicket: (ticket) =>
     set((state) => ({ tickets: [...state.tickets, ticket] })),
 
-  handleNextPage: () =>
+  handleNextTicketPage: () => {
+    set((state) => {
+      const totalPages = Math.ceil(
+        state.filteredTicketCount / state.ticketsPerPage
+      );
+      return {
+        currentTicketPage:
+          state.currentTicketPage < totalPages
+            ? state.currentTicketPage + 1
+            : state.currentTicketPage,
+      };
+    });
+  },
+  handlePreviousTicketPage: () =>
     set((state) => ({
-      currentPage: state.currentPage + 1,
-    })),
-
-  handlePreviousPage: () =>
-    set((state) => ({
-      currentPage: state.currentPage > 1 ? state.currentPage - 1 : 1,
+      currentTicketPage:
+        state.currentTicketPage > 1 ? state.currentTicketPage - 1 : 1,
     })),
 
   handleToggleTicketMenus: (toggle) => {
@@ -237,25 +260,17 @@ const useTicketsStore = create((set, get) => ({
       activeTicketBotMode: "History",
       viewTicket: false,
       activeTicketMode: "Default",
-      filterTicketMode: "Most Recent",
-      activeTicketBotModeOpen: false,
-      filterTicketModeOpen: false,
+      filterTicketMode: "Newest",
+      filterTicketModeOpen: "",
       activeTicketButton: "Ticket",
       activeNoteCategory: "Description",
 
       activeTicketOptions: ["History", "Ticket"],
-      filterTicketOptions: [
-        "Most Recent",
-        "Oldest",
-        "A-Z",
-        "Z-A",
-        "Open",
-        "Closed",
-      ],
 
-      currentPage: 1,
+      currentTicketPage: 1,
       ticketsPerPage: 30,
-      maxPagesToShow: 10,
+      totalTicketPages: 1,
+      filteredTicketCount: 0,
 
       currentTicket: null,
       currentNotes: null,

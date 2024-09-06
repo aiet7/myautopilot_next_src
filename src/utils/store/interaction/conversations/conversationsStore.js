@@ -7,7 +7,6 @@ import {
   handleGetMessages,
 } from "@/utils/api/serverProps";
 import useUserStore from "../../user/userStore";
-import useAssistantStore from "../../assistant/assistantStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
@@ -17,22 +16,21 @@ const useConversationStore = create((set, get) => ({
   currentConversationIndex: null,
   troubleshootingConversationId: null,
   activeChatBotMode: "History",
-  filterChatMode: "Most Recent",
+  filterChatMode: "Newest",
   searchValue: "",
   editing: false,
   deleting: false,
   tempTitle: "",
   tempPrompt: "",
 
-  activeChatBotModeOpen: false,
-  filterChatModeOpen: false,
+  filterChatModeOpen: "",
 
   activeChatOptions: ["History", "Engineer"],
-  filterChatOptions: ["Most Recent", "Oldest", "A-Z", "Z-A"],
 
-  currentPage: 1,
+  currentChatPage: 1,
   chatsPerPage: 30,
-  maxPagesToShow: 10,
+  totalChatPages: 1,
+  filteredChatCount: 0,
 
   setTempTitle: (title) => set((state) => ({ ...state, tempTitle: title })),
   setTempPrompt: (prompt) => set((state) => ({ ...state, tempPrompt: prompt })),
@@ -44,16 +42,18 @@ const useConversationStore = create((set, get) => ({
     set((state) => ({
       ...state,
       searchValue: value,
-      currentPage: 1,
+      currentChatPage: 1,
     })),
 
-  setCurrentPage: (page) => set({ currentPage: page }),
+  setCurrentChatPage: (page) => set({ currentChatPage: page }),
+
+  setTotalChatPages: (pages) => set({ totalChatPages: pages }),
+  setFilteredChatCount: (count) => set({ filteredChatCount: count }),
 
   setActiveChatBotMode: (mode) => set({ activeChatBotMode: mode }),
 
-  setActiveFilterMode: (mode) => set({ filterChatMode: mode, currentPage: 1 }),
-
-  setActiveChatBotModeOpen: (open) => set({ activeChatBotModeOpen: open }),
+  setActiveFilterMode: (mode) =>
+    set({ filterChatMode: mode, currentPage: 1, filterChatModeOpen: "" }),
 
   setActiveChatFilterModeOpen: (open) => set({ filterChatModeOpen: open }),
 
@@ -112,14 +112,24 @@ const useConversationStore = create((set, get) => ({
     }
   },
 
-  handleNextPage: () =>
-    set((state) => ({
-      currentPage: state.currentPage + 1,
-    })),
+  handleNextChatPage: () => {
+    set((state) => {
+      const totalPages = Math.ceil(
+        state.filteredChatCount / state.chatsPerPage
+      );
+      return {
+        currentChatPage:
+          state.currentChatPage < totalPages
+            ? state.currentChatPage + 1
+            : state.currentChatPage,
+      };
+    });
+  },
 
-  handlePreviousPage: () =>
+  handlePreviousChatPage: () =>
     set((state) => ({
-      currentPage: state.currentPage > 1 ? state.currentPage - 1 : 1,
+      currentChatPage:
+        state.currentChatPage > 1 ? state.currentChatPage - 1 : 1,
     })),
 
   handleToggleChatMenus: (toggle) => {
@@ -313,21 +323,20 @@ const useConversationStore = create((set, get) => ({
     });
   },
 
-  handleAddJarvisAssistantMessage: (message, formType) => {
+  handleAddJarvisAssistantMessage: (message, buttons) => {
     const { messageIdRef } = useRefStore.getState();
 
     set((state) => {
       const newConversations = state.conversationHistories.map((convo) => {
         if (convo.id === state.currentConversationIndex) {
           const updatedMessages = convo.messages || [];
-          const messageId = `${messageIdRef.current}-ai${
-            formType ? `-${formType}` : ""
-          }`;
+
           updatedMessages.push({
-            id: messageId,
+            id: `${messageIdRef.current}-ai`,
             content: message,
             role: "assistant",
             timeStamp: new Date().toISOString(),
+            type: buttons ? "engineerButtons" : "markdown",
           });
           return { ...convo, messages: updatedMessages };
         }
@@ -338,28 +347,38 @@ const useConversationStore = create((set, get) => ({
     });
   },
 
+  handleRemoveButtons: () => {
+    set((state) => {
+      return {
+        ...state,
+        messages: state.messages.filter(
+          (msg) => msg.type !== "engineerButtons"
+        ),
+      };
+    });
+  },
+
   clearConversation: () => {
     set({
       conversationHistories: [],
       currentConversationIndex: null,
       troubleshootingConversationId: null,
       activeChatBotMode: "History",
-      filterChatMode: "Most Recent",
+      filterChatMode: "Newest",
       searchValue: "",
       editing: false,
       deleting: false,
       tempTitle: "",
       tempPrompt: "",
 
-      activeChatBotModeOpen: false,
-      filterChatModeOpen: false,
+      filterChatModeOpen: "",
 
       activeChatOptions: ["History", "Engineer"],
-      filterChatOptions: ["Most Recent", "Oldest", "A-Z", "Z-A"],
 
-      currentPage: 1,
+      currentChatPage: 1,
       chatsPerPage: 30,
-      maxPagesToShow: 10,
+      totalChatPages: 1,
+      filteredChatCount: 0,
     });
   },
 }));

@@ -5,6 +5,7 @@ import TicketBot from "./TicketBot/TicketBot";
 import ChatBot from "./ChatBot/ChatBot";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import QueueBot from "./QueueBot/QueueBot";
+import AssistantMenus from "../../AssistantMenus";
 
 const InternalPilot = () => {
   const { currentNavOption } = useUiStore();
@@ -16,6 +17,7 @@ const InternalPilot = () => {
         activeAssistantTab ? "h-1/2" : "h-full"
       } flex flex-col  text-xs`}
     >
+      <AssistantMenus />
       {currentNavOption === "Tickets" && <TicketBot />}
       {currentNavOption === "Engineer" && <ChatBot />}
       {currentNavOption === "Queue" && <QueueBot />}

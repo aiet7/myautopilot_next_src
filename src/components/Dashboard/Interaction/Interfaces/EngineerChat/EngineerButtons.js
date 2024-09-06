@@ -2,26 +2,21 @@
 
 import useInteractionStore from "@/utils/store/interaction/interactionsStore";
 
-const TicketButtons = () => {
+const EngineerButtons = () => {
   const {
-    diagnosticTicketQuestions,
-    userTicketButtonsSelected,
-    setUserTicketButtonsSelected,
+    diagnosticChatQuestions,
+    userChatButtonsSelected,
+    setUserChatButtonsSelected,
   } = useInteractionStore();
-
   return (
     <div className="flex flex-col gap-4">
-      <p className="font-bold ">
-        For a faster resolution, please answer the following questions.{" "}
-        <span className="uppercase">
-          You can create the ticket without answering these questions if you
-          like to wait longer.
-        </span>
+      <p className="font-bold text-lg">
+        {diagnosticChatQuestions?.description}
       </p>
-      {diagnosticTicketQuestions?.map((item, index) => {
+
+      {diagnosticChatQuestions?.questionnaire?.map((item, index) => {
         const question = Object.keys(item)[0];
         const options = item[question];
-
         return (
           <div key={index} className="flex flex-col  gap-1">
             <p className="font-bold text-lg">{question}</p>
@@ -29,12 +24,12 @@ const TicketButtons = () => {
               {options?.map((option, idx) => (
                 <button
                   key={idx}
-                  className={`w-[160px] rounded-md border py-5 ${
-                    userTicketButtonsSelected[question] === option
+                  className={`w-[180px] rounded-md border py-5 ${
+                    userChatButtonsSelected[question] === option
                       ? "dark:bg-white/40 bg-black/20"
                       : "dark:text-white dark:hover:bg-white/40 hover:bg-black/20 text-black"
                   }`}
-                  onClick={() => setUserTicketButtonsSelected(question, option)}
+                  onClick={() => setUserChatButtonsSelected(question, option)}
                 >
                   {option}
                 </button>
@@ -47,4 +42,4 @@ const TicketButtons = () => {
   );
 };
 
-export default TicketButtons;
+export default EngineerButtons;

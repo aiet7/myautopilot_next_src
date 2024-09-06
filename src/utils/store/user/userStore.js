@@ -24,8 +24,15 @@ import useQueueStore from "../interaction/queue/queueStore";
 import useToolsStore from "../assistant/sections/external/downloads/downloadStore";
 import useUiStore from "../ui/uiStore";
 
+const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
+
 const useUserStore = create((set, get) => ({
   user: null,
+  userInputs: {},
+  editing: {},
+  errorMessage: "",
+  passwordError: "",
+  userPasswords: {},
 
   initializeUser: async (msp, id) => {
     const { getUser, saveUser } = useLocalStorageStore.getState();
@@ -57,7 +64,7 @@ const useUserStore = create((set, get) => ({
     }
 
     if (userData) {
-      set({ user: userData });
+      set({ user: userData, userInputs: { ...userData } });
       if (userType === "tech") {
         await initializeMSPTickets();
       } else if (userType === "client") {
@@ -66,6 +73,74 @@ const useUserStore = create((set, get) => ({
     } else {
       console.error("Failed to initialize tech information.");
     }
+  },
+
+  handleStartEdit: (field) => {
+    const { editing } = get();
+    set({ editing: { ...editing, [field]: true } });
+  },
+
+  handleEditOnChange: (field, value) => {
+    const { userInputs } = get();
+    set({ userInputs: { ...userInputs, [field]: value } });
+  },
+
+  handlePasswordChange: (field, value) => {
+    const { userPasswords } = get();
+    set({ userPasswords: { ...userPasswords, [field]: value } });
+  },
+
+  handleResetPassword: async () => {},
+
+  handleSaveChanges: async (field, value) => {
+    const { user, userInputs, editing } = get();
+
+    const { userType } = useMspStore.getState();
+
+    const userTypeEndpoint =
+      userType === "tech" ? "technicianUsers" : "clientUsers";
+
+    const updatedUser = { ...user, [field]: value };
+
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/${user.mspCustomDomain}/${userTypeEndpoint}/edit`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedUser),
+        }
+      );
+
+      if (response.ok) {
+        const editedUser = await response.json();
+        const mergedUser = {
+          ...editedUser,
+          permissions: user.permissions,
+        };
+        set({
+          user: mergedUser,
+          userInputs: { ...userInputs, [field]: value },
+          editing: { ...editing, [field]: false },
+          errorMessage: "",
+        });
+        console.log("User Changes Saved!");
+      } else {
+        const errorData = await response.json();
+        set({ errorMessage: errorData.message || "Failed to save changes" });
+        console.log("User Changes Failed!");
+      }
+    } catch (error) {
+      set({ errorMessage: "An error occurred while saving changes." });
+      console.error("Error in handleSaveChanges:", error);
+    }
+  },
+  handleCancelEdit: (field) => {
+    const { user, userInputs, editing } = get();
+    set({ userInputs: { ...userInputs, [field]: user[field] } });
+    set({ editing: { ...editing, [field]: false } });
   },
 
   handleLogout: async (navigator) => {
@@ -95,7 +170,14 @@ const useUserStore = create((set, get) => ({
 
     await clearTickets();
 
-    set({ user: null });
+    set({
+      user: null,
+      userInputs: {},
+      editing: {},
+      errorMessage: "",
+      passwordError: "",
+      userPasswords: {},
+    });
 
     clearMSPCredentials();
     clearStorage();

@@ -4,6 +4,7 @@ import useUiStore from "../ui/uiStore";
 import useIntegrationsStore from "../admin/control/integrations/integrationsStore";
 
 const useAssistantStore = create((set, get) => ({
+  assistantMenuOpen: false,
   promptAssistantInput: "",
   activeAssistantTab: null,
   activeAssistantTabOpen: false,
@@ -37,6 +38,8 @@ const useAssistantStore = create((set, get) => ({
       }
     }
   },
+
+  setAssistantMenuOpen: (open) => set({ assistantMenuOpen: open }),
 
   setAssistantWidth: (width) => {
     const { handleCloseNavWhenResizing } = useUiStore.getState();
@@ -87,6 +90,7 @@ const useAssistantStore = create((set, get) => ({
 
   clearAssistant: () => {
     set({
+      assistantMenuOpen: false,
       promptAssistantInput: "",
       activeAssistantTab: null,
       activeAssistantTabOpen: false,

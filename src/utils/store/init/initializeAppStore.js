@@ -16,7 +16,7 @@ const useInitializeAppStore = create((set, get) => ({
     if (activeTab === "iTAgent") {
       const initialAgents = await handleGetAgents();
       const iTAgent = initialAgents.find(
-        (agent) => agent.agentName === "IT Agent"
+        (agent) => agent.agentName === "Cybersecurity Gap Analysis Assistant"
       );
       if (iTAgent) {
         set({

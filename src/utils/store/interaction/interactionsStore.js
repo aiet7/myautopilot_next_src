@@ -14,10 +14,14 @@ const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 const gptServiceUrl = process.env.NEXT_PUBLIC_GPT_SERVICE_URL;
 
 const useInteractionStore = create((set, get) => ({
-  diagnosticMessage: "",
-  isDiagnosticStep: true,
-  userButtonsSelected: {},
-  diagnosticQuestions: [],
+  diagnosticTicketMessage: "",
+  diagnosticChatMessage: "",
+  isDiagnosticTicketStep: true,
+
+  userTicketButtonsSelected: {},
+  userChatButtonsSelected: {},
+  diagnosticTicketQuestions: [],
+  diagnosticChatQuestions: [],
   userInput: "",
   isWaiting: false,
   isListening: false,
@@ -31,34 +35,58 @@ const useInteractionStore = create((set, get) => ({
 
   setInteractionMenuOpen: (open) => set({ interactionMenuOpen: open }),
 
-  setUserButtonsSelected: (question, option) =>
+  setUserTicketButtonsSelected: (question, option) =>
     set((state) => {
-      const questionExists = state.diagnosticMessage.includes(
+      const questionExists = state.diagnosticTicketMessage.includes(
         `${question}: ${option}`
       );
       const newUserInput = questionExists
         ? state.userInput
         : `${state.userInput}\n${question}: ${option}`;
 
-      const newDiagnosticMessage = questionExists
-        ? state.diagnosticMessage
-        : `${state.diagnosticMessage}\n${question}: ${option}`;
+      const newDiagnosticTicketMessage = questionExists
+        ? state.diagnosticTicketMessage
+        : `${state.diagnosticTicketMessage}\n${question}: ${option}`;
 
       return {
-        userButtonsSelected: {
-          ...state.userButtonsSelected,
+        userTicketButtonsSelected: {
+          ...state.userTicketButtonsSelected,
           [question]: option,
         },
         userInput: newUserInput,
-        diagnosticMessage: newDiagnosticMessage,
+        diagnosticTicketMessage: newDiagnosticTicketMessage,
+      };
+    }),
+
+  setUserChatButtonsSelected: (question, option) =>
+    set((state) => {
+      const questionExists = state.diagnosticChatMessage.includes(
+        `${question}: ${option}`
+      );
+
+      const newUserInput = questionExists
+        ? state.userInput
+        : `${state.userInput}\n${question}: ${option}`;
+
+      const newDiagnosticChatMessage = questionExists
+        ? state.diagnosticChatMessage
+        : `${state.diagnosticChatMessage}\n${question}: ${option}`;
+
+      return {
+        userChatButtonsSelected: {
+          ...state.userChatButtonsSelected,
+          [question]: option,
+        },
+        userInput: newUserInput,
+        diagnosticChatMessage: newDiagnosticChatMessage,
       };
     }),
 
   setResetTicketFlow: () =>
     set({
-      isDiagnosticStep: true,
-      diagnosticMessage: "",
-      userButtonsSelected: {},
+      isDiagnosticTicketStep: true,
+      diagnosticTicketMessage: "",
+      userTicketButtonsSelected: {},
     }),
 
   handleTextAreaChange: (e) => {
@@ -172,7 +200,7 @@ const useInteractionStore = create((set, get) => ({
 
   handleCreateTicketMessage: async (message) => {
     const userStore = useUserStore.getState();
-    const { isDiagnosticStep, diagnosticMessage } =
+    const { isDiagnosticTicketStep, diagnosticTicketMessage } =
       useInteractionStore.getState();
 
     const { inputRef } = useRefStore.getState();
@@ -190,9 +218,9 @@ const useInteractionStore = create((set, get) => ({
         let endpointUrl = `${connectWiseServiceUrl}/getTicketBoardCategorizationDiagnosticQandA`;
         let userMessage = message;
 
-        if (!isDiagnosticStep) {
+        if (!isDiagnosticTicketStep) {
           endpointUrl = `${connectWiseServiceUrl}/getTicketBoardCategorization`;
-          userMessage = `${diagnosticMessage}\n${message}`;
+          userMessage = `${diagnosticTicketMessage}\n${message}`;
         }
 
         const response = await fetch(endpointUrl, {
@@ -210,12 +238,12 @@ const useInteractionStore = create((set, get) => ({
           const responseBody = await response.json();
           handleCreateTicketProcess(responseBody);
           setActiveTicketBotMode("Ticket");
-          if (isDiagnosticStep) {
+          if (isDiagnosticTicketStep) {
             handleAddAssistantMessage(null, true);
             set((state) => ({
-              diagnosticQuestions: responseBody.diagnostic,
-              isDiagnosticStep: false,
-              diagnosticMessage: `${state.diagnosticMessage}\n${message}`,
+              diagnosticTicketQuestions: responseBody.diagnostic,
+              isDiagnosticTicketStep: false,
+              diagnosticTicketMessage: `${state.diagnosticTicketMessage}\n${message}`,
             }));
           } else {
             handleAddAssistantMessage(
@@ -223,7 +251,7 @@ const useInteractionStore = create((set, get) => ({
               false
             );
             set({
-              isDiagnosticStep: true,
+              isDiagnosticTicketStep: true,
             });
           }
         } else if (response.status === 500) {
@@ -281,6 +309,81 @@ const useInteractionStore = create((set, get) => ({
       }
     }
   },
+
+  // handleSendMessage: async (message) => {
+  //   const { inputRef, messageIdRef } = useRefStore.getState();
+  //   const userStore = useUserStore.getState();
+  //   const {
+  //     handleIfConversationExists,
+  //     handleAddJarvisUserMessage,
+  //     handleAddJarvisAssistantMessage,
+  //   } = useConversationStore.getState();
+
+  //   const { diagnosticChatMessage } = get();
+
+  //   let currentConversation = await handleIfConversationExists();
+  //   if (message.trim() !== "" && currentConversation) {
+  //     inputRef.current.focus();
+  //     handleAddJarvisUserMessage(message);
+  //     set({
+  //       isWaiting: true,
+  //       isServerError: false,
+  //       userInput: "",
+  //     });
+  //     try {
+  //       let userMessage = message;
+  //       userMessage = `${diagnosticChatMessage}\n${message}`;
+
+  //       const response = await fetch(`${gptServiceUrl}/jarvisQandA`, {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           text: userMessage,
+  //           conversationId: currentConversation.id,
+  //           technicianId: userStore.user.id,
+  //         }),
+  //       });
+
+  //       if (response.status === 200) {
+  //         const responseBody = await response.json();
+  //         let parsedAiContent;
+
+  //         console.log(responseBody);
+
+  //         parsedAiContent = JSON.parse(responseBody.aiContent);
+
+  //         messageIdRef.current = responseBody.id;
+
+  //         if (parsedAiContent && parsedAiContent.questionnaire) {
+  //           handleAddJarvisAssistantMessage(
+  //             parsedAiContent.questionnaire,
+  //             true
+  //           );
+  //           set((state) => ({
+  //             diagnosticChatQuestions: {
+  //               description: parsedAiContent.description || "",
+  //               questionnaire: parsedAiContent.questionnaire,
+  //             },
+  //             diagnosticChatMessage: `${state.diagnosticChatMessage}\n${message}`,
+  //           }));
+  //         } else {
+  //           handleAddJarvisAssistantMessage(responseBody.aiContent, false);
+  //           set((state) => ({
+  //             diagnosticChatMessage: `${state.diagnosticChatMessage}\n${message}`,
+  //           }));
+  //         }
+  //       }
+  //     } catch (e) {
+  //       console.log(e);
+  //     } finally {
+  //       set({
+  //         isWaiting: false,
+  //       });
+  //     }
+  //   }
+  // },
 
   handleSendMessage: async (message) => {
     const { inputRef, messageIdRef } = useRefStore.getState();
@@ -380,10 +483,14 @@ const useInteractionStore = create((set, get) => ({
 
   clearInteraction: () => {
     set({
-      diagnosticMessage: "",
-      isDiagnosticStep: true,
-      userButtonsSelected: {},
-      diagnosticQuestions: [],
+      diagnosticTicketMessage: "",
+      diagnosticChatMessage: "",
+      isDiagnosticTicketStep: true,
+
+      userTicketButtonsSelected: {},
+      userChatButtonsSelected: {},
+      diagnosticTicketQuestions: [],
+      diagnosticChatQuestions: [],
       userInput: "",
       isWaiting: false,
       isListening: false,

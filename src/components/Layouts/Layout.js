@@ -83,11 +83,7 @@ const Layout = ({ children }) => {
 
                 {children}
               </div>
-              {activeTab === "settings" && (
-                <div className="overflow-auto h-full w-full no-scrollbar">
-                  <Account />
-                </div>
-              )}
+             
             </div>
             <TabNavRail />
           </div>

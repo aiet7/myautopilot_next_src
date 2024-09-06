@@ -18,7 +18,7 @@ const Engineer = () => {
   } = useEngineerStore();
 
   return (
-    <div className="flex-grow flex flex-col w-full ">
+    <div className="flex-grow flex flex-col w-full p-4">
       <div className="w-full flex flex-col items-center rounded gap-1">
         <textarea
           value={userInput}

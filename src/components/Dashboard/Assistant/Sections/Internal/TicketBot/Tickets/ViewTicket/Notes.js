@@ -13,7 +13,6 @@ const Notes = () => {
     handleAddTicketNote,
   } = useTicketsStore();
 
-
   const filteredNotes = currentNotes?.filter((notes) => {
     if (activeNoteCategory === "Description" && notes.detailDescriptionFlag)
       return true;
@@ -23,9 +22,9 @@ const Notes = () => {
       return true;
     return false;
   });
-  
+
   return (
-    <>
+    <div className="flex flex-col gap-2">
       <div className="flex gap-2 text-sm ">
         <button
           className={`hover:bg-blue-500 ${
@@ -66,7 +65,7 @@ const Notes = () => {
           Submit
         </button>
       </div>
-      <div className="flex flex-col gap-2 ">
+      <div className="max-h-[500px] overflow-auto scrollbar-thin">
         {filteredNotes?.map((notes) => {
           const { id, dateCreated, text, ticketId } = notes;
           return (
@@ -76,7 +75,7 @@ const Notes = () => {
           );
         })}
       </div>
-    </>
+    </div>
   );
 };
 

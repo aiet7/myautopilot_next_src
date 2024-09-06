@@ -11,7 +11,7 @@ import useInteractionStore from "@/utils/store/interaction/interactionsStore.js"
 import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore.js";
 import Input from "./Input.js";
 import TicketCreation from "./Interfaces/TicketCreation.js";
-import EngineerChat from "./Interfaces/EngineerChat.js";
+import EngineerChat from "./Interfaces/EngineerChat/EngineerChat.js";
 import TicketSupport from "./Interfaces/TicketSupport.js";
 import Troubleshoot from "./Forms/Ticket/Troubleshoot.js";
 import useAssistantStore from "@/utils/store/assistant/assistantStore.js";

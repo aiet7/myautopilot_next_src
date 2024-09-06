@@ -307,7 +307,7 @@ const useFormsStore = create((set, get) => ({
 
     const { addTicket, setActiveTicketBotMode } = useTicketsStore.getState();
     const { userType } = useMspStore.getState();
-    const { diagnosticMessage, setResetTicketFlow } =
+    const { diagnosticTicketMessage, setResetTicketFlow } =
       useInteractionStore.getState();
     const {
       currentTicketImpactScore,
@@ -381,7 +381,7 @@ const useFormsStore = create((set, get) => ({
           connectWiseCompanyId: currentTicketCWCompanyId,
           impactScore: currentTicketImpactScore,
           severityScore: currentTicketSeverityScore,
-          convsersation: diagnosticMessage,
+          convsersation: diagnosticTicketMessage,
         };
 
         if (userType === "tech") {

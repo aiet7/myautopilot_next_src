@@ -8,7 +8,7 @@ import useUiStore from "@/utils/store/ui/uiStore";
 
 const Input = () => {
   const {
-    isDiagnosticStep,
+    isDiagnosticTicketStep,
     textAreaHeight,
     userInput,
     interactionMenuOpen,
@@ -29,7 +29,7 @@ const Input = () => {
       inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
     }
   }, [userInput, currentNavOption, myQueueTicket]);
-
+  
   return (
     <div className="relative max-w-[700px] mx-auto w-full ">
       {currentNavOption === "Engineer" && (
@@ -103,7 +103,7 @@ const Input = () => {
                   : "dark:text-gray-400 dark:border-white/30  text-gray-400 select-none border cursor-default"
               } `}
             >
-              {isDiagnosticStep ? "Open Ticket" : "Update Ticket"}
+              {isDiagnosticTicketStep ? "Open Ticket" : "Update Ticket"}
             </button>
             <BsThreeDotsVertical
               className="cursor-pointer"
@@ -160,11 +160,11 @@ const Input = () => {
           </div>
         </div>
       )}
-      {interactionMenuOpen && (
+      {/* {interactionMenuOpen && (
         <div className="absolute flex flex-col  font-semibold bottom-12 right-0   bg-white border rounded-lg shadow-lg w-[100px] p-1 z-[100] ">
           qweqeqwe
         </div>
-      )}
+      )} */}
     </div>
   );
 };

@@ -5,7 +5,7 @@ import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
 const Ticket = () => {
   const { currentTicket, ticketStatus } = useTicketsStore();
   return (
-    <>
+    <div className="flex flex-col gap-2 ">
       <div>
         <span className="font-bold">Ticket ID</span>
         <input
@@ -107,7 +107,7 @@ const Ticket = () => {
             new Date(currentTicket?.creationTime).toLocaleTimeString() || ""}
         </p>
       </div>
-    </>
+    </div>
   );
 };
 

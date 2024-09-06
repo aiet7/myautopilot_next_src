@@ -4,9 +4,9 @@ import { useEffect } from "react";
 import useUserStore from "@/utils/store/user/userStore";
 import useInteractionStore from "@/utils/store/interaction/interactionsStore";
 import useRefStore from "@/utils/store/interaction/ref/refStore";
-import Switch from "../Forms/Switch";
+import Switch from "../../Forms/Switch";
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
-import EngineerGuide from "../Guides/EngineerGuide";
+import EngineerGuide from "../../Guides/EngineerGuide";
 import { SiOpenai } from "react-icons/si";
 
 const EngineerChat = () => {

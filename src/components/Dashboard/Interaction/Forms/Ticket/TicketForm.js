@@ -19,7 +19,7 @@ const TicketForm = () => {
   }, []);
 
   return (
-    <div>
+    <div className="flex flex-col gap-2 overflow-y-auto p-4"> 
       {ticket?.currentTicketTitle === "" ? (
         <div className="flex flex-col gap-2">
           <p className="text-xl font-semibold">
@@ -32,7 +32,7 @@ const TicketForm = () => {
         </div>
       ) : (
         <div className="">
-          <div className="flex flex-col gap-2">
+          <div className="">
             {userType === "tech" && (
               <div>
                 <span className="font-bold">Company</span>

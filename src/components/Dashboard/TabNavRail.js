@@ -39,9 +39,10 @@ const TabNavRail = ({}) => {
     <div className="dark:bg-[#373737] dark:border-white/10 bg-[#eaf1fb] flex items-center justify-evenly p-3 gap-4 transition-all duration-300 ease lg:relative lg:flex-col lg:justify-start lg:border-r lg:border-black/10">
       {((activeTab === "iTAgent" &&
         (currentNavOption === "Engineer" ||
-        currentNavOption === "Document" ||
-        currentNavOption === "Tickets" ||
-        currentNavOption === "Queue")) ||
+          currentNavOption === "Document" ||
+          currentNavOption === "Tickets" ||
+          currentNavOption === "Queue")) ||
+        currentNavOption === "Settings" ||
         activeTab === "admin") && (
         <>
           <AiOutlineMenu

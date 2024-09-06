@@ -5,7 +5,7 @@ import useQueueStore from "@/utils/store/interaction/queue/queueStore";
 const ViewQueueTicket = () => {
   const { currentQueueTicket } = useQueueStore();
   return (
-    <>
+    <div className="flex flex-col gap-2 ">
       <div>
         <span className="font-bold">Ticket ID</span>
         <input
@@ -134,7 +134,7 @@ const ViewQueueTicket = () => {
             ""}
         </p>
       </div>
-    </>
+    </div>
   );
 };
 
