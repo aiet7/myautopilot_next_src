@@ -14,7 +14,6 @@ const nextConfig = {
       },
     ],
   },
-  swcMinify: false,
 };
 
 module.exports = withBundleAnalyzer(nextConfig);
