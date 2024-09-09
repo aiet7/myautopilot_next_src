@@ -3,7 +3,7 @@ name: Build and deploy Node.js app to Azure Web App - myautopilot
 on:
   push:
     branches:
-      - main
+      - beta
   workflow_dispatch:
 
 jobs:
