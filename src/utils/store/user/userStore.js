@@ -7,7 +7,6 @@ import useTicketConversationsStore from "../interaction/conversations/ticketConv
 import useEngineerStore from "../assistant/sections/iternal/engineer/engineerStore";
 import useTicketsStore from "../interaction/tickets/ticketsStore";
 import useConversationStore from "../interaction/conversations/conversationsStore";
-import useDocConversationsStore from "../interaction/conversations/docConversationsStore";
 import useFormsStore from "../interaction/forms/formsStore";
 import useManageStore from "../admin/control/integrations/PSA/manageStore";
 import useIntegrationsStore from "../admin/control/integrations/integrationsStore";
@@ -151,7 +150,6 @@ const useUserStore = create((set, get) => ({
     const { clearEngineer } = useEngineerStore.getState();
     const { clearTickets } = useTicketsStore.getState();
     const { clearConversation } = useConversationStore.getState();
-    const { clearDocConversation } = useDocConversationsStore.getState();
     const { clearTicketForms } = useFormsStore.getState();
     const { clearManage } = useManageStore.getState();
     const { clearIntegration } = useIntegrationsStore.getState();
@@ -183,7 +181,6 @@ const useUserStore = create((set, get) => ({
     clearStorage();
     clearCookies();
     clearTicketConversation();
-    clearDocConversation();
     clearConversation();
     clearEngineer();
     clearTicketForms();

@@ -2,7 +2,6 @@ import { create } from "zustand";
 import useUiStore from "../ui/uiStore";
 import useAssistantStore from "../assistant/assistantStore";
 import useConversationStore from "../interaction/conversations/conversationsStore";
-import useDocConversationsStore from "../interaction/conversations/docConversationsStore";
 import useAdminStore from "../admin/adminStore";
 import useUserStore from "../user/userStore";
 
@@ -42,10 +41,7 @@ const useLocalStorageStore = create((set, get) => ({
     useConversationStore.setState({
       currentConversationIndex: parsedLastConvoIndex.currentConversationIndex || null,
     });
-    useDocConversationsStore.setState({
-      currentDocumentConversationIndex:
-        parsedLastConvoIndex.currentDocumentConversationIndex || null,
-    });
+   
   },
 
   setStorage: () => {
@@ -54,8 +50,7 @@ const useLocalStorageStore = create((set, get) => ({
     const { activeTab, currentNavOption } = useUiStore.getState();
     const { isIntroScreen } = useAssistantStore.getState();
     const { currentConversationIndex } = useConversationStore.getState();
-    const { currentDocumentConversationIndex } =
-      useDocConversationsStore.getState();
+    
 
     localStorage.setItem("lastActiveDirectory", JSON.stringify(user));
     localStorage.setItem(
@@ -71,7 +66,6 @@ const useLocalStorageStore = create((set, get) => ({
       "lastConvoIndex",
       JSON.stringify({
         currentConversationIndex,
-        currentDocumentConversationIndex,
       })
     );
   },
@@ -102,7 +96,6 @@ const useLocalStorageStore = create((set, get) => ({
       },
       conversation: {
         currentConversationIndex: 0,
-        currentDocumentConversationIndex: 0,
       },
     };
 
@@ -121,10 +114,7 @@ const useLocalStorageStore = create((set, get) => ({
       currentConversationIndex:
         defaultStates.conversation.currentConversationIndex,
     });
-    useDocConversationsStore.setState({
-      currentDocumentConversationIndex:
-        defaultStates.conversation.currentDocumentConversationIndex,
-    });
+  
 
     localStorage.removeItem("lastActiveDirectory");
     localStorage.removeItem("lastUI");

@@ -40,7 +40,6 @@ const DashboardPage = ({}) => {
   const { getStorage, setStorage } = useLocalStorageStore();
 
   const { currentConversationIndex } = useConversationStore();
-  const { currentDocumentConversationIndex } = useDocConversationsStore();
   const { activeTab, currentNavOption, setCurrentNavOption } = useUiStore();
 
   useEffect(() => {
@@ -93,7 +92,7 @@ const DashboardPage = ({}) => {
     currentNavOption,
     activeTab,
     currentConversationIndex,
-    currentDocumentConversationIndex,
+    ,
   ]);
 
   return (
