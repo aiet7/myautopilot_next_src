@@ -24,7 +24,6 @@ import useToolsStore from "../assistant/sections/external/downloads/downloadStor
 import useUiStore from "../ui/uiStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
-
 const useUserStore = create((set, get) => ({
   user: null,
   userInputs: {},
