@@ -28,10 +28,13 @@ jobs:
           echo "NEXT_PUBLIC_EMAILCONNECTOR_URL: $NEXT_PUBLIC_EMAILCONNECTOR_URL"
 
           echo "Creating env_variables.txt file with environment variables"
-          echo "NEXT_PUBLIC_DB_SERVICE_URL=$NEXT_PUBLIC_DB_SERVICE_URL" >> env_variables.txt
+          echo "NEXT_PUBLIC_DB_SERVICE_URL=$NEXT_PUBLIC_DB_SERVICE_URL" > env_variables.txt
           echo "NEXT_PUBLIC_CONNECTWISE_SERVICE_URL=$NEXT_PUBLIC_CONNECTWISE_SERVICE_URL" >> env_variables.txt
           echo "NEXT_PUBLIC_GPT_SERVICE_URL=$NEXT_PUBLIC_GPT_SERVICE_URL" >> env_variables.txt
           echo "NEXT_PUBLIC_EMAILCONNECTOR_URL=$NEXT_PUBLIC_EMAILCONNECTOR_URL" >> env_variables.txt
+
+          echo "Contents of env_variables.txt:"
+          cat env_variables.txt
 
           npm install
           set NODE_ENV=production && npm run build
@@ -50,7 +53,7 @@ jobs:
           path: .
 
   deploy:
-    runs-on: windows-latest 
+    runs-on: windows-latest
     needs: build
     environment:
       name: "Production"
