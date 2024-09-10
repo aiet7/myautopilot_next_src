@@ -53,6 +53,7 @@ jobs:
         id: deploy-to-webapp
         with:
           app-name: "aiautopilot"
+          slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_BETA }}
           package: .
 
