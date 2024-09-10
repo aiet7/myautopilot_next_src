@@ -18,31 +18,20 @@ jobs:
         with:
           node-version: "18.x"
 
-      - name: Print environment variables directly
+      - name: Check and create env_variables.txt
         run: |
-          echo "Printing environment variables before assigning to file:"
-          echo "NEXT_PUBLIC_DB_SERVICE_URL=${{ secrets.NEXT_PUBLIC_DB_SERVICE_URL }}"
-          echo "NEXT_PUBLIC_CONNECTWISE_SERVICE_URL=${{ secrets.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL }}"
-          echo "NEXT_PUBLIC_GPT_SERVICE_URL=${{ secrets.NEXT_PUBLIC_GPT_SERVICE_URL }}"
-          echo "NEXT_PUBLIC_EMAILCONNECTOR_URL=${{ secrets.NEXT_PUBLIC_EMAILCONNECTOR_URL }}"
+          echo "NEXT_PUBLIC_DB_SERVICE_URL: $NEXT_PUBLIC_DB_SERVICE_URL" >> env_variables.txt
+          echo "NEXT_PUBLIC_CONNECTWISE_SERVICE_URL: $NEXT_PUBLIC_CONNECTWISE_SERVICE_URL" >> env_variables.txt
+          echo "NEXT_PUBLIC_GPT_SERVICE_URL: $NEXT_PUBLIC_GPT_SERVICE_URL" >> env_variables.txt
+          echo "NEXT_PUBLIC_EMAILCONNECTOR_URL: $NEXT_PUBLIC_EMAILCONNECTOR_URL" >> env_variables.txt
+          cat env_variables.txt # Output the content to see in the logs
         env:
           NEXT_PUBLIC_DB_SERVICE_URL: ${{ secrets.NEXT_PUBLIC_DB_SERVICE_URL }}
           NEXT_PUBLIC_CONNECTWISE_SERVICE_URL: ${{ secrets.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL }}
           NEXT_PUBLIC_GPT_SERVICE_URL: ${{ secrets.NEXT_PUBLIC_GPT_SERVICE_URL }}
           NEXT_PUBLIC_EMAILCONNECTOR_URL: ${{ secrets.NEXT_PUBLIC_EMAILCONNECTOR_URL }}
 
-      - name: Create env file for debugging
-        run: |
-          echo "Creating env_variables.txt file with environment variables"
-          echo "NEXT_PUBLIC_DB_SERVICE_URL=${{ secrets.NEXT_PUBLIC_DB_SERVICE_URL }}" > env_variables.txt
-          echo "NEXT_PUBLIC_CONNECTWISE_SERVICE_URL=${{ secrets.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL }}" >> env_variables.txt
-          echo "NEXT_PUBLIC_GPT_SERVICE_URL=${{ secrets.NEXT_PUBLIC_GPT_SERVICE_URL }}" >> env_variables.txt
-          echo "NEXT_PUBLIC_EMAILCONNECTOR_URL=${{ secrets.NEXT_PUBLIC_EMAILCONNECTOR_URL }}" >> env_variables.txt
-
-          echo "Contents of env_variables.txt:"
-          cat env_variables.txt
-
-      - name: Upload environment variables file for viewing
+      - name: Upload env_variables.txt artifact
         uses: actions/upload-artifact@v3
         with:
           name: env-variables
@@ -51,9 +40,8 @@ jobs:
       - name: npm install, build, and test
         run: |
           npm install
-          set NODE_ENV=production && npm run build
+          NODE_ENV=production npm run build
           npm run test --if-present
-
         env:
           NEXT_PUBLIC_DB_SERVICE_URL: ${{ secrets.NEXT_PUBLIC_DB_SERVICE_URL }}
           NEXT_PUBLIC_CONNECTWISE_SERVICE_URL: ${{ secrets.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL }}
@@ -65,37 +53,3 @@ jobs:
         with:
           name: node-app
           path: .
-
-  deploy:
-    runs-on: windows-latest
-    needs: build
-    environment:
-      name: "Production"
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v3
-        with:
-          name: node-app
-
-      - name: "Deploy to Azure Web App"
-        uses: azure/webapps-deploy@v2
-        id: deploy-to-webapp
-        with:
-          app-name: "aiautopilot"
-          slot-name: "Production"
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_CBFB971C81674F04ABDBDA70AB2C6D56 }}
-          package: .
-
-      - name: Verify environment variables in deployment
-        run: |
-          echo "NEXT_PUBLIC_DB_SERVICE_URL: $NEXT_PUBLIC_DB_SERVICE_URL"
-          echo "NEXT_PUBLIC_CONNECTWISE_SERVICE_URL: $NEXT_PUBLIC_CONNECTWISE_SERVICE_URL"
-          echo "NEXT_PUBLIC_GPT_SERVICE_URL: $NEXT_PUBLIC_GPT_SERVICE_URL"
-          echo "NEXT_PUBLIC_EMAILCONNECTOR_URL: $NEXT_PUBLIC_EMAILCONNECTOR_URL"
-        env:
-          NEXT_PUBLIC_DB_SERVICE_URL: ${{ secrets.NEXT_PUBLIC_DB_SERVICE_URL }}
-          NEXT_PUBLIC_CONNECTWISE_SERVICE_URL: ${{ secrets.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL }}
-          NEXT_PUBLIC_GPT_SERVICE_URL: ${{ secrets.NEXT_PUBLIC_GPT_SERVICE_URL }}
-          NEXT_PUBLIC_EMAILCONNECTOR_URL: ${{ secrets.NEXT_PUBLIC_EMAILCONNECTOR_URL }}
