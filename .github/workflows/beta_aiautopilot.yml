@@ -21,13 +21,19 @@ jobs:
       - name: npm install, build, and test
         run: |
           echo "Printing environment variables before build:"
-          echo "NEXT_PUBLIC_DB_SERVICE_URL: $NEXT_PUBLIC_DB_SERVICE_URL"
-          echo "NEXT_PUBLIC_CONNECTWISE_SERVICE_URL: $NEXT_PUBLIC_CONNECTWISE_SERVICE_URL"
-          echo "NEXT_PUBLIC_GPT_SERVICE_URL: $NEXT_PUBLIC_GPT_SERVICE_URL"
-          echo "NEXT_PUBLIC_EMAILCONNECTOR_URL: $NEXT_PUBLIC_EMAILCONNECTOR_URL"
+          echo "NEXT_PUBLIC_DB_SERVICE_URL: $env:NEXT_PUBLIC_DB_SERVICE_URL"
+          echo "NEXT_PUBLIC_CONNECTWISE_SERVICE_URL: $env:NEXT_PUBLIC_CONNECTWISE_SERVICE_URL"
+          echo "NEXT_PUBLIC_GPT_SERVICE_URL: $env:NEXT_PUBLIC_GPT_SERVICE_URL"
+          echo "NEXT_PUBLIC_EMAILCONNECTOR_URL: $env:NEXT_PUBLIC_EMAILCONNECTOR_URL"
 
+          # Install dependencies and build the project
           npm install
-          NODE_ENV=production npm run build
+
+          # Set the environment variable for Windows
+          $env:NODE_ENV="production"
+
+          # Run the build and test steps
+          npm run build --if-present
           npm run test --if-present
 
         env:
