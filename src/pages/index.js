@@ -7,7 +7,6 @@ import useUiStore from "@/utils/store/ui/uiStore.js";
 import useMspStore from "@/utils/store/auth/msp/mspStore";
 
 const WelcomePage = () => {
-  
   const { height, setHeight } = useUiStore();
   const { handleNavigateMSPSignup } = useMspStore();
 
