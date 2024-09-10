@@ -26,5 +26,4 @@ const nextConfig = {
     NEXT_PUBLIC_EMAILCONNECTOR_URL: process.env.NEXT_PUBLIC_EMAILCONNECTOR_URL,
   },
 };
-console.log(process.env.NEXT_PUBLIC_DB_SERVICE_URL)
 module.exports = withBundleAnalyzer(nextConfig);
