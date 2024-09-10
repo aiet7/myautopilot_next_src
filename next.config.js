@@ -1,3 +1,6 @@
+require('dotenv').config({ path: '.env.production' });
+
+
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true",
 });
@@ -23,5 +26,5 @@ const nextConfig = {
     NEXT_PUBLIC_EMAILCONNECTOR_URL: process.env.NEXT_PUBLIC_EMAILCONNECTOR_URL,
   },
 };
-
+console.log(process.env.NEXT_PUBLIC_DB_SERVICE_URL)
 module.exports = withBundleAnalyzer(nextConfig);

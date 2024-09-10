@@ -18,33 +18,47 @@ jobs:
         with:
           node-version: "18.x"
 
-      - name: npm install, build, and test
+      - name: Print environment variables directly
         run: |
-          echo "Printing environment variables before build:"
+          echo "Printing environment variables before assigning to file:"
+          echo "NEXT_PUBLIC_DB_SERVICE_URL=${{ secrets.NEXT_PUBLIC_DB_SERVICE_URL }}"
+          echo "NEXT_PUBLIC_CONNECTWISE_SERVICE_URL=${{ secrets.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL }}"
+          echo "NEXT_PUBLIC_GPT_SERVICE_URL=${{ secrets.NEXT_PUBLIC_GPT_SERVICE_URL }}"
+          echo "NEXT_PUBLIC_EMAILCONNECTOR_URL=${{ secrets.NEXT_PUBLIC_EMAILCONNECTOR_URL }}"
+        env:
+          NEXT_PUBLIC_DB_SERVICE_URL: ${{ secrets.NEXT_PUBLIC_DB_SERVICE_URL }}
+          NEXT_PUBLIC_CONNECTWISE_SERVICE_URL: ${{ secrets.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL }}
+          NEXT_PUBLIC_GPT_SERVICE_URL: ${{ secrets.NEXT_PUBLIC_GPT_SERVICE_URL }}
+          NEXT_PUBLIC_EMAILCONNECTOR_URL: ${{ secrets.NEXT_PUBLIC_EMAILCONNECTOR_URL }}
 
-          echo "NEXT_PUBLIC_DB_SERVICE_URL: $NEXT_PUBLIC_DB_SERVICE_URL"
-          echo "NEXT_PUBLIC_CONNECTWISE_SERVICE_URL: $NEXT_PUBLIC_CONNECTWISE_SERVICE_URL"
-          echo "NEXT_PUBLIC_GPT_SERVICE_URL: $NEXT_PUBLIC_GPT_SERVICE_URL"
-          echo "NEXT_PUBLIC_EMAILCONNECTOR_URL: $NEXT_PUBLIC_EMAILCONNECTOR_URL"
-
+      - name: Create env file for debugging
+        run: |
           echo "Creating env_variables.txt file with environment variables"
-          echo "NEXT_PUBLIC_DB_SERVICE_URL=$NEXT_PUBLIC_DB_SERVICE_URL" > env_variables.txt
-          echo "NEXT_PUBLIC_CONNECTWISE_SERVICE_URL=$NEXT_PUBLIC_CONNECTWISE_SERVICE_URL" >> env_variables.txt
-          echo "NEXT_PUBLIC_GPT_SERVICE_URL=$NEXT_PUBLIC_GPT_SERVICE_URL" >> env_variables.txt
-          echo "NEXT_PUBLIC_EMAILCONNECTOR_URL=$NEXT_PUBLIC_EMAILCONNECTOR_URL" >> env_variables.txt
+          echo "NEXT_PUBLIC_DB_SERVICE_URL=${{ secrets.NEXT_PUBLIC_DB_SERVICE_URL }}" > env_variables.txt
+          echo "NEXT_PUBLIC_CONNECTWISE_SERVICE_URL=${{ secrets.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL }}" >> env_variables.txt
+          echo "NEXT_PUBLIC_GPT_SERVICE_URL=${{ secrets.NEXT_PUBLIC_GPT_SERVICE_URL }}" >> env_variables.txt
+          echo "NEXT_PUBLIC_EMAILCONNECTOR_URL=${{ secrets.NEXT_PUBLIC_EMAILCONNECTOR_URL }}" >> env_variables.txt
 
           echo "Contents of env_variables.txt:"
           cat env_variables.txt
-
-          npm install
-          set NODE_ENV=production && npm run build
-          npm run test --if-present
 
       - name: Upload environment variables file for viewing
         uses: actions/upload-artifact@v3
         with:
           name: env-variables
           path: env_variables.txt
+
+      - name: npm install, build, and test
+        run: |
+          npm install
+          set NODE_ENV=production && npm run build
+          npm run test --if-present
+
+        env:
+          NEXT_PUBLIC_DB_SERVICE_URL: ${{ secrets.NEXT_PUBLIC_DB_SERVICE_URL }}
+          NEXT_PUBLIC_CONNECTWISE_SERVICE_URL: ${{ secrets.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL }}
+          NEXT_PUBLIC_GPT_SERVICE_URL: ${{ secrets.NEXT_PUBLIC_GPT_SERVICE_URL }}
+          NEXT_PUBLIC_EMAILCONNECTOR_URL: ${{ secrets.NEXT_PUBLIC_EMAILCONNECTOR_URL }}
 
       - name: Upload build artifact for deployment job
         uses: actions/upload-artifact@v3
