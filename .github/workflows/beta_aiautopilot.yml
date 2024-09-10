@@ -21,26 +21,27 @@ jobs:
       - name: npm install, build, and test
         run: |
           echo "Printing environment variables before build:"
-          echo "NEXT_PUBLIC_DB_SERVICE_URL: $env:NEXT_PUBLIC_DB_SERVICE_URL"
-          echo "NEXT_PUBLIC_CONNECTWISE_SERVICE_URL: $env:NEXT_PUBLIC_CONNECTWISE_SERVICE_URL"
-          echo "NEXT_PUBLIC_GPT_SERVICE_URL: $env:NEXT_PUBLIC_GPT_SERVICE_URL"
-          echo "NEXT_PUBLIC_EMAILCONNECTOR_URL: $env:NEXT_PUBLIC_EMAILCONNECTOR_URL"
 
-          # Install dependencies and build the project
+          echo "NEXT_PUBLIC_DB_SERVICE_URL: $NEXT_PUBLIC_DB_SERVICE_URL"
+          echo "NEXT_PUBLIC_CONNECTWISE_SERVICE_URL: $NEXT_PUBLIC_CONNECTWISE_SERVICE_URL"
+          echo "NEXT_PUBLIC_GPT_SERVICE_URL: $NEXT_PUBLIC_GPT_SERVICE_URL"
+          echo "NEXT_PUBLIC_EMAILCONNECTOR_URL: $NEXT_PUBLIC_EMAILCONNECTOR_URL"
+
+          echo "Creating env_variables.txt file with environment variables"
+          echo "NEXT_PUBLIC_DB_SERVICE_URL=$NEXT_PUBLIC_DB_SERVICE_URL" >> env_variables.txt
+          echo "NEXT_PUBLIC_CONNECTWISE_SERVICE_URL=$NEXT_PUBLIC_CONNECTWISE_SERVICE_URL" >> env_variables.txt
+          echo "NEXT_PUBLIC_GPT_SERVICE_URL=$NEXT_PUBLIC_GPT_SERVICE_URL" >> env_variables.txt
+          echo "NEXT_PUBLIC_EMAILCONNECTOR_URL=$NEXT_PUBLIC_EMAILCONNECTOR_URL" >> env_variables.txt
+
           npm install
-
-          # Set the environment variable for Windows
-          $env:NODE_ENV="production"
-
-          # Run the build and test steps
-          npm run build --if-present
+          set NODE_ENV=production && npm run build
           npm run test --if-present
 
-        env:
-          NEXT_PUBLIC_DB_SERVICE_URL: ${{ secrets.NEXT_PUBLIC_DB_SERVICE_URL }}
-          NEXT_PUBLIC_CONNECTWISE_SERVICE_URL: ${{ secrets.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL }}
-          NEXT_PUBLIC_GPT_SERVICE_URL: ${{ secrets.NEXT_PUBLIC_GPT_SERVICE_URL }}
-          NEXT_PUBLIC_EMAILCONNECTOR_URL: ${{ secrets.NEXT_PUBLIC_EMAILCONNECTOR_URL }}
+      - name: Upload environment variables file for viewing
+        uses: actions/upload-artifact@v3
+        with:
+          name: env-variables
+          path: env_variables.txt
 
       - name: Upload build artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -49,7 +50,7 @@ jobs:
           path: .
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest 
     needs: build
     environment:
       name: "Production"
