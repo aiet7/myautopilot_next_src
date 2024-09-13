@@ -5,9 +5,15 @@ import TicketMode from "./Sections/Internal/TicketBot/TicketMode";
 import ChatMode from "./Sections/Internal/ChatBot/ChatMode";
 import QueueMenus from "./Sections/Internal/QueueBot/QueueMode";
 import useUiStore from "@/utils/store/ui/uiStore";
+import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
+import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
+import useQueueStore from "@/utils/store/interaction/queue/queueStore";
 
 const AssistantMenus = () => {
   const { currentNavOption } = useUiStore();
+
+  const { activeTicketBotMode } = useTicketsStore();
+  const { activeQueueBotMode } = useQueueStore();
 
   const renderModeComponent = () => {
     switch (currentNavOption) {
@@ -21,10 +27,17 @@ const AssistantMenus = () => {
         return null;
     }
   };
+
+  const showPagination =
+    (currentNavOption === "Tickets" && activeTicketBotMode === "History") ||
+    currentNavOption === "Engineer" ||
+    (currentNavOption === "Queue" &&
+      activeQueueBotMode === "All Queue Tickets");
+
   return (
-    <div className="dark:bg-gray-900 flex flex-wrap items-center justify-between  w-full shadow-xl px-4 py-1 bg-white gap-4 ">
+    <div className="dark:bg-gray-900 flex flex-wrap items-center justify-between min-h-12 w-full shadow-xl px-4  bg-white gap-4 ">
       {renderModeComponent()}
-      <Pagination />
+      {showPagination && <Pagination />}
     </div>
   );
 };

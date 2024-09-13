@@ -3,6 +3,7 @@ import useFormsStore from "../forms/formsStore";
 import useRefStore from "../ref/refStore";
 import useInitializeAppStore from "../../init/initializeAppStore";
 import {
+  handleGetAgents,
   handleGetConversations,
   handleGetMessages,
 } from "@/utils/api/serverProps";
@@ -12,6 +13,7 @@ const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 
 const useConversationStore = create((set, get) => ({
+  agents: [],
   conversationHistories: [],
   currentConversationIndex: null,
   troubleshootingConversationId: null,
@@ -59,12 +61,28 @@ const useConversationStore = create((set, get) => ({
 
   setCurrentConversationIndex: (id) => set({ currentConversationIndex: id }),
 
-  initializeConversations: async () => {
+  initializeAgents: async () => {
+    const userStore = useUserStore.getState();
+    set({ agents: [] });
+
+    if (userStore.user) {
+      const initializeAgents = await handleGetAgents();
+
+      set({ agents: initializeAgents });
+
+      if (initializeAgents.length > 0) {
+        set({ activeChatBotMode: initializeAgents[0].agentName });
+      }
+    }
+  },
+
+  initializeConversations: async (agentId) => {
     const userStore = useUserStore.getState();
     set({ conversationHistories: [] });
 
     if (userStore.user) {
       const initialConversations = await handleGetConversations(
+        agentId,
         userStore.user.id
       );
       set({
@@ -297,6 +315,12 @@ const useConversationStore = create((set, get) => ({
     }
   },
 
+  handleAgentSelected: async (agentId) => {
+    const { initializeConversations } = get();
+    await initializeConversations(agentId);
+    set({ currentConversationIndex: null });
+  },
+
   handleConversationSelected: async (convoId) => {
     const { initializeMessages } = get();
     await initializeMessages(convoId);
@@ -360,6 +384,7 @@ const useConversationStore = create((set, get) => ({
 
   clearConversation: () => {
     set({
+      agents: [],
       conversationHistories: [],
       currentConversationIndex: null,
       troubleshootingConversationId: null,

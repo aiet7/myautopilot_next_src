@@ -11,7 +11,7 @@ const ChatFilterMenu = () => {
   return (
     <div
       onMouseLeave={() => setActiveChatFilterModeOpen("")}
-      className="absolute top-4 z-[100] left-1 w-full bg-white border rounded shadow-lg "
+      className="absolute top-4 z-[100] w-[150px] bg-white border rounded shadow-lg "
     >
       <div
         className={`${

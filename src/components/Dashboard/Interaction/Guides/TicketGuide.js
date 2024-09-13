@@ -16,9 +16,15 @@ const TicketGuide = () => {
       <div className="flex flex-col gap-6 items-center">
         <GiRobotHelmet size={70} />
         <p className="text-lg font-semibold">Hi, I Am Jarvis</p>
-        <div className="flex flex-col items-center">
-          <h2 className="text-2xl font-bold">Your Tech Support Engineer</h2>
-          <p className="text-lg font-semibold">I Can Help You Open Tickets</p>
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex flex-col items-center">
+            <h2 className="text-2xl font-bold">Your Tech Support Engineer</h2>
+            <p className="text-lg font-semibold">I Can Help You Open Tickets</p>
+          </div>
+
+          <p className="text-lg font-semibold">
+            Start Typing Your Issue In The Input Box Below
+          </p>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-2 ">

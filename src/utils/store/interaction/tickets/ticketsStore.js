@@ -22,7 +22,7 @@ const useTicketsStore = create((set, get) => ({
   activeTicketButton: "Ticket",
   activeNoteCategory: "Description",
 
-  activeTicketOptions: ["History", "Ticket"],
+  activeTicketOptions: ["Create Ticket", "History", "Ticket"],
 
   currentTicketPage: 1,
   ticketsPerPage: 30,

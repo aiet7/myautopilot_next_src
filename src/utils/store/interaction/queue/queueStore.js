@@ -572,7 +572,6 @@ const useQueueStore = create((set, get) => ({
 
   handleAddTroubleShootMessage: async (message) => {
     const { messageIdRef } = useRefStore.getState();
-    const { prependTroubleshootText } = useTicketConversationsStore.getState();
     if (message.trim() !== "") {
       try {
         const response = await fetch(`${gptServiceUrl}/message`, {
@@ -581,14 +580,12 @@ const useQueueStore = create((set, get) => ({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            text: prependTroubleshootText + "Based on these details: ",
-            message,
+            text: message
           }),
         });
 
         if (response.status === 200) {
           const responseBody = await response.json();
-
           messageIdRef.current = responseBody.id;
 
           set((prevState) => {

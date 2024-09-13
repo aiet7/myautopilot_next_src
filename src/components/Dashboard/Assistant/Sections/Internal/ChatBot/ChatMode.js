@@ -5,30 +5,39 @@ import useConversationStore from "@/utils/store/interaction/conversations/conver
 
 const ChatMode = () => {
   const {
+    agents,
     activeChatBotMode,
-    activeChatOptions,
+    handleAgentSelected,
     setActiveChatBotMode,
     setActiveChatFilterModeOpen,
   } = useConversationStore();
 
   const { setAssistantWidthOpen } = useAssistantStore();
-
   return (
     <div className="relative flex items-center ">
       <select
         value={activeChatBotMode}
         className="px-4 py-1 border w-[150px]"
         onChange={(e) => {
-          setActiveChatFilterModeOpen(false);
-          setAssistantWidthOpen(false);
-          setActiveChatBotMode(e.target.value);
+          const selectedAgentId = agents.find(
+            (agent) => agent.agentName === e.target.value
+          )?.id;
+          if (selectedAgentId) {
+            setActiveChatFilterModeOpen(false);
+            setAssistantWidthOpen(false);
+            setActiveChatBotMode(e.target.value);
+            handleAgentSelected(selectedAgentId);
+          }
         }}
       >
-        {activeChatOptions.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
+        {agents.map((agent) => {
+          const { id, agentName, defaultPrompt } = agent;
+          return (
+            <option key={id} value={agentName}>
+              {agentName}
+            </option>
+          );
+        })}
       </select>
     </div>
   );

@@ -13,6 +13,7 @@ import useConversationStore from "@/utils/store/interaction/conversations/conver
 
 const History = () => {
   const {
+    agents,
     currentChatPage,
     chatsPerPage,
     filterChatMode,
@@ -35,11 +36,11 @@ const History = () => {
     handleCancelEditConversationTitle,
     handleEditConversationPrompt,
     handleEditConversationTitle,
-    initializeConversations,
+    initializeAgents,
   } = useConversationStore();
 
   useEffect(() => {
-    initializeConversations();
+    initializeAgents();
   }, []);
 
   const filteredConversationHistories = conversationHistories
@@ -83,7 +84,7 @@ const History = () => {
     setTotalChatPages(total);
     setFilteredChatCount(filteredConversationHistories?.length || 0);
   }, [conversationHistories, chatsPerPage, searchValue, filterChatMode]);
-
+  
   return (
     <div className="flex flex-col h-full p-4">
       <div className="flex items-center w-full pb-4">

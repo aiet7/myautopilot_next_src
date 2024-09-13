@@ -136,11 +136,17 @@ export const handleGetRoles = async (msp) => {
   return response.json();
 };
 
-export const handleGetConversations = async (clientId) => {
+export const handleGetConversations = async (agentId, clientId) => {
+  // const response = await fetch(
+  //   `${dbServiceUrl}/conversations/getConversationsByAgentID?agentId=${encodeURIComponent(
+  //     agentId
+  //   )}&userId=${encodeURIComponent(clientId)}`
+  // );
+
   const response = await fetch(
-    `${dbServiceUrl}/conversations/getConversations?userId=${encodeURIComponent(
-      clientId
-    )}`
+    `http://localhost:9019/conversations/getConversationsByAgentID?agentId=${encodeURIComponent(
+      agentId
+    )}&userId=${encodeURIComponent(clientId)}`
   );
 
   return response.json();
