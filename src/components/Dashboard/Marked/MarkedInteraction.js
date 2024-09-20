@@ -155,7 +155,7 @@ const MarkedInteraction = ({ id, elements, markdown }) => {
           {guidanceItems?.length > 0 && (
             <div className="flex flex-col gap-2 w-full">
               <p className="font-bold text-lg">
-                Vision's Recommendations For You
+                Recommendations From Vision For You
               </p>
               {guidanceItems?.map((item, index) => (
                 <div key={index} className="flex flex-col gap-1">
