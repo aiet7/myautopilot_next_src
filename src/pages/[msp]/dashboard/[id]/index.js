@@ -7,10 +7,8 @@ import { useRouter } from "next/router";
 
 import useUiStore from "@/utils/store/ui/uiStore.js";
 import useLocalStorageStore from "@/utils/store/localstorage/localStorageStore.js";
-import useInitializeAppStore from "@/utils/store/init/initializeAppStore.js";
 import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore.js";
-import useDocConversationsStore from "@/utils/store/interaction/conversations/docConversationsStore.js";
 import Cookies from "js-cookie";
 import useUserStore from "@/utils/store/user/userStore";
 import useMspStore from "@/utils/store/auth/msp/mspStore";
@@ -86,17 +84,12 @@ const DashboardPage = ({}) => {
     return () => {
       window.removeEventListener("beforeunload", setStorage);
     };
-  }, [
-    currentNavOption,
-    activeTab,
-    currentConversationIndex,
-    ,
-  ]);
+  }, [currentNavOption, activeTab, currentConversationIndex, ,]);
 
   return (
     <>
       {currentNavOption === "Tickets" ||
-      currentNavOption === "Engineer" ||
+      currentNavOption === "Assistant" ||
       currentNavOption === "Queue" ? (
         <>
           <Interaction />

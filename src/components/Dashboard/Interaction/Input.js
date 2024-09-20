@@ -29,10 +29,10 @@ const Input = () => {
       inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
     }
   }, [userInput, currentNavOption, myQueueTicket]);
-  
+
   return (
     <div className="relative max-w-[700px] mx-auto w-full ">
-      {currentNavOption === "Engineer" && (
+      {currentNavOption === "Assistant" && (
         <div className="relative flex items-center px-4 py-2 ">
           <textarea
             ref={inputRef}
@@ -160,11 +160,6 @@ const Input = () => {
           </div>
         </div>
       )}
-      {/* {interactionMenuOpen && (
-        <div className="absolute flex flex-col  font-semibold bottom-12 right-0   bg-white border rounded-lg shadow-lg w-[100px] p-1 z-[100] ">
-          qweqeqwe
-        </div>
-      )} */}
     </div>
   );
 };

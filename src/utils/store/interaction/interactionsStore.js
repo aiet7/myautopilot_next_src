@@ -338,7 +338,7 @@ const useInteractionStore = create((set, get) => ({
       set({
         isWaiting: true,
         isServerError: false,
-        userInput: "", // Clear user input after sending
+        userInput: "", 
       });
 
       try {

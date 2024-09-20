@@ -19,7 +19,7 @@ const InternalPilot = () => {
     >
       <AssistantMenus />
       {currentNavOption === "Tickets" && <TicketBot />}
-      {currentNavOption === "Engineer" && <ChatBot />}
+      {currentNavOption === "Assistant" && <ChatBot />}
       {currentNavOption === "Queue" && <QueueBot />}
     </div>
   );

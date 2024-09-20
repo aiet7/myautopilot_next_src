@@ -47,7 +47,7 @@ const Pagination = () => {
   } = useQueueStore();
 
   const isTickets = currentNavOption === "Tickets";
-  const isChats = currentNavOption === "Engineer";
+  const isChats = currentNavOption === "Assistant";
   const isQueueTickets = currentNavOption === "Queue";
 
   const currentPage = isTickets
@@ -102,7 +102,7 @@ const Pagination = () => {
     switch (currentNavOption) {
       case "Tickets":
         return <TicketFilterMenu />;
-      case "Engineer":
+      case "Assistant":
         return <ChatFilterMenu />;
       case "Queue":
         return <QueueFilterMenu />;

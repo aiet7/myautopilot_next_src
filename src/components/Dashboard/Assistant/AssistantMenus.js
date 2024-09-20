@@ -6,7 +6,6 @@ import ChatMode from "./Sections/Internal/ChatBot/ChatMode";
 import QueueMenus from "./Sections/Internal/QueueBot/QueueMode";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
-import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
 import useQueueStore from "@/utils/store/interaction/queue/queueStore";
 
 const AssistantMenus = () => {
@@ -19,7 +18,7 @@ const AssistantMenus = () => {
     switch (currentNavOption) {
       case "Tickets":
         return <TicketMode />;
-      case "Engineer":
+      case "Assistant":
         return <ChatMode />;
       case "Queue":
         return <QueueMenus />;
@@ -30,7 +29,7 @@ const AssistantMenus = () => {
 
   const showPagination =
     (currentNavOption === "Tickets" && activeTicketBotMode === "History") ||
-    currentNavOption === "Engineer" ||
+    currentNavOption === "Assistant" ||
     (currentNavOption === "Queue" &&
       activeQueueBotMode === "All Queue Tickets");
 

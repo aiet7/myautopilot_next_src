@@ -9,7 +9,7 @@ const initialWidth = isBrowser ? window.innerWidth : 1023;
 const useUiStore = create((set, get) => ({
   height: null,
   activeTab: null,
-  options: ["Tickets", "Queue", "Engineer", "Settings"],
+  options: ["Tickets", "Queue", "Assistant", "Settings"],
   currentNavOption: "Tickets",
   showQueueSubMenu: false,
   openHistory: initialWidth > 1023 ? true : false,
@@ -60,7 +60,7 @@ const useUiStore = create((set, get) => ({
       await handleShowAllQueueTickets(mspCustomDomain);
     }
 
-    if (option === "Engineer") {
+    if (option === "Assistant") {
       setCurrentConversationIndex(null);
     }
   },
@@ -106,7 +106,7 @@ const useUiStore = create((set, get) => ({
     set({
       height: null,
       activeTab: null,
-      options: ["Tickets", "Queue", "Engineer", "Settings"],
+      options: ["Tickets", "Queue", "Assistant", "Settings"],
       currentNavOption: "Tickets",
       showQueueSubMenu: false,
       openHistory: initialWidth > 1023 ? true : false,
@@ -115,7 +115,8 @@ const useUiStore = create((set, get) => ({
       openAdmin: initialWidth > 1023 ? true : false,
       openTickets: initialWidth > 1023 ? true : false,
       openQueue: initialWidth > 1023 ? true : false,
-      openNav: initialWidth > 1,
+      openNav: initialWidth > 1023 ? true : false,
+      openSettings: false,
     });
   },
 }));

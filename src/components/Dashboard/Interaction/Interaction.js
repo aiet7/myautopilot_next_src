@@ -24,7 +24,6 @@ const Interaction = ({}) => {
   } = useUiStore();
 
   const { isServerError } = useFormsStore();
-
   const {
     isWaiting,
     isAtBottom,
@@ -36,7 +35,7 @@ const Interaction = ({}) => {
   const { assistantWidth } = useAssistantStore();
 
   useEffect(() => {
-    if (currentNavOption === "Engineer" || currentNavOption === "Document") {
+    if (currentNavOption === "Assistant" || currentNavOption === "Document") {
       handleScrollToBottom(false);
     }
   }, [currentNavOption]);
@@ -69,7 +68,7 @@ const Interaction = ({}) => {
         openNav && openAssistant && `${renderWidth()}`
       }  ${
         (openNav &&
-          (currentNavOption === "Engineer" ||
+          (currentNavOption === "Assistant" ||
             currentNavOption === "Tickets" ||
             currentNavOption === "Queue") &&
           "lg:opacity-100 opacity-5 xl:ml-[250px]") ||
@@ -78,7 +77,8 @@ const Interaction = ({}) => {
     >
       {!isAtBottom &&
         isOverflowed &&
-        (currentNavOption === "Engineer" || currentNavOption === "Tickets") && (
+        (currentNavOption === "Assistant" ||
+          currentNavOption === "Tickets") && (
           <button
             onClick={handleScrollToBottom}
             className={`dark:border-white/10 dark:bg-white/10 dark:text-gray-200 absolute bottom-28 right-4 rounded-full border border-gray-200 bg-gray-50 text-gray-600`}
@@ -88,7 +88,7 @@ const Interaction = ({}) => {
         )}
 
       {currentNavOption === "Tickets" && <TicketCreation />}
-      {currentNavOption === "Engineer" && <EngineerChat />}
+      {currentNavOption === "Assistant" && <EngineerChat />}
       {currentNavOption === "Queue" && <Troubleshoot />}
       <div className="px-4 py-2">
         {isServerError ? (

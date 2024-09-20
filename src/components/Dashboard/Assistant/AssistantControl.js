@@ -4,7 +4,6 @@ import useUiStore from "@/utils/store/ui/uiStore.js";
 import TicketSearch from "./Sections/Internal/TicketBot/TicketSearch";
 import ChatSearch from "./Sections/Internal/ChatBot/ChatSearch";
 import { TbResize } from "react-icons/tb";
-import { BsCheck } from "react-icons/bs";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
@@ -23,17 +22,15 @@ const AssistantControl = () => {
   } = useAssistantStore();
 
   const { setActiveTicketFilterModeOpen } = useTicketsStore();
-  const { setActiveChatBotModeOpen, setActiveChatFilterModeOpen } =
-    useConversationStore();
+  const { setActiveChatFilterModeOpen } = useConversationStore();
 
-  const { setActiveQueueFilterModeOpen, setActiveQueueBotModeOpen } =
-    useQueueStore();
+  const { setActiveQueueFilterModeOpen } = useQueueStore();
 
   const renderSearchComponent = () => {
     switch (currentNavOption) {
       case "Tickets":
         return <TicketSearch />;
-      case "Engineer":
+      case "Assistant":
         return <ChatSearch />;
       case "Queue":
         return <QueueSearch />;

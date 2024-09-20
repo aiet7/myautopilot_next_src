@@ -1,18 +1,12 @@
 "use client";
 
-import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
 import useInteractionStore from "@/utils/store/interaction/interactionsStore";
 
 const EngineerButtons = () => {
   const {
-    diagnosticChatQuestions,
     userChatButtonsSelected,
     setUserChatButtonsSelected,
   } = useInteractionStore();
-
-  const { conversationHistories } = useConversationStore()
-
-  console.log(conversationHistories)
 
 
   return (

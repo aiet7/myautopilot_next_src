@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import useUiStore from "@/utils/store/ui/uiStore";
@@ -14,7 +14,7 @@ const SettingsRail = ({}) => {
     <div
       className={`dark:bg-[#111111] bg-[#f6f8fc] flex items-center ${
         activeTab === "admin" ||
-        currentNavOption === "Engineer" ||
+        currentNavOption === "Assistant" ||
         currentNavOption === "Document" ||
         currentNavOption === "Tickets" ||
         currentNavOption === "Queue"
@@ -23,7 +23,7 @@ const SettingsRail = ({}) => {
       } px-4 py-2 lg:hidden`}
     >
       {(activeTab === "admin" ||
-        currentNavOption === "Engineer" ||
+        currentNavOption === "Assistant" ||
         currentNavOption === "Document" ||
         currentNavOption === "Tickets" ||
         currentNavOption === "Queue") && (
