@@ -2,11 +2,12 @@ import MarkedInteraction from "../../Marked/MarkedInteraction";
 import useTicketConversationsStore from "@/utils/store/interaction/conversations/ticketConversationsStore";
 import { useEffect } from "react";
 import TicketButtons from "./Ticket/TicketButtons";
-import EngineerButtons from "../Interfaces/EngineerChat/EngineerButtons";
+
 
 const Switch = ({ item }) => {
-  const { setIsMobile } = useTicketConversationsStore();
 
+  const { setIsMobile } = useTicketConversationsStore();
+  
   useEffect(() => {
     if (typeof window !== "undefined") {
       const handleResize = () => {
@@ -21,14 +22,16 @@ const Switch = ({ item }) => {
       };
     }
   }, []);
-
   if (item.type === "ticketButtons") {
     return <TicketButtons />;
   }
-  if (item.type === "engineerButtons") {
-    return <EngineerButtons />;
-  }
 
-  return <MarkedInteraction id={item.id} markdown={item.content} />;
+  return (
+    <MarkedInteraction
+      id={item.id}
+      elements={item.elements}
+      markdown={item.content}
+    />
+  );
 };
 export default Switch;

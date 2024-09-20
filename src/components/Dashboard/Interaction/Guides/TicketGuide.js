@@ -11,7 +11,7 @@ const TicketGuide = () => {
     <div className="flex flex-col items-center justify-between p-4 text-xs h-full  max-w-[700px] mx-auto">
       <div className="dark:border-white flex items-center justify-center border border-black px-12 py-2 rounded-lg font-bold mb-4">
         <BsStars size={15} />
-        <span>ET 7</span>
+        <span className="text-lg">AI Autopilot</span>
       </div>
       <div className="flex flex-col gap-6 items-center">
         <GiRobotHelmet size={70} />

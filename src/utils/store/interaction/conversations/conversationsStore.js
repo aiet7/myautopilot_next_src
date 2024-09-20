@@ -8,14 +8,17 @@ import {
   handleGetMessages,
 } from "@/utils/api/serverProps";
 import useUserStore from "../../user/userStore";
+import useInteractionStore from "../interactionsStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 
 const useConversationStore = create((set, get) => ({
   agents: [],
+  selectedAgent: null,
   conversationHistories: [],
   currentConversationIndex: null,
+
   troubleshootingConversationId: null,
   activeChatBotMode: "History",
   filterChatMode: "Newest",
@@ -63,6 +66,7 @@ const useConversationStore = create((set, get) => ({
 
   initializeAgents: async () => {
     const userStore = useUserStore.getState();
+    const { initializeConversations } = get();
     set({ agents: [] });
 
     if (userStore.user) {
@@ -71,7 +75,11 @@ const useConversationStore = create((set, get) => ({
       set({ agents: initializeAgents });
 
       if (initializeAgents.length > 0) {
-        set({ activeChatBotMode: initializeAgents[0].agentName });
+        set({
+          activeChatBotMode: initializeAgents[0].agentName,
+          selectedAgent: initializeAgents[0].id,
+        });
+        await initializeConversations(initializeAgents[0].id);
       }
     }
   },
@@ -158,8 +166,8 @@ const useConversationStore = create((set, get) => ({
   },
 
   handleSaveConversationTitle: async (convoId, userId) => {
-    const { selectedAgent } = useInitializeAppStore.getState();
-    const { conversationHistories, tempTitle, tempPrompt } = get();
+    const { selectedAgent, conversationHistories, tempTitle, tempPrompt } =
+      get();
 
     const currentConversation = conversationHistories.find(
       (convo) => convo.id === convoId
@@ -252,7 +260,9 @@ const useConversationStore = create((set, get) => ({
 
   handleNewConversation: async (highlight = true) => {
     const userStore = useUserStore.getState();
-    const { selectedAgent } = useInitializeAppStore.getState();
+
+    const { selectedAgent } = get();
+
     const timestamp = new Date().toISOString().replace(/[-:.]/g, "");
 
     const newConversation = {
@@ -317,8 +327,12 @@ const useConversationStore = create((set, get) => ({
 
   handleAgentSelected: async (agentId) => {
     const { initializeConversations } = get();
+
     await initializeConversations(agentId);
-    set({ currentConversationIndex: null });
+    set({
+      currentConversationIndex: null,
+      selectedAgent: agentId,
+    });
   },
 
   handleConversationSelected: async (convoId) => {
@@ -347,7 +361,7 @@ const useConversationStore = create((set, get) => ({
     });
   },
 
-  handleAddJarvisAssistantMessage: (message, buttons) => {
+  handleAddJarvisAssistantMessage: (message, elements) => {
     const { messageIdRef } = useRefStore.getState();
 
     set((state) => {
@@ -360,7 +374,7 @@ const useConversationStore = create((set, get) => ({
             content: message,
             role: "assistant",
             timeStamp: new Date().toISOString(),
-            type: buttons ? "engineerButtons" : "markdown",
+            elements: elements,
           });
           return { ...convo, messages: updatedMessages };
         }
@@ -371,22 +385,13 @@ const useConversationStore = create((set, get) => ({
     });
   },
 
-  handleRemoveButtons: () => {
-    set((state) => {
-      return {
-        ...state,
-        messages: state.messages.filter(
-          (msg) => msg.type !== "engineerButtons"
-        ),
-      };
-    });
-  },
-
   clearConversation: () => {
     set({
       agents: [],
+      selectedAgent: null,
       conversationHistories: [],
       currentConversationIndex: null,
+
       troubleshootingConversationId: null,
       activeChatBotMode: "History",
       filterChatMode: "Newest",

@@ -11,7 +11,7 @@ const EngineerGuide = () => {
     <div className="flex flex-col items-center justify-between p-4 h-full max-w-[700px] mx-auto text-xs">
       <div className="dark:border-white flex items-center justify-center border border-black px-12 py-2 rounded-lg font-bold">
         <BsStars size={15} />
-        <span>Autopilot</span>
+        <span className="text-lg">AI Autopilot</span>
       </div>
       <div className="flex flex-col gap-6 items-center">
         <GiRobotAntennas size={70} />

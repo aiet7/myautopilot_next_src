@@ -6,15 +6,13 @@ import Prism from "prismjs";
 import "../../../utils/marked/languages";
 import useRefStore from "@/utils/store/marked/ref/refStore";
 
-import { FiThumbsUp, FiThumbsDown } from "react-icons/fi";
 import useInteractionStore from "@/utils/store/interaction/interactionsStore";
-import useUiStore from "@/utils/store/ui/uiStore";
 
-const MarkedInteraction = ({ id, markdown }) => {
-  const { currentNavOption } = useUiStore();
-  const { feedback, handleSubmitFeedback } = useInteractionStore();
+const MarkedInteraction = ({ id, elements, markdown }) => {
+  const { userChatButtonsSelected, setUserChatButtonsSelected } =
+    useInteractionStore();
+
   const { copyRef } = useRefStore();
-
   useEffect(() => {
     if (copyRef.current) {
       copyRef.current.querySelectorAll(".copy-code").forEach((element) => {
@@ -54,7 +52,6 @@ const MarkedInteraction = ({ id, markdown }) => {
       });
     }
   }, [markdown]);
-
 
   const renderer = new marked.Renderer();
 
@@ -103,38 +100,98 @@ const MarkedInteraction = ({ id, markdown }) => {
   };
 
   marked.setOptions({ renderer, gfm: true });
+  const explanations = elements?.filter((item) => item.type === "Explanation");
+  const guidanceItems = elements?.filter((item) => item.type === "Guidance");
+  const questionItems = elements?.filter(
+    (item) => item.type === "Question" && item.options?.length
+  );
 
   return (
     <div ref={copyRef}>
-      <div
-        className="flex flex-col gap-2"
-        dangerouslySetInnerHTML={{
-          __html: marked(markdown, { headerIds: false, mangle: false }),
-        }}
-      />
-      {id.endsWith("-ai") && currentNavOption === "Engineer" ? (
-        <div className="dark:text-blue-500 flex items-center justify-between pt-2 text-blue-800 max-w-[450px]">
-          <div className="flex items-center gap-2">
-            <FiThumbsUp
-              data-tooltip-id="Positive Feedback"
-              onClick={() => handleSubmitFeedback(id, false)}
-              className={`${
-                feedback[id] === false ? "text-green-200" : ""
-              } dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none`}
-              size={30}
-            />
+      <div className="flex flex-col gap-2">
+        <div
+          className="flex flex-col gap-2"
+          dangerouslySetInnerHTML={{
+            __html: marked(markdown, { headerIds: false, mangle: false }),
+          }}
+        />
 
-            <FiThumbsDown
-              data-tooltip-id="Negative Feedback"
-              onClick={() => handleSubmitFeedback(id, true)}
-              className={`${
-                feedback[id] === true ? "text-red-200" : ""
-              } dark:border-white/20 cursor-pointer border border-black/10 p-1 rounded outline-none`}
-              size={30}
-            />
+        {explanations?.length > 0 && (
+          <div className="p-4 flex flex-col gap-2 bg-gray-100 dark:bg-gray-800 rounded-md">
+            <p className="font-bold text-lg">Explanation</p>
+            {explanations?.map((item, index) => (
+              <p key={index}>{item.content}</p>
+            ))}
           </div>
+        )}
+        <div className="flex flex-col gap-6">
+          {questionItems?.length > 0 && (
+            <div className="flex flex-col gap-3 w-full">
+              <p className="font-bold text-lg">Questions</p>
+              {questionItems?.map((item, index) => (
+                <div key={index} className="flex flex-col gap-1">
+                  <p className="font-bold text-md">{item.content}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {item.options.map((option, index) => (
+                      <button
+                        key={index}
+                        className={`w-[300px] rounded-md border py-5 ${
+                          userChatButtonsSelected[item.content] === option
+                            ? "dark:bg-white/40 bg-black/20"
+                            : "dark:text-white dark:hover:bg-white/40 hover:bg-black/20 text-black"
+                        }`}
+                        onClick={() => {
+                          setUserChatButtonsSelected(item.content, option);
+                        }}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          {guidanceItems?.length > 0 && (
+            <div className="flex flex-col gap-2 w-full">
+              <p className="font-bold text-lg">
+                Vision's Recommendations For You
+              </p>
+              {guidanceItems?.map((item, index) => (
+                <div key={index} className="flex flex-col gap-1">
+                  <p
+                    onClick={() => {
+                      setUserChatButtonsSelected(item.content, " ");
+                    }}
+                    className={`cursor-pointer w-[300px] px-4 text-left rounded-md border py-5 ${
+                      userChatButtonsSelected[item.content] === " "
+                        ? "dark:bg-white/40 bg-black/20"
+                        : "dark:text-white dark:hover:bg-white/40 hover:bg-black/20 text-black"
+                    }`}
+                  >
+                    {item.content}
+                  </p>
+                  {item.options && (
+                    <div className="flex flex-wrap gap-2">
+                      {item.options.map((option, index) => (
+                        <button
+                          key={index}
+                          className="w-[200px] rounded-md border py-5 dark:text-white dark:hover:bg-white/40 hover:bg-black/20 text-black"
+                          onClick={() => {
+                            setUserChatButtonsSelected(item.content, option);
+                          }}
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      ) : null}
+      </div>
     </div>
   );
 };

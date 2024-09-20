@@ -33,6 +33,8 @@ const useInteractionStore = create((set, get) => ({
   textAreaheight: "24px",
   interactionMenuOpen: false,
 
+  previousButtonsId: null,
+
   setInteractionMenuOpen: (open) => set({ interactionMenuOpen: open }),
 
   setUserTicketButtonsSelected: (question, option) =>
@@ -64,21 +66,21 @@ const useInteractionStore = create((set, get) => ({
         `${question}: ${option}`
       );
 
-      const newUserInput = questionExists
-        ? state.userInput
-        : `${state.userInput}\n${question}: ${option}`;
-
       const newDiagnosticChatMessage = questionExists
         ? state.diagnosticChatMessage
         : `${state.diagnosticChatMessage}\n${question}: ${option}`;
+
+      const newUserInput = questionExists
+        ? state.userInput
+        : `${state.userInput}\n${question}: ${option}`;
 
       return {
         userChatButtonsSelected: {
           ...state.userChatButtonsSelected,
           [question]: option,
         },
-        userInput: newUserInput,
-        diagnosticChatMessage: newDiagnosticChatMessage,
+        diagnosticChatMessage: newDiagnosticChatMessage.trim(),
+        userInput: newUserInput.trim(),
       };
     }),
 
@@ -310,6 +312,79 @@ const useInteractionStore = create((set, get) => ({
     }
   },
 
+  handleSendMessage: async (message) => {
+    const { inputRef, messageIdRef } = useRefStore.getState();
+    const userStore = useUserStore.getState();
+    const {
+      handleIfConversationExists,
+      handleAddJarvisUserMessage,
+      handleAddJarvisAssistantMessage,
+    } = useConversationStore.getState();
+
+    const { userChatButtonsSelected, userInput } = get();
+
+    let currentConversation = await handleIfConversationExists();
+    if (
+      (message.trim() !== "" ||
+        Object.keys(userChatButtonsSelected).length > 0) &&
+      currentConversation
+    ) {
+      inputRef.current.focus();
+
+      const messageToSend = message.trim() !== "" ? message : userInput;
+      console.log(messageToSend);
+      handleAddJarvisUserMessage(messageToSend);
+
+      set({
+        isWaiting: true,
+        isServerError: false,
+        userInput: "", // Clear user input after sending
+      });
+
+      try {
+        const userMessage = messageToSend.trim();
+
+        const response = await fetch(`${gptServiceUrl}/jarvisQandA`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            text: userMessage,
+            conversationId: currentConversation.id,
+            technicianId: userStore.user.id,
+          }),
+        });
+
+        if (response.status === 200) {
+          const responseBody = await response.json();
+          let parsedAiContent = JSON.parse(responseBody.content);
+
+          messageIdRef.current = responseBody.messages.id;
+
+          if (parsedAiContent && parsedAiContent.interactiveElements) {
+            handleAddJarvisAssistantMessage(
+              parsedAiContent.explanation,
+              parsedAiContent.interactiveElements
+            );
+
+            set({
+              previousButtonsId: `${messageIdRef.current}-ai`,
+            });
+          } else {
+            handleAddJarvisAssistantMessage(responseBody.aiContent, null);
+          }
+        }
+      } catch (e) {
+        console.log(e);
+      } finally {
+        set({
+          isWaiting: false,
+        });
+      }
+    }
+  },
+
   // handleSendMessage: async (message) => {
   //   const { inputRef, messageIdRef } = useRefStore.getState();
   //   const userStore = useUserStore.getState();
@@ -318,8 +393,6 @@ const useInteractionStore = create((set, get) => ({
   //     handleAddJarvisUserMessage,
   //     handleAddJarvisAssistantMessage,
   //   } = useConversationStore.getState();
-
-  //   const { diagnosticChatMessage } = get();
 
   //   let currentConversation = await handleIfConversationExists();
   //   if (message.trim() !== "" && currentConversation) {
@@ -331,16 +404,13 @@ const useInteractionStore = create((set, get) => ({
   //       userInput: "",
   //     });
   //     try {
-  //       let userMessage = message;
-  //       userMessage = `${diagnosticChatMessage}\n${message}`;
-
-  //       const response = await fetch(`${gptServiceUrl}/jarvisQandA`, {
+  //       const response = await fetch(`${gptServiceUrl}/jarvis`, {
   //         method: "POST",
   //         headers: {
   //           "Content-Type": "application/json",
   //         },
   //         body: JSON.stringify({
-  //           text: userMessage,
+  //           text: message,
   //           conversationId: currentConversation.id,
   //           technicianId: userStore.user.id,
   //         }),
@@ -348,32 +418,9 @@ const useInteractionStore = create((set, get) => ({
 
   //       if (response.status === 200) {
   //         const responseBody = await response.json();
-  //         let parsedAiContent;
-
-  //         console.log(responseBody);
-
-  //         parsedAiContent = JSON.parse(responseBody.aiContent);
 
   //         messageIdRef.current = responseBody.id;
-
-  //         if (parsedAiContent && parsedAiContent.questionnaire) {
-  //           handleAddJarvisAssistantMessage(
-  //             parsedAiContent.questionnaire,
-  //             true
-  //           );
-  //           set((state) => ({
-  //             diagnosticChatQuestions: {
-  //               description: parsedAiContent.description || "",
-  //               questionnaire: parsedAiContent.questionnaire,
-  //             },
-  //             diagnosticChatMessage: `${state.diagnosticChatMessage}\n${message}`,
-  //           }));
-  //         } else {
-  //           handleAddJarvisAssistantMessage(responseBody.aiContent, false);
-  //           set((state) => ({
-  //             diagnosticChatMessage: `${state.diagnosticChatMessage}\n${message}`,
-  //           }));
-  //         }
+  //         handleAddJarvisAssistantMessage(responseBody.aiContent, false);
   //       }
   //     } catch (e) {
   //       console.log(e);
@@ -384,52 +431,6 @@ const useInteractionStore = create((set, get) => ({
   //     }
   //   }
   // },
-
-  handleSendMessage: async (message) => {
-    const { inputRef, messageIdRef } = useRefStore.getState();
-    const userStore = useUserStore.getState();
-    const {
-      handleIfConversationExists,
-      handleAddJarvisUserMessage,
-      handleAddJarvisAssistantMessage,
-    } = useConversationStore.getState();
-
-    let currentConversation = await handleIfConversationExists();
-    if (message.trim() !== "" && currentConversation) {
-      inputRef.current.focus();
-      handleAddJarvisUserMessage(message);
-      set({
-        isWaiting: true,
-        isServerError: false,
-        userInput: "",
-      });
-      try {
-        const response = await fetch(`${gptServiceUrl}/jarvis`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            text: message,
-            conversationId: currentConversation.id,
-            technicianId: userStore.user.id,
-          }),
-        });
-
-        if (response.status === 200) {
-          const responseBody = await response.json();
-          messageIdRef.current = responseBody.id;
-          handleAddJarvisAssistantMessage(responseBody.aiContent, null);
-        }
-      } catch (e) {
-        console.log(e);
-      } finally {
-        set({
-          isWaiting: false,
-        });
-      }
-    }
-  },
 
   handleSendTroubleshootMessage: async (message) => {
     const { inputRef, messageIdRef } = useRefStore.getState();
@@ -501,6 +502,8 @@ const useInteractionStore = create((set, get) => ({
       feedback: {},
       textAreaheight: "24px",
       interactionMenuOpen: false,
+
+      previousButtonsId: null,
     });
   },
 }));

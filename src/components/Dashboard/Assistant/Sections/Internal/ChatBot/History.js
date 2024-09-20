@@ -13,7 +13,6 @@ import useConversationStore from "@/utils/store/interaction/conversations/conver
 
 const History = () => {
   const {
-    agents,
     currentChatPage,
     chatsPerPage,
     filterChatMode,
@@ -84,7 +83,7 @@ const History = () => {
     setTotalChatPages(total);
     setFilteredChatCount(filteredConversationHistories?.length || 0);
   }, [conversationHistories, chatsPerPage, searchValue, filterChatMode]);
-  
+
   return (
     <div className="flex flex-col h-full p-4">
       <div className="flex items-center w-full pb-4">
@@ -102,7 +101,10 @@ const History = () => {
             conversation;
           return (
             <div
-              onClick={() => handleConversationSelected(id)}
+              onClick={() => {
+                console.log("firing off");
+                handleConversationSelected(id);
+              }}
               key={id}
               className={`${
                 currentConversationIndex === id
