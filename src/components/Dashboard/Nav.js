@@ -43,7 +43,6 @@ const Nav = () => {
       <div className="overflow-y-auto h-full scrollbar-thin">
         {filteredOptions.map((option) => (
           <div key={option} className="flex flex-col items-start my-2">
-            {console.log(option)}
             <div
               onClick={() =>
                 handleOptionSelected(option, user?.mspCustomDomain)

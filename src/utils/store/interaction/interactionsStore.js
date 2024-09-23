@@ -332,7 +332,6 @@ const useInteractionStore = create((set, get) => ({
       inputRef.current.focus();
 
       const messageToSend = message.trim() !== "" ? message : userInput;
-      console.log(messageToSend);
       handleAddJarvisUserMessage(messageToSend);
 
       set({
