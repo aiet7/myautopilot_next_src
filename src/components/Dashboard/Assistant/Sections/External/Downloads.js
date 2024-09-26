@@ -118,8 +118,8 @@ const Downloads = () => {
               />
               <button
                 onClick={() => handleUploadTools(user?.mspCustomDomain)}
-                className="hover:bg-blue-500 bg-blue-800 text-white py-2 px-3 w-full rounded-b"
-              >
+                className="text-sm border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white font-bold px-5 rounded-lg py-2"
+                >
                 Upload
               </button>
             </div>

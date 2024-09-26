@@ -31,7 +31,7 @@ const RemoteAccess = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <button className="hover:bg-blue-500 bg-blue-800 text-white py-2 w-full">
+            <button className="text-sm border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white font-bold px-5 rounded-lg py-2 w-full">
               Remote Access
             </button>
           </a>

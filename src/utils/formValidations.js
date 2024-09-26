@@ -70,7 +70,7 @@ export const validateField = (field, value) => {
   return null;
 };
 
-export const validateTicketForm = (ticket) => {
+export const validateTicketForm = (ticket, userType) => {
   const errors = {};
 
   const {
@@ -111,7 +111,7 @@ export const validateTicketForm = (ticket) => {
     errors.currentTicketPhoneNumber = "Phone number must be 9 or 10 digits";
   }
 
-  if (isInputEmpty(currentTicketCWCompanyId)) {
+  if (userType === "tech" && isInputEmpty(currentTicketCWCompanyId)) {
     errors.currentTicketCWCompanyId = "Company selection is required";
   }
 

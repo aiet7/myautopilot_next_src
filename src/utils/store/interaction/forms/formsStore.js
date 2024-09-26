@@ -343,7 +343,7 @@ const useFormsStore = create((set, get) => ({
       useTicketConversationsStore.getState();
 
     if (isConfirmed) {
-      const errors = validateTicketForm(ticket);
+      const errors = validateTicketForm(ticket, userType);
       if (errors !== true) {
         set({ formError: errors });
         return;

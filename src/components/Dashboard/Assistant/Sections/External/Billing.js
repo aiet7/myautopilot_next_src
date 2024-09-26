@@ -10,8 +10,8 @@ const Billing = () => {
         <div className="flex flex-grow flex-col gap-4">
           <div className="flex flex-col ">
             <p className="dark:text-white/60 text-lg text-black/60">
-              Providing a direct payment and accounting
-              integration, simplifying your billing process.
+              Providing a direct payment and accounting integration, simplifying
+              your billing process.
             </p>
           </div>
           {billingBenefits.map((benefit, index) => {
@@ -30,7 +30,7 @@ const Billing = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <button className="hover:bg-blue-500 bg-blue-800 text-white py-2 w-full">
+            <button className="text-sm border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white font-bold px-5 rounded-lg py-2 w-full">
               Billing Portal
             </button>
           </a>

@@ -357,6 +357,7 @@ const useInteractionStore = create((set, get) => ({
 
         if (response.status === 200) {
           const responseBody = await response.json();
+          console.log(responseBody)
           let parsedAiContent = JSON.parse(responseBody.content);
 
           messageIdRef.current = responseBody.messages.id;

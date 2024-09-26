@@ -1,6 +1,5 @@
 "use client";
 
-import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
 
 const TicketMode = () => {
