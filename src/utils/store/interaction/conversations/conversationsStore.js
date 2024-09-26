@@ -391,7 +391,7 @@ const useConversationStore = create((set, get) => ({
       selectedAgent: null,
       conversationHistories: [],
       currentConversationIndex: null,
-
+    
       troubleshootingConversationId: null,
       activeChatBotMode: "History",
       filterChatMode: "Newest",
@@ -400,11 +400,11 @@ const useConversationStore = create((set, get) => ({
       deleting: false,
       tempTitle: "",
       tempPrompt: "",
-
+    
       filterChatModeOpen: "",
-
+    
       activeChatOptions: ["History", "Engineer"],
-
+    
       currentChatPage: 1,
       chatsPerPage: 30,
       totalChatPages: 1,

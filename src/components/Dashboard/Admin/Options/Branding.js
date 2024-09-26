@@ -49,7 +49,7 @@ const Branding = () => {
           </div>
         </div>
       </div>
-      <button className="hover:bg-blue-500 bg-blue-800 self-end text-white rounded-lg py-2 px-10 font-bold m-2">
+      <button className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]  bg-[#465E89] text-white self-end text-white rounded-lg py-2 px-10 font-bold m-2">
         Save
       </button>
     </div>

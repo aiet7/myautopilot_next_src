@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-
 import { HiOutlineArrowSmallDown } from "react-icons/hi2";
 import { FaSpinner } from "react-icons/fa";
-
 import useUiStore from "@/utils/store/ui/uiStore.js";
 import useFormsStore from "@/utils/store/interaction/forms/formsStore.js";
 import useInteractionStore from "@/utils/store/interaction/interactionsStore.js";
@@ -45,17 +43,27 @@ const Interaction = ({}) => {
   }, [window.innerWidth]);
 
   const renderWidth = () => {
-    switch (assistantWidth) {
-      case 400:
-        return "md:mr-[400px] lg:mr-[600px]";
-      case 700:
-        return "md:mr-[700px] lg:mr-[900px]";
-      case 900:
-        return "md:mr-[900px] lg:mr-[1100px]";
-      default:
-        return "md:mr-[400px] lg:mr-[600px]";
+    if (!openAssistant) return "";
+
+    // Define width thresholds and corresponding margins
+    const thresholds = [
+      { width: 800, margin: "md:mr-[px] lg:mr-[900px]" },
+      { width: 700, margin: "md:mr-[px] lg:mr-[750px]" },
+      { width: 600, margin: "md:mr-[px] lg:mr-[600px]" },
+      { width: 500, margin: "md:mr-[px] lg:mr-[500px]" },
+      { width: 400, margin: "md:mr-[px] lg:mr-[400px]" },
+    ];
+
+    // Find the largest margin that corresponds to the current assistant width
+    for (const { width, margin } of thresholds) {
+      if (assistantWidth >= width) {
+        return margin;
+      }
     }
+
+    return ""; // Default return if none match
   };
+
   return (
     <div
       onClick={() => {
@@ -64,7 +72,7 @@ const Interaction = ({}) => {
           openAssistant && handleAssistantMenu(false);
         }
       }}
-      className={`relative flex flex-col h-full w-full text-sm ${
+      className={`relative flex flex-col h-full w-full text-sm transition-all duration-300 ease-in-out ${
         openNav && openAssistant && `${renderWidth()}`
       }  ${
         (openNav &&
@@ -73,7 +81,7 @@ const Interaction = ({}) => {
             currentNavOption === "Queue") &&
           "lg:opacity-100 opacity-5 xl:ml-[250px]") ||
         (openAssistant && `lg:opacity-100 opacity-5 ${renderWidth()}`)
-      } dark:bg-black transition-all duration-300 ease bg-white `}
+      } dark:bg-black bg-white`}
     >
       {!isAtBottom &&
         isOverflowed &&

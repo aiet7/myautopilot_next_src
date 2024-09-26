@@ -60,6 +60,7 @@ const Layout = ({ children }) => {
     <ThemeProvider defaultTheme="light" attribute="class">
       {height && (
         <div
+          id="Layout_Container"
           onClick={() => {
             openSettings && handleToggleSettings(false);
             showQueueSubMenu && handleToggleQueueSubMenu(false);

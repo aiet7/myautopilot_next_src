@@ -61,7 +61,7 @@ const ActivatePage = () => {
                     type="button"
                     onClick={handleActiveTechnicianTab}
                     className={`${
-                      userType === "tech" && "bg-blue-800 text-white"
+                      userType === "tech" && "bg-[#465E89] text-white"
                     } font-bold w-full rounded-lg py-4`}
                   >
                     Technician
@@ -70,7 +70,7 @@ const ActivatePage = () => {
                     type="button"
                     onClick={handleActiveClientTab}
                     className={`${
-                      userType === "client" && "bg-blue-800 text-white"
+                      userType === "client" && "bg-[#465E89] text-white"
                     } font-bold w-full rounded-lg py-4`}
                   >
                     Client
@@ -120,8 +120,8 @@ const ActivatePage = () => {
                         ? handleActivateTechnician(router.push, msp)
                         : handleActivateClient(router.push, msp)
                     }
-                    className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4"
-                  >
+                    className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89] w-full  bg-[#465E89] text-white py-3 rounded-lg"
+                    >
                     Activate
                   </button>
                 </div>
@@ -241,8 +241,8 @@ const ActivatePage = () => {
                             handleActivateClientCheck(msp);
                           }
                         }}
-                        className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4"
-                      >
+                        className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89] w-full  bg-[#465E89] text-white py-3 rounded-lg"
+                        >
                         Continue
                       </button>
                     </>

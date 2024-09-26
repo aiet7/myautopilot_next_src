@@ -6,7 +6,6 @@ import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
 const TicketMode = () => {
   const { activeTicketBotMode, activeTicketOptions, setActiveTicketBotMode } =
     useTicketsStore();
-  const { setAssistantWidthOpen } = useAssistantStore();
 
   return (
     <div className="relative flex items-center ">
@@ -14,7 +13,6 @@ const TicketMode = () => {
         value={activeTicketBotMode}
         className=" px-4 py-1 border w-[150px]"
         onChange={(e) => {
-          setAssistantWidthOpen(false);
           setActiveTicketBotMode(e.target.value);
         }}
       >

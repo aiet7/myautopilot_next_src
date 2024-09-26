@@ -15,7 +15,7 @@ const CreateRole = () => {
     setRoleInputs,
     handleCreateRole,
   } = useRolesStore();
-  
+
   return (
     <div className="dark:bg-black/80 absolute bg-black/60 z-[99] top-0 bottom-0 right-0 left-0 p-2 lg:p-10">
       <div className="flex flex-col items-end bg-white max-w-[700px] h-full p-4 rounded-lg text-black mx-auto">
@@ -80,7 +80,7 @@ const CreateRole = () => {
             )}
             <button
               onClick={() => handleCreateRole(user?.mspCustomDomain)}
-              className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg py-2 px-20 font-bold"
+              className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white rounded-lg py-2 px-20 font-bold"
             >
               Create
             </button>

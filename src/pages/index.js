@@ -52,15 +52,16 @@ const WelcomePage = () => {
               with Intelligent AI Automation
             </h2>
             <div className="flex gap-4 ">
+             
               <button
                 onClick={handleShowLogin}
-                className="hover:bg-blue-500 bg-blue-800 w-full text-white py-3 rounded-lg lg:w-[150px]"
+                className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white w-full text-white py-3 rounded-lg lg:w-[150px]"
               >
                 Log in
               </button>
               <button
                 onClick={() => handleNavigateMSPSignup(router.push)}
-                className="hover:bg-blue-500 bg-blue-800 w-full text-white py-3 rounded-lg lg:w-[150px]"
+                className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white py-3 rounded-lg lg:w-[150px]"
               >
                 Sign up
               </button>

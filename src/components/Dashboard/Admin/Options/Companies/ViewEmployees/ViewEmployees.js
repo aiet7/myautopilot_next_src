@@ -55,8 +55,8 @@ const ViewEmployees = () => {
                 onClick={() =>
                   handleViewCompanyEmployeeForm(user?.mspCustomDomain)
                 }
-                className=" bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
-              >
+                className="text-sm border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white font-bold px-5 rounded-lg py-1"
+                >
                 Add Employee
               </button>
             )}

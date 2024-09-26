@@ -12,7 +12,6 @@ const ChatMode = () => {
     setActiveChatFilterModeOpen,
   } = useConversationStore();
 
-  const { setAssistantWidthOpen } = useAssistantStore();
   return (
     <div className="relative flex items-center ">
       <select
@@ -24,7 +23,6 @@ const ChatMode = () => {
           )?.id;
           if (selectedAgentId) {
             setActiveChatFilterModeOpen(false);
-            setAssistantWidthOpen(false);
             setActiveChatBotMode(e.target.value);
             handleAgentSelected(selectedAgentId);
           }

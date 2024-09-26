@@ -12,7 +12,6 @@ const QueueMode = () => {
     setActiveQueueFilterModeOpen,
     handleActiveQueueBotMode,
   } = useQueueStore();
-  const { setAssistantWidthOpen } = useAssistantStore();
 
   return (
     <div className="relative flex items-center ">
@@ -21,7 +20,6 @@ const QueueMode = () => {
         className="px-4 py-1 border w-[150px]"
         onChange={(e) => {
           setActiveQueueFilterModeOpen(false);
-          setAssistantWidthOpen(false);
           handleActiveQueueBotMode(
             e.target.value,
             user?.mspCustomDomain,

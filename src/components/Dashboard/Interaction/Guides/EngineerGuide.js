@@ -1,11 +1,14 @@
 "use client";
 
+import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
 import useInteractionStore from "@/utils/store/interaction/interactionsStore";
 import { BsStars } from "react-icons/bs";
 import { GiRobotAntennas } from "react-icons/gi";
 
 const EngineerGuide = () => {
   const { handleSendMessage } = useInteractionStore();
+  const { activeChatBotMode } = useConversationStore();
+
 
   return (
     <div className="flex flex-col items-center justify-between p-4 h-full max-w-[700px] mx-auto text-xs">
@@ -16,8 +19,8 @@ const EngineerGuide = () => {
       <div className="flex flex-col gap-6 items-center">
         <GiRobotAntennas size={70} />
         <p className="text-lg font-semibold">Hi, I Am Vision</p>
-        <div className="flex flex-col items-center">
-          <h2 className="text-2xl font-bold">Your Specialized IT Consultant</h2>
+        <div className="flex flex-col items-center text-center">
+          <h2 className="text-2xl font-bold">Your Specialized {activeChatBotMode}</h2>
           <p className="text-lg font-semibold">
             What Would You Like Me To Advice You On
           </p>

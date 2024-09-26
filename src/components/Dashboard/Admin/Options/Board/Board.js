@@ -11,7 +11,6 @@ const Board = () => {
 
   const { board, durationOptions, intializeBoard } = useBoardStore();
 
-
   useEffect(() => {
     intializeBoard();
   }, [user]);
@@ -36,7 +35,7 @@ const Board = () => {
             <div className="flex flex-col gap-7  overflow-hidden">
               <div className="flex  flex-col overflow-hidden px-4">
                 <div className="flex flex-wrap items-center justify-start gap-4 py-4">
-                  <button className=" bg-blue-800 text-white font-bold px-5 rounded-lg py-1">
+                  <button className="text-sm border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white font-bold px-5 rounded-lg py-1">
                     Configure Board
                   </button>
                   <p className="">

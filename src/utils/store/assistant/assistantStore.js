@@ -10,8 +10,7 @@ const useAssistantStore = create((set, get) => ({
   activeAssistantTabOpen: false,
   showProgress: true,
   isIntroScreen: false,
-  assistantWidth: 400,
-  assistantWidthOptions: [400, 700, 900],
+  assistantWidth: 600,
   assistantWidthOpen: false,
 
   initializeAssistant: async (msp) => {
@@ -42,16 +41,9 @@ const useAssistantStore = create((set, get) => ({
   setAssistantMenuOpen: (open) => set({ assistantMenuOpen: open }),
 
   setAssistantWidth: (width) => {
-    const { handleCloseNavWhenResizing } = useUiStore.getState();
-
     set({ assistantWidth: width });
-
-    if (width === 900) {
-      handleCloseNavWhenResizing();
-    }
   },
 
-  setAssistantWidthOpen: (open) => set({ assistantWidthOpen: open }),
 
   setCloseExternalApps: () =>
     set({ activeAssistantTab: null, activeAssistantTabOpen: false }),
@@ -97,7 +89,6 @@ const useAssistantStore = create((set, get) => ({
       showProgress: true,
       isIntroScreen: false,
       assistantWidth: 400,
-      assistantWidthOptions: [400, 700, 900],
       assistantWidthOpen: false,
     });
   },

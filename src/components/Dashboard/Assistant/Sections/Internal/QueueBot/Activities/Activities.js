@@ -21,7 +21,7 @@ const Activities = () => {
 
   const activities =
     currentActivitiesOption === "myActivities" ? myActivities : allActivities;
-
+  ("text-sm border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white font-bold px-5 rounded-lg py-1");
   return (
     <div className="flex flex-col gap-4 h-full overflow-hidden p-4">
       <div className="flex items-center gap-2">
@@ -31,9 +31,9 @@ const Activities = () => {
           }
           className={`${
             currentActivitiesOption === "myActivities"
-              ? "bg-blue-500"
-              : "bg-blue-800"
-          } hover:bg-blue-500 text-white rounded-lg py-2 font-bold w-[100px]`}
+              ? "bg-[#465E89] text-white"
+              : "bg-[#465E89]/10 text-white/30"
+          } text-sm border font-bold transition ease-in hover:bg-[#465E89] hover:text-white text-white py-2 rounded-lg w-[120px]`}
         >
           My Activities
         </button>
@@ -41,9 +41,9 @@ const Activities = () => {
           onClick={() => handleShowAllActivities(user?.mspCustomDomain)}
           className={`${
             currentActivitiesOption === "allActivities"
-              ? "bg-blue-500"
-              : "bg-blue-800"
-          } hover:bg-blue-500 text-white rounded-lg py-2 font-bold w-[100px]`}
+              ? "bg-[#465E89] text-white"
+              : "bg-[#465E89]/10 text-white/30"
+          } text-sm border font-bold transition ease-in hover:bg-[#465E89] hover:text-white text-white py-2 rounded-lg w-[120px]`}
         >
           All Activities
         </button>

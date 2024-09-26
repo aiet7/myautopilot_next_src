@@ -43,7 +43,7 @@ const MSPSignupPage = () => {
             <div className="flex justify-center w-full  items-center text-2xl font-bold">
               <div
                 className={`${
-                  currentStep >= 1 && "bg-blue-800 text-white"
+                  currentStep >= 1 && "bg-[#465E89] text-white"
                 } w-16 h-16 border rounded-full flex items-center justify-center`}
               >
                 1
@@ -51,7 +51,7 @@ const MSPSignupPage = () => {
               <div className="border w-44" />
               <div
                 className={`${
-                  currentStep >= 2 ? "bg-blue-800 text-white" : "text-black/10"
+                  currentStep >= 2 ? "bg-[#465E89] text-white" : "text-black/10"
                 } w-16 h-16 border rounded-full flex items-center justify-center`}
               >
                 2
@@ -218,7 +218,7 @@ const MSPSignupPage = () => {
               <button
                 type="button"
                 onClick={() => handleSignupProgression(router.push)}
-                className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4"
+                className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white py-3 rounded-lg"
               >
                 {currentStep === 1 ? "Next" : "Sign up"}
               </button>
@@ -228,7 +228,7 @@ const MSPSignupPage = () => {
                 onClick={() => setCurrentStep(1)}
                 className={`${
                   currentStep === 1 ? "opacity-0" : "opacity-100"
-                } hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4`}
+                } border transition ease-in hover:bg-gray-100  border-[#465E89]   bg-[#FFFFFF] text-[#465E89] py-3 rounded-lg`}
               >
                 Back
               </button>

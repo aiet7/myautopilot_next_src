@@ -133,7 +133,7 @@ const AddEmployee = () => {
               onClick={() =>
                 handleSaveNewCompanyEmployee(user?.mspCustomDomain)
               }
-              className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg py-2 px-20 font-bold"
+              className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white rounded-lg py-2 px-20 font-bold"
             >
               Save
             </button>

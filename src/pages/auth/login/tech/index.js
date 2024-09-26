@@ -87,8 +87,8 @@ const TechLoginPage = () => {
                   <button
                     onClick={() => handleTechnicianCheck(router.push)}
                     type="button"
-                    className="hover:bg-blue-500 text-lg font-bold w-full rounded bg-blue-800 text-white py-4"
-                  >
+                    className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white py-3 rounded-lg"
+                    >
                     Continue
                   </button>
                 </>

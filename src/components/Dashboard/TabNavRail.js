@@ -58,7 +58,7 @@ const TabNavRail = ({}) => {
           onClick={() => {
             handleTabChange("iTAgent");
           }}
-          className="relative flex flex-col gap-2 items-center cursor-pointer"
+          className="relative group flex flex-col gap-2 items-center cursor-pointer"
         >
           <AiOutlineHome
             data-tooltip-id="Home"
@@ -67,6 +67,9 @@ const TabNavRail = ({}) => {
               activeTab === "iTAgent" && "text-blue-600"
             } outline-none`}
           />
+          <span className="shadow font-semibold bg-white absolute z-[100] left-[100%] top-1/2 transform -translate-y-1/2 translate-x-2 scale-0 rounded  p-2 text-xs text-black group-hover:scale-100 group-hover:shadow-md transition-shadow duration-200">
+            Home
+          </span>
         </div>
       </Link>
 
@@ -115,7 +118,7 @@ const TabNavRail = ({}) => {
                   : "default"
               );
             }}
-            className="relative flex flex-col gap-2 items-center cursor-pointer"
+            className="relative group flex flex-col gap-2 items-center cursor-pointer"
           >
             <RiAdminLine
               size={22}
@@ -123,6 +126,9 @@ const TabNavRail = ({}) => {
                 activeTab === "admin" && "text-blue-600"
               } outline-none`}
             />
+            <span className="shadow font-semibold bg-white absolute z-[100] left-[100%] top-1/2 transform -translate-y-1/2 translate-x-2 scale-0 rounded  p-2 text-xs text-black group-hover:scale-100 group-hover:shadow-md transition-shadow duration-200">
+              Admin
+            </span>
           </div>
         </Link>
       )}

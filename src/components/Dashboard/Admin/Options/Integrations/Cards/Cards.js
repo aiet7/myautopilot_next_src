@@ -63,7 +63,7 @@ const Cards = () => {
               onClick={() => setSelectedCategory(null)}
               className={`px-4 py-2 rounded ${
                 selectedCategory === null
-                  ? "bg-blue-800 text-white"
+                  ? "bg-[#465E89] text-white"
                   : "dark:bg-gray-700 text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
               } focus:outline-none focus:border-blue-700 focus:ring focus:ring-blue-200`}
             >
@@ -75,7 +75,7 @@ const Cards = () => {
                 onClick={() => setSelectedCategory(category)}
                 className={`px-4 py-2 rounded ${
                   selectedCategory === category
-                    ? "bg-blue-800 text-white"
+                    ? "bg-[#465E89] text-white"
                     : "dark:bg-gray-700 text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
                 } focus:outline-none focus:border-blue-700 focus:ring focus:ring-blue-200`}
               >

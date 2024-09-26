@@ -96,11 +96,6 @@ const useUiStore = create((set, get) => ({
     set({ activeTab: tab });
   },
 
-  handleCloseNavWhenResizing: () => {
-    set({
-      openNav: false,
-    });
-  },
 
   clearUI: () => {
     set({
