@@ -19,7 +19,7 @@ const TicketForm = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-2 overflow-y-auto p-4 h-full scrollbar-thin"> 
+    <div className="flex flex-col gap-2 overflow-y-auto p-4 h-full scrollbar-thin">
       {ticket?.currentTicketTitle === "" ? (
         <div className="flex flex-col gap-2">
           <p className="text-xl font-semibold">
@@ -489,8 +489,8 @@ const TicketForm = () => {
             </div>
           </div>
           <div className="flex items-center gap-4 py-2  text-lg lg:p-0">
-          <button
-              className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white border-white/30  px-6 py-2  w-full"
+            <button
+              className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89] rounded-md  bg-[#465E89] text-white border-white/30  px-6 py-2  w-full"
               disabled={loading.ticketForm}
               onClick={() => {
                 handleTicketConfirmation(true);
@@ -499,7 +499,7 @@ const TicketForm = () => {
               {loading.ticketForm ? "Creating..." : "Create Ticket"}
             </button>
             <button
-              className=" dark:border-white/30   border border-blue-800 px-6 py-2 transition ease-in hover:bg-gray-100 bg-[#FFFFFF] text-[#465E89] w-full"
+              className=" dark:border-white/30   border border-blue-800 px-6 py-2 transition ease-in hover:bg-gray-100 bg-[#FFFFFF] rounded-md  text-[#465E89] w-full"
               onClick={() => {
                 handleTicketConfirmation(false);
               }}

@@ -45,6 +45,13 @@ const useMspStore = create((set, get) => ({
       },
       phoneNumber: "",
     },
+    publicInfo: {
+      email: "",
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
+      password: "",
+    },
   },
 
   current2FA: false,
@@ -64,6 +71,7 @@ const useMspStore = create((set, get) => ({
 
   errorMessage: {
     techSignup: false,
+    publicSignup: false,
     fileSize: false,
     fileMissing: false,
     emptyFields: false,
@@ -81,9 +89,9 @@ const useMspStore = create((set, get) => ({
     const lastActiveUserType = localStorage.getItem("lastActiveUserType");
 
     if (!lastActiveUserType) {
-      localStorage.setItem("lastActiveUserType", "tech");
+      localStorage.setItem("lastActiveUserType", "client");
       set({
-        userType: "tech",
+        userType: "client",
       });
     } else {
       set({
@@ -203,6 +211,68 @@ const useMspStore = create((set, get) => ({
         techEmailCheck: false,
       },
     });
+  },
+
+  handleSignupPublic: async (navigator) => {
+    const { signupInputs, errorMessage } = get();
+    const { publicInfo } = signupInputs;
+
+    if (
+      publicInfo.firstName === "" ||
+      publicInfo.lastName === "" ||
+      publicInfo.email === "" ||
+      publicInfo.password === "" ||
+      publicInfo.phoneNumber === ""
+    ) {
+      set({
+        errorMessage: {
+          ...errorMessage,
+          emptyFields: true,
+        },
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch(`${dbServiceUrl}/public/user/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: publicInfo.firstName,
+          lastName: publicInfo.lastName,
+          phoneNumber: publicInfo.phoneNumber,
+          emailId: publicInfo.email,
+          password: publicInfo.password,
+        }),
+      });
+
+      if (response.ok) {
+        const publicUser = await response.json();
+        set({
+          errorMessage: {
+            ...errorMessage,
+            publicSignup: false,
+            emptyFields: false,
+          },
+        });
+        navigator(`/${publicUser.mspCustomDomain}/dashboard/${publicUser.id}`);
+        Cookie.set("session_token", publicUser.id, { expires: 7 });
+        Cookie.set("client_id", publicUser.id, { expires: 7 });
+      } else {
+        set({
+          errorMessage: {
+            ...errorMessage,
+            publicSignup: true,
+            emptyFields: false,
+          },
+        });
+        console.log("ERROR SIGNING UP PUBLIC USER");
+      }
+    } catch (e) {
+      console.log(e);
+    }
   },
 
   handleSignupMSP: async () => {
@@ -828,6 +898,13 @@ const useMspStore = create((set, get) => ({
           },
           phoneNumber: "",
         },
+        publicInfo: {
+          email: "",
+          firstName: "",
+          lastName: "",
+          phoneNumber: "",
+          password: "",
+        },
       },
 
       current2FA: false,
@@ -847,10 +924,14 @@ const useMspStore = create((set, get) => ({
 
       errorMessage: {
         techSignup: false,
+        publicSignup: false,
         fileSize: false,
         fileMissing: false,
         emptyFields: false,
         emailCheck: false,
+        clientEmailCheck: false,
+        techEmailCheck: false,
+        login2FA: false,
       },
 
       successMessage: false,

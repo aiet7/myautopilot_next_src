@@ -26,9 +26,9 @@ const ViewContacts = () => {
   };
 
   return (
-    <div className="flex flex-col text-xl overflow-hidden">
+    <div className="flex flex-col  overflow-hidden">
       {addContact && <AddContact />}
-      <div className="flex flex-col gap-7 text-xl overflow-hidden">
+      <div className="flex flex-col gap-7  overflow-hidden">
         <div className="flex flex-col overflow-hidden p-4">
           <div className="flex items-center gap-1  text-sm">
             <span
@@ -54,8 +54,8 @@ const ViewContacts = () => {
             {currentContactView === "PSA Contacts" && (
               <button
                 onClick={() => handleViewContactsForm(user?.mspCustomDomain)}
-                className="text-sm  bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
-              >
+                className="text-sm border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white font-bold px-5 rounded-lg py-1"
+                >
                 Add Contact
               </button>
             )}

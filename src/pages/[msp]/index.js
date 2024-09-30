@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import useUiStore from "@/utils/store/ui/uiStore";
@@ -107,16 +108,16 @@ const MSPPage = ({}) => {
               {!current2FA && (
                 <div className="flex items-center justify-between  font-bold">
                   {userType === "tech" ? (
-                    <p>Technician Login</p>
+                    <p className="text-lg">Admin Login</p>
                   ) : (
-                    <p>Client Login</p>
+                    <p className="text-lg">User Login</p>
                   )}
                   <button
-                    className="hover:underline"
+                    className="hover:underline text-xs"
                     type="button"
                     onClick={handleSwitchMspLoginFlow}
                   >
-                    Switch
+                    {userType === "tech" ? "user" : "admin"}
                   </button>
                 </div>
               )}
@@ -172,7 +173,7 @@ const MSPPage = ({}) => {
                     }}
                     type="button"
                     className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white py-3 rounded-lg"
-                    >
+                  >
                     Continue
                   </button>
                 </>
@@ -259,20 +260,33 @@ const MSPPage = ({}) => {
                     }}
                     type="button"
                     className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white py-3 rounded-lg"
-                    >
+                  >
                     Continue
                   </button>
                 </>
               )}
               <div className="flex flex-col w-full">
-                <Link
-                  onClick={() => clearMSPCredentials()}
-                  href={`/${mspSubDomain?.customDomain}/activate`}
-                >
-                  <span className="text-sm text-blue-800 font-semibold">
-                    Activate Account
-                  </span>
-                </Link>
+                {router.asPath.includes("/public") ? (
+                  <>
+                    <Link
+                      onClick={() => clearMSPCredentials()}
+                      href={`/${mspSubDomain?.customDomain}/signup`}
+                    >
+                      <span className="text-sm text-blue-800 font-semibold">
+                        Sign Up
+                      </span>
+                    </Link>
+                  </>
+                ) : (
+                  <Link
+                    onClick={() => clearMSPCredentials()}
+                    href={`/${mspSubDomain?.customDomain}/activate`}
+                  >
+                    <span className="text-sm text-blue-800 font-semibold">
+                      Activate Account
+                    </span>
+                  </Link>
+                )}
               </div>
               <span
                 onClick={() => {

@@ -198,7 +198,11 @@ const useUserStore = create((set, get) => ({
     clearTools();
     clearUI();
 
-    navigator("/auth/login");
+    if (window.location.pathname.startsWith("/public/dashboard")) {
+      navigator("/public");
+    } else {
+      navigator("/auth/login");
+    }
   },
 }));
 

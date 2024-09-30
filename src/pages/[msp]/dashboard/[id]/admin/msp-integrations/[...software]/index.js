@@ -87,20 +87,7 @@ const MSPSoftwareIntegratePages = () => {
     };
   }, [activeTab, currentOption]);
 
-  useEffect(() => {
-    if (user) {
-      window.userpilot.identify(user.id, {
-        name: user.firstName + " " + user.lastName,
-        email: user.email,
-      });
-    }
-  }, [user]);
 
-  useEffect(() => {
-    if (user) {
-      window.userpilot && window.userpilot.reload();
-    }
-  }, [user]);
 
   useEffect(() => {
     if (user?.permissions?.adminPortal) {
