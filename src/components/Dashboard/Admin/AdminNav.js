@@ -1,6 +1,10 @@
 "use client";
 import useUiStore from "@/utils/store/ui/uiStore";
-import { BsGearWideConnected, BsPeopleFill } from "react-icons/bs";
+import {
+  BsGearWideConnected,
+  BsPeopleFill,
+  BsMicrosoftTeams,
+} from "react-icons/bs";
 import { GiOrganigram } from "react-icons/gi";
 import { FaUserCog, FaChalkboard } from "react-icons/fa";
 import { MdOutlineBrandingWatermark, MdBusinessCenter } from "react-icons/md";
@@ -32,6 +36,8 @@ const AdminNav = ({}) => {
         return <IoMdContacts size={20} />;
       case "board":
         return <FaChalkboard size={20} />;
+      case "teams":
+        return <BsMicrosoftTeams size={20} />;
       default:
         return null;
     }
@@ -58,6 +64,7 @@ const AdminNav = ({}) => {
               companies: "technicianUserManagement",
               contacts: "technicianUserManagement",
               board: "boardView",
+              teams: "technicianUserManagement",
             };
 
             if (option === "contacts") {

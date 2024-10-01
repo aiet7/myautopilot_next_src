@@ -11,6 +11,7 @@ const useAdminStore = create((set, get) => ({
     "companies",
     "contacts",
     "board",
+    "teams",
   ],
   currentOption: null,
 
@@ -29,6 +30,7 @@ const useAdminStore = create((set, get) => ({
       board: "boardView",
       companies: "technicianUserManagement",
       contacts: "technicianUserManagement",
+      teams: "technicianUserManagement",
     };
 
     if (
@@ -51,6 +53,7 @@ const useAdminStore = create((set, get) => ({
         "companies",
         "contacts",
         "board",
+        "teams",
       ],
       currentOption: null,
     });

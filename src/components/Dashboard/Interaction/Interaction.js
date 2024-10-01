@@ -14,7 +14,7 @@ import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
 
 const Interaction = ({}) => {
   const {
-    openNav,
+    openNav, // Access the navigation state
     currentNavOption,
     openAssistant,
     handleAssistantMenu,
@@ -30,7 +30,7 @@ const Interaction = ({}) => {
     handleScrollToBottom,
   } = useInteractionStore();
 
-  const { assistantWidth } = useAssistantStore();
+  const { assistantWidth, isResizing } = useAssistantStore();
 
   useEffect(() => {
     if (currentNavOption === "Assistant" || currentNavOption === "Document") {
@@ -42,28 +42,7 @@ const Interaction = ({}) => {
     handleScrollToBottom(false);
   }, [window.innerWidth]);
 
-  const renderWidth = () => {
-    if (!openAssistant) return "";
-
-    // Define width thresholds and corresponding margins
-    const thresholds = [
-      { width: 800, margin: "md:mr-[px] lg:mr-[900px]" },
-      { width: 700, margin: "md:mr-[px] lg:mr-[750px]" },
-      { width: 600, margin: "md:mr-[px] lg:mr-[600px]" },
-      { width: 500, margin: "md:mr-[px] lg:mr-[500px]" },
-      { width: 400, margin: "md:mr-[px] lg:mr-[400px]" },
-    ];
-
-    // Find the largest margin that corresponds to the current assistant width
-    for (const { width, margin } of thresholds) {
-      if (assistantWidth >= width) {
-        return margin;
-      }
-    }
-
-    return ""; // Default return if none match
-  };
-
+  console.log(isResizing);
   return (
     <div
       onClick={() => {
@@ -72,16 +51,14 @@ const Interaction = ({}) => {
           openAssistant && handleAssistantMenu(false);
         }
       }}
-      className={`relative flex flex-col h-full w-full text-sm transition-all duration-300 ease-in-out ${
-        openNav && openAssistant && `${renderWidth()}`
-      }  ${
-        (openNav &&
-          (currentNavOption === "Assistant" ||
-            currentNavOption === "Tickets" ||
-            currentNavOption === "Queue") &&
-          "lg:opacity-100 opacity-5 xl:ml-[250px]") ||
-        (openAssistant && `lg:opacity-100 opacity-5 ${renderWidth()}`)
-      } dark:bg-black bg-white`}
+      // Apply transition only on the left margin for smooth left-side movement
+      className={`relative flex flex-col h-full w-full text-sm transition-[margin-left] duration-300 ease-in-out  ${
+        isResizing ? "" : "transition-[margin] duration-300 ease-in-out"
+      } ${openNav ? "lg:ml-[250px]" : "ml-0"} dark:bg-black bg-white`}
+      // Manually set marginRight without transition to avoid right-side animation
+      style={{
+        marginRight: openAssistant ? `${assistantWidth}px` : "0px", // Dynamically set marginRight without transition
+      }}
     >
       {!isAtBottom &&
         isOverflowed &&
@@ -89,7 +66,7 @@ const Interaction = ({}) => {
           currentNavOption === "Tickets") && (
           <button
             onClick={handleScrollToBottom}
-            className={`dark:border-white/10 dark:bg-white/10 dark:text-gray-200 absolute bottom-28 right-4 rounded-full border border-gray-200 bg-gray-50 text-gray-600`}
+            className="dark:border-white/10 dark:bg-white/10 dark:text-gray-200 absolute bottom-28 right-4 rounded-full border border-gray-200 bg-gray-50 text-gray-600"
           >
             <HiOutlineArrowSmallDown className="m-1" size={18} />
           </button>

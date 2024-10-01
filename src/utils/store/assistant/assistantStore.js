@@ -4,6 +4,7 @@ import useUiStore from "../ui/uiStore";
 import useIntegrationsStore from "../admin/control/integrations/integrationsStore";
 
 const useAssistantStore = create((set, get) => ({
+  isResizing: false,
   assistantMenuOpen: false,
   promptAssistantInput: "",
   activeAssistantTab: null,
@@ -38,12 +39,13 @@ const useAssistantStore = create((set, get) => ({
     }
   },
 
+  setIsResizing: (value) => set({ isResizing: value }),
+
   setAssistantMenuOpen: (open) => set({ assistantMenuOpen: open }),
 
   setAssistantWidth: (width) => {
     set({ assistantWidth: width });
   },
-
 
   setCloseExternalApps: () =>
     set({ activeAssistantTab: null, activeAssistantTabOpen: false }),

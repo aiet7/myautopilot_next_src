@@ -33,6 +33,10 @@ const Contacts = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Contacts/Contacts")
 );
 
+const Teams = dynamic(() =>
+  import("@/components/Dashboard/Admin/Options/Teams/Teams")
+);
+
 const OptionPages = () => {
   const session = Cookies.get("session_token");
   const router = useRouter();
@@ -79,6 +83,7 @@ const OptionPages = () => {
         board: user?.permissions?.boardView,
         companies: user?.permissions?.technicianUserManagement,
         contacts: !user?.permissions?.technicianUserManagement,
+        teams: user?.permissions?.technicianUserManagement,
       };
 
       if (!permissionMap[componentKey]) {
@@ -109,6 +114,8 @@ const OptionPages = () => {
           return <Roles />;
         case "board":
           return <Board />;
+        case "teams":
+          return <Teams />;
         default:
           return <p>Option not found</p>;
       }

@@ -5,65 +5,64 @@ import useUiStore from "@/utils/store/ui/uiStore.js";
 import AssistantRail from "./AssistantRail.js";
 import AssistantControl from "./AssistantControl.js";
 import InternalPilot from "./Sections/Internal/InternalPilot.js";
-
 import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
 import ExternalPilot from "./Sections/External/ExternalPilot.js";
 
-const Assistant = ({}) => {
+const Assistant = () => {
   const { openAssistant } = useUiStore();
-  const { setAssistantWidth, assistantWidth, activeAssistantTabOpen } =
-    useAssistantStore();
+  const {
+    setAssistantWidth,
+    assistantWidth,
+    activeAssistantTabOpen,
+    isResizing,
+    setIsResizing,
+  } = useAssistantStore();
 
   const resizableRef = useRef(null);
-  const isResizing = useRef(false);
-
   const isMobile = window.innerWidth < 1023;
 
   const startResize = (e) => {
     e.preventDefault();
-    isResizing.current = true;
+    setIsResizing(true); // Start resizing
   };
 
   const stopResize = () => {
-    isResizing.current = false;
+    setIsResizing(false); // Stop resizing
     if (resizableRef.current) {
       setAssistantWidth(parseInt(resizableRef.current.style.width, 10));
     }
   };
 
   const resize = (e) => {
-    if (!isResizing.current || !resizableRef.current || isMobile) return;
+    if (!isResizing || !resizableRef.current || isMobile) return; // Check resizing state
 
-    // Calculate new width based on cursor position
     const newWidth = window.innerWidth - e.clientX;
 
-    // width between 400 and 900
+    // Keep width between 400 and 900
     if (newWidth > 400 && newWidth < 900) {
-      setAssistantWidth(newWidth); // Update state in real-time
+      setAssistantWidth(newWidth); // Update width in real-time
     }
   };
 
   useEffect(() => {
-    if (!isMobile) {
+    if (isResizing) {
       document.addEventListener("mousemove", resize);
       document.addEventListener("mouseup", stopResize);
     }
 
     return () => {
-      if (!isMobile) {
-        document.removeEventListener("mousemove", resize);
-        document.removeEventListener("mouseup", stopResize);
-      }
+      document.removeEventListener("mousemove", resize);
+      document.removeEventListener("mouseup", stopResize);
     };
-  }, [isMobile]);
+  }, [isResizing]); // Only run on isResizing change
 
   useEffect(() => {
     if (resizableRef.current) {
-      if (isMobile ) {
-        // On mobile, set width to full screen
+      if (isMobile) {
+        // Set width to full screen on mobile
         resizableRef.current.style.width = "100%";
       } else {
-        // On larger screens, apply the assistantWidth
+        // Apply the assistantWidth on larger screens
         resizableRef.current.style.width = `${assistantWidth}px`;
       }
     }

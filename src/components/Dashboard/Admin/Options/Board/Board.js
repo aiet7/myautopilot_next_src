@@ -14,7 +14,7 @@ const Board = () => {
   useEffect(() => {
     intializeBoard();
   }, [user]);
-
+  console.log(board);
   return (
     <div
       onClick={() => {
