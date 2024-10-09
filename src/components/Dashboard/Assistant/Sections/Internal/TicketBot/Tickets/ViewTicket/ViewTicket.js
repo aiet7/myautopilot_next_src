@@ -23,7 +23,7 @@ const ViewTicket = () => {
   return (
     <div className="flex flex-col gap-2 ">
       <IoMdArrowRoundBack
-        className="cursor-pointer"
+        className="cursor-pointer self-end"
         onClick={() => setViewTicket(false)}
         size={30}
       />

@@ -1,17 +1,16 @@
 import { create } from "zustand";
-import useFormsStore from "../forms/formsStore";
 import useRefStore from "../ref/refStore";
-import useInitializeAppStore from "../../init/initializeAppStore";
 import {
   handleGetAgents,
   handleGetConversations,
   handleGetMessages,
 } from "@/utils/api/serverProps";
 import useUserStore from "../../user/userStore";
-import useInteractionStore from "../interactionsStore";
+import { validateAssistantForm } from "@/utils/formValidations";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
+const gptServiceUrl = process.env.NEXT_PUBLIC_GPT_SERVICE_URL;
 
 const useConversationStore = create((set, get) => ({
   agents: [],
@@ -28,6 +27,8 @@ const useConversationStore = create((set, get) => ({
   tempTitle: "",
   tempPrompt: "",
 
+  createAssistantMode: false,
+
   filterChatModeOpen: "",
 
   activeChatOptions: ["History", "Engineer"],
@@ -36,6 +37,17 @@ const useConversationStore = create((set, get) => ({
   chatsPerPage: 30,
   totalChatPages: 1,
   filteredChatCount: 0,
+
+  loadingAssistant: false,
+
+  assistantInputs: {
+    agentName: "",
+    role: "",
+    description: "",
+    objectives: [""],
+  },
+
+  formError: "",
 
   setTempTitle: (title) => set((state) => ({ ...state, tempTitle: title })),
   setTempPrompt: (prompt) => set((state) => ({ ...state, tempPrompt: prompt })),
@@ -49,6 +61,8 @@ const useConversationStore = create((set, get) => ({
       searchValue: value,
       currentChatPage: 1,
     })),
+
+  setCreateAssistantMode: (mode) => set({ createAssistantMode: mode }),
 
   setCurrentChatPage: (page) => set({ currentChatPage: page }),
 
@@ -64,10 +78,50 @@ const useConversationStore = create((set, get) => ({
 
   setCurrentConversationIndex: (id) => set({ currentConversationIndex: id }),
 
+  setAssistantInputs: (field, value) =>
+    set((state) => ({
+      assistantInputs: {
+        ...state.assistantInputs,
+        [field]: value,
+      },
+    })),
+
+  setAssistantObjectives: () =>
+    set((state) => ({
+      assistantInputs: {
+        ...state.assistantInputs,
+        objectives: [...state.assistantInputs.objectives, ""],
+      },
+    })),
+
+  setAssistantObjectiveInputs: (index, value) =>
+    set((state) => {
+      const updatedObjectives = [...state.assistantInputs.objectives];
+      updatedObjectives[index] = value;
+      return {
+        assistantInputs: {
+          ...state.assistantInputs,
+          objectives: updatedObjectives,
+        },
+      };
+    }),
+
+  setAssistantRemoveObjectives: (index) =>
+    set((state) => {
+      const updatedObjectives = [...state.assistantInputs.objectives];
+      updatedObjectives.splice(index, 1);
+      return {
+        assistantInputs: {
+          ...state.assistantInputs,
+          objectives: updatedObjectives,
+        },
+      };
+    }),
+
   initializeAgents: async () => {
     const userStore = useUserStore.getState();
     const { initializeConversations } = get();
-    set({ agents: [] });
+    set({ agents: [], conversationHistories: [] });
 
     if (userStore.user) {
       const initializeAgents = await handleGetAgents();
@@ -163,6 +217,56 @@ const useConversationStore = create((set, get) => ({
       activeChatBotModeOpen: toggle,
       filterChatModeOpen: toggle,
     });
+  },
+
+  handleSaveAssistant: async (mspCustomDomain, techId) => {
+    const { assistantInputs } = get();
+
+    const errors = validateAssistantForm(assistantInputs);
+    if (errors !== true) {
+      set({ formError: errors });
+      return;
+    }
+
+    set({ loadingAssistant: true });
+
+    try {
+      const response = await fetch(
+        `${gptServiceUrl}/assistant/createNewAgent?mspCustomDomain=${mspCustomDomain}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(assistantInputs),
+        }
+      );
+
+      if (response.status === 200 || response.status === 201) {
+        const newAssistant = await response.json();
+
+        set((state) => ({
+          agents: [...state.agents, newAssistant],
+          assistantInputs: {
+            agentName: "",
+            role: "",
+            description: "",
+            objectives: [""],
+          },
+          loadingAssistant: false,
+          formError: "",
+        }));
+        console.log("ASSISTANT SAVED!");
+      } else {
+        console.log("ERROR SAVING ASSISTANT");
+        set({
+          loadingAssistant: false,
+          formError: "",
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
   },
 
   handleSaveConversationTitle: async (convoId, userId) => {
@@ -391,7 +495,7 @@ const useConversationStore = create((set, get) => ({
       selectedAgent: null,
       conversationHistories: [],
       currentConversationIndex: null,
-    
+
       troubleshootingConversationId: null,
       activeChatBotMode: "History",
       filterChatMode: "Newest",
@@ -400,15 +504,28 @@ const useConversationStore = create((set, get) => ({
       deleting: false,
       tempTitle: "",
       tempPrompt: "",
-    
+
+      createAssistantMode: false,
+
       filterChatModeOpen: "",
-    
+
       activeChatOptions: ["History", "Engineer"],
-    
+
       currentChatPage: 1,
       chatsPerPage: 30,
       totalChatPages: 1,
       filteredChatCount: 0,
+
+      loadingAssistant: false,
+
+      assistantInputs: {
+        agentName: "",
+        role: "",
+        description: "",
+        objectives: [""],
+      },
+
+      formError: "",
     });
   },
 }));

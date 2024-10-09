@@ -60,9 +60,9 @@ const AllQueueTicketsTable = () => {
     })
     ?.sort((a, b) => {
       if (filterQueueTicketMode === "Newest") {
-        return new Date(b.timeStamp) - new Date(a.timeStamp);
+        return new Date(b.creationTime) - new Date(a.creationTime);
       } else if (filterQueueTicketMode === "Oldest") {
-        return new Date(a.timeStamp) - new Date(b.timeStamp);
+        return new Date(a.creationTime) - new Date(b.creationTime);
       }
       return 0;
     });

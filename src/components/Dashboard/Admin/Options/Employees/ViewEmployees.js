@@ -6,19 +6,14 @@ import useUserStore from "@/utils/store/user/userStore";
 const ViewEmployees = () => {
   const { user } = useUserStore();
 
-  const {
-    successMessage,
-    errorMessage,
-    employees,
-    handleSaveEmployee,
-  } = useEmployeesStore();
+  const { employees, handleSaveEmployee } = useEmployeesStore();
 
   return (
-    <div className="flex flex-col  overflow-hidden">
-      <div className="flex flex-col gap-7  overflow-hidden ">
-        <div className="flex  flex-col overflow-hidden p-4">
+    <div className="flex flex-col">
+      <div className="flex flex-col gap-7  ">
+        <div className="flex  flex-col p-4">
           {employees?.length !== 0 ? (
-            <div className="block overflow-auto scrollbar-thin max-h-full max-w-full">
+            <div className="block  max-h-full max-w-full">
               {employees && (
                 <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
                   <thead className="dark:text-white dark:bg-gray-700 sticky top-0 text-black/60 bg-[#F5F8FA]">
@@ -50,7 +45,6 @@ const ViewEmployees = () => {
                         firstName,
                         lastName,
                         connectWiseMembersId,
-                       
                       } = employee;
                       return (
                         <tr key={id}>
@@ -77,7 +71,6 @@ const ViewEmployees = () => {
                           <td className="p-2 truncate border-r border-b">
                             {mobilePhone || officePhone}
                           </td>
-                          
                         </tr>
                       );
                     })}

@@ -1,9 +1,23 @@
-"use client";
-
+import { useEffect } from "react";
 import useUiStore from "@/utils/store/ui/uiStore";
+import useTeamsStore from "@/utils/store/admin/control/teams/teamsStore";
+import useUserStore from "@/utils/store/user/userStore";
+import TeamsTable from "./TeamsTable";
 
 const Teams = () => {
   const { openAdmin, handleHistoryMenu } = useUiStore();
+  const { user } = useUserStore();
+  const {
+    teams,
+    initializeTeams,
+    setCurrentTeam,
+    searchValue,
+    setSearchValue,
+  } = useTeamsStore();
+
+  useEffect(() => {
+    initializeTeams();
+  }, [user]);
 
   return (
     <div
@@ -13,13 +27,47 @@ const Teams = () => {
         }
       }}
       className={`relative flex flex-col h-full w-full text-sm ${
-        openAdmin && "lg:opacity-100 opacity-5 xl:ml-[250px]"
-      }  dark:bg-black transition-all duration-300 ease bg-white`}
+        openAdmin ? "lg:opacity-100 opacity-5 xl:ml-[250px]" : ""
+      } dark:bg-black transition-all duration-300 ease bg-white`}
     >
       <div className="dark:border-b-white/20 border-b p-4">
         <h1 className="text-2xl">Teams</h1>
       </div>
-      <div className="flex flex-col h-full overflow-hidden pb-4">Team Canvas</div>
+
+      <div className="p-4 flex flex-col h-full overflow-auto scrollbar-thin pb-4">
+        <div className="flex justify-between py-5">
+          <h1 className="underline font-bold text-2xl">Boards</h1>
+          <select
+            className="w-[300px] h-[35px] border border-gray-300 rounded"
+            onChange={(e) => {
+              const selectedTeams = teams.filter(
+                (team) => team.boardName === e.target.value
+              );
+              setCurrentTeam(selectedTeams.length ? selectedTeams : null);
+            }}
+          >
+            <option value="">All Boards</option>
+            {teams?.map((board) => {
+              const { id, boardName } = board;
+
+              return (
+                <option key={id} value={boardName}>
+                  {boardName}
+                </option>
+              );
+            })}
+          </select>
+
+          <input
+            type="text"
+            placeholder="Search"
+            className="w-[300px] h-[35px] border border-gray-300 rounded p-2"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+          />
+        </div>
+        <TeamsTable />
+      </div>
     </div>
   );
 };

@@ -102,7 +102,6 @@ const History = () => {
           return (
             <div
               onClick={() => {
-                console.log("firing off");
                 handleConversationSelected(id);
               }}
               key={id}

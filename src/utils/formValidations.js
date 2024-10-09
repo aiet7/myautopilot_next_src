@@ -130,6 +130,29 @@ export const validateTicketForm = (ticket, userType) => {
   return Object.keys(errors).length ? errors : true;
 };
 
+export const validateAssistantForm = (assistantInputs) => {
+  const errors = {};
+  const { agentName, role, description, objectives } = assistantInputs;
+
+  if (isInputEmpty(agentName)) {
+    errors.agentName = "Agent Name is required";
+  }
+
+  if (isInputEmpty(role)) {
+    errors.role = "Role is required";
+  }
+
+  if (isInputEmpty(description)) {
+    errors.description = "Description is required";
+  }
+
+  if (!Array.isArray(objectives) || objectives.every(isInputEmpty)) {
+    errors.objectives = "At least one objective is required";
+  }
+  
+  return Object.keys(errors).length ? errors : true;
+};
+
 export const isInputEmpty = (input) => {
   if (typeof input !== "string") {
     return true;

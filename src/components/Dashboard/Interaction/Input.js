@@ -84,7 +84,7 @@ const Input = () => {
             }}
             value={userInput}
             placeholder="Describe Your Issue..."
-            className="dark:border-white/30 dark:shadow-white/30 dark:bg-black border-black/10 shadow-xl shadow-black/30  outline-none bg-white border w-full p-4 pr-32 resize-none no-scrollbar"
+            className="dark:border-white/30 dark:shadow-white/30 dark:bg-black border-black/10 shadow-xl shadow-black/30  outline-none bg-white border w-full p-4 pr-32 resize-none no-scrollbar focus:outline focus:outline-2 focus:outline-black"
             style={{
               height: textAreaHeight,
               maxHeight: "200px",

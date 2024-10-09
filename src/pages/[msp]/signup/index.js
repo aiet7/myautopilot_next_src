@@ -11,13 +11,14 @@ const PublicSignupPage = () => {
   const { msp } = router.query;
   const { height, setHeight } = useUiStore();
   const {
+    userType,
     errorMessage,
     signupInputs,
     setSignupInputs,
     handleSignupPublic,
     clearMSPCredentials,
+    initializeUserType,
   } = useMspStore();
-
   useEffect(() => {
     if (typeof window !== "undefined") {
       setHeight(window.innerHeight);
@@ -29,6 +30,10 @@ const PublicSignupPage = () => {
       };
     }
   }, []);
+
+  useEffect(() => {
+    initializeUserType();
+  }, [userType]);
 
   return (
     <>

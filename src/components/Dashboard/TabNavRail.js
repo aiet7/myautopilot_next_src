@@ -35,6 +35,7 @@ const TabNavRail = ({}) => {
   const handleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
+
   return (
     <div className="dark:bg-[#373737] dark:border-white/10 bg-[#eaf1fb] flex items-center justify-evenly p-3 gap-4 transition-all duration-300 ease lg:relative lg:flex-col lg:justify-start lg:border-r lg:border-black/10">
       {((activeTab === "iTAgent" &&
@@ -53,92 +54,113 @@ const TabNavRail = ({}) => {
           />
         </>
       )}
-      <Link href={`/${user?.mspCustomDomain}/dashboard/${user?.id}`}>
-        <div
-          onClick={() => {
-            handleTabChange("iTAgent");
-          }}
-          className="relative group flex flex-col gap-2 items-center cursor-pointer"
-        >
-          <AiOutlineHome
-            data-tooltip-id="Home"
-            size={22}
-            className={`${
-              activeTab === "iTAgent" && "text-blue-600"
-            } outline-none`}
-          />
-          <span className="shadow font-semibold bg-white absolute z-[100] left-[100%] top-1/2 transform -translate-y-1/2 translate-x-2 scale-0 rounded  p-2 text-xs text-black group-hover:scale-100 group-hover:shadow-md transition-shadow duration-200">
-            Home
-          </span>
-        </div>
-      </Link>
-
-      {user?.permissions?.adminPortal && (
-        <Link
-          href={`/${user?.mspCustomDomain}/dashboard/${user?.id}/admin/${
-            user?.permissions?.technicianUserManagement
-              ? "employees"
-              : user?.permissions?.roleManagement
-              ? "roles"
-              : user?.permissions?.mspIntegrations
-              ? "msp-integrations"
-              : user?.permissions?.clientIntegrations
-              ? "client-integrations"
-              : user?.permissions?.boardView
-              ? "board"
-              : user?.permissions?.mspBranding
-              ? "branding"
-              : user?.permissions?.clientUserManagement
-              ? "companies"
-              : !user?.permissions?.technicianUserManagement
-              ? "contacts"
-              : "default"
-          }`}
-        >
+      {activeTab !== "iTAgent" ? (
+        <Link href={`/${user?.mspCustomDomain}/dashboard/${user?.id}`}>
           <div
             onClick={() => {
-              handleTabChange("admin");
-              handleOptionSelected(
-                user?.permissions?.technicianUserManagement
-                  ? "employees"
-                  : user?.permissions?.roleManagement
-                  ? "roles"
-                  : user?.permissions?.mspIntegrations
-                  ? "msp-integrations"
-                  : user?.permissions?.clientIntegrations
-                  ? "client-integrations"
-                  : user?.permissions?.boardView
-                  ? "board"
-                  : user?.permissions?.mspBranding
-                  ? "branding"
-                  : user?.permissions?.clientUserManagement
-                  ? "companies"
-                  : !user?.permissions?.technicianUserManagement
-                  ? "contacts"
-                  : "default"
-              );
+              handleTabChange("iTAgent");
             }}
             className="relative group flex flex-col gap-2 items-center cursor-pointer"
           >
-            <RiAdminLine
+            <AiOutlineHome
+              data-tooltip-id="Home"
               size={22}
               className={`${
-                activeTab === "admin" && "text-blue-600"
+                activeTab === "iTAgent" && "text-blue-600"
               } outline-none`}
             />
-            <span className="shadow font-semibold bg-white absolute z-[100] left-[100%] top-1/2 transform -translate-y-1/2 translate-x-2 scale-0 rounded  p-2 text-xs text-black group-hover:scale-100 group-hover:shadow-md transition-shadow duration-200">
-              Admin
+            <span className="shadow font-semibold bg-white absolute z-[100] left-[100%] top-1/2 transform -translate-y-1/2 translate-x-2 scale-0 rounded p-2 text-xs text-black group-hover:scale-100 group-hover:shadow-md transition-shadow duration-200">
+              Home
             </span>
           </div>
         </Link>
+      ) : (
+        <div className="relative group flex flex-col gap-2 items-center cursor-pointer">
+          <AiOutlineHome
+            data-tooltip-id="Home"
+            size={22}
+            className="text-blue-600 outline-none"
+          />
+          <span className="shadow font-semibold bg-white absolute z-[100] left-[100%] top-1/2 transform -translate-y-1/2 translate-x-2 scale-0 rounded p-2 text-xs text-black group-hover:scale-100 group-hover:shadow-md transition-shadow duration-200">
+            Home
+          </span>
+        </div>
       )}
+
+      {user?.permissions?.adminPortal &&
+        (activeTab !== "admin" ? (
+          <Link
+            href={`/${user?.mspCustomDomain}/dashboard/${user?.id}/admin/${
+              user?.permissions?.technicianUserManagement
+                ? "employees"
+                : user?.permissions?.roleManagement
+                ? "roles"
+                : user?.permissions?.mspIntegrations
+                ? "msp-integrations"
+                : user?.permissions?.clientIntegrations
+                ? "client-integrations"
+                : user?.permissions?.boardView
+                ? "board"
+                : user?.permissions?.mspBranding
+                ? "branding"
+                : user?.permissions?.clientUserManagement
+                ? "companies"
+                : !user?.permissions?.technicianUserManagement
+                ? "contacts"
+                : "default"
+            }`}
+          >
+            <div
+              onClick={() => {
+                handleTabChange("admin");
+                handleOptionSelected(
+                  user?.permissions?.technicianUserManagement
+                    ? "employees"
+                    : user?.permissions?.roleManagement
+                    ? "roles"
+                    : user?.permissions?.mspIntegrations
+                    ? "msp-integrations"
+                    : user?.permissions?.clientIntegrations
+                    ? "client-integrations"
+                    : user?.permissions?.boardView
+                    ? "board"
+                    : user?.permissions?.mspBranding
+                    ? "branding"
+                    : user?.permissions?.clientUserManagement
+                    ? "companies"
+                    : !user?.permissions?.technicianUserManagement
+                    ? "contacts"
+                    : "default"
+                );
+              }}
+              className="relative group flex flex-col gap-2 items-center cursor-pointer"
+            >
+              <RiAdminLine
+                size={22}
+                className={`${
+                  activeTab === "admin" && "text-blue-600"
+                } outline-none`}
+              />
+              <span className="shadow font-semibold bg-white absolute z-[100] left-[100%] top-1/2 transform -translate-y-1/2 translate-x-2 scale-0 rounded p-2 text-xs text-black group-hover:scale-100 group-hover:shadow-md transition-shadow duration-200">
+                Admin
+              </span>
+            </div>
+          </Link>
+        ) : (
+          <div className="relative group flex flex-col gap-2 items-center cursor-pointer">
+            <RiAdminLine size={22} className="text-blue-600 outline-none" />
+            <span className="shadow font-semibold bg-white absolute z-[100] left-[100%] top-1/2 transform -translate-y-1/2 translate-x-2 scale-0 rounded p-2 text-xs text-black group-hover:scale-100 group-hover:shadow-md transition-shadow duration-200">
+              Admin
+            </span>
+          </div>
+        ))}
 
       <div
         onClick={() => handleToggleSettings(true)}
         className="flex flex-col items-center cursor-pointer  lg:absolute lg:bottom-0 lg:py-3"
       >
         <div className="w-7 h-7 bg-blue-800 text-sm flex justify-center items-center text-white">
-          {user?.firstName?.[0]}
+          {user?.firstName?.[0].toUpperCase()}
         </div>
         {openSettings && (
           <div className="dark:bg-black dark:border-white/40 dark:border rounded-lg bg-white border border-black/10 absolute z-[99] bottom-[52px] right-0 w-full lg:bottom-0 lg:left-[37px] lg:w-[251px]">

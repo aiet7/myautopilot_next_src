@@ -42,7 +42,6 @@ const Interaction = ({}) => {
     handleScrollToBottom(false);
   }, [window.innerWidth]);
 
-  console.log(isResizing);
   return (
     <div
       onClick={() => {

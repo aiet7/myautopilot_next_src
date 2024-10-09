@@ -22,6 +22,7 @@ import useContactsStore from "../admin/control/contacts/contactsStore";
 import useQueueStore from "../interaction/queue/queueStore";
 import useToolsStore from "../assistant/sections/external/downloads/downloadStore";
 import useUiStore from "../ui/uiStore";
+import useTeamsStore from "../admin/control/teams/teamsStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const useUserStore = create((set, get) => ({
@@ -164,6 +165,7 @@ const useUserStore = create((set, get) => ({
     const { clearQueue } = useQueueStore.getState();
     const { clearTools } = useToolsStore.getState();
     const { clearUI } = useUiStore.getState();
+    const { clearTeams } = useTeamsStore.getState();
 
     await clearTickets();
 
@@ -197,6 +199,7 @@ const useUserStore = create((set, get) => ({
     clearQueue();
     clearTools();
     clearUI();
+    clearTeams();
 
     if (window.location.pathname.startsWith("/public/dashboard")) {
       navigator("/public");

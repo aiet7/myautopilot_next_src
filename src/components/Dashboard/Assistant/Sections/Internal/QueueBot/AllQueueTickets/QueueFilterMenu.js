@@ -14,7 +14,7 @@ const QueueFilterMenu = () => {
     setActiveFilterMode,
     setActiveQueueFilterModeOpen,
   } = useQueueStore();
-
+  
   const uniqueTypes = [
     ...new Set(allQueueTickets?.map((ticket) => ticket.categoryName)),
   ];

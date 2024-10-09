@@ -6,16 +6,16 @@ const ViewEmployeeTickets = () => {
   const { companyEmployeeTickets } = useCompaniesStore();
 
   return (
-    <div className="flex flex-col overflow-hidden">
-      <div className="flex flex-col gap-7  overflow-hidden">
-        <div className="flex flex-col overflow-hidden px-4">
+    <div className="flex flex-col">
+      <div className="flex flex-col gap-7 ">
+        <div className="flex flex-col p-4">
           <div className="flex items-center justify-start gap-2 py-4">
             <button className="text-sm border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white font-bold px-5 rounded-lg py-1">
               Add Ticket
             </button>
           </div>
           {companyEmployeeTickets?.length !== 0 ? (
-            <div className="block  overflow-auto scrollbar-thin max-h-full max-w-full">
+            <div className="block   max-h-full max-w-full">
               {companyEmployeeTickets && (
                 <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
                   <thead className="dark:text-white dark:bg-gray-700 sticky top-0 text-black/60 bg-[#F5F8FA]">

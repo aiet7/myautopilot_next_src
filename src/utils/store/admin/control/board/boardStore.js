@@ -3,44 +3,30 @@ import useUserStore from "@/utils/store/user/userStore";
 import { create } from "zustand";
 
 const useBoardStore = create((set, get) => ({
-  board: null,
-
-  durationOptions: {
-    "15 Minutes": 15,
-    "30 Minutes": 30,
-    "45 Minutes": 45,
-    "1 Hour": 60,
-    "1 Hour 30 Minutes": 90,
-    "2 Hours 30 Minutes": 150,
-    "3 Hours 30 Minutes": 210,
-    "4 Hours": 240,
-  },
+  boards: null,
+  searchValue: "",
+  selectedBoard: null,
 
   intializeBoard: async () => {
     const userStore = useUserStore.getState();
 
-    set({ board: null });
+    set({ boards: null });
 
     if (userStore.user) {
-      const board = await handleGetDBBoard(userStore.user.mspCustomDomain);
+      const boards = await handleGetDBBoard(userStore.user.mspCustomDomain);
 
-      set({ board: board });
+      set({ boards: boards, selectedBoard: null });
     }
   },
 
+  setSelectedBoard: (board) => set({ selectedBoard: board }),
+  setSearchValue: (value) => set({ searchValue: value }),
+
   clearBoard: () => {
     set({
-      board: null,
-      durationOptions: {
-        "15 Minutes": 15,
-        "30 Minutes": 30,
-        "45 Minutes": 45,
-        "1 Hour": 60,
-        "1 Hour 30 Minutes": 90,
-        "2 Hours 30 Minutes": 150,
-        "3 Hours 30 Minutes": 210,
-        "4 Hours": 240,
-      },
+      boards: null,
+      searchValue: "",
+      selectedBoard: null,
     });
   },
 }));

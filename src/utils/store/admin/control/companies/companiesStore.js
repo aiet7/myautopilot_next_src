@@ -160,7 +160,7 @@ const useCompaniesStore = create((set, get) => ({
 
   handleSaveNewCompanyEmployee: async (mspCustomDomain) => {
     const { companyPSAEmployees, addEmployeeInputs, selectedCompanyId } = get();
-   
+
     try {
       const response = await fetch(
         `${connectWiseServiceUrl}/addConnectWiseContact?mspCustomDomain=${mspCustomDomain}`,
@@ -201,11 +201,10 @@ const useCompaniesStore = create((set, get) => ({
     }
   },
 
-  handleViewCompanyAllTickets: async () => {
-    const { selectedCompanyDbId } = get();
+  handleViewCompanyAllTickets: async (mspCustomDomain) => {
     try {
       const response = await fetch(
-        `${dbServiceUrl}/supportTickets/byClientsAutopilotDbid?clientsAutopilotDbid=${selectedCompanyDbId}`
+        `${dbServiceUrl}/supportTickets/byMspCustomDomain?mspCustomDomain=${mspCustomDomain}`
       );
 
       if (response.status === 200) {

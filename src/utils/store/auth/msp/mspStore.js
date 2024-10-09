@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import Cookie from "js-cookie";
-import useUiStore from "../../ui/uiStore";
-import useUserStore from "../../user/userStore";
+
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
@@ -169,6 +168,13 @@ const useMspStore = create((set, get) => ({
     const { clearMSPCredentials } = get();
     navigator("/auth/signup");
     localStorage.setItem("lastActiveUserType", "tech");
+    clearMSPCredentials();
+  },
+
+  handleNavigatePublicSignup: (navigator) => {
+    const { clearMSPCredentials } = get();
+    navigator("/public/signup");
+    localStorage.setItem("lastActiveUserType", "client");
     clearMSPCredentials();
   },
 

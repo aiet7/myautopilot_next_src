@@ -25,11 +25,11 @@ const ViewEmployees = () => {
     }
   };
   return (
-    <div className="flex flex-col  overflow-hidden">
+    <div className="flex flex-col">
       {addEmployee && <AddEmployee />}
-      <div className="flex flex-col gap-7 overflow-hidden">
-        <div className="flex flex-col overflow-hidden p-4">
-          <div className="flex items-center gap-1  ">
+      <div className="flex flex-col gap-7">
+        <div className="flex flex-col p-4">
+          <div className="flex items-center gap-1">
             <span
               onClick={() => setCurrentEmployeeView("Active")}
               className={`${
@@ -56,12 +56,12 @@ const ViewEmployees = () => {
                   handleViewCompanyEmployeeForm(user?.mspCustomDomain)
                 }
                 className="text-sm border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white font-bold px-5 rounded-lg py-1"
-                >
+              >
                 Add Employee
               </button>
             )}
             <p
-              onClick={handleViewCompanyAllTickets}
+              onClick={() => handleViewCompanyAllTickets(user?.mspCustomDomain)}
               className="hover:underline text-blue-800 cursor-pointer"
             >
               See All Tickets

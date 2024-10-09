@@ -87,15 +87,8 @@ const useUiStore = create((set, get) => ({
   },
 
   handleTabChange: (tab) => {
-    const { activeTab } = get();
-
-    if (tab === activeTab) {
-      return;
-    }
-
     set({ activeTab: tab });
   },
-
 
   clearUI: () => {
     set({

@@ -8,8 +8,7 @@ const ViewActiveEmployees = () => {
   const { user } = useUserStore();
 
   const {
-    successMessage,
-    errorMessage,
+    
     addEmployee,
     activeEmployees,
     employeesTierOptions,
@@ -20,10 +19,10 @@ const ViewActiveEmployees = () => {
   } = useEmployeesStore();
 
   return (
-    <div className="flex flex-col  overflow-hidden">
+    <div className="flex flex-col ">
       {addEmployee && <AddEmployee />}
-      <div className="flex flex-col gap-7 overflow-hidden ">
-        <div className="flex  flex-col overflow-hidden p-4">
+      <div className="flex flex-col gap-7 ">
+        <div className="flex  flex-col  p-4">
           <div className="flex items-center justify-start gap-2  pb-4">
             <button
               onClick={() => setAddEmployee(true)}
@@ -33,7 +32,7 @@ const ViewActiveEmployees = () => {
             </button>
           </div>
           {activeEmployees?.length !== 0 ? (
-            <div className="block overflow-auto scrollbar-thin max-h-full max-w-full">
+            <div className="block  max-h-full max-w-full">
               {activeEmployees && (
                 <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
                   <thead className="dark:text-white dark:bg-gray-700 sticky top-0  text-black/60 bg-[#F5F8FA]">

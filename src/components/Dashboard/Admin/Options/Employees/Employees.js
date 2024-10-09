@@ -59,7 +59,7 @@ const Employees = ({}) => {
           Technicians
         </span>
       </div>
-      <div className="flex flex-col h-full overflow-hidden">
+      <div className="flex flex-col h-full overflow-auto scrollbar-thin">
         {renderComponent()}
       </div>
     </div>

@@ -13,6 +13,7 @@ import Cookies from "js-cookie";
 import useUserStore from "@/utils/store/user/userStore";
 import useMspStore from "@/utils/store/auth/msp/mspStore";
 import Account from "@/components/Dashboard/Account";
+import ExternalPilot from "@/components/Dashboard/Assistant/Sections/External/ExternalPilot";
 
 const Interaction = dynamic(() =>
   import("@/components/Dashboard/Interaction/Interaction.js")

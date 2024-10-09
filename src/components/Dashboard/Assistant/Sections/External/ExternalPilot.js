@@ -4,12 +4,10 @@ import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import Passwords from "./Passwords";
 import RemoteAccess from "./RemoteAccess";
 import Billing from "./Billing";
-import Tools from "./Downloads";
 import Policies from "./Policies";
 import Downloads from "./Downloads";
 
 import { AiOutlineClose } from "react-icons/ai";
-import BottomExternalMenu from "./BottomExternalMenu";
 import TopExternalMenu from "./TopExternalMenu";
 
 const ExternalPilot = () => {

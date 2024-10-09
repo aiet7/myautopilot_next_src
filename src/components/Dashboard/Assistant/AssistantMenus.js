@@ -7,12 +7,15 @@ import QueueMenus from "./Sections/Internal/QueueBot/QueueMode";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
 import useQueueStore from "@/utils/store/interaction/queue/queueStore";
+import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
 
 const AssistantMenus = () => {
   const { currentNavOption } = useUiStore();
 
   const { activeTicketBotMode } = useTicketsStore();
   const { activeQueueBotMode } = useQueueStore();
+
+  const { setCreateAssistantMode } = useConversationStore();
 
   const renderModeComponent = () => {
     switch (currentNavOption) {
@@ -35,7 +38,18 @@ const AssistantMenus = () => {
 
   return (
     <div className="dark:bg-gray-900 flex flex-wrap items-center justify-between min-h-12 w-full shadow-xl px-4  bg-white gap-4 ">
-      {renderModeComponent()}
+      <div className="flex items-center gap-2">
+        {renderModeComponent()}
+        {currentNavOption === "Assistant" && (
+          <button
+            onClick={() => setCreateAssistantMode(true)}
+            className="text-xs border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] font-semibold text-white rounded-md px-2 py-1"
+          >
+            Create Assistant
+          </button>
+        )}
+      </div>
+
       {showPagination && <Pagination />}
     </div>
   );

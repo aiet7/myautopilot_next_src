@@ -458,7 +458,7 @@ const useFormsStore = create((set, get) => ({
           const aiContent = `Ticket Created!\n\nID: ${id}\n\nTitle: ${currentTicketTitle}\n\nDescription: ${currentTicketDescription}\n\nCategory: ${currentTicketCategory}\n\nSubcategory: ${currentTicketSubCategory}\n\nPriority: ${currentTicketPriority}\n\nSeverity: ${currentTicketSeverity}\n\nImpact: ${currentTicketImpact}\n\nTier: ${currentTicketTier}\n\n${
             currentTicketCWCompanyId &&
             `ConnectWise Company ID: ${currentTicketCWCompanyId}`
-          } \n\nName: ${currentTicketName}\n\nEmail: ${currentTicketEmailId}\n\nPhone: ${currentTicketPhoneNumber}\n\n <span class="font-bold">Thank you, your ticket has been created and our team will begin the resolution process immediatly. Would you like me to help you trouble shoot your issue now?</span>`;
+          } \n\nName: ${currentTicketName}\n\nEmail: ${currentTicketEmailId}\n\nPhone: ${currentTicketPhoneNumber}`;
           handleAddAssistantMessage(aiContent, false);
           addTicket({
             ticketId: id,

@@ -45,12 +45,12 @@ const Roles = ({}) => {
       <div className="dark:border-b-white/20 border-b p-4">
         <h1 className="text-2xl">Roles</h1>
       </div>
-      <div className="flex flex-col h-full overflow-hidden pb-4">
-        <div className="flex flex-col overflow-hidden">
+      <div className="flex flex-col h-full  pb-4">
+        <div className="flex flex-col ">
           {roles?.length !== 0 ? (
-            <div className="flex flex-col gap-7 overflow-hidden">
+            <div className="flex flex-col gap-7 ">
               {roles && (
-                <div className="flex  flex-col overflow-hidden px-4">
+                <div className="flex  flex-col overflow-hidden p-4">
                   <div className="flex items-center justify-start gap-2 py-4">
                     <button
                       onClick={() => setCreateRole(true)}
@@ -59,7 +59,7 @@ const Roles = ({}) => {
                       Add Role
                     </button>
                   </div>
-                  <div className="block text-sm overflow-auto scrollbar-thin max-h-full max-w-full">
+                  <div className="block text-sm  max-h-full max-w-full">
                     <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
                       <thead className="dark:text-white dark:bg-gray-700 sticky top-0 text-black/60 bg-[#F5F8FA]">
                         <tr className="">
@@ -103,7 +103,7 @@ const Roles = ({}) => {
                                             user?.mspCustomDomain
                                           )
                                         }
-                                        className="hover:underline text-blue-500"
+                                        className="hover:underline text-red-500"
                                       >
                                         Delete
                                       </button>

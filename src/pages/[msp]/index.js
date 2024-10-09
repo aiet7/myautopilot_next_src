@@ -26,6 +26,7 @@ const MSPPage = ({}) => {
     handleClient2FALogin,
     handleTechnicianLogin,
     handleTechnician2FALogin,
+    handleNavigatePublicSignup,
     clearMSPCredentials,
     initializeUserType,
   } = useMspStore();
@@ -267,16 +268,12 @@ const MSPPage = ({}) => {
               )}
               <div className="flex flex-col w-full">
                 {router.asPath.includes("/public") ? (
-                  <>
-                    <Link
-                      onClick={() => clearMSPCredentials()}
-                      href={`/${mspSubDomain?.customDomain}/signup`}
-                    >
-                      <span className="text-sm text-blue-800 font-semibold">
-                        Sign Up
-                      </span>
-                    </Link>
-                  </>
+                  <span
+                    onClick={() => handleNavigatePublicSignup(router.push)}
+                    className="text-sm text-blue-800 font-semibold cursor-pointer"
+                  >
+                    Sign Up
+                  </span>
                 ) : (
                   <Link
                     onClick={() => clearMSPCredentials()}

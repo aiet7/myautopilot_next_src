@@ -124,7 +124,16 @@ export const handleGetManageDBClientContactsActive = async (msp, companyId) => {
 
 export const handleGetDBBoard = async (msp) => {
   const response = await fetch(
-    `${dbServiceUrl}/${encodeURIComponent(msp)}/connectWiseManageDetails`
+    `${dbServiceUrl}/${encodeURIComponent(msp)}/connectWiseBoardDetails`
+  );
+  return response.json();
+};
+
+export const handleGetDBTeams = async (msp) => {
+  const response = await fetch(
+    `${dbServiceUrl}/api/teams/getByMspCustomDomain?mspCustomDomain=${encodeURIComponent(
+      msp
+    )}`
   );
   return response.json();
 };
