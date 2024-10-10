@@ -111,7 +111,7 @@ const BoardTable = () => {
                           searchValue
                         )}
                       </td>
-                      <td className="p-2 border-l border-b">
+                      <td  className="p-2 border-l border-b">
                         {highlightText(subtype.tier?.toString(), searchValue)}
                       </td>
                       <td className="p-2 border-l border-r border-b">
