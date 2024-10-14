@@ -565,14 +565,21 @@ const useMspStore = create((set, get) => ({
           headers: {
             "Content-Type": "application/json",
           },
+          
           body: JSON.stringify({
             emailId: techInfo.email,
             password: techInfo.password,
           }),
         }
       );
-
+      // debugger
+      // console.log("fetch response", response);
+      // const responseData = await response.json(); // Parse the response
+      // console.log("QR URL:", responseData); // Log the QR URL
+      // debugger;
       if (response.ok) {
+        // const responseData = await response.text();
+        console.log("QR URL:", response.text());
         set({
           current2FA: true,
           errorMessage: {
