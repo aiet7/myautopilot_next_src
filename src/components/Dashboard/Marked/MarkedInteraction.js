@@ -101,10 +101,10 @@ const MarkedInteraction = ({ id, elements, markdown }) => {
 
   marked.setOptions({ renderer, gfm: true });
   const explanations = elements?.filter((item) => item.type === "Explanation");
-  const guidanceItems = elements?.filter((item) => item.type === "Guidance");
   const questionItems = elements?.filter(
     (item) => item.type === "Question" && item.options?.length
   );
+
 
   return (
     <div ref={copyRef}>
@@ -152,44 +152,7 @@ const MarkedInteraction = ({ id, elements, markdown }) => {
               ))}
             </div>
           )}
-          {guidanceItems?.length > 0 && (
-            <div className="flex flex-col gap-2 w-full">
-              <p className="font-bold text-lg">
-                Recommendations From Vision For You
-              </p>
-              {guidanceItems?.map((item, index) => (
-                <div key={index} className="flex flex-col gap-1">
-                  <p
-                    onClick={() => {
-                      setUserChatButtonsSelected(item.content, " ");
-                    }}
-                    className={`cursor-pointer w-[300px] px-4 text-left rounded-md border py-5 ${
-                      userChatButtonsSelected[item.content] === " "
-                        ? "dark:bg-white/40 bg-black/20"
-                        : "dark:text-white dark:hover:bg-white/40 hover:bg-black/20 text-black"
-                    }`}
-                  >
-                    {item.content}
-                  </p>
-                  {item.options && (
-                    <div className="flex flex-wrap gap-2">
-                      {item.options.map((option, index) => (
-                        <button
-                          key={index}
-                          className="w-[200px] rounded-md border py-5 dark:text-white dark:hover:bg-white/40 hover:bg-black/20 text-black"
-                          onClick={() => {
-                            setUserChatButtonsSelected(item.content, option);
-                          }}
-                        >
-                          {option}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
+          
         </div>
       </div>
     </div>

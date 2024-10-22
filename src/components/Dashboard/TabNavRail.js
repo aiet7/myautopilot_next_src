@@ -18,6 +18,9 @@ import useUserStore from "@/utils/store/user/userStore";
 import useAdminStore from "@/utils/store/admin/adminStore";
 import { useRouter } from "next/router";
 
+import Nav from "./Nav";
+import AdminNav from "./Admin/AdminNav";
+
 const TabNavRail = ({}) => {
   const router = useRouter();
 
@@ -26,7 +29,9 @@ const TabNavRail = ({}) => {
   const {
     currentNavOption,
     openSettings,
+    hoverTab,
     activeTab,
+    setHoverTab,
     handleTabChange,
     handleNavMenu,
     handleToggleSettings,
@@ -38,15 +43,18 @@ const TabNavRail = ({}) => {
 
   return (
     <div className="dark:bg-[#373737] dark:border-white/10 bg-[#eaf1fb] flex items-center justify-evenly p-3 gap-4 transition-all duration-300 ease lg:relative lg:flex-col lg:justify-start lg:border-r lg:border-black/10">
-      {((activeTab === "iTAgent" &&
-        (currentNavOption === "Assistant" ||
-          currentNavOption === "Document" ||
-          currentNavOption === "Tickets" ||
-          currentNavOption === "Queue")) ||
+      {(activeTab === "iTAgent" ||
+        (hoverTab === "iTAgent" &&
+          (currentNavOption === "Assistant" ||
+            currentNavOption === "Document" ||
+            currentNavOption === "Tickets" ||
+            currentNavOption === "Queue")) ||
         currentNavOption === "Settings" ||
-        activeTab === "admin") && (
+        activeTab === "admin" ||
+        hoverTab === "admin") && (
         <>
           <AiOutlineMenu
+            onMouseEnter={() => setHoverTab(null)}
             data-tooltip-id="History Menu"
             onClick={handleNavMenu}
             size={20}
@@ -55,25 +63,36 @@ const TabNavRail = ({}) => {
         </>
       )}
       {activeTab !== "iTAgent" ? (
-        <Link href={`/${user?.mspCustomDomain}/dashboard/${user?.id}`}>
-          <div
-            onClick={() => {
-              handleTabChange("iTAgent");
-            }}
-            className="relative group flex flex-col gap-2 items-center cursor-pointer"
-          >
-            <AiOutlineHome
-              data-tooltip-id="Home"
-              size={22}
-              className={`${
-                activeTab === "iTAgent" && "text-blue-600"
-              } outline-none`}
-            />
-            <span className="shadow font-semibold bg-white absolute z-[100] left-[100%] top-1/2 transform -translate-y-1/2 translate-x-2 scale-0 rounded p-2 text-xs text-black group-hover:scale-100 group-hover:shadow-md transition-shadow duration-200">
-              Home
-            </span>
-          </div>
-        </Link>
+        <>
+          <Link href={`/${user?.mspCustomDomain}/dashboard/${user?.id}`}>
+            <div
+              onMouseEnter={() => {
+                setHoverTab("iTAgent");
+              }}
+              onClick={() => {
+                handleTabChange("iTAgent", user?.mspCustomDomain, user?.id);
+              }}
+              className="relative group flex flex-col gap-2 items-center cursor-pointer "
+            >
+              <AiOutlineHome
+                data-tooltip-id="Home"
+                size={22}
+                className={`${
+                  activeTab === "iTAgent" && "text-blue-600"
+                } outline-none`}
+              />
+              <span className="shadow font-semibold bg-white absolute z-[100] left-[100%] top-1/2 transform -translate-y-1/2 translate-x-2 scale-0 rounded p-2 text-xs text-black group-hover:scale-100 group-hover:shadow-md transition-shadow duration-200">
+                Home
+              </span>
+            </div>
+          </Link>
+
+          {hoverTab === "iTAgent" && (
+            <div className="absolute left-[2.91rem] top-0  bottom-0">
+              <Nav />
+            </div>
+          )}
+        </>
       ) : (
         <div className="relative group flex flex-col gap-2 items-center cursor-pointer">
           <AiOutlineHome
@@ -89,63 +108,71 @@ const TabNavRail = ({}) => {
 
       {user?.permissions?.adminPortal &&
         (activeTab !== "admin" ? (
-          <Link
-            href={`/${user?.mspCustomDomain}/dashboard/${user?.id}/admin/${
-              user?.permissions?.technicianUserManagement
-                ? "employees"
-                : user?.permissions?.roleManagement
-                ? "roles"
-                : user?.permissions?.mspIntegrations
-                ? "msp-integrations"
-                : user?.permissions?.clientIntegrations
-                ? "client-integrations"
-                : user?.permissions?.boardView
-                ? "board"
-                : user?.permissions?.mspBranding
-                ? "branding"
-                : user?.permissions?.clientUserManagement
-                ? "companies"
-                : !user?.permissions?.technicianUserManagement
-                ? "contacts"
-                : "default"
-            }`}
-          >
-            <div
-              onClick={() => {
-                handleTabChange("admin");
-                handleOptionSelected(
-                  user?.permissions?.technicianUserManagement
-                    ? "employees"
-                    : user?.permissions?.roleManagement
-                    ? "roles"
-                    : user?.permissions?.mspIntegrations
-                    ? "msp-integrations"
-                    : user?.permissions?.clientIntegrations
-                    ? "client-integrations"
-                    : user?.permissions?.boardView
-                    ? "board"
-                    : user?.permissions?.mspBranding
-                    ? "branding"
-                    : user?.permissions?.clientUserManagement
-                    ? "companies"
-                    : !user?.permissions?.technicianUserManagement
-                    ? "contacts"
-                    : "default"
-                );
-              }}
-              className="relative group flex flex-col gap-2 items-center cursor-pointer"
+          <>
+            <Link
+              href={`/${user?.mspCustomDomain}/dashboard/${user?.id}/admin/${
+                user?.permissions?.technicianUserManagement
+                  ? "employees"
+                  : user?.permissions?.roleManagement
+                  ? "roles"
+                  : user?.permissions?.mspIntegrations
+                  ? "msp-integrations"
+                  : user?.permissions?.clientIntegrations
+                  ? "client-integrations"
+                  : user?.permissions?.boardView
+                  ? "board"
+                  : user?.permissions?.mspBranding
+                  ? "branding"
+                  : user?.permissions?.clientUserManagement
+                  ? "companies"
+                  : !user?.permissions?.technicianUserManagement
+                  ? "contacts"
+                  : "default"
+              }`}
             >
-              <RiAdminLine
-                size={22}
-                className={`${
-                  activeTab === "admin" && "text-blue-600"
-                } outline-none`}
-              />
-              <span className="shadow font-semibold bg-white absolute z-[100] left-[100%] top-1/2 transform -translate-y-1/2 translate-x-2 scale-0 rounded p-2 text-xs text-black group-hover:scale-100 group-hover:shadow-md transition-shadow duration-200">
-                Admin
-              </span>
-            </div>
-          </Link>
+              <div
+                onClick={() => {
+                  handleTabChange("admin", user?.mspCustomDomain, user?.id);
+                  handleOptionSelected(
+                    user?.permissions?.technicianUserManagement
+                      ? "employees"
+                      : user?.permissions?.roleManagement
+                      ? "roles"
+                      : user?.permissions?.mspIntegrations
+                      ? "msp-integrations"
+                      : user?.permissions?.clientIntegrations
+                      ? "client-integrations"
+                      : user?.permissions?.boardView
+                      ? "board"
+                      : user?.permissions?.mspBranding
+                      ? "branding"
+                      : user?.permissions?.clientUserManagement
+                      ? "companies"
+                      : !user?.permissions?.technicianUserManagement
+                      ? "contacts"
+                      : "default"
+                  );
+                }}
+                className="relative group flex flex-col gap-2 items-center cursor-pointer"
+                onMouseEnter={() => setHoverTab("admin")}
+              >
+                <RiAdminLine
+                  size={22}
+                  className={`${
+                    activeTab === "admin" && "text-blue-600"
+                  } outline-none`}
+                />
+                <span className="shadow font-semibold bg-white absolute z-[100] left-[100%] top-1/2 transform -translate-y-1/2 translate-x-2 scale-0 rounded p-2 text-xs text-black group-hover:scale-100 group-hover:shadow-md transition-shadow duration-200">
+                  Admin
+                </span>
+              </div>
+            </Link>
+            {hoverTab === "admin" && (
+              <div className="absolute left-[2.91rem] top-0  bottom-0">
+                <AdminNav />
+              </div>
+            )}
+          </>
         ) : (
           <div className="relative group flex flex-col gap-2 items-center cursor-pointer">
             <RiAdminLine size={22} className="text-blue-600 outline-none" />

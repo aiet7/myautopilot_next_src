@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import useQueueStore from "../interaction/queue/queueStore";
-import useAssistantStore from "../assistant/assistantStore";
 import useConversationStore from "../interaction/conversations/conversationsStore";
 
 const isBrowser = typeof window !== "undefined";
@@ -20,6 +19,11 @@ const useUiStore = create((set, get) => ({
   openQueue: initialWidth > 1023 ? true : false,
   openNav: initialWidth > 1023 ? true : false,
   openSettings: false,
+  hoverTab: null,
+
+  setHoverTab: (tab) => {
+    set({ hoverTab: tab });
+  },
 
   setActiveTab: (tab) => set({ activeTab: tab }),
 
@@ -36,7 +40,6 @@ const useUiStore = create((set, get) => ({
   handleOptionSelected: async (option, mspCustomDomain) => {
     const { openNav, openAssistant, handleAssistantMenu, handleNavMenu } =
       get();
-
     const { activeQueueBotMode, handleShowAllQueueTickets } =
       useQueueStore.getState();
 
@@ -52,6 +55,7 @@ const useUiStore = create((set, get) => ({
 
     set({
       currentNavOption: option,
+      activeTab: "iTAgent",
     });
 
     window.history.pushState({ option }, "", `#${option.toLowerCase()}`);
@@ -87,7 +91,7 @@ const useUiStore = create((set, get) => ({
   },
 
   handleTabChange: (tab) => {
-    set({ activeTab: tab });
+    set({ activeTab: tab, hoverTab: false });
   },
 
   clearUI: () => {
@@ -105,6 +109,7 @@ const useUiStore = create((set, get) => ({
       openQueue: initialWidth > 1023 ? true : false,
       openNav: initialWidth > 1023 ? true : false,
       openSettings: false,
+      hoverTab: null,
     });
   },
 }));

@@ -7,6 +7,7 @@ const ViewCompanies = () => {
   const { companies, handleViewCompanyEmployees } = useCompaniesStore();
  
   return (
+    
     <div className="flex flex-col  ">
       <div className="flex flex-col gap-7  ">
         <div className="flex flex-col  p-4">

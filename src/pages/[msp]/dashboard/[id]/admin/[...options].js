@@ -8,6 +8,7 @@ import Cookies from "js-cookie";
 import useLocalStorageStore from "@/utils/store/localstorage/localStorageStore";
 import useUserStore from "@/utils/store/user/userStore";
 import useAdminStore from "@/utils/store/admin/adminStore";
+import useMspStore from "@/utils/store/auth/msp/mspStore";
 
 const Branding = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Branding")
@@ -41,12 +42,11 @@ const OptionPages = () => {
   const session = Cookies.get("session_token");
   const router = useRouter();
 
+  const { initializeUserType } = useMspStore();
   const { user, initializeUser } = useUserStore();
   const { getStorage, setStorage } = useLocalStorageStore();
-  const { activeTab } = useUiStore();
+  const { activeTab} = useUiStore();
   const { currentOption } = useAdminStore();
-
-  const { options } = router.query;
 
   useEffect(() => {
     if (router.isReady) {
@@ -54,12 +54,16 @@ const OptionPages = () => {
       const { msp, id, options } = router.query;
       getStorage(currentPath, options[0]);
       if (msp && id && session) {
+        initializeUserType();
         initializeUser(msp, id);
       } else {
         router.push("/auth/login");
       }
     }
   }, [router.isReady, router.asPath]);
+
+
+  
 
   useEffect(() => {
     setStorage();
@@ -72,8 +76,7 @@ const OptionPages = () => {
   }, [activeTab, currentOption]);
 
   const renderComponent = () => {
-    if (options && options.length > 0) {
-      const componentKey = options[0].toLowerCase();
+    if (currentOption) {
       const permissionMap = {
         branding: user?.permissions?.mspBranding,
         "msp-integrations": user?.permissions?.mspIntegrations,
@@ -86,7 +89,7 @@ const OptionPages = () => {
         teams: user?.permissions?.technicianUserManagement,
       };
 
-      if (!permissionMap[componentKey]) {
+      if (!permissionMap[currentOption]) {
         return (
           <p className="p-4 text-2xl font-bold">
             You do not have permission to view this page.
@@ -94,7 +97,7 @@ const OptionPages = () => {
         );
       }
 
-      switch (componentKey) {
+      switch (currentOption) {
         case "branding":
           return <Branding />;
         case "companies":

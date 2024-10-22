@@ -3,7 +3,6 @@
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
 
 const ChatMode = () => {
-
   const {
     agents,
     activeChatBotMode,
@@ -16,22 +15,22 @@ const ChatMode = () => {
     <div className="relative flex items-center ">
       <select
         value={activeChatBotMode}
-        className="px-4 py-1 border w-[250px] "
+        className="px-4 py-1 border w-[210px]"
         onChange={(e) => {
-          const selectedAgentId = agents.find(
+          const selectedAgent = agents.find(
             (agent) => agent.agentName === e.target.value
-          )?.id;
-          if (selectedAgentId) {
+          );
+          if (selectedAgent?.id) {
             setActiveChatFilterModeOpen(false);
             setActiveChatBotMode(e.target.value);
-            handleAgentSelected(selectedAgentId);
+            handleAgentSelected(selectedAgent);
           }
         }}
       >
         {agents.map((agent) => {
           const { id, agentName, defaultPrompt } = agent;
           return (
-            <option  key={id} value={agentName}>
+            <option key={id} value={agentName}>
               {agentName}
             </option>
           );

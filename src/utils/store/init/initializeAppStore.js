@@ -8,25 +8,25 @@ const useInitializeAppStore = create((set, get) => ({
 
   setSelectedAgent: (id) => set({ selectedAgent: id }),
 
-  initializeApp: async () => {
-    const { activeTab } = useUiStore.getState();
+  // initializeApp: async () => {
+  //   const { activeTab } = useUiStore.getState();
 
-    set({ selectedAgent: null });
+  //   set({ selectedAgent: null });
 
-    if (activeTab === "iTAgent") {
-      const initialAgents = await handleGetAgents();
-      const iTAgent = initialAgents.find(
-        (agent) => agent.agentName === "Cybersecurity Gap Analysis Assistant"
-      );
-      if (iTAgent) {
-        set({
-          selectedAgent: iTAgent.id,
-        });
-      } else {
-        console.log("Not found");
-      }
-    }
-  },
+  //   if (activeTab === "iTAgent") {
+  //     const initialAgents = await handleGetAgents();
+  //     const iTAgent = initialAgents.find(
+  //       (agent) => agent.agentName === "Cybersecurity Gap Analysis Assistant"
+  //     );
+  //     if (iTAgent) {
+  //       set({
+  //         selectedAgent: iTAgent.id,
+  //       });
+  //     } else {
+  //       console.log("Not found");
+  //     }
+  //   }
+  // },
 
   initializeSubDomain: async (msp) => {
     set({ mspSubDomain: null });

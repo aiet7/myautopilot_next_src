@@ -1,6 +1,5 @@
 "use client";
 import { ThemeProvider } from "next-themes";
-import dynamic from "next/dynamic";
 
 import useUiStore from "@/utils/store/ui/uiStore";
 import { useEffect } from "react";
@@ -14,7 +13,6 @@ import useConversationStore from "@/utils/store/interaction/conversations/conver
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import useQueueStore from "@/utils/store/interaction/queue/queueStore";
 
-const Account = dynamic(() => import("@/components/Dashboard/Account"));
 
 const Layout = ({ children }) => {
   const {

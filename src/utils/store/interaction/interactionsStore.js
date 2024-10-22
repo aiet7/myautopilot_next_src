@@ -360,7 +360,7 @@ const useInteractionStore = create((set, get) => ({
           let parsedAiContent = JSON.parse(responseBody.content);
 
           messageIdRef.current = responseBody.messages.id;
-
+          console.log(responseBody)
           if (parsedAiContent && parsedAiContent.interactiveElements) {
             handleAddJarvisAssistantMessage(
               parsedAiContent.explanation,

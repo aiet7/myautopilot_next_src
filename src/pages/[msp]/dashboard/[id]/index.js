@@ -38,7 +38,9 @@ const DashboardPage = ({}) => {
   const { getStorage, setStorage } = useLocalStorageStore();
 
   const { currentConversationIndex } = useConversationStore();
-  const { activeTab, currentNavOption, setCurrentNavOption } = useUiStore();
+  const { activeTab, currentNavOption, setCurrentNavOption, setActiveTab } =
+    useUiStore();
+
 
   useEffect(() => {
     const handlePopState = (event) => {
@@ -57,6 +59,8 @@ const DashboardPage = ({}) => {
       window.removeEventListener("popstate", handlePopState);
     };
   }, []);
+
+
 
   useEffect(() => {
     if (router.isReady) {
@@ -77,6 +81,7 @@ const DashboardPage = ({}) => {
     }
   }, [router.isReady, router.asPath]);
 
+
   useEffect(() => {
     setStorage();
 
@@ -96,7 +101,7 @@ const DashboardPage = ({}) => {
           <Interaction />
           {window.innerWidth > 1023 && <AssistantRail />}
 
-          <Assistant />
+            <Assistant />
         </>
       ) : (
         <Account />

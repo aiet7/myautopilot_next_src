@@ -27,11 +27,9 @@ const useConversationStore = create((set, get) => ({
   tempTitle: "",
   tempPrompt: "",
 
-  createAssistantMode: false,
+  assistantMode: "History",
 
   filterChatModeOpen: "",
-
-  activeChatOptions: ["History", "Engineer"],
 
   currentChatPage: 1,
   chatsPerPage: 30,
@@ -62,8 +60,32 @@ const useConversationStore = create((set, get) => ({
       currentChatPage: 1,
     })),
 
-  setCreateAssistantMode: (mode) => set({ createAssistantMode: mode }),
+  setAssistantMode: (mode) => {
+    const { selectedAgent } = get();
+    set({ assistantMode: mode });
 
+    if (mode === "Edit") {
+      if (selectedAgent) {
+        set({
+          assistantInputs: {
+            agentName: selectedAgent.agentName || "",
+            role: selectedAgent.role || "",
+            description: selectedAgent.description || "",
+            objectives: selectedAgent.objectives || [""],
+          },
+        });
+      }
+    } else if (mode === "Create") {
+      set({
+        assistantInputs: {
+          agentName: "",
+          role: "",
+          description: "",
+          objectives: [""],
+        },
+      });
+    }
+  },
   setCurrentChatPage: (page) => set({ currentChatPage: page }),
 
   setTotalChatPages: (pages) => set({ totalChatPages: pages }),
@@ -121,7 +143,7 @@ const useConversationStore = create((set, get) => ({
   initializeAgents: async () => {
     const userStore = useUserStore.getState();
     const { initializeConversations } = get();
-    set({ agents: [], conversationHistories: [] });
+    set({ agents: [], conversationHistories: [], selectedAgent: null });
 
     if (userStore.user) {
       const initializeAgents = await handleGetAgents();
@@ -131,20 +153,26 @@ const useConversationStore = create((set, get) => ({
       if (initializeAgents.length > 0) {
         set({
           activeChatBotMode: initializeAgents[0].agentName,
-          selectedAgent: initializeAgents[0].id,
+          selectedAgent: initializeAgents[0],
+          assistantInputs: {
+            agentName: initializeAgents[0].agentName,
+            role: initializeAgents[0].role,
+            description: initializeAgents[0].description,
+            objectives: initializeAgents[0].objectives,
+          },
         });
-        await initializeConversations(initializeAgents[0].id);
+        await initializeConversations(initializeAgents[0]);
       }
     }
   },
 
-  initializeConversations: async (agentId) => {
+  initializeConversations: async (agent) => {
     const userStore = useUserStore.getState();
     set({ conversationHistories: [] });
 
     if (userStore.user) {
       const initialConversations = await handleGetConversations(
-        agentId,
+        agent.id,
         userStore.user.id
       );
       set({
@@ -219,7 +247,7 @@ const useConversationStore = create((set, get) => ({
     });
   },
 
-  handleSaveAssistant: async (mspCustomDomain, techId) => {
+  handleCreateAssistant: async (mspCustomDomain) => {
     const { assistantInputs } = get();
 
     const errors = validateAssistantForm(assistantInputs);
@@ -244,7 +272,6 @@ const useConversationStore = create((set, get) => ({
 
       if (response.status === 200 || response.status === 201) {
         const newAssistant = await response.json();
-
         set((state) => ({
           agents: [...state.agents, newAssistant],
           assistantInputs: {
@@ -263,6 +290,60 @@ const useConversationStore = create((set, get) => ({
           loadingAssistant: false,
           formError: "",
         });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleSaveAssistant: async (mspCustomDomain, agentId) => {
+    const { assistantInputs } = get();
+
+    const errors = validateAssistantForm(assistantInputs);
+    if (errors !== true) {
+      set({ formError: errors });
+      return;
+    }
+
+    set({ loadingAssistant: true });
+
+    try {
+      const response = await fetch(
+        `${gptServiceUrl}/assistant/editAndCreateNewAgent?mspCustomDomain=${mspCustomDomain}&agentId=${agentId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(assistantInputs),
+        }
+      );
+
+      if (response.status === 200 || response.status === 201) {
+        set({ loadingAssistant: false, formError: "" });
+        console.log("ASSISTANT UPDATED");
+      } else {
+        console.log("ERROR UPDATING ASSISTANT");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleDeleteAgent: async (agentId) => {
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/softDeleteAgent?agentId=${agentId}`
+      );
+
+      if (response.status === 200) {
+        set((state) => ({
+          agents: state.agents.filter((agent) => agent.id !== agentId),
+        }));
+
+        console.log("AGENT DELETED");
+      } else {
+        console.log("FAILED AGENT DELETION");
       }
     } catch (e) {
       console.log(e);
@@ -372,7 +453,7 @@ const useConversationStore = create((set, get) => ({
     const newConversation = {
       userId: userStore.user.id,
       conversationName: `Chat - ${timestamp}`,
-      agentID: selectedAgent,
+      agentID: selectedAgent.id,
     };
 
     try {
@@ -429,13 +510,18 @@ const useConversationStore = create((set, get) => ({
     }
   },
 
-  handleAgentSelected: async (agentId) => {
+  handleAgentSelected: async (agent) => {
     const { initializeConversations } = get();
-
-    await initializeConversations(agentId);
+    await initializeConversations(agent);
     set({
       currentConversationIndex: null,
-      selectedAgent: agentId,
+      selectedAgent: agent,
+      assistantInputs: {
+        agentName: agent.agentName,
+        role: agent.role,
+        description: agent.description,
+        objectives: agent.objectives,
+      },
     });
   },
 

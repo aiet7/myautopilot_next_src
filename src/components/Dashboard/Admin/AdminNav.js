@@ -15,7 +15,7 @@ import useUserStore from "@/utils/store/user/userStore";
 
 const AdminNav = ({}) => {
   const { user } = useUserStore();
-  const { openAdmin } = useUiStore();
+  const { hoverTab, activeTab, openAdmin, setHoverTab } = useUiStore();
   const { options, currentOption, handleOptionSelected } = useAdminStore();
 
   const renderIcon = (option) => {
@@ -45,9 +45,14 @@ const AdminNav = ({}) => {
 
   return (
     <div
+      onMouseLeave={() => {
+        if (activeTab === "iTAgent") {
+          setHoverTab(null);
+        }
+      }}
       className={`absolute z-10 top-0 bottom-0 left-0 text-sm
       ${
-        openAdmin
+        openAdmin || hoverTab === "admin"
           ? "translate-x-0 w-full md:w-[250px]"
           : "-translate-x-full w-full md:w-[250px]"
       } dark:bg-[#111111] dark:border-white/10  bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease md:border-r md:border-black/10`}

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import useUserStore from "../user/userStore";
+import useUiStore from "../ui/uiStore";
 
 const useAdminStore = create((set, get) => ({
   options: [
@@ -15,8 +16,11 @@ const useAdminStore = create((set, get) => ({
   ],
   currentOption: null,
 
+  setCurrentOption: (option) => set({ currentOption: option }),
+
   handleOptionSelected: (option) => {
     const userStore = useUserStore.getState();
+    const { setActiveTab } = useUiStore.getState();
     const { currentOption } = get();
     if (option === currentOption) {
       return;
@@ -39,8 +43,11 @@ const useAdminStore = create((set, get) => ({
         : userStore.user.permissions[permissionMap[option]]
     ) {
       set({ currentOption: option });
+      setActiveTab("admin");
     }
   },
+
+ 
 
   clearAdmin: () => {
     set({

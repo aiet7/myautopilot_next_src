@@ -15,7 +15,8 @@ const AssistantMenus = () => {
   const { activeTicketBotMode } = useTicketsStore();
   const { activeQueueBotMode } = useQueueStore();
 
-  const { setCreateAssistantMode } = useConversationStore();
+  const { selectedAgent, assistantMode, setAssistantMode, handleDeleteAgent } =
+    useConversationStore();
 
   const renderModeComponent = () => {
     switch (currentNavOption) {
@@ -31,22 +32,42 @@ const AssistantMenus = () => {
   };
 
   const showPagination =
-    (currentNavOption === "Tickets" && activeTicketBotMode === "History") ||
-    currentNavOption === "Assistant" ||
-    (currentNavOption === "Queue" &&
-      activeQueueBotMode === "All Queue Tickets");
+    assistantMode !== "Create" &&
+    assistantMode !== "Edit" &&
+    ((currentNavOption === "Tickets" && activeTicketBotMode === "History") ||
+      currentNavOption === "Assistant" ||
+      (currentNavOption === "Queue" &&
+        activeQueueBotMode === "All Queue Tickets"));
 
   return (
     <div className="dark:bg-gray-900 flex flex-wrap items-center justify-between min-h-12 w-full shadow-xl px-4  bg-white gap-4 ">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-wrap pt-2">
         {renderModeComponent()}
         {currentNavOption === "Assistant" && (
-          <button
-            onClick={() => setCreateAssistantMode(true)}
-            className="text-xs border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] font-semibold text-white rounded-md px-2 py-1"
-          >
-            Create Assistant
-          </button>
+          <div className="flex items-center gap-1 ">
+            <button
+              onClick={() => setAssistantMode("Edit")}
+              className={`${
+                assistantMode === "Edit" ? "bg-blue-500" : "bg-[#465E89]"
+              } text-xs border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]  font-semibold text-white rounded-md px-2 py-1`}
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => setAssistantMode("Create")}
+              className={`${
+                assistantMode === "Create" ? "bg-blue-500" : "bg-[#465E89]"
+              } text-xs border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] font-semibold text-white rounded-md px-2 py-1`}
+            >
+              Create Assistant
+            </button>
+            <button
+              onClick={() => handleDeleteAgent(selectedAgent?.id)}
+              className="text-xs border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89] bg-red-500  font-semibold text-white rounded-md px-2 py-1"
+            >
+              Delete
+            </button>
+          </div>
         )}
       </div>
 

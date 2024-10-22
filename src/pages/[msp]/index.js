@@ -266,37 +266,46 @@ const MSPPage = ({}) => {
                   </button>
                 </>
               )}
-              <div className="flex flex-col w-full">
-                {router.asPath.includes("/public") ? (
+              <div className="flex justify-between items-end">
+                <div>
+                  <div className="flex flex-col w-full">
+                    {router.asPath.includes("/public") ? (
+                      <span
+                        onClick={() => handleNavigatePublicSignup(router.push)}
+                        className="text-sm text-blue-800 font-semibold cursor-pointer"
+                      >
+                        Sign Up
+                      </span>
+                    ) : (
+                      <Link
+                        onClick={() => clearMSPCredentials()}
+                        href={`/${mspSubDomain?.customDomain}/activate`}
+                      >
+                        <span className="text-sm text-blue-800 font-semibold">
+                          Activate Account
+                        </span>
+                      </Link>
+                    )}
+                  </div>
                   <span
-                    onClick={() => handleNavigatePublicSignup(router.push)}
-                    className="text-sm text-blue-800 font-semibold cursor-pointer"
+                    onClick={() => {
+                      clearMSPCredentials();
+                      handleShowForgotPassword(
+                        router.push,
+                        mspSubDomain?.customDomain
+                      );
+                    }}
+                    className="text-sm text-blue-800 font-extrabold cursor-pointer"
                   >
-                    Sign Up
+                    Forgot password?
                   </span>
-                ) : (
-                  <Link
-                    onClick={() => clearMSPCredentials()}
-                    href={`/${mspSubDomain?.customDomain}/activate`}
-                  >
-                    <span className="text-sm text-blue-800 font-semibold">
-                      Activate Account
-                    </span>
-                  </Link>
-                )}
+                </div>
+                <span className="text-xs text-blue-800 font-semibold">
+                  <a href="https://rmm.etech7.com:8040/" target="_blank">
+                    Screen Connect
+                  </a>
+                </span>
               </div>
-              <span
-                onClick={() => {
-                  clearMSPCredentials();
-                  handleShowForgotPassword(
-                    router.push,
-                    mspSubDomain?.customDomain
-                  );
-                }}
-                className="text-sm text-blue-800 font-extrabold cursor-pointer"
-              >
-                Forgot password?
-              </span>
             </div>
           </form>
         </div>

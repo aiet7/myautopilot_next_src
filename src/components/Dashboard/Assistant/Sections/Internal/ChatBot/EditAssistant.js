@@ -5,10 +5,10 @@ import useUserStore from "@/utils/store/user/userStore";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { FaSpinner } from "react-icons/fa";
 
-const CreateAssistant = () => {
+const EditAssistant = () => {
   const { user } = useUserStore();
-
   const {
+    selectedAgent,
     formError,
     loadingAssistant,
     assistantInputs,
@@ -17,9 +17,8 @@ const CreateAssistant = () => {
     setAssistantObjectives,
     setAssistantRemoveObjectives,
     setAssistantObjectiveInputs,
-    handleCreateAssistant,
+    handleSaveAssistant,
   } = useConversationStore();
-
 
   return (
     <div className="flex flex-col h-full p-4">
@@ -66,6 +65,7 @@ const CreateAssistant = () => {
           </div>
           <div>
             <span className="font-bold">Objectives</span>
+
             {assistantInputs?.objectives?.map((objective, index) => (
               <div key={index} className="flex items-center gap-2 mb-2">
                 <input
@@ -100,12 +100,14 @@ const CreateAssistant = () => {
       </div>
       <div className="flex items-center gap-4 py-2  text-lg lg:p-0">
         <button
-          onClick={() => handleCreateAssistant(user?.mspCustomDomain)}
+          onClick={() =>
+            handleSaveAssistant(user?.mspCustomDomain, selectedAgent?.id)
+          }
           className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89] rounded-md  bg-[#465E89] text-white border-white/30  px-6 py-2  w-full"
         >
           {loadingAssistant ? (
             <span className="flex items-center gap-2 justify-center">
-              Creating Assistant <FaSpinner className="animate-spin" />
+              Saving Assistant <FaSpinner className="animate-spin" />
             </span>
           ) : (
             "Save Assistant"
@@ -116,4 +118,4 @@ const CreateAssistant = () => {
   );
 };
 
-export default CreateAssistant;
+export default EditAssistant;

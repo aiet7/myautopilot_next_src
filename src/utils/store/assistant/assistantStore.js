@@ -90,7 +90,7 @@ const useAssistantStore = create((set, get) => ({
       activeAssistantTabOpen: false,
       showProgress: true,
       isIntroScreen: false,
-      assistantWidth: 400,
+      assistantWidth: 600,
       assistantWidthOpen: false,
     });
   },

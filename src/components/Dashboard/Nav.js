@@ -9,8 +9,15 @@ import { MdAddToQueue, MdEngineering, MdOutlineSettings } from "react-icons/md";
 const Nav = () => {
   const { user } = useUserStore();
   const { userType } = useMspStore();
-  const { openNav, currentNavOption, options, handleOptionSelected } =
-    useUiStore();
+  const {
+    hoverTab,
+    activeTab,
+    openNav,
+    currentNavOption,
+    options,
+    handleOptionSelected,
+    setHoverTab,
+  } = useUiStore();
 
   const renderIcon = (option) => {
     switch (option) {
@@ -34,8 +41,13 @@ const Nav = () => {
 
   return (
     <div
+      onMouseLeave={() => {
+        if (activeTab === "admin") {
+          setHoverTab(null);
+        }
+      }}
       className={`absolute z-10 top-0 bottom-0 left-0 text-sm ${
-        openNav
+        openNav || hoverTab === "iTAgent"
           ? "translate-x-0 w-full md:w-[250px]"
           : "-translate-x-full w-full md:w-[250px]"
       } dark:bg-[#111111] dark:border-white/10 bg-[#f6f8fc] p-4 flex flex-col transition-all duration-300 ease md:border-r md:border-black/10`}
@@ -44,9 +56,9 @@ const Nav = () => {
         {filteredOptions.map((option) => (
           <div key={option} className="flex flex-col items-start my-2">
             <div
-              onClick={() =>
-                handleOptionSelected(option, user?.mspCustomDomain)
-              }
+              onClick={() => {
+                handleOptionSelected(option, user?.mspCustomDomain);
+              }}
               className={`${
                 currentNavOption === option
                   ? "dark:bg-white/40 bg-black/20"
