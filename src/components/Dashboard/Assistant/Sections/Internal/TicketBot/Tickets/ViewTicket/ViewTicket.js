@@ -25,7 +25,7 @@ const ViewTicket = () => {
       <IoMdArrowRoundBack
         className="cursor-pointer self-end"
         onClick={() => setViewTicket(false)}
-        size={30}
+        size={20}
       />
       <TicketNav />
       {renderComponent()}

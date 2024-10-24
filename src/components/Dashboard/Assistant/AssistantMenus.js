@@ -41,7 +41,7 @@ const AssistantMenus = () => {
 
   return (
     <div className="dark:bg-gray-900 flex flex-wrap items-center justify-between min-h-12 w-full shadow-xl px-4  bg-white gap-4 ">
-      <div className="flex items-center gap-2 flex-wrap pt-2">
+      <div className="flex items-center gap-2 ">
         {renderModeComponent()}
         {currentNavOption === "Assistant" && (
           <div className="flex items-center gap-1 ">

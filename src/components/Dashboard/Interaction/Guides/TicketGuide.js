@@ -1,10 +1,12 @@
 "use client";
 
 import useInteractionStore from "@/utils/store/interaction/interactionsStore";
+import useUserStore from "@/utils/store/user/userStore";
 import { BsStars } from "react-icons/bs";
 import { GiRobotHelmet } from "react-icons/gi";
 
 const TicketGuide = () => {
+  const { user } = useUserStore();
   const { handleCreateTicketMessage } = useInteractionStore();
 
   return (
@@ -19,7 +21,11 @@ const TicketGuide = () => {
         <div className="flex flex-col items-center gap-2">
           <div className="flex flex-col items-center">
             <h2 className="text-2xl font-bold">Your Tech Support Engineer</h2>
-            <p className="text-lg font-semibold">I Can Help You Open Tickets</p>
+            <p className="text-lg font-semibold">
+              {user?.mspCustomDomain === "public"
+                ? "I Can Help You Resolve IT Related Issues"
+                : "I Can Help You Open Tickets"}
+            </p>
           </div>
 
           <p className="text-lg font-semibold">

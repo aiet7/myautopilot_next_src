@@ -202,6 +202,7 @@ const useInteractionStore = create((set, get) => ({
 
   handleCreateTicketMessage: async (message) => {
     const userStore = useUserStore.getState();
+    const { handleCreateTicketTroubleShootMessage } = get();
     const { isDiagnosticTicketStep, diagnosticTicketMessage } =
       useInteractionStore.getState();
 
@@ -249,7 +250,18 @@ const useInteractionStore = create((set, get) => ({
             }));
           } else {
             handleAddAssistantMessage(
-              "Ticket Details Are Displayed On The Right Panel.",
+              <div className="flex flex-col gap-1">
+                <p className="font-bold text-lg">
+                  Ticket Details Are Displayed On The Right Panel. Would You
+                  Like To See TroubleShooting Steps To Resolve Your Issue?
+                </p>
+                <button
+                  onClick={() => handleCreateTicketTroubleShootMessage(message)}
+                  className="dark:text-white dark:hover:bg-white/40 hover:bg-black/20 text-black w-[160px] rounded-md border py-5"
+                >
+                  YES
+                </button>
+              </div>,
               false
             );
             set({
@@ -360,7 +372,6 @@ const useInteractionStore = create((set, get) => ({
           let parsedAiContent = JSON.parse(responseBody.content);
 
           messageIdRef.current = responseBody.messages.id;
-          console.log(responseBody)
           if (parsedAiContent && parsedAiContent.interactiveElements) {
             handleAddJarvisAssistantMessage(
               parsedAiContent.explanation,
@@ -478,6 +489,35 @@ const useInteractionStore = create((set, get) => ({
           isWaiting: false,
         });
       }
+    }
+  },
+
+  handleCreateTicketTroubleShootMessage: async (message) => {
+    const { handleAddAssistantMessage } =
+      useTicketConversationsStore.getState();
+    set({ isWaiting: true, isServerError: false });
+    try {
+      const response = await fetch(`${gptServiceUrl}/message`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: `Give 10 best troubleshooting steps for this issue - ${message}.  At then end of the 10 steps, always conclude with "Ticket Information Is Complete On The Right".`,
+        }),
+      });
+
+      if (response.status === 200) {
+        const responseBody = await response.json();
+        handleAddAssistantMessage(
+          responseBody.choices[0].message.content,
+          false
+        );
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      set({ isWaiting: false });
     }
   },
 

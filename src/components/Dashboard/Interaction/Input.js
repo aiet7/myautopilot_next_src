@@ -5,8 +5,11 @@ import useInteractionStore from "@/utils/store/interaction/interactionsStore";
 import useRefStore from "@/utils/store/interaction/ref/refStore";
 import useQueueStore from "@/utils/store/interaction/queue/queueStore";
 import useUiStore from "@/utils/store/ui/uiStore";
+import useUserStore from "@/utils/store/user/userStore";
 
 const Input = () => {
+  const { user } = useUserStore();
+
   const {
     isDiagnosticTicketStep,
     textAreaHeight,
@@ -103,7 +106,13 @@ const Input = () => {
                   : "dark:text-gray-400 dark:border-white/30  text-gray-400 select-none border cursor-default font-bold px-5 rounded-lg py-1"
               } `}
             >
-              {isDiagnosticTicketStep ? "Open Ticket" : "Update Ticket"}
+              {user?.mspCustomDomain === "public" && isDiagnosticTicketStep
+                ? "Try Me!"
+                : user?.mspCustomDomain === "public"
+                ? "Update Ticket"
+                : isDiagnosticTicketStep
+                ? "Open Ticket"
+                : "Update Ticket"}
             </button>
             <BsThreeDotsVertical
               className="cursor-pointer"

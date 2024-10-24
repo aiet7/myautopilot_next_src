@@ -16,26 +16,56 @@ const QueueTicket = () => {
     ticketSaved,
   } = useQueueStore();
 
+  console.log(myQueueTicket);
+
   return (
     <div className="flex flex-col gap-2 ">
       <div>
         <span className="font-bold">Ticket ID</span>
         <input
           value={myQueueTicket?.ticketId || ""}
-          className="h-[50px] border outline-blue-500 w-full px-4"
+          className="h-[30px] border outline-blue-500 w-full px-4"
           readOnly
+        />
+      </div>
+
+      <div>
+        <span className="font-bold">Company</span>
+        <input
+          disabled
+          className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
+          value={myQueueTicket?.company || ""}
+        />
+      </div>
+      <div>
+        <span className="font-bold">Board</span>
+        <input
+          disabled
+          className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
+          value={myQueueTicket?.boardName || ""}
+        />
+      </div>
+      <div>
+        <span className="font-bold">Ticket Name</span>
+        <input
+          disabled
+          className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
+          value={myQueueTicket?.title || ""}
         />
       </div>
       <div>
         <span className="font-bold">Description</span>
+
         <textarea
           value={
             editTicket
               ? editingMyQueueTicket?.description || ""
-              : myQueueTicket?.description || ""
+              : myQueueTicket?.description ||
+                myQueueTicket?.ticketInformation ||
+                ""
           }
           maxLength={100}
-          className="max-h-[200px] min-h-[100px] border outline-blue-500 w-full px-4"
+          className="dark:bg-black max-h-[130px] min-h-[70px] border outline-blue-500 w-full px-4 bg-white"
           readOnly={!editTicket}
           onChange={(e) => {
             if (editTicket) {
@@ -44,12 +74,13 @@ const QueueTicket = () => {
           }}
         />
       </div>
+
       <div className="flex gap-4">
         <div className="w-full">
-          <span className="font-bold">Category</span>
+          <span className="font-bold">Type</span>
           {editTicket ? (
             <select
-              className="h-[50px] border outline-blue-500 w-full px-4"
+              className="h-[30px] border outline-blue-500 w-full px-4"
               value={editingMyQueueTicket?.categoryId || ""}
               onChange={(e) => {
                 const categoryId = parseInt(e.target.value, 10);
@@ -74,16 +105,16 @@ const QueueTicket = () => {
           ) : (
             <input
               disabled
-              className="dark:bg-black h-[50px] border outline-blue-500 w-full px-4 bg-white"
+              className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
               value={myQueueTicket?.categoryName || ""}
             />
           )}
         </div>
         <div className="w-full">
-          <span className="font-bold">Subcategory</span>
+          <span className="font-bold">Subtype</span>
           {editTicket ? (
             <select
-              className="h-[50px] border outline-blue-500 w-full px-4"
+              className="h-[30px] border outline-blue-500 w-full px-4"
               value={editingMyQueueTicket?.subCategoryId || ""}
               onChange={(e) => {
                 const subCategoryId = parseInt(e.target.value, 10);
@@ -115,7 +146,7 @@ const QueueTicket = () => {
           ) : (
             <input
               disabled
-              className="dark:bg-black h-[50px] border outline-blue-500 w-full px-4 bg-white"
+              className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
               value={myQueueTicket?.subCategoryName || ""}
             />
           )}
@@ -126,11 +157,11 @@ const QueueTicket = () => {
           <span className="font-bold">Priority</span>
           {editTicket ? (
             <select
-              className="h-[50px] border outline-blue-500 w-full px-4"
+              className="h-[30px] border outline-blue-500 w-full px-4"
               value={editingMyQueueTicket?.priorityId || ""}
               onChange={(e) => {
                 const priorityId = parseInt(e.target.value, 10);
-                const priority = editingMyQueueTicket?.priorities.find(
+                const priority = editingMyQueueTicket?.priorities?.find(
                   (p) => p.id === priorityId
                 );
                 setEditTicket({
@@ -139,7 +170,7 @@ const QueueTicket = () => {
                 });
               }}
             >
-              {editingMyQueueTicket?.priorities.map((priority) => (
+              {editingMyQueueTicket?.priorities?.map((priority) => (
                 <option key={priority.id} value={priority.id}>
                   {priority.name}
                 </option>
@@ -148,7 +179,7 @@ const QueueTicket = () => {
           ) : (
             <input
               disabled
-              className="dark:bg-black h-[50px] border outline-blue-500 w-full px-4 bg-white"
+              className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
               value={myQueueTicket?.priority || ""}
             />
           )}
@@ -157,7 +188,7 @@ const QueueTicket = () => {
           <span className="font-bold">Impact</span>
           {editTicket ? (
             <select
-              className="h-[50px] border outline-blue-500 w-full px-4"
+              className="h-[30px] border outline-blue-500 w-full px-4"
               value={editingMyQueueTicket?.impact || ""}
               onChange={(e) => {
                 setEditTicket({ impact: e.target.value });
@@ -172,7 +203,7 @@ const QueueTicket = () => {
           ) : (
             <input
               disabled
-              className="dark:bg-black h-[50px] border outline-blue-500 w-full px-4 bg-white"
+              className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
               value={myQueueTicket?.impact || ""}
             />
           )}
@@ -181,7 +212,7 @@ const QueueTicket = () => {
           <span className="font-bold">Severity</span>
           {editTicket ? (
             <select
-              className="h-[50px] border outline-blue-500 w-full px-4"
+              className="h-[30px] border outline-blue-500 w-full px-4"
               value={editingMyQueueTicket?.severity || ""}
               onChange={(e) => setEditTicket({ severity: e.target.value })}
             >
@@ -194,7 +225,7 @@ const QueueTicket = () => {
           ) : (
             <input
               disabled
-              className="dark:bg-black h-[50px] border outline-blue-500 w-full px-4 bg-white"
+              className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
               value={myQueueTicket?.severity || ""}
             />
           )}
@@ -204,7 +235,7 @@ const QueueTicket = () => {
         <span className="font-bold">Tier</span>
         {editTicket ? (
           <select
-            className="h-[50px] border outline-blue-500 w-full px-4 "
+            className="h-[30px] border outline-blue-500 w-full px-4 "
             value={editingMyQueueTicket?.tier || ""}
             onChange={(e) => setEditTicket({ tier: e.target.value })}
           >
@@ -217,20 +248,39 @@ const QueueTicket = () => {
         ) : (
           <input
             disabled
-            className="dark:bg-black h-[50px] border outline-blue-500 w-full px-4 bg-white"
+            className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
             value={myQueueTicket?.tier || ""}
           />
         )}
+      </div>
+      <div className="flex gap-4">
+        <div className="w-full">
+          <span className="font-bold">Impact Score</span>
+
+          <input
+            disabled
+            className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
+            value={myQueueTicket?.impactScore || ""}
+          />
+        </div>
+        <div className="w-full">
+          <span className="font-bold">Severity Score</span>
+          <input
+            disabled
+            className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
+            value={myQueueTicket?.severityScore || ""}
+          />
+        </div>
       </div>
       <div>
         <span className="font-bold">Status</span>
         {editTicket ? (
           <select
-            className="h-[50px] border outline-blue-500 w-full px-4 "
+            className="h-[30px] border outline-blue-500 w-full px-4 "
             value={editingMyQueueTicket?.statusId || ""}
             onChange={(e) => {
               const statusId = parseInt(e.target.value, 10);
-              const status = editingMyQueueTicket?.statuses.find(
+              const status = editingMyQueueTicket?.statuses?.find(
                 (s) => s.id === statusId
               );
               setEditTicket({
@@ -239,7 +289,7 @@ const QueueTicket = () => {
               });
             }}
           >
-            {editingMyQueueTicket?.statuses.map((status) => (
+            {editingMyQueueTicket?.statuses?.map((status) => (
               <option key={status.id} value={status.id}>
                 {status.name}
               </option>
@@ -248,47 +298,38 @@ const QueueTicket = () => {
         ) : (
           <input
             disabled
-            className="dark:bg-black h-[50px] border outline-blue-500 w-full px-4 bg-white"
+            className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
             value={myQueueTicket?.status || ""}
           />
         )}
       </div>
-      <div className="flex gap-4">
+      
         <div className="w-full">
           <span className="font-bold">Name</span>
           <input
             disabled
-            className="dark:bg-black h-[50px] border outline-blue-500 w-full px-4 bg-white"
+            className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
             value={myQueueTicket?.name || ""}
           />
         </div>
         <div className="w-full">
-          <span className="font-bold">Phone</span>
-          <input
-            disabled
-            className="dark:bg-black h-[50px] border outline-blue-500 w-full px-4 bg-white"
-            value={myQueueTicket?.phoneNumber || ""}
-          />
-        </div>
-      </div>
-      <div className="flex gap-4">
-        <div className="w-full">
           <span className="font-bold">Email</span>
           <input
             disabled
-            className="dark:bg-black h-[50px] border outline-blue-500 w-full px-4 bg-white"
-            value={myQueueTicket?.email || ""}
+            className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
+            value={myQueueTicket?.emailId || ""}
           />
         </div>
         <div className="w-full">
-          <span className="font-bold">Company</span>
+          <span className="font-bold">Phone Number</span>
           <input
             disabled
-            className="dark:bg-black h-[50px] border outline-blue-500 w-full px-4 bg-white"
-            value={myQueueTicket?.company || ""}
+            className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
+            value={myQueueTicket?.phoneNumber || ""}
           />
         </div>
-      </div>
+    
+      
       <div>
         <span className="font-bold">Date Created</span>
         <p>

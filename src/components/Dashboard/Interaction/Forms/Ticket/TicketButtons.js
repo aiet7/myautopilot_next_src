@@ -1,8 +1,11 @@
 "use client";
 
 import useInteractionStore from "@/utils/store/interaction/interactionsStore";
+import useUserStore from "@/utils/store/user/userStore";
 
 const TicketButtons = () => {
+  const { user } = useUserStore();
+
   const {
     diagnosticTicketQuestions,
     userTicketButtonsSelected,
@@ -14,8 +17,9 @@ const TicketButtons = () => {
       <p className="font-bold ">
         For a faster resolution, please answer the following questions.{" "}
         <span className="uppercase">
-          You can create the ticket without answering these questions if you
-          like to wait longer.
+          {user?.mspCustomDomain === "public"
+            ? "I have categorized, subcategorized, prioritized and assessed severity for your issue.  I would like to further diagnose your problem.  Please answer the questions below for better resolution.  See ticket form on the right."
+            : "You can create the ticket without answering these questions if you like to wait longer."}
         </span>
       </p>
       {diagnosticTicketQuestions?.map((item, index) => {

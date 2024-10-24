@@ -15,7 +15,7 @@ const ChatMode = () => {
     <div className="relative flex items-center ">
       <select
         value={activeChatBotMode}
-        className="px-4 py-1 border w-[210px]"
+        className="px-4 py-1 border w-[160px]"
         onChange={(e) => {
           const selectedAgent = agents.find(
             (agent) => agent.agentName === e.target.value

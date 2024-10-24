@@ -3,11 +3,9 @@ import useTicketConversationsStore from "@/utils/store/interaction/conversations
 import { useEffect } from "react";
 import TicketButtons from "./Ticket/TicketButtons";
 
-
 const Switch = ({ item }) => {
-
   const { setIsMobile } = useTicketConversationsStore();
-  
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const handleResize = () => {
@@ -26,12 +24,22 @@ const Switch = ({ item }) => {
     return <TicketButtons />;
   }
 
+  if (item.troubleshoot === "ticketButtons") {
+    return <TicketButtons />;
+  }
+
   return (
-    <MarkedInteraction
-      id={item.id}
-      elements={item.elements}
-      markdown={item.content}
-    />
+    <>
+      {typeof item.content === "string" ? (
+        <MarkedInteraction
+          id={item.id}
+          elements={item.elements}
+          markdown={item.content}
+        />
+      ) : (
+        <div>{item.content}</div>
+      )}
+    </>
   );
 };
 export default Switch;

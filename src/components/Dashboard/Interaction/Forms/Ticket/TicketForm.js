@@ -31,13 +31,13 @@ const TicketForm = () => {
           </p>
         </div>
       ) : (
-        <div className="flex flex-col justify-between h-full">
-          <div className="">
+        <div className="flex flex-col  justify-between h-full">
+          <div className="flex flex-col gap-2">
             {userType === "tech" && (
               <div>
                 <span className="font-bold">Company</span>
                 <select
-                  className={`h-[50px] px-3 w-full border ${
+                  className={`h-[30px] px-3 w-full border ${
                     formError?.currentTicketCWCompanyId
                       ? "border-red-500"
                       : "border-transparent"
@@ -84,7 +84,7 @@ const TicketForm = () => {
               <div>
                 <span className="font-bold">Board</span>
                 <select
-                  className={`h-[50px] px-3 w-full border ${
+                  className={`h-[30px] px-3 w-full border ${
                     formError?.currentTicketBoardId
                       ? "border-red-500"
                       : "border-transparent"
@@ -124,7 +124,7 @@ const TicketForm = () => {
             <div>
               <span className="font-bold">Ticket Name</span>
               <input
-                className={`h-[50px] px-4 w-full border ${
+                className={`h-[30px] px-4 w-full border ${
                   formError?.currentTicketTitle
                     ? "border-red-500"
                     : "border-transparent"
@@ -152,9 +152,9 @@ const TicketForm = () => {
             </div>
             <div>
               <span className="font-bold">Description</span>
-              <input
+              <textarea
                 maxLength={100}
-                className={`h-[50px] px-4 w-full border ${
+                className={`dark:bg-black max-h-[130px] min-h-[70px] border outline-blue-500 w-full px-4 bg-white ${
                   formError?.currentTicketDescription
                     ? "border-red-500"
                     : "border-transparent"
@@ -184,7 +184,7 @@ const TicketForm = () => {
               <div className="w-full">
                 <span className="font-bold">Type</span>
                 <select
-                  className={`h-[50px] px-3 w-full border ${
+                  className={`h-[30px] px-3 w-full border ${
                     formError?.currentTicketCategoryId
                       ? "border-red-500"
                       : "border-transparent"
@@ -236,7 +236,7 @@ const TicketForm = () => {
               <div className="w-full">
                 <span className="font-bold">Subtype</span>
                 <select
-                  className={`h-[50px] px-3 w-full border ${
+                  className={`h-[30px] px-3 w-full border ${
                     formError?.currentTicketSubCategoryId
                       ? "border-red-500"
                       : "border-transparent"
@@ -305,7 +305,7 @@ const TicketForm = () => {
                 <span className="font-bold">Priority</span>
                 <input
                   disabled
-                  className={`h-[50px] px-4 w-full`}
+                  className={`h-[30px] px-4 w-full`}
                   value={ticket.currentTicketPriority || ""}
                 />
               </div>
@@ -313,7 +313,7 @@ const TicketForm = () => {
                 <span className="font-bold">Impact</span>
                 <input
                   disabled
-                  className={`h-[50px] px-4 w-full`}
+                  className={`h-[30px] px-4 w-full`}
                   value={ticket.currentTicketImpact || ""}
                 />
               </div>
@@ -321,7 +321,7 @@ const TicketForm = () => {
                 <span className="font-bold">Severity</span>
                 <input
                   disabled
-                  className={`h-[50px] px-4 w-full`}
+                  className={`h-[30px] px-4 w-full`}
                   value={ticket.currentTicketSeverity || ""}
                 />
               </div>
@@ -330,7 +330,7 @@ const TicketForm = () => {
               <span className="font-bold">Tier</span>
               <input
                 disabled
-                className={`h-[50px] px-4 w-full`}
+                className={`h-[30px] px-4 w-full`}
                 value={ticket.currentTicketTier || ""}
               />
             </div>
@@ -339,7 +339,7 @@ const TicketForm = () => {
                 <div className="w-full">
                   <span className="font-bold">Impact Score</span>
                   <input
-                    className={`h-[50px] px-4 w-full border ${
+                    className={`h-[30px] px-4 w-full border ${
                       formError?.currentTicketImpactScore
                         ? "border-red-500"
                         : "border-transparent"
@@ -368,7 +368,7 @@ const TicketForm = () => {
                 <div className="w-full">
                   <span className="font-bold">Severity Score</span>
                   <input
-                    className={`h-[50px] px-4 w-full border ${
+                    className={`h-[30px] px-4 w-full border ${
                       formError?.currentTicketSeverityScore
                         ? "border-red-500"
                         : "border-transparent"
@@ -403,7 +403,7 @@ const TicketForm = () => {
             <div>
               <span className="font-bold">Name</span>
               <input
-                className={`h-[50px] px-4 w-full border ${
+                className={`h-[30px] px-4 w-full border ${
                   formError?.currentTicketName
                     ? "border-red-500"
                     : "border-transparent"
@@ -432,7 +432,7 @@ const TicketForm = () => {
             <div>
               <span className="font-bold">Email</span>
               <input
-                className={`h-[50px] px-4 w-full border ${
+                className={`h-[30px] px-4 w-full border ${
                   formError?.currentTicketEmailId
                     ? "border-red-500"
                     : "border-transparent"
@@ -461,7 +461,7 @@ const TicketForm = () => {
             <div>
               <span className="font-bold">Phone Number</span>
               <input
-                className={`h-[50px] px-4 w-full border  ${
+                className={`h-[30px] px-4 w-full border  ${
                   formError?.currentTicketPhoneNumber
                     ? "border-red-500"
                     : "border-transparent"

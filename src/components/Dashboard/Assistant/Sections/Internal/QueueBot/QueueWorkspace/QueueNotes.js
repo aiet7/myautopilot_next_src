@@ -27,31 +27,33 @@ const QueueNotes = () => {
     <div className="flex flex-col gap-2 ">
       <div className="flex gap-2 text-sm ">
         <button
-          className={`hover:bg-blue-500 ${
-            activeNoteCategory === "Description" ? "bg-blue-500" : "bg-blue-800"
-          } text-white py-1 px-3 rounded `}
+          className={` ${
+            activeNoteCategory === "Description"
+              ? "bg-blue-500"
+              : "bg-[#465E89]"
+          } border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89] rounded-md  bg-[#465E89] text-white border-white/30  px-6 py-2  w-full `}
           onClick={() => setActiveNoteCategory("Description")}
         >
           Description
         </button>
         <button
-          className={`hover:bg-blue-500 ${
-            activeNoteCategory === "Internal" ? "bg-blue-500" : "bg-blue-800"
-          } text-white py-1 px-3 rounded `}
+          className={`${
+            activeNoteCategory === "Internal" ? "bg-blue-500" : "bg-[#465E89]"
+          } border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89] rounded-md  bg-[#465E89] text-white border-white/30  px-6 py-2  w-full`}
           onClick={() => setActiveNoteCategory("Internal")}
         >
           Internal
         </button>
         <button
-          className={`hover:bg-blue-500 ${
-            activeNoteCategory === "Resolution" ? "bg-blue-500" : "bg-blue-800"
-          } text-white py-1 px-3 rounded `}
+          className={` ${
+            activeNoteCategory === "Resolution" ? "bg-blue-500" : "bg-[#465E89]"
+          } border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89] rounded-md  bg-[#465E89] text-white border-white/30  px-6 py-2  w-full `}
           onClick={() => setActiveNoteCategory("Resolution")}
         >
           Resolution
         </button>
       </div>
-      <div>
+      <div className="flex flex-col gap-2">
         <textarea
           value={ticketNote || ""}
           className="w-full p-2 scrollbar-thin min-h-[100px] max-h-[200px] rounded"
@@ -60,7 +62,7 @@ const QueueNotes = () => {
         />
         <button
           onClick={() => handleAddQueueTicketNote(myQueueTicket?.ticketId)}
-          className="text-white py-1 px-3 rounded bg-blue-800"
+          className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89] rounded-md  bg-[#465E89] text-white border-white/30  px-6 py-2  "
         >
           Submit
         </button>

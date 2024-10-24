@@ -4,14 +4,39 @@ import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
 
 const Ticket = () => {
   const { currentTicket, ticketStatus } = useTicketsStore();
+
   return (
     <div className="flex flex-col gap-2 ">
       <div>
         <span className="font-bold">Ticket ID</span>
         <input
           disabled
-          className="dark:bg-black h-[50px] border outline-blue-500 w-full px-4 bg-white"
+          className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
           value={currentTicket?.ticketId || ""}
+        />
+      </div>
+      <div>
+        <span className="font-bold">Company</span>
+        <input
+          disabled
+          className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
+          value={currentTicket?.company || ""}
+        />
+      </div>
+      <div>
+        <span className="font-bold">Board</span>
+        <input
+          disabled
+          className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
+          value={currentTicket?.boardName || ""}
+        />
+      </div>
+      <div>
+        <span className="font-bold">Ticket Name</span>
+        <input
+          disabled
+          className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
+          value={currentTicket?.title || ""}
         />
       </div>
       <div>
@@ -20,7 +45,7 @@ const Ticket = () => {
           disabled
           value={currentTicket?.description || ""}
           maxLength={100}
-          className="dark:bg-black max-h-[200px] min-h-[100px] border outline-blue-500 w-full px-4 bg-white"
+          className="dark:bg-black max-h-[130px] min-h-[70px] border outline-blue-500 w-full px-4 bg-white"
         />
       </div>
       <div className="flex gap-4">
@@ -29,7 +54,7 @@ const Ticket = () => {
 
           <input
             disabled
-            className="dark:bg-black h-[50px] border outline-blue-500 w-full px-4 bg-white"
+            className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
             value={currentTicket?.type || currentTicket?.category || ""}
           />
         </div>
@@ -37,7 +62,7 @@ const Ticket = () => {
           <span className="font-bold">Subtype</span>
           <input
             disabled
-            className="dark:bg-black h-[50px] border outline-blue-500 w-full px-4 bg-white"
+            className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
             value={currentTicket?.subType || currentTicket?.subcategory || ""}
           />
         </div>
@@ -48,7 +73,7 @@ const Ticket = () => {
 
           <input
             disabled
-            className="dark:bg-black h-[50px] border outline-blue-500 w-full px-4 bg-white"
+            className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
             value={currentTicket?.priority || ""}
           />
         </div>
@@ -59,46 +84,36 @@ const Ticket = () => {
 
         <input
           disabled
-          className="dark:bg-black h-[50px] border outline-blue-500 w-full px-4 bg-white"
+          className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
           value={ticketStatus?.[currentTicket.ticketId]?.status.name || ""}
         />
       </div>
-      <div className="flex gap-4">
-        <div className="w-full">
-          <span className="font-bold">Name</span>
-          <input
-            disabled
-            className="dark:bg-black h-[50px] border outline-blue-500 w-full px-4 bg-white"
-            value={currentTicket?.name || ""}
-          />
-        </div>
-        <div className="w-full">
-          <span className="font-bold">Phone</span>
-          <input
-            disabled
-            className="dark:bg-black h-[50px] border outline-blue-500 w-full px-4 bg-white"
-            value={currentTicket?.phoneNumber || ""}
-          />
-        </div>
+
+      <div className="w-full">
+        <span className="font-bold">Name</span>
+        <input
+          disabled
+          className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
+          value={currentTicket?.name || ""}
+        />
       </div>
-      <div className="flex gap-4">
-        <div className="w-full">
-          <span className="font-bold">Email</span>
-          <input
-            disabled
-            className="dark:bg-black h-[50px] border outline-blue-500 w-full px-4 bg-white"
-            value={currentTicket?.email || ""}
-          />
-        </div>
-        <div className="w-full">
-          <span className="font-bold">Company</span>
-          <input
-            disabled
-            className="dark:bg-black h-[50px] border outline-blue-500 w-full px-4 bg-white"
-            value={currentTicket?.company || ""}
-          />
-        </div>
+      <div className="w-full">
+        <span className="font-bold">Email</span>
+        <input
+          disabled
+          className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
+          value={currentTicket?.emailId || ""}
+        />
       </div>
+      <div className="w-full">
+        <span className="font-bold">Phone Number</span>
+        <input
+          disabled
+          className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
+          value={currentTicket?.phoneNumber || ""}
+        />
+      </div>
+
       <div>
         <span className="font-bold">Date Created</span>
         <p>
