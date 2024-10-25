@@ -66,7 +66,7 @@ const useTicketConversationsStore = create((set, get) => ({
     });
   },
 
-  handleAddAssistantMessage: (message, buttons) => {
+  handleAddAssistantMessage: (message, buttons, troubleshoot) => {
     set((state) => {
       const newMessage = {
         id: Date.now() + "-assistant",
@@ -74,6 +74,7 @@ const useTicketConversationsStore = create((set, get) => ({
         role: "assistant",
         timeStamp: new Date().toISOString(),
         type: buttons ? "ticketButtons" : "markdown",
+        troubleshoot: troubleshoot ? "troubleshootButtons" : "markdown",
       };
       return { ...state, messages: [...state.messages, newMessage] };
     });
@@ -83,7 +84,13 @@ const useTicketConversationsStore = create((set, get) => ({
     set((state) => {
       return {
         ...state,
-        messages: state.messages.filter((msg) => msg.type !== "ticketButtons"),
+        messages: state.messages.filter(
+          (msg) =>
+            !(
+              msg.type === "ticketButtons" ||
+              msg.troubleshoot === "troubleshootButtons"
+            )
+        ),
       };
     });
   },
