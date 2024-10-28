@@ -14,6 +14,7 @@ import useUserStore from "@/utils/store/user/userStore";
 import useMspStore from "@/utils/store/auth/msp/mspStore";
 import Account from "@/components/Dashboard/Account";
 import ExternalPilot from "@/components/Dashboard/Assistant/Sections/External/ExternalPilot";
+import InternalPilot from "@/components/Dashboard/Assistant/Sections/Internal/InternalPilot";
 
 const Interaction = dynamic(() =>
   import("@/components/Dashboard/Interaction/Interaction.js")
@@ -33,14 +34,12 @@ const DashboardPage = ({}) => {
 
   const { initializeUser } = useUserStore();
   const { initializeUserType } = useMspStore();
-  const { initializeAssistant } = useAssistantStore();
+  const { initializeAssistant, activeAssistantTabOpen } = useAssistantStore();
 
   const { getStorage, setStorage } = useLocalStorageStore();
 
   const { currentConversationIndex } = useConversationStore();
-  const { activeTab, currentNavOption, setCurrentNavOption, setActiveTab } =
-    useUiStore();
-
+  const { activeTab, currentNavOption, setCurrentNavOption } = useUiStore();
 
   useEffect(() => {
     const handlePopState = (event) => {
@@ -59,8 +58,6 @@ const DashboardPage = ({}) => {
       window.removeEventListener("popstate", handlePopState);
     };
   }, []);
-
-
 
   useEffect(() => {
     if (router.isReady) {
@@ -81,7 +78,6 @@ const DashboardPage = ({}) => {
     }
   }, [router.isReady, router.asPath]);
 
-
   useEffect(() => {
     setStorage();
 
@@ -99,9 +95,15 @@ const DashboardPage = ({}) => {
       currentNavOption === "Queue" ? (
         <>
           <Interaction />
+
+          <Assistant />
           {window.innerWidth > 1023 && <AssistantRail />}
 
-            <Assistant />
+          {activeAssistantTabOpen ? (
+            <div className={`md:w[225px]`}>
+              <ExternalPilot />
+            </div>
+          ) : null}
         </>
       ) : (
         <Account />

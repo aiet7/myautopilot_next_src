@@ -7,8 +7,15 @@ import useAssistantStore from "@/utils/store/assistant/assistantStore";
 
 const AssistantRail = ({}) => {
   const { openAssistant, handleAssistantMenu } = useUiStore();
-  const { activeAssistantTab, handleAssistantTabChange } = useAssistantStore();
+  const {
+    assistantWidth,
 
+    setAssistantWidth,
+    activeAssistantTab,
+    handleAssistantTabChange,
+  } = useAssistantStore();
+
+  console.log(assistantWidth);
   return (
     <div
       className={` ${
@@ -16,7 +23,13 @@ const AssistantRail = ({}) => {
       }  dark:bg-[#373737] dark:border-white/10 relative z-[100] flex flex-col  bg-[#eaf1fb] px-1 pt-2  transition-all duration-300 ease border-r  lg:border-l lg:border-black/10`}
     >
       <FaAlignLeft
-        onClick={() => !openAssistant && handleAssistantMenu()}
+        onClick={() => {
+          setAssistantWidth(450);
+
+          if (!openAssistant) {
+            handleAssistantMenu();
+          }
+        }}
         className={`${
           openAssistant
             ? "opacity-0"
@@ -25,47 +38,6 @@ const AssistantRail = ({}) => {
         size={35}
       />
       <div className="flex flex-col-reverse gap-4 pt-8">
-        {/* <FaPlus
-          className="dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none"
-          size={35}
-        />
-        <div className="dark:border-white/20 border-black/10 border w-full" />
-        <MdScreenShare
-          className={`${
-            activeAssistantTab === "Remote Access" && "text-blue-800"
-          } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
-          size={35}
-          onClick={() => handleAssistantTabChange("Remote Access")}
-        />
-        <MdPassword
-          className={`${
-            activeAssistantTab === "Passwords" && "text-blue-800"
-          } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
-          size={35}
-          onClick={() => handleAssistantTabChange("Passwords")}
-        />
-        <FaMoneyBillAlt
-          className={`${
-            activeAssistantTab === "Billing" && "text-blue-800"
-          } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
-          size={35}
-          onClick={() => handleAssistantTabChange("Billing")}
-        />
-        <AiFillTool
-          className={`${
-            activeAssistantTab === "Downloads" && "text-blue-800"
-          } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
-          size={35}
-          onClick={() => handleAssistantTabChange("Downloads")}
-        />
-        <MdPolicy
-          className={`${
-            activeAssistantTab === "Policies" && "text-blue-800"
-          } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
-          size={35}
-          onClick={() => handleAssistantTabChange("Policies")}
-        /> */}
-
         <div className="group relative flex items-center">
           <FaPlus
             className="dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none"
@@ -79,7 +51,7 @@ const AssistantRail = ({}) => {
         <div className="group relative flex items-center">
           <MdScreenShare
             className={`${
-              activeAssistantTab === "Remote Access" && "text-blue-800"
+              activeAssistantTab === "Remote Access" && "text-blue-800 ring-2"
             } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
             size={35}
             onClick={() => handleAssistantTabChange("Remote Access")}
@@ -91,7 +63,7 @@ const AssistantRail = ({}) => {
         <div className="group relative flex items-center">
           <MdPassword
             className={`${
-              activeAssistantTab === "Passwords" && "text-blue-800"
+              activeAssistantTab === "Passwords" && "text-blue-800 ring-2"
             } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
             size={35}
             onClick={() => handleAssistantTabChange("Passwords")}
@@ -103,7 +75,7 @@ const AssistantRail = ({}) => {
         <div className="group relative flex items-center">
           <FaMoneyBillAlt
             className={`${
-              activeAssistantTab === "Billing" && "text-blue-800"
+              activeAssistantTab === "Billing" && "text-blue-800 ring-2"
             } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
             size={35}
             onClick={() => handleAssistantTabChange("Billing")}
@@ -115,7 +87,7 @@ const AssistantRail = ({}) => {
         <div className="group relative flex items-center">
           <AiFillTool
             className={`${
-              activeAssistantTab === "Downloads" && "text-blue-800"
+              activeAssistantTab === "Downloads" && "text-blue-800 ring-2"
             } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
             size={35}
             onClick={() => handleAssistantTabChange("Downloads")}
@@ -127,7 +99,7 @@ const AssistantRail = ({}) => {
         <div className="group relative flex items-center">
           <MdPolicy
             className={`${
-              activeAssistantTab === "Policies" && "text-blue-800"
+              activeAssistantTab === "Policies" && "text-blue-800 ring-2"
             } dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none`}
             size={35}
             onClick={() => handleAssistantTabChange("Policies")}

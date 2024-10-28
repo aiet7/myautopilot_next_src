@@ -12,6 +12,7 @@ const useAssistantStore = create((set, get) => ({
   showProgress: true,
   isIntroScreen: false,
   assistantWidth: 600,
+
   assistantWidthOpen: false,
 
   initializeAssistant: async (msp) => {
@@ -74,9 +75,12 @@ const useAssistantStore = create((set, get) => ({
   },
 
   handleAssistantTabChange: (tab) => {
-    const { openAssistant, handleAssistantMenu } = useUiStore.getState();
+    const { openAssistant, handleAssistantMenu, handleExternalOnly } =
+      useUiStore.getState();
+    const { setAssistantWidth, externalWidth } = get();
+
     if (!openAssistant) {
-      handleAssistantMenu();
+      setAssistantWidth(externalWidth);
     }
 
     set({ activeAssistantTab: tab, activeAssistantTabOpen: true });
@@ -84,6 +88,7 @@ const useAssistantStore = create((set, get) => ({
 
   clearAssistant: () => {
     set({
+      isResizing: false,
       assistantMenuOpen: false,
       promptAssistantInput: "",
       activeAssistantTab: null,
@@ -91,6 +96,7 @@ const useAssistantStore = create((set, get) => ({
       showProgress: true,
       isIntroScreen: false,
       assistantWidth: 600,
+
       assistantWidthOpen: false,
     });
   },

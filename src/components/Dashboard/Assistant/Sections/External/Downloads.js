@@ -26,7 +26,7 @@ const Downloads = () => {
   const selectedToolDownload = tools?.find((tool) => tool.id === selectedTool);
 
   return (
-    <div className="flex-grow flex flex-col overflow-hidden w-full">
+    <div className="flex-grow flex flex-col overflow-hidden ">
       <div className="flex-grow overflow-y-auto scrollbar-thin ">
         <div className="flex flex-grow flex-col ">
           <div className="flex flex-col gap-4 ">
@@ -36,7 +36,7 @@ const Downloads = () => {
               </p>
             </div>
             <select
-              className="p-2 rounded border cursor-pointer"
+              className="p-2 rounded border cursor-pointer w-full"
               onChange={(e) => {
                 setSelectedTool(e.target.value);
               }}
@@ -119,7 +119,7 @@ const Downloads = () => {
               <button
                 onClick={() => handleUploadTools(user?.mspCustomDomain)}
                 className="text-sm border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white font-bold px-5 rounded-lg py-2"
-                >
+              >
                 Upload
               </button>
             </div>

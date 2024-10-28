@@ -15,15 +15,15 @@ const ChatMode = () => {
     <div className="relative flex items-center ">
       <select
         value={activeChatBotMode}
-        className="px-4 py-1 border w-[160px]"
+        className="px-4 py-1 border w-[200px] "
         onChange={(e) => {
-          const selectedAgent = agents.find(
+          const selectedAgentId = agents.find(
             (agent) => agent.agentName === e.target.value
-          );
-          if (selectedAgent?.id) {
+          )?.id;
+          if (selectedAgentId) {
             setActiveChatFilterModeOpen(false);
             setActiveChatBotMode(e.target.value);
-            handleAgentSelected(selectedAgent);
+            handleAgentSelected(selectedAgentId);
           }
         }}
       >

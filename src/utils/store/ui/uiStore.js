@@ -1,11 +1,14 @@
 import { create } from "zustand";
 import useQueueStore from "../interaction/queue/queueStore";
+import useAssistantStore from "../assistant/assistantStore";
 import useConversationStore from "../interaction/conversations/conversationsStore";
 
 const isBrowser = typeof window !== "undefined";
 const initialWidth = isBrowser ? window.innerWidth : 1023;
 
 const useUiStore = create((set, get) => ({
+  hoverTab: null,
+
   height: null,
   activeTab: null,
   options: ["Tickets", "Queue", "Assistant", "Settings"],
@@ -19,11 +22,16 @@ const useUiStore = create((set, get) => ({
   openQueue: initialWidth > 1023 ? true : false,
   openNav: initialWidth > 1023 ? true : false,
   openSettings: false,
-  hoverTab: null,
+  activeMenu: true,
+  tabOpen: false,
+  tabView: null,
+  externalOnly: false,
 
   setHoverTab: (tab) => {
     set({ hoverTab: tab });
   },
+
+  setExternalOnly: (value) => set({ externalOnly: value }),
 
   setActiveTab: (tab) => set({ activeTab: tab }),
 
@@ -40,6 +48,7 @@ const useUiStore = create((set, get) => ({
   handleOptionSelected: async (option, mspCustomDomain) => {
     const { openNav, openAssistant, handleAssistantMenu, handleNavMenu } =
       get();
+
     const { activeQueueBotMode, handleShowAllQueueTickets } =
       useQueueStore.getState();
 
@@ -55,7 +64,6 @@ const useUiStore = create((set, get) => ({
 
     set({
       currentNavOption: option,
-      activeTab: "iTAgent",
     });
 
     window.history.pushState({ option }, "", `#${option.toLowerCase()}`);
@@ -67,6 +75,18 @@ const useUiStore = create((set, get) => ({
     if (option === "Assistant") {
       setCurrentConversationIndex(null);
     }
+  },
+
+  handleActiveMenu: () => {
+    set((state) => ({
+      activeMenu: !state.activeMenu,
+    }));
+  },
+
+  handleTabOpen: () => {
+    set((state) => ({
+      tabOpen: !state.tabOpen,
+    }));
   },
 
   handleNavMenu: () => {
@@ -83,6 +103,7 @@ const useUiStore = create((set, get) => ({
 
   handleAssistantMenu: () => {
     const { openAssistant } = get();
+
     if (openAssistant) {
       set({ openAssistant: false });
     } else {
@@ -90,8 +111,12 @@ const useUiStore = create((set, get) => ({
     }
   },
 
+  handleTabView: (tab) => {
+    set({ tabView: tab });
+  },
+
   handleTabChange: (tab) => {
-    set({ activeTab: tab, hoverTab: false });
+    set({ activeTab: tab });
   },
 
   clearUI: () => {
@@ -109,7 +134,6 @@ const useUiStore = create((set, get) => ({
       openQueue: initialWidth > 1023 ? true : false,
       openNav: initialWidth > 1023 ? true : false,
       openSettings: false,
-      hoverTab: null,
     });
   },
 }));

@@ -31,6 +31,7 @@ const Interaction = ({}) => {
   } = useInteractionStore();
 
   const { assistantWidth, isResizing } = useAssistantStore();
+  const isMobile = window.innerWidth < 1023;
 
   useEffect(() => {
     if (currentNavOption === "Assistant" || currentNavOption === "Document") {
@@ -50,13 +51,11 @@ const Interaction = ({}) => {
           openAssistant && handleAssistantMenu(false);
         }
       }}
-      // Apply transition only on the left margin for smooth left-side movement
       className={`relative flex flex-col h-full w-full text-sm transition-[margin-left] duration-300 ease-in-out  ${
         isResizing ? "" : "transition-[margin] duration-300 ease-in-out"
       } ${openNav ? "lg:ml-[250px]" : "ml-0"} dark:bg-black bg-white`}
-      // Manually set marginRight without transition to avoid right-side animation
       style={{
-        marginRight: openAssistant ? `${assistantWidth}px` : "0px", // Dynamically set marginRight without transition
+        marginRight: openAssistant && !isMobile ? `${assistantWidth}px` : "0px", // Dynamically set marginRight without transition
       }}
     >
       {!isAtBottom &&
