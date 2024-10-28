@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import Cookie from "js-cookie";
+import { tokenize } from "prismjs/components/prism-core";
 
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
@@ -53,6 +54,7 @@ const useMspStore = create((set, get) => ({
     },
   },
 
+  qrUrl: null,
   current2FA: false,
   loginInputs: {
     mspCustomDomain: "",
@@ -60,6 +62,7 @@ const useMspStore = create((set, get) => ({
       email: "",
       password: "",
       login2FA: "",
+      authCode: ""
     },
     clientInfo: {
       email: "",
@@ -124,6 +127,7 @@ const useMspStore = create((set, get) => ({
           },
     })),
 
+    // sets the state for the users inputs
   setLoginInputs: (section, field, value) =>
     set((prevState) => ({
       loginInputs: section
@@ -572,15 +576,11 @@ const useMspStore = create((set, get) => ({
           }),
         }
       );
-      // debugger
-      // console.log("fetch response", response);
-      // const responseData = await response.json(); // Parse the response
-      // console.log("QR URL:", responseData); // Log the QR URL
-      // debugger;
       if (response.ok) {
-        // const responseData = await response.text();
-        console.log("QR URL:", response.text());
+        const responseData = await response.text();
+        console.log("QR URL:", responseData);
         set({
+          qrUrl: responseData,
           current2FA: true,
           errorMessage: {
             ...errorMessage,
@@ -653,9 +653,10 @@ const useMspStore = create((set, get) => ({
 
   handleTechnician2FALogin: async (navigator, mspCustomDomain) => {
     const { loginInputs, errorMessage } = get();
+    // debugger
     const { techInfo } = loginInputs;
 
-    if (techInfo.login2FA === "") {
+    if (techInfo.authCode === "") {
       set({
         errorMessage: { ...errorMessage, emptyFields: true, emailCheck: false },
       });
@@ -663,11 +664,22 @@ const useMspStore = create((set, get) => ({
     }
 
     const encodedEmail = encodeURIComponent(techInfo.email);
-    const encodedToken = encodeURIComponent(techInfo.login2FA);
+    const encodedToken = encodeURIComponent(techInfo.authCode);
 
     try {
       const response = await fetch(
-        `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/validateResetToken?email=${encodedEmail}&token=${encodedToken}`
+        `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/verify-2fa?email=${encodedEmail}&token=${techInfo.authCode}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          
+          body: JSON.stringify({
+            email: encodedEmail,
+            token: techInfo.authCode,
+          }),
+        }
       );
 
       if (response.ok) {
@@ -683,10 +695,11 @@ const useMspStore = create((set, get) => ({
         Cookie.set("session_token", tech?.id, { expires: 7 });
         Cookie.set("client_id", tech?.id, { expires: 7 });
       } else {
+        // debugger
         set({
           errorMessage: {
             ...errorMessage,
-            login2FA: true,
+            // login2FA: true,
             emptyFields: false,
           },
         });
@@ -695,6 +708,65 @@ const useMspStore = create((set, get) => ({
       console.log(e);
     }
   },
+  // handleTechnician2FALogin: async (navigator, mspCustomDomain) => {
+  //   const { loginInputs, errorMessage } = get();
+  //   // debugger
+  //   const { techInfo } = loginInputs;
+
+  //   if (techInfo.login2FA === "") {
+  //     set({
+  //       errorMessage: { ...errorMessage, emptyFields: true, emailCheck: false },
+  //     });
+  //     return;
+  //   }
+
+  //   const encodedEmail = encodeURIComponent(techInfo.email);
+  //   const encodedToken = encodeURIComponent(techInfo.authCode);
+  //   // const encodedToken = encodeURIComponent(techInfo.login2FA);
+
+  //   try {
+  //     const response = await fetch(
+  //       `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/verify-2fa`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+          
+  //         body: JSON.stringify({
+  //           email: encodedEmail,
+  //           token: encodedToken,
+  //         }),
+  //       }
+  //       // `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/validateResetToken?email=${encodedEmail}&token=${encodedToken}`
+  //     );
+
+  //     if (response.ok) {
+  //       const tech = await response.json();
+  //       set({
+  //         errorMessage: {
+  //           ...errorMessage,
+  //           login2FA: false,
+  //           emptyFields: false,
+  //         },
+  //       });
+  //       navigator(`/${tech?.mspCustomDomain}/dashboard/${tech?.id}`);
+  //       Cookie.set("session_token", tech?.id, { expires: 7 });
+  //       Cookie.set("client_id", tech?.id, { expires: 7 });
+  //     } else {
+  //       debugger
+  //       set({
+  //         errorMessage: {
+  //           ...errorMessage,
+  //           login2FA: true,
+  //           emptyFields: false,
+  //         },
+  //       });
+  //     }
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // },
 
   handleClient2FALogin: async (navigator, mspCustomDomain) => {
     const { loginInputs, errorMessage } = get();
