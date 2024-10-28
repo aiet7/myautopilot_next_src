@@ -16,6 +16,8 @@ const MSPPage = ({}) => {
   const { mspSubDomain, initializeSubDomain } = useInitializeAppStore();
 
   const {
+    qrUrl,
+    authCode,
     loginInputs,
     userType,
     current2FA,
@@ -77,7 +79,6 @@ const MSPPage = ({}) => {
               className="object-cover"
             />
           </div>
-
           <form className="relative p-6 w-[450px] flex flex-col gap-10 items-center justify-center lg:shadow-lg  lg:rounded-lg lg:bg-white">
             <div className="text-black flex flex-col items-center gap-10">
               {mspSubDomain && (
@@ -90,6 +91,7 @@ const MSPPage = ({}) => {
                   />
                 </div>
               )}
+              {current2FA ? <img src={qrUrl ? `https://api.qrserver.com/v1/create-qr-code/?data=${qrUrl}` : null} /> : null}
               <h1 className="text-2xl font-bold text-black text-center">
                 {current2FA
                   ? "Enter your 2FA code"
@@ -158,12 +160,24 @@ const MSPPage = ({}) => {
                     placeholder="Enter 2FA Token"
                     className="w-full p-2 border border-gray-300 bg-white text-black"
                   />
+                  <input
+                    type="text"
+                    placeholder="Enter gAuth Token"
+                    onChange={(e) =>
+                      setLoginInputs(
+                        userType === "tech" ? "techInfo" : "clientInfo",
+                        "authCode",
+                        e.target.value
+                      )
+                    }
+                  />
                   <button
                     onClick={() => {
                       if (userType === "tech") {
                         handleTechnician2FALogin(
                           router.push,
-                          mspSubDomain?.customDomain
+                          mspSubDomain?.customDomain,
+                          authCode
                         );
                       } else {
                         handleClient2FALogin(
