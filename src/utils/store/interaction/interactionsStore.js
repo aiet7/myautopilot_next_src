@@ -478,6 +478,7 @@ const useInteractionStore = create((set, get) => ({
   },
 
   handleCreateTicketTroubleShootMessage: async (message) => {
+    console.log("test")
     const { handleAddAssistantMessage } =
       useTicketConversationsStore.getState();
     set({ isWaiting: true, isServerError: false });
