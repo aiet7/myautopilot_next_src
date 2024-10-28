@@ -91,7 +91,8 @@ const MSPPage = ({}) => {
                   />
                 </div>
               )}
-              {current2FA ? <img src={qrUrl ? `https://api.qrserver.com/v1/create-qr-code/?data=${qrUrl}` : null} /> : null}
+              {current2FA ? <img src={qrUrl ? qrUrl : null} /> : null}
+              {/* {current2FA ? <img src={qrUrl ? `https://api.qrserver.com/v1/create-qr-code/?data=${qrUrl}` : null} /> : null} */}
               <h1 className="text-2xl font-bold text-black text-center">
                 {current2FA
                   ? "Enter your 2FA code"
