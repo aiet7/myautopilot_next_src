@@ -284,7 +284,7 @@ const useQueueStore = create((set, get) => ({
     }
   },
 
-  handleNextQueueTicket: async (mspCustomDomain, tier, techId) => {
+  handleNextQueueTicket: async (mspCustomDomain, cwTechId, techId) => {
     set({
       troubleshootMessages: [],
       activeQueueBotMode: "Queue Workspace",
@@ -293,13 +293,13 @@ const useQueueStore = create((set, get) => ({
     const { handleAddTroubleShootMessage, handleNextQueueTicketNotes } = get();
     try {
       const response = await fetch(
-        `${dbServiceUrl}/api/ticketQueue/next?tier=${tier}&mspCustomDomain=${mspCustomDomain}&techId=${techId}`
+        `${dbServiceUrl}/api/ticketQueue/nextTicket?connectWiseTechnicanId=${195}&mspCustomDomain=${mspCustomDomain}&techId=${techId}`
       );
 
       if (response.status === 200) {
         const myQueueTicket = await response.json();
         if (!myQueueTicket.id) {
-          set({ noTicketsInQueue: true });
+          set({ noTicketsInQueue: true, generatingTroubleShoot: false  });
         } else {
           set({
             myQueueTicket: myQueueTicket,
@@ -580,7 +580,7 @@ const useQueueStore = create((set, get) => ({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            text: message
+            text: message,
           }),
         });
 

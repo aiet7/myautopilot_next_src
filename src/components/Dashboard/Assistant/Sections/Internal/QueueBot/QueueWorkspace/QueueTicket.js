@@ -16,7 +16,6 @@ const QueueTicket = () => {
     ticketSaved,
   } = useQueueStore();
 
-  console.log(myQueueTicket);
 
   return (
     <div className="flex flex-col gap-2 ">

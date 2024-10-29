@@ -65,8 +65,6 @@ const Assistant = () => {
     }
   }, [assistantWidth, isMobile]);
 
-  console.log(assistantWidth);
-
   return (
     <>
       <div
@@ -75,7 +73,7 @@ const Assistant = () => {
           openAssistant ? " translate-x-0" : " translate-x-full"
         } ${
           activeAssistantTabOpen && openAssistant && !isMobile
-            ? `-translate-x-[224px]`
+            ? `-translate-x-[225px]`
             : null
         } flex dark:border-white/10 lg:border-l lg:border-black/10 }${
           isMobile ? "w-full" : `w-[${assistantWidth || 400}px]`
@@ -86,13 +84,7 @@ const Assistant = () => {
           <AssistantControl />
 
           <div className="relative flex overflow-auto h-full">
-            <div
-              className={`h-full ${
-                activeAssistantTabOpen ? "flex-grow" : "w-full"
-              }`}
-            >
-              <InternalPilot />
-            </div>
+            <InternalPilot />
           </div>
         </div>
         {!isMobile && (

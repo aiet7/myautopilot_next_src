@@ -9,13 +9,10 @@ import AssistantMenus from "../../AssistantMenus";
 
 const InternalPilot = () => {
   const { currentNavOption } = useUiStore();
-  const { activeAssistantTab } = useAssistantStore();
 
   return (
     <div
-      className={`flex-grow ${
-        activeAssistantTab ? "h-1/2" : "h-full"
-      } flex flex-col  text-xs`}
+      className={`flex-grow flex flex-col text-xs`}
     >
       <AssistantMenus />
       {currentNavOption === "Tickets" && <TicketBot />}

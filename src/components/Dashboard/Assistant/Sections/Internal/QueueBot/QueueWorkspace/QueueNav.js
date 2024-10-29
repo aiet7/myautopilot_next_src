@@ -23,7 +23,7 @@ const QueueNav = () => {
     handleEditTicket,
     handleCloseTicket,
   } = useQueueStore();
-
+  
   return (
     <div className="dark:bg-gray-900 flex flex-wrap  w-full shadow-xl px-4 py-2 bg-white gap-4 ">
       <div
@@ -64,7 +64,7 @@ const QueueNav = () => {
         onClick={() =>
           handleNextQueueTicket(
             user?.mspCustomDomain,
-            user?.tierLevel,
+            user?.connectWiseTechnicanId,
             user?.id
           )
         }
