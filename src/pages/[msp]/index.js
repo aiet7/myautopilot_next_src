@@ -92,7 +92,6 @@ const MSPPage = ({}) => {
                 </div>
               )}
               {current2FA ? <img src={qrUrl ? qrUrl : null} /> : null}
-              {/* {current2FA ? <img src={qrUrl ? `https://api.qrserver.com/v1/create-qr-code/?data=${qrUrl}` : null} /> : null} */}
               <h1 className="text-2xl font-bold text-black text-center">
                 {current2FA
                   ? "Enter your 2FA code"
@@ -127,7 +126,7 @@ const MSPPage = ({}) => {
               )}
               {current2FA ? (
                 <>
-                  <input
+                  {/* <input
                     onChange={(e) =>
                       setLoginInputs(
                         userType === "tech" ? "techInfo" : "clientInfo",
@@ -160,10 +159,8 @@ const MSPPage = ({}) => {
                     type="text"
                     placeholder="Enter 2FA Token"
                     className="w-full p-2 border border-gray-300 bg-white text-black"
-                  />
+                  /> */}
                   <input
-                    type="text"
-                    placeholder="Enter gAuth Token"
                     onChange={(e) =>
                       setLoginInputs(
                         userType === "tech" ? "techInfo" : "clientInfo",
@@ -171,6 +168,31 @@ const MSPPage = ({}) => {
                         e.target.value
                       )
                     }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+
+                        if (userType === "tech") {
+                          handleTechnician2FALogin(
+                            router.push,
+                            mspSubDomain?.customDomain
+                          );
+                        } else {
+                          handleClient2FALogin(
+                            router.push,
+                            mspSubDomain?.customDomain
+                          );
+                        }
+                      }
+                    }}
+                    value={
+                      userType === "tech"
+                        ? loginInputs.techInfo.authCode || ""
+                        : loginInputs.clientInfo.login2FA || ""
+                    }
+                    type="text"
+                    placeholder="Enter gAuth Token"
+                    className="w-full p-2 border border-gray-300 bg-white text-black"
                   />
                   <button
                     onClick={() => {
