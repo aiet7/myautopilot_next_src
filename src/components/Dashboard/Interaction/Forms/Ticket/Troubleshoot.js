@@ -20,7 +20,7 @@ const Troubleshoot = () => {
         </div>
       ) : noTicketsInQueue ? (
         <div className="p-4 font-bold">
-          No next ticket available in the queue. Please try "Next" again to
+          No next ticket available in the queue. Please try Next again to
           check if a new ticket has came in.
         </div>
       ) : (
