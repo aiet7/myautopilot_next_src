@@ -293,7 +293,7 @@ const useQueueStore = create((set, get) => ({
     const { handleAddTroubleShootMessage, handleNextQueueTicketNotes } = get();
     try {
       const response = await fetch(
-        `${dbServiceUrl}/api/ticketQueue/nextTicket?connectWiseTechnicanId=${195}&mspCustomDomain=${mspCustomDomain}&techId=${techId}`
+        `${dbServiceUrl}/api/ticketQueue/nextTicket?connectWiseTechnicanId=${cwTechId}&mspCustomDomain=${mspCustomDomain}&techId=${techId}`
       );
 
       if (response.status === 200) {
