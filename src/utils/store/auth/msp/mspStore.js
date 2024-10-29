@@ -653,7 +653,6 @@ const useMspStore = create((set, get) => ({
 
   handleTechnician2FALogin: async (navigator, mspCustomDomain) => {
     const { loginInputs, errorMessage } = get();
-    // debugger
     const { techInfo } = loginInputs;
 
     if (techInfo.authCode === "") {
@@ -664,11 +663,11 @@ const useMspStore = create((set, get) => ({
     }
 
     const encodedEmail = encodeURIComponent(techInfo.email);
-    const encodedToken = encodeURIComponent(techInfo.authCode);
+    // const encodedToken = encodeURIComponent(techInfo.authCode);
 
     try {
       const response = await fetch(
-        `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/verify-2fa?email=${encodedEmail}&token=${techInfo.authCode}`,
+        `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/verify-2fa`,
         {
           method: "POST",
           headers: {
@@ -676,7 +675,7 @@ const useMspStore = create((set, get) => ({
           },
           
           body: JSON.stringify({
-            email: encodedEmail,
+            email: techInfo.email,
             token: techInfo.authCode,
           }),
         }
@@ -695,11 +694,10 @@ const useMspStore = create((set, get) => ({
         Cookie.set("session_token", tech?.id, { expires: 7 });
         Cookie.set("client_id", tech?.id, { expires: 7 });
       } else {
-        // debugger
         set({
           errorMessage: {
             ...errorMessage,
-            // login2FA: true,
+            login2FA: true,
             emptyFields: false,
           },
         });
