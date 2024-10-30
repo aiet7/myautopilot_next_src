@@ -6,6 +6,7 @@ import AssistantRail from "./AssistantRail.js";
 import AssistantControl from "./AssistantControl.js";
 import InternalPilot from "./Sections/Internal/InternalPilot.js";
 import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
+import ExternalPilot from "./Sections/External/ExternalPilot.js";
 
 const Assistant = () => {
   const { openAssistant } = useUiStore();
@@ -19,6 +20,7 @@ const Assistant = () => {
 
   const resizableRef = useRef(null);
   const isMobile = window.innerWidth < 1023;
+  const noResizing = window.innerWidth < window.screen.width * 0.75; // 3/4 screen
 
   const startResize = (e) => {
     e.preventDefault();
@@ -33,7 +35,7 @@ const Assistant = () => {
   };
 
   const resize = (e) => {
-    if (!isResizing || !resizableRef.current || isMobile) return;
+    if (!isResizing || !resizableRef.current || isMobile || noResizing) return;
     const adjustment = activeAssistantTabOpen ? 225 : 0;
     const newWidth = window.innerWidth - e.clientX - adjustment;
 
@@ -41,6 +43,13 @@ const Assistant = () => {
       setAssistantWidth(newWidth);
     }
   };
+
+  // Reset assistant width to 600px if window width is less than 3/4 of the screen
+  useEffect(() => {
+    if (noResizing && !isMobile) {
+      setAssistantWidth(500);
+    }
+  }, [noResizing, isMobile, setAssistantWidth]);
 
   useEffect(() => {
     if (isResizing) {
@@ -72,7 +81,7 @@ const Assistant = () => {
           openAssistant ? " translate-x-0" : " translate-x-full"
         } ${
           activeAssistantTabOpen && openAssistant && !isMobile
-            ? `-translate-x-[225px]`
+            ? `-translate-x-[calc(225px)]`
             : null
         } flex dark:border-white/10 lg:border-l lg:border-black/10 }${
           isMobile ? "w-full" : `w-[${assistantWidth || 400}px]`
@@ -81,12 +90,9 @@ const Assistant = () => {
         {isMobile && <AssistantRail />}
         <div className="flex flex-col w-full h-full relative">
           <AssistantControl />
-
-          <div className="relative flex overflow-auto h-full">
-            <InternalPilot />
-          </div>
+          <InternalPilot />
         </div>
-        {!isMobile && (
+        {!isMobile && !noResizing && (
           <div
             className="absolute top-0 bottom-0 left-0 w-1 cursor-ew-resize bg-gray-300"
             onMouseDown={startResize}

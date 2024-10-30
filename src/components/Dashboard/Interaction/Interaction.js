@@ -55,7 +55,7 @@ const Interaction = ({}) => {
         isResizing ? "" : "transition-[margin] duration-300 ease-in-out"
       } ${openNav ? "lg:ml-[250px]" : "ml-0"} dark:bg-black bg-white`}
       style={{
-        marginRight: openAssistant && !isMobile ? `${assistantWidth}px` : "0px", // Dynamically set marginRight without transition
+        marginRight: openAssistant && !isMobile ? `${assistantWidth}px` : "0px",
       }}
     >
       {!isAtBottom &&

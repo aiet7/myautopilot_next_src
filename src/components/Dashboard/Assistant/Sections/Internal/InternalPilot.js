@@ -10,7 +10,7 @@ const InternalPilot = () => {
   const { currentNavOption } = useUiStore();
 
   return (
-    <div className={`flex-grow flex flex-col text-xs`}>
+    <div className={`flex-grow flex flex-col overflow-auto text-xs`}>
       <AssistantMenus />
 
       {currentNavOption === "Tickets" && <TicketBot />}

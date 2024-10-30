@@ -17,7 +17,7 @@ const AllQueueTicketsTable = () => {
     setFilteredQueueTicketCount,
     handleViewQueueTicket,
   } = useQueueStore();
-  
+
   const filteredAndSortedQueueTickets = allQueueTickets
     ?.filter((ticket) => {
       if (!searchValue) return true;
@@ -91,74 +91,76 @@ const AllQueueTicketsTable = () => {
   return (
     <>
       {paginatedTickets?.length !== 0 ? (
-        <div className="block text-sm overflow-auto scrollbar-thin max-h-full min-w-[900px]">
+        <div className="block text-sm max-h-full w-full  ">
           {allQueueTickets && (
-            <table className=" overflow-auto w-full table-fixed border-separate   text-left">
-              <thead className="dark:text-white dark:bg-gray-700  sticky top-0  text-black/60 bg-[#F5F8FA]">
-                <tr className="">
-                  <th className="dark:border-black p-2 border-l border-t border-b border-r ">
-                    Score
-                  </th>
-                  <th className="dark:border-black p-2 border-t border-b border-r ">
-                    Ticket ID
-                  </th>
-                  <th className="dark:border-black p-2 border-t border-b border-r ">
-                    Description
-                  </th>
-                  <th className="dark:border-black p-2 border-t border-b border-r ">
-                    Date Created
-                  </th>
-                  <th className="dark:border-black p-2 border-t border-b border-r ">
-                    Hold Until Date
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedTickets?.map((tickets) => {
-                  const {
-                    id,
-                    ticketId,
-                    holdUntil,
-                    ticketInformation,
-                    creationTime,
-                    compositeScore,
-                  } = tickets;
-                  return (
-                    <tr
-                      onClick={() =>
-                        handleViewQueueTicket(
-                          user?.mspCustomDomain,
-                          ticketId,
-                          tickets
-                        )
-                      }
-                      key={id}
-                      className="dark:hover:bg-white/40 dark:bg-white/10 hover:bg-black/20 bg-white cursor-pointer"
-                    >
-                      <td className="dark:border-black p-2 truncate border-l  border-r border-b">
-                        {compositeScore.toFixed(2)}
-                      </td>
-                      <td className="dark:border-black p-2 truncate border-r border-b">
-                        {ticketId}
-                      </td>
-                      <td className="dark:border-black p-2 truncate border-r border-b">
-                        {ticketInformation}
-                      </td>
-                      <td className="dark:border-black p-2 truncate border-r border-b">
-                        {new Date(creationTime).toLocaleTimeString() +
-                          " " +
-                          new Date(creationTime).toLocaleDateString()}
-                      </td>
-                      <td className="dark:border-black p-2 truncate border-r border-b">
-                        {new Date(holdUntil).toLocaleTimeString() +
-                          " " +
-                          new Date(holdUntil).toLocaleDateString()}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            <div className="h-full min-w-full ">
+              <table className="w-[900px] table-fixed border-separate text-left overflow-auto scrollbar-thin">
+                <thead className="dark:text-white dark:bg-gray-700 sticky top-0 z-10 text-black/60 bg-[#F5F8FA]">
+                  <tr>
+                    <th className="dark:border-black p-2 border-l border-t border-b border-r">
+                      Score
+                    </th>
+                    <th className="dark:border-black p-2 border-t border-b border-r">
+                      Ticket ID
+                    </th>
+                    <th className="dark:border-black p-2 border-t border-b border-r">
+                      Description
+                    </th>
+                    <th className="dark:border-black p-2 border-t border-b border-r">
+                      Date Created
+                    </th>
+                    <th className="dark:border-black p-2 border-t border-b border-r">
+                      Hold Until Date
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paginatedTickets?.map((tickets) => {
+                    const {
+                      id,
+                      ticketId,
+                      holdUntil,
+                      ticketInformation,
+                      creationTime,
+                      compositeScore,
+                    } = tickets;
+                    return (
+                      <tr
+                        onClick={() =>
+                          handleViewQueueTicket(
+                            user?.mspCustomDomain,
+                            ticketId,
+                            tickets
+                          )
+                        }
+                        key={id}
+                        className="dark:hover:bg-white/40 dark:bg-white/10 hover:bg-black/20 bg-white cursor-pointer"
+                      >
+                        <td className="dark:border-black p-2 truncate border-l border-r border-b">
+                          {compositeScore.toFixed(2)}
+                        </td>
+                        <td className="dark:border-black p-2 truncate border-r border-b">
+                          {ticketId}
+                        </td>
+                        <td className="dark:border-black p-2 truncate border-r border-b">
+                          {ticketInformation}
+                        </td>
+                        <td className="dark:border-black p-2 truncate border-r border-b">
+                          {new Date(creationTime).toLocaleTimeString() +
+                            " " +
+                            new Date(creationTime).toLocaleDateString()}
+                        </td>
+                        <td className="dark:border-black p-2 truncate border-r border-b">
+                          {new Date(holdUntil).toLocaleTimeString() +
+                            " " +
+                            new Date(holdUntil).toLocaleDateString()}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       ) : (
