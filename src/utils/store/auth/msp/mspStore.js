@@ -85,7 +85,9 @@ const useMspStore = create((set, get) => ({
 
   successMessage: false,
 
-  showPassword: false,
+  qrCodePopup: false,
+
+  setQrCodePopup: (isOpen) => set({qrCodePopup: isOpen}),
 
   initializeUserType: async () => {
     const lastActiveUserType = localStorage.getItem("lastActiveUserType");
@@ -109,7 +111,6 @@ const useMspStore = create((set, get) => ({
 
   setCurrentStep: (step) => set({ currentStep: step }),
 
-  setShowPassword: (show) => set({ showPassword: show }),
 
   setSignupInputs: (section, field, value) =>
     set((prevState) => ({
@@ -127,7 +128,6 @@ const useMspStore = create((set, get) => ({
           },
     })),
 
-    // sets the state for the users inputs
   setLoginInputs: (section, field, value) =>
     set((prevState) => ({
       loginInputs: section
