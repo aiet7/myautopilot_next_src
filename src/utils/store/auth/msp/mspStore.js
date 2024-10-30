@@ -1,7 +1,5 @@
 import { create } from "zustand";
 import Cookie from "js-cookie";
-import { tokenize } from "prismjs/components/prism-core";
-
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
@@ -87,7 +85,7 @@ const useMspStore = create((set, get) => ({
 
   qrCodePopup: false,
 
-  setQrCodePopup: (isOpen) => set({qrCodePopup: isOpen}),
+  setQrCodePopup: (isOpen) => set({ qrCodePopup: isOpen }),
 
   initializeUserType: async () => {
     const lastActiveUserType = localStorage.getItem("lastActiveUserType");
@@ -110,7 +108,6 @@ const useMspStore = create((set, get) => ({
   },
 
   setCurrentStep: (step) => set({ currentStep: step }),
-
 
   setSignupInputs: (section, field, value) =>
     set((prevState) => ({
@@ -569,7 +566,7 @@ const useMspStore = create((set, get) => ({
           headers: {
             "Content-Type": "application/json",
           },
-          
+
           body: JSON.stringify({
             emailId: techInfo.email,
             password: techInfo.password,
@@ -662,9 +659,6 @@ const useMspStore = create((set, get) => ({
       return;
     }
 
-    const encodedEmail = encodeURIComponent(techInfo.email);
-    // const encodedToken = encodeURIComponent(techInfo.authCode);
-
     try {
       const response = await fetch(
         `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/verify-2fa`,
@@ -673,7 +667,7 @@ const useMspStore = create((set, get) => ({
           headers: {
             "Content-Type": "application/json",
           },
-          
+
           body: JSON.stringify({
             email: techInfo.email,
             token: techInfo.authCode,
@@ -708,7 +702,6 @@ const useMspStore = create((set, get) => ({
   },
   // handleTechnician2FALogin: async (navigator, mspCustomDomain) => {
   //   const { loginInputs, errorMessage } = get();
-  //   // debugger
   //   const { techInfo } = loginInputs;
 
   //   if (techInfo.login2FA === "") {
@@ -719,24 +712,11 @@ const useMspStore = create((set, get) => ({
   //   }
 
   //   const encodedEmail = encodeURIComponent(techInfo.email);
-  //   const encodedToken = encodeURIComponent(techInfo.authCode);
-  //   // const encodedToken = encodeURIComponent(techInfo.login2FA);
+  // const encodedToken = encodeURIComponent(techInfo.login2FA);
 
   //   try {
   //     const response = await fetch(
-  //       `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/verify-2fa`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-          
-  //         body: JSON.stringify({
-  //           email: encodedEmail,
-  //           token: encodedToken,
-  //         }),
-  //       }
-  //       // `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/validateResetToken?email=${encodedEmail}&token=${encodedToken}`
+  // `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/validateResetToken?email=${encodedEmail}&token=${encodedToken}`
   //     );
 
   //     if (response.ok) {
