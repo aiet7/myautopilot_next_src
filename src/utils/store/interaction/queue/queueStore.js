@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import useRefStore from "../ref/refStore";
 import useUserStore from "../../user/userStore";
-import useTicketConversationsStore from "../conversations/ticketConversationsStore";
 
 const isBrowser = typeof window !== "undefined";
 const initialWidth = isBrowser ? window.innerWidth : 1023;
@@ -284,7 +283,7 @@ const useQueueStore = create((set, get) => ({
     }
   },
 
-  handleNextQueueTicket: async (mspCustomDomain, tier, techId) => {
+  handleNextQueueTicket: async (mspCustomDomain, cwTechId, techId) => {
     set({
       troubleshootMessages: [],
       activeQueueBotMode: "Queue Workspace",
@@ -293,7 +292,7 @@ const useQueueStore = create((set, get) => ({
     const { handleAddTroubleShootMessage, handleNextQueueTicketNotes } = get();
     try {
       const response = await fetch(
-        `${dbServiceUrl}/api/ticketQueue/next?tier=${tier}&mspCustomDomain=${mspCustomDomain}&techId=${techId}`
+        `${dbServiceUrl}/api/ticketQueue/nextTicket?connectWiseTechnicanId=${cwTechId}&mspCustomDomain=${mspCustomDomain}&techId=${techId}`
       );
 
       if (response.status === 200) {
@@ -580,7 +579,7 @@ const useQueueStore = create((set, get) => ({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            text: message
+            text: message,
           }),
         });
 

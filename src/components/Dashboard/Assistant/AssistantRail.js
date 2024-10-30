@@ -15,7 +15,6 @@ const AssistantRail = ({}) => {
     handleAssistantTabChange,
   } = useAssistantStore();
 
-  console.log(assistantWidth);
   return (
     <div
       className={` ${

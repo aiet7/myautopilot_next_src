@@ -6,7 +6,6 @@ import AssistantRail from "./AssistantRail.js";
 import AssistantControl from "./AssistantControl.js";
 import InternalPilot from "./Sections/Internal/InternalPilot.js";
 import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
-import ExternalPilot from "./Sections/External/ExternalPilot.js";
 
 const Assistant = () => {
   const { openAssistant } = useUiStore();
@@ -75,7 +74,7 @@ const Assistant = () => {
           openAssistant ? " translate-x-0" : " translate-x-full"
         } ${
           activeAssistantTabOpen && openAssistant && !isMobile
-            ? `-translate-x-[224px]`
+            ? `-translate-x-[225px]`
             : null
         } flex dark:border-white/10 lg:border-l lg:border-black/10 }${
           isMobile ? "w-full" : `w-[${assistantWidth || 400}px]`

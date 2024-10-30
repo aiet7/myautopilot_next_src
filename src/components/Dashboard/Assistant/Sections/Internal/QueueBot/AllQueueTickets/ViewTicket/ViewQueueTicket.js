@@ -43,7 +43,7 @@ const ViewQueueTicket = () => {
         <span className="font-bold">Description</span>
         <textarea
           disabled
-          value={currentQueueTicket?.description || ""}
+          value={currentQueueTicket?.description || currentQueueTicket?.ticketInformation || ""}
           maxLength={100}
           className="dark:bg-black max-h-[130px] min-h-[70px] border outline-blue-500 w-full px-4 bg-white"
         />

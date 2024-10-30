@@ -17,7 +17,7 @@ const AllQueueTicketsTable = () => {
     setFilteredQueueTicketCount,
     handleViewQueueTicket,
   } = useQueueStore();
-
+  
   const filteredAndSortedQueueTickets = allQueueTickets
     ?.filter((ticket) => {
       if (!searchValue) return true;

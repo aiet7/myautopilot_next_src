@@ -7,6 +7,7 @@ import { CiViewTable } from "react-icons/ci";
 import AllQueueTicketsTable from "./AllQueueTicketsTable";
 import AllQueueTicketsCards from "./AllQueueTicketsCards";
 import ViewTicket from "./ViewTicket/ViewTicket";
+import Pagination from "../../Pagination";
 
 const AllQueueTickets = () => {
   const { cardView, viewQueueTicket, setCardView } = useQueueStore();
@@ -49,7 +50,7 @@ const AllQueueTickets = () => {
           </div>
           <div className="flex-1 overflow-auto scrollbar-thin">
             {renderComponent()}
-          </div>
+            </div>
         </>
       )}
     </div>

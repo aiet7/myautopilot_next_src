@@ -29,7 +29,7 @@ const QueueGuide = () => {
           onClick={() =>
             handleNextQueueTicket(
               user?.mspCustomDomain,
-              user?.tierLevel,
+              user?.connectWiseTechnicanId,
               user?.id
             )
           }

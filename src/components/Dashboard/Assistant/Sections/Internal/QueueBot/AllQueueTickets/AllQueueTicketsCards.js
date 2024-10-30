@@ -98,7 +98,6 @@ const AllQueueTicketsCards = () => {
           ticketId,
           holdUntil,
           ticketInformation,
-          description,
           creationTime,
           compositeScore,
         } = tickets;
@@ -118,9 +117,9 @@ const AllQueueTicketsCards = () => {
             <p className="break-words whitespace-pre-wrap">
               <span className="font-bold">Ticket ID:</span> #{ticketId}
             </p>
-            <p className="break-words whitespace-pre-wrap">
-              <span className="font-bold">Description: </span>
-              {description}
+            <p className="break-words whitespace-wrap truncate w-[300px]">
+              <span className="font-bold ">Description: </span>
+              {ticketInformation}
             </p>
             <p className="break-words whitespace-pre-wrap">
               <span className="font-bold">Date Created: </span>
