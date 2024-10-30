@@ -18,6 +18,8 @@ const MSPPage = ({}) => {
   const {
     qrUrl,
     authCode,
+    setQrCodePopup,
+    qrCodePopup,
     loginInputs,
     userType,
     current2FA,
@@ -91,7 +93,6 @@ const MSPPage = ({}) => {
                   />
                 </div>
               )}
-              {current2FA ? <img src={qrUrl ? qrUrl : null} /> : null}
               <h1 className="text-2xl font-bold text-black text-center">
                 {current2FA
                   ? "Enter your 2FA code"
@@ -334,6 +335,39 @@ const MSPPage = ({}) => {
               >
                 Forgot password?
               </span>
+              {qrCodePopup ? (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                  <div
+                    className="p-6 rounded-lg shadow-lg max-w-md relative"
+                    style={{ backgroundColor: "rgb(217, 217, 217)" }}
+                  >
+                    <h2 className="text-xl font-semibold mb-4">
+                      Authenticator QR Code
+                    </h2>
+                    <p className="items-center bg-blue">
+                      <img src={qrUrl ? qrUrl : null} />
+                    </p>
+                    <button
+                      className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                      onClick={() => setQrCodePopup(false)}
+                    >
+                      &#x2715; {/* Unicode for 'X' */}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <></>
+              )}
+              {userType === "tech" && current2FA ? (
+                <span
+                  onClick={() => setQrCodePopup(true)}
+                  className="text-sm text-blue-800 font-extrabold cursor-pointer"
+                >
+                  Show QR code
+                </span>
+              ) : (
+                <></>
+              )}
             </div>
           </form>
         </div>
