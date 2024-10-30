@@ -298,7 +298,7 @@ const useQueueStore = create((set, get) => ({
       if (response.status === 200) {
         const myQueueTicket = await response.json();
         if (!myQueueTicket.id) {
-          set({ noTicketsInQueue: true });
+          set({ noTicketsInQueue: true, generatingTroubleShoot: false  });
         } else {
           set({
             myQueueTicket: myQueueTicket,

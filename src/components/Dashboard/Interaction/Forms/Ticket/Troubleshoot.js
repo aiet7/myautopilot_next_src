@@ -8,7 +8,8 @@ import QueueGuide from "../../Guides/QueueGuide";
 
 const Troubleshoot = () => {
   const { user } = useUserStore();
-  const { generatingTroubleShoot, troubleshootMessages } = useQueueStore();
+  const { noTicketsInQueue, generatingTroubleShoot, troubleshootMessages } =
+    useQueueStore();
 
   return (
     <div className="flex-grow overflow-auto scrollbar-thin">
@@ -16,6 +17,11 @@ const Troubleshoot = () => {
         <div className="flex items-center gap-2 p-4 font-bold">
           <p>Generating optimum troubleshooting steps...</p>
           <FaSpinner className="animate-spin" />
+        </div>
+      ) : noTicketsInQueue ? (
+        <div className="p-4 font-bold">
+          No next ticket available in the queue. Please try Next again to
+          check if a new ticket has came in.
         </div>
       ) : (
         <>
@@ -29,7 +35,7 @@ const Troubleshoot = () => {
                   role === "user"
                     ? "dark:border-white/40 bg-black/5 border-b"
                     : "dark:bg-white/10 dark:border-white/40 border-b"
-                } `}
+                }`}
               >
                 <div className="max-w-[1250px] flex items-start gap-4 mx-auto">
                   <span>
@@ -38,7 +44,7 @@ const Troubleshoot = () => {
                         {user?.firstName[0]}
                       </div>
                     ) : (
-                      <div className="w-7 h-7 text-sm bg-[#ab68ff]  flex justify-center items-center text-white">
+                      <div className="w-7 h-7 text-sm bg-[#ab68ff] flex justify-center items-center text-white">
                         <SiOpenai />
                       </div>
                     )}
