@@ -575,7 +575,6 @@ const useMspStore = create((set, get) => ({
       );
       if (response.ok) {
         const responseData = await response.text();
-        console.log("QR URL:", responseData);
         set({
           qrUrl: responseData,
           current2FA: true,
