@@ -203,7 +203,7 @@ const Account = ({}) => {
               )}
               {userType === "tech" ? (
                 <div
-                  className="flex items-center gap-2 text-sm text-blue-800 font-extrabold cursor-pointer"
+                  className="flex items-center gap-2 text-sm text-blue-800 font-extrabold cursor-pointer w-1/6"
                   onClick={() => setQrCodePopup(true)}
                 >
                   <p>Authenticator QR code</p>
