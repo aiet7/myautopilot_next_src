@@ -3,9 +3,11 @@
 import { AiFillEdit } from "react-icons/ai";
 import { IoMdFingerPrint } from "react-icons/io";
 import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
+import { BsQrCodeScan } from "react-icons/bs";
 
 import useUserStore from "@/utils/store/user/userStore";
 import useUiStore from "@/utils/store/ui/uiStore";
+import useMspStore from "@/utils/store/auth/msp/mspStore";
 
 const Account = ({}) => {
   const { openNav } = useUiStore();
@@ -23,6 +25,8 @@ const Account = ({}) => {
     handleSaveChanges,
     handleCancelEdit,
   } = useUserStore();
+
+  const { qrCodePopup, setQrCodePopup, userType } = useMspStore();
 
   return (
     <div
@@ -161,7 +165,7 @@ const Account = ({}) => {
                   </div>
                 ) : (
                   <div className="flex items-center gap-4">
-                    <p>{userInputs?.["companyName"]}</p>
+                    <p>{userInputs?.["mspCustomDomain"]}</p>
                     <AiFillEdit
                       size={25}
                       className="cursor-pointer"
@@ -170,10 +174,44 @@ const Account = ({}) => {
                   </div>
                 )}
               </div>
-              <div className="flex items-center justify-between h-[20px]">
+              {/* <div className="flex items-center justify-between h-[20px]">
                 <p className="w-18">Company ID</p>
                 <p>{userInputs?.companyId}</p>
-              </div>
+              </div> */}
+              {qrCodePopup ? (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                  <div
+                    className="p-6 rounded-lg shadow-lg max-w-md relative"
+                    style={{ backgroundColor: "rgb(217, 217, 217)" }}
+                  >
+                    <h2 className="text-xl font-semibold mb-4">Scan here:</h2>
+                    <p className="items-center bg-blue">
+                      <img
+                        src={`https://api.qrserver.com/v1/create-qr-code/?data=otpauth://totp/${user?.mspCustomDomain}:${user?.email}?secret=${user?.secret}&issuer=${user?.mspCustomDomain}`}
+                      />
+                    </p>
+                    <button
+                      className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                      onClick={() => setQrCodePopup(false)}
+                    >
+                      &#x2715; {/* Unicode for 'X' */}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <></>
+              )}
+              {userType === "tech" ? (
+                <div
+                  className="flex items-center gap-2 text-sm text-blue-800 font-extrabold cursor-pointer"
+                  onClick={() => setQrCodePopup(true)}
+                >
+                  <p>Authenticator QR code</p>
+                  <BsQrCodeScan size={20} />
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
             <div className="flex flex-col w-full border dark:border-white/40 rounded-md p-5 gap-6">
               <p className="text-2xl">Contact Info</p>
