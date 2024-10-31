@@ -10,6 +10,7 @@ import useMspStore from "@/utils/store/auth/msp/mspStore";
 import useAuthStore from "@/utils/store/auth/authStore";
 
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import { BsQrCodeScan } from "react-icons/bs";
 
 const MSPPage = ({}) => {
   const { height, setHeight } = useUiStore();
@@ -359,12 +360,13 @@ const MSPPage = ({}) => {
                 <></>
               )}
               {userType === "tech" && current2FA ? (
-                <span
+                <div
+                  className="flex items-center gap-2 text-sm text-blue-800 font-extrabold cursor-pointer"
                   onClick={() => setQrCodePopup(true)}
-                  className="text-sm text-blue-800 font-extrabold cursor-pointer"
                 >
-                  Show QR code
-                </span>
+                  <p>Authenticator QR code</p>
+                  <BsQrCodeScan size={20} />
+                </div>
               ) : (
                 <></>
               )}
