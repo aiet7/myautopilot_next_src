@@ -69,66 +69,73 @@ const MSPPage = ({}) => {
 
   return (
     <>
-      {height && (
-        <div
-          className="relative z-[99]  bg-gradient-to-b from-white via-white to-gray-400 h-full flex justify-center items-center"
-          style={{ height: `calc(${height}px - 1px)` }}
-        >
-          <div className="absolute opacity-5 overflow-hidden  top-0 bottom-0 left-0 right-0">
-            <Image
-              src={"/images/msp_portal_image.png"}
-              alt="msp_portal_image"
-              fill
-              className="object-cover"
-            />
-          </div>
-          <form className="relative p-6 w-[450px] flex flex-col gap-10 items-center justify-center lg:shadow-lg  lg:rounded-lg lg:bg-white">
-            <div className="text-black flex flex-col items-center gap-10">
-              {mspSubDomain && (
-                <div className="relative rounded-full w-32 h-32 shadow-xl shadow-black/30 flex items-center justify-center overflow-hidden">
-                  <Image
-                    src={mspSubDomain?.brandLogoUrl}
-                    alt={`${mspSubDomain?.mspName} Portal Logo`}
-                    width={100}
-                    height={100}
-                  />
-                </div>
-              )}
-              <h1 className="text-2xl font-bold text-black text-center">
-                {current2FA
-                  ? "Enter your 2FA code"
-                  : `Welcome back to ${mspSubDomain?.mspName}`}
-              </h1>
-              {errorMessage?.emailCheck && (
-                <p className="text-red-500">Email or password incorrect.</p>
-              )}
-              {errorMessage?.emptyFields && (
-                <p className="text-red-500">Please fill out required field*.</p>
-              )}
-              {errorMessage?.login2FA && (
-                <p className="text-red-500">2FA Code Incorrect.</p>
-              )}
+      <div
+        className={`transition-all duration-300 ${
+          qrCodePopup && "filter blur-sm"
+        }`}
+      >
+        {height && (
+          <div
+            className="relative z-[99]  bg-gradient-to-b from-white via-white to-gray-400 h-full flex justify-center items-center"
+            style={{ height: `calc(${height}px - 1px)` }}
+          >
+            <div className="absolute opacity-5 overflow-hidden  top-0 bottom-0 left-0 right-0">
+              <Image
+                src={"/images/msp_portal_image.png"}
+                alt="msp_portal_image"
+                fill
+                className="object-cover"
+              />
             </div>
-            <div className="flex flex-col gap-4 w-full">
-              {!current2FA && (
-                <div className="flex items-center justify-between  font-bold">
-                  {userType === "tech" ? (
-                    <p className="text-lg">Admin Login</p>
-                  ) : (
-                    <p className="text-lg">User Login</p>
-                  )}
-                  <button
-                    className="hover:underline text-xs"
-                    type="button"
-                    onClick={handleSwitchMspLoginFlow}
-                  >
-                    {userType === "tech" ? "user" : "admin"}
-                  </button>
-                </div>
-              )}
-              {current2FA ? (
-                <>
-                  {/* <input
+            <form className="relative p-6 w-[450px] flex flex-col gap-10 items-center justify-center lg:shadow-lg  lg:rounded-lg lg:bg-white">
+              <div className="text-black flex flex-col items-center gap-10">
+                {mspSubDomain && (
+                  <div className="relative rounded-full w-32 h-32 shadow-xl shadow-black/30 flex items-center justify-center overflow-hidden">
+                    <Image
+                      src={mspSubDomain?.brandLogoUrl}
+                      alt={`${mspSubDomain?.mspName} Portal Logo`}
+                      width={100}
+                      height={100}
+                    />
+                  </div>
+                )}
+                <h1 className="text-2xl font-bold text-black text-center">
+                  {current2FA
+                    ? "Enter your 2FA code"
+                    : `Welcome back to ${mspSubDomain?.mspName}`}
+                </h1>
+                {errorMessage?.emailCheck && (
+                  <p className="text-red-500">Email or password incorrect.</p>
+                )}
+                {errorMessage?.emptyFields && (
+                  <p className="text-red-500">
+                    Please fill out required field*.
+                  </p>
+                )}
+                {errorMessage?.login2FA && (
+                  <p className="text-red-500">2FA Code Incorrect.</p>
+                )}
+              </div>
+              <div className="flex flex-col gap-4 w-full">
+                {!current2FA && (
+                  <div className="flex items-center justify-between  font-bold">
+                    {userType === "tech" ? (
+                      <p className="text-lg">Admin Login</p>
+                    ) : (
+                      <p className="text-lg">User Login</p>
+                    )}
+                    <button
+                      className="hover:underline text-xs"
+                      type="button"
+                      onClick={handleSwitchMspLoginFlow}
+                    >
+                      {userType === "tech" ? "user" : "admin"}
+                    </button>
+                  </div>
+                )}
+                {current2FA ? (
+                  <>
+                    {/* <input
                     onChange={(e) =>
                       setLoginInputs(
                         userType === "tech" ? "techInfo" : "clientInfo",
@@ -162,22 +169,47 @@ const MSPPage = ({}) => {
                     placeholder="Enter 2FA Token"
                     className="w-full p-2 border border-gray-300 bg-white text-black"
                   /> */}
-                  <input
-                    onChange={(e) =>
-                      setLoginInputs(
-                        userType === "tech" ? "techInfo" : "clientInfo",
-                        "authCode",
-                        e.target.value
-                      )
-                    }
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
+                    <input
+                      onChange={(e) =>
+                        setLoginInputs(
+                          userType === "tech" ? "techInfo" : "clientInfo",
+                          "authCode",
+                          e.target.value
+                        )
+                      }
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
 
+                          if (userType === "tech") {
+                            handleTechnician2FALogin(
+                              router.push,
+                              mspSubDomain?.customDomain
+                            );
+                          } else {
+                            handleClient2FALogin(
+                              router.push,
+                              mspSubDomain?.customDomain
+                            );
+                          }
+                        }
+                      }}
+                      value={
+                        userType === "tech"
+                          ? loginInputs.techInfo.authCode || ""
+                          : loginInputs.clientInfo.login2FA || ""
+                      }
+                      type="text"
+                      placeholder="Enter gAuth Token"
+                      className="w-full p-2 border border-gray-300 bg-white text-black"
+                    />
+                    <button
+                      onClick={() => {
                         if (userType === "tech") {
                           handleTechnician2FALogin(
                             router.push,
-                            mspSubDomain?.customDomain
+                            mspSubDomain?.customDomain,
+                            authCode
                           );
                         } else {
                           handleClient2FALogin(
@@ -185,73 +217,20 @@ const MSPPage = ({}) => {
                             mspSubDomain?.customDomain
                           );
                         }
-                      }
-                    }}
-                    value={
-                      userType === "tech"
-                        ? loginInputs.techInfo.authCode || ""
-                        : loginInputs.clientInfo.login2FA || ""
-                    }
-                    type="text"
-                    placeholder="Enter gAuth Token"
-                    className="w-full p-2 border border-gray-300 bg-white text-black"
-                  />
-                  <button
-                    onClick={() => {
-                      if (userType === "tech") {
-                        handleTechnician2FALogin(
-                          router.push,
-                          mspSubDomain?.customDomain,
-                          authCode
-                        );
-                      } else {
-                        handleClient2FALogin(
-                          router.push,
-                          mspSubDomain?.customDomain
-                        );
-                      }
-                    }}
-                    type="button"
-                    className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white py-3 rounded-lg"
-                  >
-                    Continue
-                  </button>
-                </>
-              ) : (
-                <>
-                  <input
-                    onChange={(e) =>
-                      setLoginInputs(
-                        userType === "tech" ? "techInfo" : "clientInfo",
-                        "email",
-                        e.target.value
-                      )
-                    }
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        if (userType === "tech") {
-                          handleTechnicianLogin(mspSubDomain?.customDomain);
-                        } else {
-                          handleClientLogin(mspSubDomain?.customDomain);
-                        }
-                      }
-                    }}
-                    value={
-                      userType === "tech"
-                        ? loginInputs.techInfo.email || ""
-                        : loginInputs.clientInfo.email || ""
-                    }
-                    type="email"
-                    placeholder="Enter your email"
-                    className="w-full p-2 border border-gray-300 bg-white text-black"
-                  />
-                  <div className="flex items-center gap-2">
+                      }}
+                      type="button"
+                      className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white py-3 rounded-lg"
+                    >
+                      Continue
+                    </button>
+                  </>
+                ) : (
+                  <>
                     <input
                       onChange={(e) =>
                         setLoginInputs(
                           userType === "tech" ? "techInfo" : "clientInfo",
-                          "password",
+                          "email",
                           e.target.value
                         )
                       }
@@ -267,111 +246,136 @@ const MSPPage = ({}) => {
                       }}
                       value={
                         userType === "tech"
-                          ? loginInputs.techInfo.password || ""
-                          : loginInputs.clientInfo.password || ""
+                          ? loginInputs.techInfo.email || ""
+                          : loginInputs.clientInfo.email || ""
                       }
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Enter your password"
-                      className="w-full p-2 border border-gray-300  bg-white text-black"
+                      type="email"
+                      placeholder="Enter your email"
+                      className="w-full p-2 border border-gray-300 bg-white text-black"
                     />
-                    <>
-                      {showPassword ? (
-                        <FaRegEyeSlash
-                          onClick={() => setShowPassword(false)}
-                          className="cursor-pointer"
-                          size={20}
-                        />
-                      ) : (
-                        <FaRegEye
-                          onClick={() => setShowPassword(true)}
-                          size={20}
-                          className="cursor-pointer"
-                        />
-                      )}
-                    </>
-                  </div>
-                  <button
-                    onClick={() => {
-                      if (userType === "tech") {
-                        handleTechnicianLogin(mspSubDomain?.customDomain);
-                      } else {
-                        handleClientLogin(mspSubDomain?.customDomain);
-                      }
-                    }}
-                    type="button"
-                    className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white py-3 rounded-lg"
-                  >
-                    Continue
-                  </button>
-                </>
-              )}
-              <div className="flex flex-col w-full">
-                {router.asPath.includes("/public") ? (
-                  <span
-                    onClick={() => handleNavigatePublicSignup(router.push)}
-                    className="text-sm text-blue-800 font-semibold cursor-pointer"
-                  >
-                    Sign Up
-                  </span>
-                ) : (
-                  <Link
-                    onClick={() => clearMSPCredentials()}
-                    href={`/${mspSubDomain?.customDomain}/activate`}
-                  >
-                    <span className="text-sm text-blue-800 font-semibold">
-                      Activate Account
+                    <div className="flex items-center gap-2">
+                      <input
+                        onChange={(e) =>
+                          setLoginInputs(
+                            userType === "tech" ? "techInfo" : "clientInfo",
+                            "password",
+                            e.target.value
+                          )
+                        }
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            if (userType === "tech") {
+                              handleTechnicianLogin(mspSubDomain?.customDomain);
+                            } else {
+                              handleClientLogin(mspSubDomain?.customDomain);
+                            }
+                          }
+                        }}
+                        value={
+                          userType === "tech"
+                            ? loginInputs.techInfo.password || ""
+                            : loginInputs.clientInfo.password || ""
+                        }
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Enter your password"
+                        className="w-full p-2 border border-gray-300  bg-white text-black"
+                      />
+                      <>
+                        {showPassword ? (
+                          <FaRegEyeSlash
+                            onClick={() => setShowPassword(false)}
+                            className="cursor-pointer"
+                            size={20}
+                          />
+                        ) : (
+                          <FaRegEye
+                            onClick={() => setShowPassword(true)}
+                            size={20}
+                            className="cursor-pointer"
+                          />
+                        )}
+                      </>
+                    </div>
+                    <button
+                      onClick={() => {
+                        if (userType === "tech") {
+                          handleTechnicianLogin(mspSubDomain?.customDomain);
+                        } else {
+                          handleClientLogin(mspSubDomain?.customDomain);
+                        }
+                      }}
+                      type="button"
+                      className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white py-3 rounded-lg"
+                    >
+                      Continue
+                    </button>
+                  </>
+                )}
+                <div className="flex flex-col w-full">
+                  {router.asPath.includes("/public") ? (
+                    <span
+                      onClick={() => handleNavigatePublicSignup(router.push)}
+                      className="text-sm text-blue-800 font-semibold cursor-pointer"
+                    >
+                      Sign Up
                     </span>
-                  </Link>
+                  ) : (
+                    <Link
+                      onClick={() => clearMSPCredentials()}
+                      href={`/${mspSubDomain?.customDomain}/activate`}
+                    >
+                      <span className="text-sm text-blue-800 font-semibold">
+                        Activate Account
+                      </span>
+                    </Link>
+                  )}
+                </div>
+                <span
+                  onClick={() => {
+                    clearMSPCredentials();
+                    handleShowForgotPassword(
+                      router.push,
+                      mspSubDomain?.customDomain
+                    );
+                  }}
+                  className="text-sm text-blue-800 font-extrabold cursor-pointer"
+                >
+                  Forgot password?
+                </span>
+                {userType === "tech" && current2FA && (
+                  <div
+                    className="flex items-center gap-2 text-sm text-blue-800 font-extrabold cursor-pointer"
+                    onClick={() => setQrCodePopup(true)}
+                  >
+                    <p>Authenticator QR code</p>
+                    <BsQrCodeScan size={20} />
+                  </div>
                 )}
               </div>
-              <span
-                onClick={() => {
-                  clearMSPCredentials();
-                  handleShowForgotPassword(
-                    router.push,
-                    mspSubDomain?.customDomain
-                  );
-                }}
-                className="text-sm text-blue-800 font-extrabold cursor-pointer"
-              >
-                Forgot password?
-              </span>
-              {qrCodePopup ? (
-                <div className="fixed inset-0 flex items-center justify-center z-50">
-                  <div
-                    className="p-6 rounded-lg shadow-lg max-w-md relative"
-                    style={{ backgroundColor: "rgb(217, 217, 217)" }}
-                  >
-                    <h2 className="text-xl font-semibold mb-4">
-                      Authenticator QR Code
-                    </h2>
-                    <p className="items-center bg-blue">
-                      <img src={qrUrl ? qrUrl : null} />
-                    </p>
-                    <button
-                      className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-                      onClick={() => setQrCodePopup(false)}
-                    >
-                      &#x2715; {/* Unicode for 'X' */}
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <></>
-              )}
-              {userType === "tech" && current2FA ? (
-                <div
-                  className="flex items-center gap-2 text-sm text-blue-800 font-extrabold cursor-pointer"
-                  onClick={() => setQrCodePopup(true)}
-                >
-                  <p>Authenticator QR code</p>
-                  <BsQrCodeScan size={20} />
-                </div>
-              ) : (
-                <></>
-              )}
-            </div>
-          </form>
+            </form>
+          </div>
+        )}
+      </div>
+      {qrCodePopup && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div
+            className="p-6 rounded-lg shadow-lg max-w-md relative"
+            style={{ backgroundColor: "rgb(236, 236, 236)" }}
+          >
+            <h2 className="text-xl font-semibold mb-4">
+              Authenticator QR Code
+            </h2>
+            <p className="items-center bg-blue">
+              <img src={qrUrl ? qrUrl : null} />
+            </p>
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              onClick={() => setQrCodePopup(false)}
+            >
+              &#x2715; {/* Unicode for 'X' */}
+            </button>
+          </div>
         </div>
       )}
     </>
