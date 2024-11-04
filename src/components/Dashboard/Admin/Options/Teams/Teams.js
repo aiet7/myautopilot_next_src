@@ -3,22 +3,28 @@ import useUiStore from "@/utils/store/ui/uiStore";
 import useTeamsStore from "@/utils/store/admin/control/teams/teamsStore";
 import useUserStore from "@/utils/store/user/userStore";
 import TeamsTable from "./TeamsTable";
+import AddTeamMembers from "./AddTeamMembers";
+import EditTeamMembers from "./EditTeamMembers";
 
 const Teams = () => {
   const { openAdmin, handleHistoryMenu } = useUiStore();
   const { user } = useUserStore();
   const {
+    adding,
+    searchValue,
+    editing,
     teams,
     initializeTeams,
-    setCurrentTeam,
-    searchValue,
+    setSelectedTeam,
     setSearchValue,
   } = useTeamsStore();
 
   useEffect(() => {
+    console.log("firing off")
     initializeTeams();
   }, [user]);
 
+console.log(teams)
   return (
     <div
       onClick={() => {
@@ -30,6 +36,8 @@ const Teams = () => {
         openAdmin ? "lg:opacity-100 opacity-5 xl:ml-[250px]" : ""
       } dark:bg-black transition-all duration-300 ease bg-white`}
     >
+      {adding && <AddTeamMembers />}
+      {editing && <EditTeamMembers />}
       <div className="dark:border-b-white/20 border-b p-4">
         <h1 className="text-2xl">Teams</h1>
       </div>
@@ -43,7 +51,7 @@ const Teams = () => {
               const selectedTeams = teams.filter(
                 (team) => team.boardName === e.target.value
               );
-              setCurrentTeam(selectedTeams.length ? selectedTeams : null);
+              setSelectedTeam(selectedTeams.length ? selectedTeams : null);
             }}
           >
             <option value="">All Boards</option>

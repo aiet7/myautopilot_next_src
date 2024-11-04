@@ -455,7 +455,6 @@ const useConversationStore = create((set, get) => ({
       conversationName: `Chat - ${timestamp}`,
       agentID: selectedAgent.id,
     };
-
     try {
       const response = await fetch(
         `${dbServiceUrl}/conversations/addConversation`,

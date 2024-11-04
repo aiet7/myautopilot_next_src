@@ -1,14 +1,25 @@
 "use client";
-
 import useTeamsStore from "@/utils/store/admin/control/teams/teamsStore";
+import Confirmation from "./Confirmation";
 
 const TeamsTable = () => {
-  const { teams, currentTeam, searchValue } = useTeamsStore();
+  const {
+    deleteMenu,
+    teams,
+    searchValue,
+    selectedTeam,
+    setEditing,
+    setCurrentMember,
+    setTeamId,
+    setCurrentEditingTeam,
+    setAdding,
+    setDeleteMenu,
+  } = useTeamsStore();
 
-  const filteredTeams = (currentTeam || teams)
+  const filteredTeams = (selectedTeam || teams)
     ?.map((team) => ({
       ...team,
-      members: team.members.filter((member) => {
+      members: team.members?.filter((member) => {
         const query = searchValue.toLowerCase();
         return (
           member.firstName?.toLowerCase().includes(query) ||
@@ -20,14 +31,12 @@ const TeamsTable = () => {
     }))
     .filter((team) => team.members.length > 0);
 
-  const highlightText = (text, searchValue) => {
-    if (!searchValue) return text;
+  const highlightText = (text, query) => {
+    if (!query) return text;
 
-    const regex = new RegExp(`(${searchValue})`, "gi");
-    const parts = text.split(regex);
-
+    const parts = text.split(new RegExp(`(${query})`, "gi"));
     return parts.map((part, index) =>
-      regex.test(part) ? (
+      part.toLowerCase() === query.toLowerCase() ? (
         <span key={index} className="bg-yellow-300">
           {part}
         </span>
@@ -36,28 +45,40 @@ const TeamsTable = () => {
       )
     );
   };
+
   return (
     <div>
+      {deleteMenu && <Confirmation />}
       {filteredTeams?.length > 0 ? (
         filteredTeams?.map((team) => (
           <div key={team.id}>
-            <h1 className="font-bold pt-2">
-              Board Name: <span className="font-normal">{team.boardName}</span>
-            </h1>
-            <h1 className="font-bold py-2">
-              Team Name: <span className="font-normal">{team.teamName}</span>
-            </h1>
+            <div className="flex flex-col  pt-[40px] pb-2">
+              <h1 className="font-bold">
+                Board Name:{" "}
+                <span className="font-normal">{team.boardName}</span>
+              </h1>
+              <h1 className="font-bold">
+                Team Name: <span className="font-normal">{team.teamName}</span>
+              </h1>
+              <button
+                onClick={() => {
+                  setAdding(true);
+                  setTeamId(team.id);
+                  setCurrentEditingTeam(team);
+                }}
+                className="hover:text-white hover:bg-blue-800 font-bold text-blue-800 w-40 border border-solid rounded border-blue-600"
+              >
+                Add Member
+              </button>
+            </div>
             <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
-              <thead className="dark:text-white dark:bg-gray-700  text-black/60 bg-[#F5F8FA]">
+              <thead className="dark:text-white dark:bg-gray-700 text-black/60 bg-[#F5F8FA]">
                 <tr>
-                  <th className="p-2 border-t border-b border-r border-l"></th>
-                  <th className="p-2 border-t border-b border-r">First Name</th>
-                  <th className="p-2 border-t border-b border-r">Last Name</th>
-                  <th className="p-2 border-t border-b border-r">Email</th>
-                  <th className="p-2 border-t border-b border-r">Tier Level</th>
-                  <th className="p-2 border-t border-b border-r">
-                    Associated Teams
-                  </th>
+                  <th className="p-2 border-t border-b  border-l"></th>
+                  <th className="p-2 border-t border-b  border-l">First Name</th>
+                  <th className="p-2 border-t border-b  border-l">Last Name</th>
+                  <th className="p-2 border-t border-b  border-l">Email</th>
+                  <th className="p-2 border-t border-b border-r border-l">Tier Level</th>
                 </tr>
               </thead>
               <tbody>
@@ -65,10 +86,26 @@ const TeamsTable = () => {
                   <tr key={member.connectWiseTechnicanId}>
                     <td className="p-2 border-l border-b">
                       <div className="flex gap-3 w-44 xl:w-8">
-                        <span className="hover:underline hover:cursor-pointer text-blue-500">
+                        <span
+                          onClick={() => {
+                            setEditing(true);
+                            setTeamId(team.id);
+                            setCurrentEditingTeam(team);
+                            setCurrentMember(member);
+                          }}
+                          className="hover:underline hover:cursor-pointer text-blue-500"
+                        >
                           Edit
                         </span>
-                        <span className="hover:underline hover:cursor-pointer text-red-500">
+                        <span
+                          className="hover:underline hover:cursor-pointer text-red-500"
+                          onClick={() => {
+                            setTeamId(team.id);
+                            setCurrentEditingTeam(team);
+                            setCurrentMember(member);
+                            setDeleteMenu(true);
+                          }}
+                        >
                           Delete
                         </span>
                       </div>
@@ -82,11 +119,8 @@ const TeamsTable = () => {
                     <td className="p-2 border-l border-b">
                       {highlightText(member.email, searchValue)}
                     </td>
-                    <td className="p-2 border-l border-b">
-                      {highlightText(member.tierLevel.toString(), searchValue)}
-                    </td>
-                    <td className="p-2 border-l border-r border-b">
-                      {highlightText(member.email, searchValue)}
+                    <td className="p-2 border-l border-b border-r">
+                      {highlightText(member.tierLevel ?? "N/A", searchValue)}
                     </td>
                   </tr>
                 ))}

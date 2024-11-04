@@ -1,6 +1,5 @@
 "use client";
 
-import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import { AiOutlineMenu } from "react-icons/ai";
 
@@ -17,7 +16,8 @@ const SettingsRail = ({}) => {
         currentNavOption === "Assistant" ||
         currentNavOption === "Document" ||
         currentNavOption === "Tickets" ||
-        currentNavOption === "Queue"
+        currentNavOption === "Queue" ||
+        currentNavOption === "Settings"
           ? "justify-between"
           : "justify-end"
       } px-4 py-2 lg:hidden`}
@@ -26,7 +26,8 @@ const SettingsRail = ({}) => {
         currentNavOption === "Assistant" ||
         currentNavOption === "Document" ||
         currentNavOption === "Tickets" ||
-        currentNavOption === "Queue") && (
+        currentNavOption === "Queue" ||
+        currentNavOption === "Settings") && (
         <>
           <AiOutlineMenu
             data-tooltip-id="Mobile History Menu"
@@ -37,7 +38,7 @@ const SettingsRail = ({}) => {
         </>
       )}
 
-      {activeTab === "iTAgent" ? (
+      {activeTab === "iTAgent" && currentNavOption !== "Settings" ? (
         <>
           <BiBrain
             data-tooltip-id="Mobile Assistant Menu"

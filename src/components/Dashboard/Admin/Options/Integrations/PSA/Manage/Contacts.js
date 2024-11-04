@@ -58,7 +58,7 @@ const Contacts = () => {
                     <p className="text-red-500">Error Saving Contacts</p>
                   )}
                 </div>
-                <div className="block toverflow-auto scrollbar-thin max-h-full max-w-full ">
+                <div className="block overflow-auto scrollbar-thin max-h-full max-w-full ">
                   <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
                     <thead className="sticky top-0 bg-white  text-black/60">
                       <tr className="">

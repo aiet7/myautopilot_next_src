@@ -72,6 +72,7 @@ const useUserStore = create((set, get) => ({
     } else {
       console.error("Failed to initialize tech information.");
     }
+
   },
 
   handleStartEdit: (field) => {

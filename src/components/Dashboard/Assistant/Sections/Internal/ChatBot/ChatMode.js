@@ -19,7 +19,7 @@ const ChatMode = () => {
         onChange={(e) => {
           const selectedAgentId = agents.find(
             (agent) => agent.agentName === e.target.value
-          )?.id;
+          );
           if (selectedAgentId) {
             setActiveChatFilterModeOpen(false);
             setActiveChatBotMode(e.target.value);

@@ -34,7 +34,7 @@ const MSPPage = ({}) => {
   const { showPassword, setShowPassword, handleShowForgotPassword } =
     useAuthStore();
   const router = useRouter();
-
+  
   useEffect(() => {
     if (router.isReady) {
       const { msp } = router.query;
@@ -61,7 +61,6 @@ const MSPPage = ({}) => {
   useEffect(() => {
     initializeUserType();
   }, [userType]);
-
   return (
     <>
       {height && (
@@ -83,8 +82,15 @@ const MSPPage = ({}) => {
               {mspSubDomain && (
                 <div className="relative rounded-full w-32 h-32 shadow-xl shadow-black/30 flex items-center justify-center overflow-hidden">
                   <Image
-                    src={mspSubDomain?.brandLogoUrl}
-                    alt={`${mspSubDomain?.mspName} Portal Logo`}
+                    src={
+                      mspSubDomain?.brandLogoUrl ||
+                      "https://myautopilot.blob.core.windows.net/brandlogos/public"
+                    }
+                    alt={
+                      mspSubDomain?.brandLogoUrl
+                        ? `${mspSubDomain?.mspName} Portal Logo`
+                        : "Default Brand Logo"
+                    }
                     width={100}
                     height={100}
                   />

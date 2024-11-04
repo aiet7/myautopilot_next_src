@@ -135,17 +135,18 @@ const MSPSignupPage = () => {
                       const file = e.target.files[0];
                       if (file) {
                         const img = new Image();
-                        img.src = URL.createObjectURL(file);
                         img.onload = () => {
+                          
                           if (img.width >= 400 || img.height >= 400) {
                             setSignupInputs("mspInfo", "brandLogoFile", null);
                             setFileSizeError(true);
-                            e.target.value = "";
+                            e.target.value = ""; 
                           } else {
                             setSignupInputs("mspInfo", "brandLogoFile", file);
                             setFileSizeError(false);
                           }
                         };
+                        img.src = URL.createObjectURL(file); 
                       }
                     }}
                     type="file"
