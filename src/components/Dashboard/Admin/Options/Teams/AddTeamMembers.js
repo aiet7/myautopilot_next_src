@@ -24,7 +24,6 @@ const AddTeamMembers = () => {
   }, [user]);
 
   const teamMembers = currentEditingTeam?.members || [];
-  console.log(selectedTechnicians);
 
   const filteredTechnicians = activeTechnicians.filter(
     (technician) =>
