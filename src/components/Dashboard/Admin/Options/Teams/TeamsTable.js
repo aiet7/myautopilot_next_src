@@ -75,10 +75,14 @@ const TeamsTable = () => {
               <thead className="dark:text-white dark:bg-gray-700 text-black/60 bg-[#F5F8FA]">
                 <tr>
                   <th className="p-2 border-t border-b  border-l"></th>
-                  <th className="p-2 border-t border-b  border-l">First Name</th>
+                  <th className="p-2 border-t border-b  border-l">
+                    First Name
+                  </th>
                   <th className="p-2 border-t border-b  border-l">Last Name</th>
                   <th className="p-2 border-t border-b  border-l">Email</th>
-                  <th className="p-2 border-t border-b border-r border-l">Tier Level</th>
+                  <th className="p-2 border-t border-b border-r border-l">
+                    Tier Level
+                  </th>
                 </tr>
               </thead>
               <tbody>
