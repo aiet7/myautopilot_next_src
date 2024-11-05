@@ -51,7 +51,7 @@ const ForgotPasswordPage = () => {
                 <p className="text-red-500">Please fill out required field*.</p>
               )}
             </div>
-            <div className="flex flex-col gap-4 w-full text-sm">
+            <div className="flex flex-col gap-4 w-full ">
               <input
                 onChange={(e) => setEmail(e.target.value)}
                 onKeyDown={(e) => {

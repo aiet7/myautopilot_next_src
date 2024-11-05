@@ -18,6 +18,7 @@ const useQueueStore = create((set, get) => ({
   myQueueNotes: null,
   editingMyQueueTicket: null,
   allQueueTickets: null,
+  allEligibleQueueTickets: null,
   myActivities: null,
   allActivities: null,
   isMobile: initialWidth < 1600,
@@ -55,11 +56,15 @@ const useQueueStore = create((set, get) => ({
 
   cardView: false,
 
+  eligibleView: false,
+
   setTotalQueueTicketPages: (pages) => set({ totalQueueTicketPages: pages }),
   setFilteredQueueTicketCount: (count) =>
     set({ filteredQueueTicketCount: count }),
 
   setCardView: (view) => set({ cardView: view }),
+
+  setEligibleView: (view) => set({ eligibleView: view }),
 
   setActiveQueueBotMode: (mode) => set({ activeQueueBotMode: mode }),
 
@@ -192,7 +197,7 @@ const useQueueStore = create((set, get) => ({
   handleShowAllActivities: async (mspCustomDomain) => {
     try {
       const response = await fetch(
-        `${dbServiceUrl}/api/ticketQueue/activities/?mspCustomDomain=${mspCustomDomain}&date=${
+        `${dbServiceUrl}/api/ticketQueue/activities?mspCustomDomain=${mspCustomDomain}&date=${
           new Date().toISOString().split("T")[0]
         }`
       );
@@ -216,7 +221,7 @@ const useQueueStore = create((set, get) => ({
   handleShowAllQueueTickets: async (mspCustomDomain) => {
     try {
       const response = await fetch(
-        `${dbServiceUrl}/api/ticketQueue/getAll/?mspCustomDomain=${mspCustomDomain}`
+        `${dbServiceUrl}/api/ticketQueue/getAll?mspCustomDomain=${mspCustomDomain}`
       );
 
       if (response.status === 200) {
@@ -228,6 +233,30 @@ const useQueueStore = create((set, get) => ({
         console.log("SUCCESS GETTING ALL QUEUE TICKETS");
       } else {
         console.log("GETTING ALL QUEUE TICKETS FAILED");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleShowAllEligibleTickets: async (mspCustomDomain, techId, cwTechId) => {
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/api/ticketQueue/eligibleTickets?mspCustomDomain=${mspCustomDomain}&techId=${techId}&connectWiseTechnicanId=${cwTechId}`
+      );
+
+      if (response.status === 200) {
+        const eligableQueueTickets = await response.json();
+        set({
+          eligibleView: true,
+          allEligibleQueueTickets: eligableQueueTickets,
+        });
+        console.log("ALL ELIGABLE TICKETS SUCCESS");
+      } else {
+        set({
+          eligibleView: false,
+        });
+        console.log("ALL ELIGABLE TICKETS FAILED");
       }
     } catch (e) {
       console.log(e);
@@ -298,7 +327,7 @@ const useQueueStore = create((set, get) => ({
       if (response.status === 200) {
         const myQueueTicket = await response.json();
         if (!myQueueTicket.id) {
-          set({ noTicketsInQueue: true, generatingTroubleShoot: false  });
+          set({ noTicketsInQueue: true, generatingTroubleShoot: false });
         } else {
           set({
             myQueueTicket: myQueueTicket,
@@ -507,6 +536,56 @@ const useQueueStore = create((set, get) => ({
     }
   },
 
+  handleWorkOnTicket: async (mspCustomDomain, techId, ticketId) => {
+    const { handleAddTroubleShootMessage } = get();
+
+    set({
+      activeQueueBotMode: "Queue Workspace",
+      troubleshootMessages: [],
+      generatingTroubleShoot: true,
+    });
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/api/ticketQueue/manualPick?mspCustomDomain=${mspCustomDomain}&techId=${techId}&ticketQueueEntityId=${ticketId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        const newQueueTicket = await response.json();
+
+        if (!newQueueTicket.id) {
+          set({ generatingTroubleShoot: false });
+        } else {
+          set({
+            myQueueTicket: newQueueTicket,
+          });
+          const fallbackTicketInformation = `Category: ${
+            newQueueTicket.categoryName || "N/A"
+          }, Subcategory: ${newQueueTicket.subCategoryName || "N/A"}, Title: ${
+            newQueueTicket.title || "N/A"
+          }`;
+          try {
+            await handleAddTroubleShootMessage(
+              newQueueTicket.ticketInformation || fallbackTicketInformation
+            );
+          } catch (e) {
+            console.log(e);
+          }
+        }
+        console.log("MANUEL SELECTION SUCCESSFULL");
+      } else {
+        console.log("MANUEL SELECTION FAILED");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
   handleAddQueueTicketNote: async (ticketId) => {
     const userStore = useUserStore.getState();
     const { ticketNote, handleAddTechnicianNoteMessage } =
@@ -672,6 +751,7 @@ const useQueueStore = create((set, get) => ({
       myQueueNotes: null,
       editingMyQueueTicket: null,
       allQueueTickets: null,
+      allEligibleQueueTickets: null,
       myActivities: null,
       allActivities: null,
       isMobile: initialWidth < 1600,
@@ -712,6 +792,8 @@ const useQueueStore = create((set, get) => ({
       ],
 
       cardView: false,
+
+      eligibleView: false,
     });
   },
 }));

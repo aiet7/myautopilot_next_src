@@ -6,19 +6,26 @@ import { useEffect } from "react";
 
 const AllQueueTicketsTable = () => {
   const { user } = useUserStore();
+  
   const {
     cardView,
+    eligibleView,
     queueTicketsPerPage,
     currentQueueTicketsPage,
     searchValue,
     filterQueueTicketMode,
     allQueueTickets,
+    allEligibleQueueTickets,
     setTotalQueueTicketPages,
     setFilteredQueueTicketCount,
     handleViewQueueTicket,
   } = useQueueStore();
 
-  const filteredAndSortedQueueTickets = allQueueTickets
+  const selectedQueueTickets = eligibleView
+    ? allEligibleQueueTickets
+    : allQueueTickets;
+
+  const filteredAndSortedQueueTickets = selectedQueueTickets
     ?.filter((ticket) => {
       if (!searchValue) return true;
       if (
@@ -82,9 +89,11 @@ const AllQueueTicketsTable = () => {
     setFilteredQueueTicketCount(filteredAndSortedQueueTickets?.length || 0);
   }, [
     allQueueTickets,
+    allEligibleQueueTickets,
     queueTicketsPerPage,
     searchValue,
     cardView,
+    eligibleView,
     filterQueueTicketMode,
   ]);
 

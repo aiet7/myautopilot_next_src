@@ -135,7 +135,7 @@ const useTeamsStore = create((set, get) => ({
   // },
 
   handleAddMembers: async () => {
-    const { selectedTechnicians, teamId, teams, selectedTeam } = get();
+    const { selectedTechnicians, teamId } = get();
 
     if (!teamId || selectedTechnicians.length === 0) {
       console.error("No team ID or no selected technicians.");
@@ -177,6 +177,7 @@ const useTeamsStore = create((set, get) => ({
                 }
               : team
           ),
+          selectedTechnicians: [],
         }));
       } else {
         console.log("FAILED TO ADD TECHS");

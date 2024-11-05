@@ -115,7 +115,7 @@ const Pagination = () => {
 
 
   return (
-    <div className="flex items-center py-2 ">
+    <div className="flex items-center  ">
       <div
         className="flex items-center gap-2 relative cursor-pointer"
         onMouseEnter={() => setAssistantMenuOpen(true)}

@@ -17,7 +17,7 @@ const QueueMode = () => {
     <div className="relative flex items-center ">
       <select
         value={activeQueueBotMode}
-        className="px-4 py-1 border w-[150px]"
+        className="px-4 py-1 border w-[170px]"
         onChange={(e) => {
           setActiveQueueFilterModeOpen(false);
           handleActiveQueueBotMode(
