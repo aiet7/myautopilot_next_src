@@ -77,15 +77,15 @@ const Assistant = () => {
     <>
       <div
         ref={resizableRef}
-        className={`w-full h-full dark:bg-[#111111] absolute top-0 bottom-0 right-0 lg:right-[45px] text-sm bg-gray-200 transition-transform duration-300 ease-in-out ${
-          openAssistant ? " translate-x-0" : " translate-x-full"
-        } ${
-          activeAssistantTabOpen && openAssistant && !isMobile
-            ? `-translate-x-[calc(224px)]`
-            : null
-        } flex dark:border-white/10 lg:border-l lg:border-black/10 }${
-          isMobile ? "w-full" : `w-[${assistantWidth || 400}px]`
-        } max-w-[100%]`}
+        style={{
+          transform: openAssistant
+            ? activeAssistantTabOpen && !isMobile
+              ? `translateX(-225px)`
+              : `translateX(0)`
+            : `translateX(100%)`,
+          width: isMobile ? "100%" : `${assistantWidth || 400}px`,
+        }}
+        className={`w-full h-full dark:bg-[#111111] absolute top-0 bottom-0 right-0 lg:right-[45px] text-sm bg-gray-200 transition-transform duration-300 ease-in-out flex dark:border-white/10 lg:border-l lg:border-black/10 max-w-[100%]`}
       >
         {isMobile && <AssistantRail />}
         <div className="flex flex-col w-full h-full relative">

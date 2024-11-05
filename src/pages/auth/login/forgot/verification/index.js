@@ -56,7 +56,7 @@ const VerificationPage = () => {
               </p>
               <p className="text-red-500 text-sm">{errorMessage}</p>
             </div>
-            <div className="flex flex-col gap-4 w-full text-sm">
+            <div className="flex flex-col gap-4 w-full">
               <input
                 onChange={(e) => setVerificationCode(e.target.value)}
                 onKeyDown={(e) => {

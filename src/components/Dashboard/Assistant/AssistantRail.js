@@ -8,7 +8,6 @@ import useAssistantStore from "@/utils/store/assistant/assistantStore";
 const AssistantRail = ({}) => {
   const { openAssistant, handleAssistantMenu } = useUiStore();
   const {
-    assistantWidth,
     setAssistantWidth,
     activeAssistantTab,
     handleAssistantTabChange,
@@ -40,7 +39,7 @@ const AssistantRail = ({}) => {
             className="dark:hover:bg-white/20 hover:bg-black/20 rounded-full px-2 cursor-pointer outline-none"
             size={35}
           />
-          <span className="shadow font-semibold bg-white absolute left-1/2 top-full transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 pointer-events-none rounded p-2 text-xs text-black transition-opacity duration-200">
+          <span className="shadow font-semibold bg-white absolute left-1 top-full transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 pointer-events-none rounded p-2 text-xs text-black transition-opacity duration-200">
             Add External App
           </span>
         </div>
@@ -53,7 +52,7 @@ const AssistantRail = ({}) => {
             size={35}
             onClick={() => handleAssistantTabChange("Remote Access")}
           />
-          <span className="shadow font-semibold bg-white absolute left-1/2 top-full transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 pointer-events-none rounded p-2 text-xs text-black transition-opacity duration-200">
+          <span className="shadow font-semibold bg-white absolute left-1 top-full transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 pointer-events-none rounded p-2 text-xs text-black transition-opacity duration-200">
             Remote Access
           </span>
         </div>
@@ -65,7 +64,7 @@ const AssistantRail = ({}) => {
             size={35}
             onClick={() => handleAssistantTabChange("Passwords")}
           />
-          <span className="shadow font-semibold bg-white absolute left-1/2 top-full transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 pointer-events-none rounded p-2 text-xs text-black transition-opacity duration-200">
+          <span className="shadow font-semibold bg-white absolute left-1 top-full transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 pointer-events-none rounded p-2 text-xs text-black transition-opacity duration-200">
             Passwords
           </span>
         </div>
@@ -77,7 +76,7 @@ const AssistantRail = ({}) => {
             size={35}
             onClick={() => handleAssistantTabChange("Billing")}
           />
-          <span className="shadow font-semibold bg-white absolute left-1/2 top-full transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 pointer-events-none rounded p-2 text-xs text-black transition-opacity duration-200">
+          <span className="shadow font-semibold bg-white absolute left-1 top-full transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 pointer-events-none rounded p-2 text-xs text-black transition-opacity duration-200">
             Billing
           </span>
         </div>
@@ -89,7 +88,7 @@ const AssistantRail = ({}) => {
             size={35}
             onClick={() => handleAssistantTabChange("Downloads")}
           />
-          <span className="shadow font-semibold bg-white absolute left-1/2 top-full transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 pointer-events-none rounded p-2 text-xs text-black transition-opacity duration-200">
+          <span className="shadow font-semibold bg-white absolute left-1 top-full transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 pointer-events-none rounded p-2 text-xs text-black transition-opacity duration-200">
             Downloads
           </span>
         </div>
@@ -101,7 +100,7 @@ const AssistantRail = ({}) => {
             size={35}
             onClick={() => handleAssistantTabChange("Policies")}
           />
-          <span className="shadow font-semibold bg-white absolute left-1/2 top-full transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 pointer-events-none rounded p-2 text-xs text-black transition-opacity duration-200">
+          <span className="shadow font-semibold bg-white absolute left-1 top-full transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 pointer-events-none rounded p-2 text-xs text-black transition-opacity duration-200">
             Policies
           </span>
         </div>

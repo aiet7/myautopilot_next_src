@@ -121,6 +121,7 @@ const useUserStore = create((set, get) => ({
         }
       : { ...user, [field]: value };
 
+    console.log("updated", updatedUser);
     try {
       const response = await fetch(
         `${dbServiceUrl}/${user.mspCustomDomain}/${userTypeEndpoint}/edit`,

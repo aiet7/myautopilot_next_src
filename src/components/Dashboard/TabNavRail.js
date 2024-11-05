@@ -81,7 +81,7 @@ const TabNavRail = ({}) => {
                   activeTab === "iTAgent" && "text-blue-600"
                 } outline-none`}
               />
-              <span className="shadow font-semibold bg-white absolute z-[100] left-[100%] top-1/2 transform -translate-y-1/2 translate-x-2 scale-0 rounded p-2 text-xs text-black group-hover:scale-100 group-hover:shadow-md transition-shadow duration-200">
+              <span className="shadow z-[100] font-semibold bg-white absolute left-3 top-full transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 pointer-events-none rounded p-2 text-xs text-black transition-opacity duration-200">
                 Home
               </span>
             </div>
@@ -100,7 +100,7 @@ const TabNavRail = ({}) => {
             size={22}
             className="text-blue-600 outline-none"
           />
-          <span className="shadow font-semibold bg-white absolute z-[100] left-[100%] top-1/2 transform -translate-y-1/2 translate-x-2 scale-0 rounded p-2 text-xs text-black group-hover:scale-100 group-hover:shadow-md transition-shadow duration-200">
+          <span className="shadow z-[100] font-semibold bg-white absolute left-3 top-full transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 pointer-events-none rounded p-2 text-xs text-black transition-opacity duration-200">
             Home
           </span>
         </div>
@@ -162,7 +162,7 @@ const TabNavRail = ({}) => {
                     activeTab === "admin" && "text-blue-600"
                   } outline-none`}
                 />
-                <span className="shadow font-semibold bg-white absolute z-[100] left-[100%] top-1/2 transform -translate-y-1/2 translate-x-2 scale-0 rounded p-2 text-xs text-black group-hover:scale-100 group-hover:shadow-md transition-shadow duration-200">
+                <span className="shadow z-[100] font-semibold bg-white absolute left-3 top-full transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 pointer-events-none rounded p-2 text-xs text-black transition-opacity duration-200">
                   Admin
                 </span>
               </div>
@@ -176,7 +176,7 @@ const TabNavRail = ({}) => {
         ) : (
           <div className="relative group flex flex-col gap-2 items-center cursor-pointer">
             <RiAdminLine size={22} className="text-blue-600 outline-none" />
-            <span className="shadow font-semibold bg-white absolute z-[100] left-[100%] top-1/2 transform -translate-y-1/2 translate-x-2 scale-0 rounded p-2 text-xs text-black group-hover:scale-100 group-hover:shadow-md transition-shadow duration-200">
+            <span className="shadow z-[100] font-semibold bg-white absolute left-3 top-full transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 pointer-events-none rounded p-2 text-xs text-black transition-opacity duration-200">
               Admin
             </span>
           </div>

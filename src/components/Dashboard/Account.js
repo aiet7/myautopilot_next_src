@@ -14,18 +14,12 @@ const Account = ({}) => {
     userInputs,
     editing,
     errorMessage,
-    userPasswords,
-    passwordError,
     handleStartEdit,
     handleEditOnChange,
-    handlePasswordChange,
-    handleResetPassword,
     handleSaveChanges,
     handleCancelEdit,
     userType,
   } = useUserStore();
-
-  console.log(user);
 
   return (
     <div
@@ -68,7 +62,7 @@ const Account = ({}) => {
                   <div className="flex items-center gap-4">
                     <input
                       className="px-1 w-40 border bg-white text-black"
-                      value={userInputs?.["firstName"]}
+                      value={userInputs?.["firstName"] || ""}
                       onChange={(e) =>
                         handleEditOnChange("firstName", e.target.value)
                       }
@@ -105,7 +99,7 @@ const Account = ({}) => {
                   <div className="flex items-center gap-4">
                     <input
                       className="px-1 w-40 border bg-white text-black"
-                      value={userInputs?.["lastName"]}
+                      value={userInputs?.["lastName"] || ""}
                       onChange={(e) =>
                         handleEditOnChange("lastName", e.target.value)
                       }
@@ -135,40 +129,14 @@ const Account = ({}) => {
               </div>
               <div className="flex items-center justify-between h-[20px]">
                 <p className="w-18">Company Name</p>
-                {editing?.["companyName"] ? (
-                  <div className="flex items-center gap-4">
-                    <input
-                      className="px-1 w-40 border bg-white text-black"
-                      value={userInputs?.["companyName"]}
-                      onChange={(e) =>
-                        handleEditOnChange("companyName", e.target.value)
-                      }
-                      placeholder="Company name"
-                    />
-                    <AiOutlineCheck
-                      className="cursor-pointer"
-                      onClick={() =>
-                        handleSaveChanges(
-                          "companyName",
-                          userInputs?.["companyName"]
-                        )
-                      }
-                    />
-                    <AiOutlineClose
-                      className="cursor-pointer"
-                      onClick={() => handleCancelEdit("companyName")}
-                    />
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-4">
-                    <p>{userInputs?.["companyName"]}</p>
-                    <AiFillEdit
-                      size={25}
-                      className="cursor-pointer"
-                      onClick={() => handleStartEdit("companyName")}
-                    />
-                  </div>
-                )}
+
+                <div className="flex items-center gap-4">
+                  <p>
+                    {userInputs?.["companyName"]
+                      ? userInputs?.["companyName"]
+                      : userInputs?.["mspCustomDomain"]}
+                  </p>
+                </div>
               </div>
             </div>
             <div className="flex flex-col w-full border dark:border-white/40 rounded-md p-5 gap-6">
@@ -184,7 +152,7 @@ const Account = ({}) => {
                     <input
                       maxLength={10}
                       className="px-1 w-40 border bg-white text-black"
-                      value={userInputs?.["phoneNumber"]}
+                      value={userInputs?.["phoneNumber"] || ""}
                       onChange={(e) =>
                         handleEditOnChange("phoneNumber", e.target.value)
                       }
@@ -206,7 +174,7 @@ const Account = ({}) => {
                   </div>
                 ) : (
                   <div className="flex items-center gap-4">
-                    <p>{userInputs?.["phoneNumber"]}</p>
+                    <p>{userInputs?.["phoneNumber"] || ""}</p>
                     <AiFillEdit
                       size={25}
                       className="cursor-pointer"
@@ -216,7 +184,7 @@ const Account = ({}) => {
                 )}
               </div>
             </div>
-            <div className="flex flex-col w-full border dark:border-white/40 rounded-md p-5 gap-6">
+            {/* <div className="flex flex-col w-full border dark:border-white/40 rounded-md p-5 gap-6">
               <p className="text-2xl">Address</p>
 
               <div className="flex items-center justify-between h-[20px]">
@@ -225,7 +193,7 @@ const Account = ({}) => {
                   <div className="flex items-center gap-4">
                     <input
                       className="px-1 w-40 border bg-white text-black"
-                      value={userInputs?.companyAddress?.["street"]}
+                      value={userInputs?.companyAddress?.["street"] || ""}
                       onChange={(e) =>
                         handleEditOnChange(
                           "companyAddress.street",
@@ -265,7 +233,7 @@ const Account = ({}) => {
                   <div className="flex items-center gap-4">
                     <input
                       className="px-1 w-40 border bg-white text-black"
-                      value={userInputs?.companyAddress?.["city"]}
+                      value={userInputs?.companyAddress?.["city"] || ""}
                       onChange={(e) =>
                         handleEditOnChange(
                           "companyAddress.city",
@@ -306,7 +274,7 @@ const Account = ({}) => {
                     <input
                       maxLength={5}
                       className="px-1 w-40 border bg-white text-black"
-                      value={userInputs?.companyAddress?.["zipcode"]}
+                      value={userInputs?.companyAddress?.["zipcode"] || ""}
                       onChange={(e) =>
                         handleEditOnChange(
                           "companyAddress.zipcode",
@@ -347,7 +315,7 @@ const Account = ({}) => {
                     <input
                       maxLength={2}
                       className="px-1 w-40 border bg-white text-black"
-                      value={userInputs?.companyAddress?.["state"]}
+                      value={userInputs?.companyAddress?.["state"] || ""}
                       onChange={(e) =>
                         handleEditOnChange(
                           "companyAddress.state",
@@ -381,7 +349,7 @@ const Account = ({}) => {
                   </div>
                 )}
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
