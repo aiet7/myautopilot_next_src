@@ -18,7 +18,7 @@ const useTeamsStore = create((set, get) => ({
     firstName: "",
     lastName: "",
     email: "",
-    tierLevel: "",
+    tierLevel: "Tier3",
   },
   currentMember: null,
   activeTechnicians: [],
@@ -60,79 +60,17 @@ const useTeamsStore = create((set, get) => ({
       (tech) => tech.email === technician.email
     );
 
+    const updatedTechnician = {
+      ...technician,
+      tierLevel: technician.tierLevel ?? "Tier3",
+    };
+
     set({
       selectedTechnicians: isSelected
         ? selectedTechnicians.filter((tech) => tech.email !== technician.email)
-        : [...selectedTechnicians, technician],
+        : [...selectedTechnicians, updatedTechnician],
     });
   },
-
-  // handleAddMembers: async () => {
-  //   const { selectedTechnicians, teamId, teams, selectedTeam } = get();
-
-  //   if (!teamId || selectedTechnicians.length === 0) {
-  //     console.error("No team ID or no selected technicians.");
-  //     return;
-  //   }
-
-  //   try {
-  //     while (selectedTechnicians.length != 0) {
-  //       console.log(selectedTechnicians);
-  //       const currentTechnician = selectedTechnicians.pop();
-
-  //       const response = await fetch(
-  //         `${dbServiceUrl}/api/teams/addMember/${teamId}?emailId=${encodeURIComponent(
-  //           currentTechnician.email
-  //         )}`,
-  //         {
-  //           method: "PUT",
-  //           headers: { "Content-Type": "application/json" },
-  //           body: JSON.stringify(currentTechnician),
-  //         }
-  //       );
-
-  //       if (!response.ok) {
-  //         const errorMessage = await response.text();
-  //         console.error(
-  //           `Failed to add member: ${currentTechnician.email}, Error: ${errorMessage}`
-  //         );
-  //         continue;
-  //       }
-
-  //       console.log(`Added member: ${currentTechnician.email} successfully.`);
-
-  //       set((state) => ({
-  //         activeTechnicians: state.activeTechnicians.filter(
-  //           (t) => t.email !== currentTechnician.email
-  //         ),
-  //       }));
-  //     }
-
-  //     const updatedTeamResponse = await fetch(
-  //       `${dbServiceUrl}/api/teams/getById/${teamId}`,
-  //       {
-  //         method: "GET",
-  //         headers: { "Content-Type": "application/json" },
-  //       }
-  //     );
-
-  //     if (!updatedTeamResponse.ok) {
-  //       const errorMessage = await updatedTeamResponse.text();
-  //       throw new Error(`Failed to fetch updated team: ${errorMessage}`);
-  //     }
-
-  //     const updatedTeam = await updatedTeamResponse.json();
-
-  //     set({
-  //       teams: teams.map((team) => (team.id === teamId ? updatedTeam : team)),
-  //       selectedTeam: selectedTeam?.map((team) =>
-  //         team.id === teamId ? updatedTeam : team
-  //       ),
-  //     });
-  //   } catch (error) {
-  //     console.error("Error while adding members:", error);
-  //   }
-  // },
 
   handleAddMembers: async () => {
     const { selectedTechnicians, teamId, teams, selectedTeam } = get();
@@ -177,6 +115,7 @@ const useTeamsStore = create((set, get) => ({
                 }
               : team
           ),
+          selectedTechnicians: [],
         }));
       } else {
         console.log("FAILED TO ADD TECHS");

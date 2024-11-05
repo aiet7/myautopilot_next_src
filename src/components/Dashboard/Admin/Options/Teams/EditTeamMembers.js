@@ -16,6 +16,8 @@ const EditTeamMembers = () => {
     handleEditMember,
   } = useTeamsStore();
 
+  console.log(editMemberInputs);
+
   return (
     <div className="dark:bg-black/80 absolute bg-black/60 z-[99] top-0 bottom-0 right-0 left-0 p-2 lg:p-10">
       <div className="flex flex-col items-end bg-white max-w-[700px] h-full p-4 rounded-lg text-black mx-auto">
@@ -80,7 +82,7 @@ const EditTeamMembers = () => {
                   <p className="w-1/6 min-w-[80px]">Tier Level</p>
                   <select
                     className=" border p-1"
-                    value={editMemberInputs.tierLevel || ""}
+                    value={editMemberInputs.tierLevel || "Tier3"}
                     onChange={(e) =>
                       setEditMemberInputs("tierLevel", e.target.value)
                     }

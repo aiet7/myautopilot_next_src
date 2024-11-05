@@ -72,7 +72,6 @@ const useUserStore = create((set, get) => ({
     } else {
       console.error("Failed to initialize tech information.");
     }
-
   },
 
   handleStartEdit: (field) => {
@@ -82,7 +81,21 @@ const useUserStore = create((set, get) => ({
 
   handleEditOnChange: (field, value) => {
     const { userInputs } = get();
-    set({ userInputs: { ...userInputs, [field]: value } });
+
+    if (field.startsWith("companyAddress.")) {
+      const addressField = field.split(".")[1];
+      set({
+        userInputs: {
+          ...userInputs,
+          companyAddress: {
+            ...userInputs.companyAddress,
+            [addressField]: value,
+          },
+        },
+      });
+    } else {
+      set({ userInputs: { ...userInputs, [field]: value } });
+    }
   },
 
   handlePasswordChange: (field, value) => {
@@ -94,13 +107,19 @@ const useUserStore = create((set, get) => ({
 
   handleSaveChanges: async (field, value) => {
     const { user, userInputs, editing } = get();
-
     const { userType } = useMspStore.getState();
-
     const userTypeEndpoint =
       userType === "tech" ? "technicianUsers" : "clientUsers";
 
-    const updatedUser = { ...user, [field]: value };
+    const updatedUser = field.startsWith("companyAddress.")
+      ? {
+          ...user,
+          companyAddress: {
+            ...user.companyAddress,
+            [field.split(".")[1]]: value,
+          },
+        }
+      : { ...user, [field]: value };
 
     try {
       const response = await fetch(
@@ -120,13 +139,14 @@ const useUserStore = create((set, get) => ({
           ...editedUser,
           permissions: user.permissions,
         };
+
         set({
           user: mergedUser,
           userInputs: { ...userInputs, [field]: value },
           editing: { ...editing, [field]: false },
           errorMessage: "",
         });
-        console.log("User Changes Saved!");
+        console.log(updatedUser, "User Changes Saved!");
       } else {
         const errorData = await response.json();
         set({ errorMessage: errorData.message || "Failed to save changes" });
@@ -137,6 +157,7 @@ const useUserStore = create((set, get) => ({
       console.error("Error in handleSaveChanges:", error);
     }
   },
+
   handleCancelEdit: (field) => {
     const { user, userInputs, editing } = get();
     set({ userInputs: { ...userInputs, [field]: user[field] } });

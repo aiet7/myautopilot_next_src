@@ -17,6 +17,26 @@ const usePoliciesStore = create((set, get) => ({
       description:
         "Rules and regulations governing the use of the internet in the workplace.",
     },
+    {
+      title: "Acceptable Use",
+      description:
+        "An Acceptable Use Policy (AUP) sets rules to ensure responsible and secure use of a company's network and services",
+    },
+    {
+      title: "Remote Work",
+      description:
+        "A Remote Work Policy outlines guidelines for employees working outside the office, ensuring productivity, security, and clear communication expectations.",
+    },
+    {
+      title: "Disaster Recovery",
+      description:
+        "A Disaster Recovery Policy defines procedures for restoring critical systems and data to ensure business continuity after disruptive events.",
+    },
+    {
+      title: "Incident Response",
+      description:
+        "An Incident Response Policy outlines steps for identifying, managing, and mitigating security incidents to protect organizational assets and minimize impact.",
+    },
   ],
 
   handleSubmitDoc: async (policyTitle) => {

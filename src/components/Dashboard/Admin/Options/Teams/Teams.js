@@ -20,11 +20,10 @@ const Teams = () => {
   } = useTeamsStore();
 
   useEffect(() => {
-    console.log("firing off")
+    console.log("firing off");
     initializeTeams();
   }, [user]);
 
-console.log(teams)
   return (
     <div
       onClick={() => {

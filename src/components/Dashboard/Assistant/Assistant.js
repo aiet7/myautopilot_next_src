@@ -81,7 +81,7 @@ const Assistant = () => {
           openAssistant ? " translate-x-0" : " translate-x-full"
         } ${
           activeAssistantTabOpen && openAssistant && !isMobile
-            ? `-translate-x-[calc(225px)]`
+            ? `-translate-x-[calc(224px)]`
             : null
         } flex dark:border-white/10 lg:border-l lg:border-black/10 }${
           isMobile ? "w-full" : `w-[${assistantWidth || 400}px]`
