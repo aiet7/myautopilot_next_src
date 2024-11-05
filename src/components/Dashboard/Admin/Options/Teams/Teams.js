@@ -20,7 +20,6 @@ const Teams = () => {
   } = useTeamsStore();
 
   useEffect(() => {
-    console.log("firing off");
     initializeTeams();
   }, [user]);
 

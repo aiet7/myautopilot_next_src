@@ -16,7 +16,6 @@ const EditTeamMembers = () => {
     handleEditMember,
   } = useTeamsStore();
 
-  console.log(editMemberInputs);
 
   return (
     <div className="dark:bg-black/80 absolute bg-black/60 z-[99] top-0 bottom-0 right-0 left-0 p-2 lg:p-10">

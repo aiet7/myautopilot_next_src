@@ -73,7 +73,7 @@ const useTeamsStore = create((set, get) => ({
   },
 
   handleAddMembers: async () => {
-    const { selectedTechnicians, teamId } = get();
+    const { selectedTechnicians, teamId} = get();
 
     if (!teamId || selectedTechnicians.length === 0) {
       console.error("No team ID or no selected technicians.");
@@ -299,7 +299,7 @@ const useTeamsStore = create((set, get) => ({
         firstName: "",
         lastName: "",
         email: "",
-        tierLevel: "",
+        tierLevel: "Tier3",
       },
       currentMember: null,
       activeTechnicians: [],
