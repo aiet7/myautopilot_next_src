@@ -85,7 +85,11 @@ const useMspStore = create((set, get) => ({
 
   qrCodePopup: false,
 
+  passphrasePopup: false,
+
   setQrCodePopup: (isOpen) => set({ qrCodePopup: isOpen }),
+
+  setPassphrasePopup: (isOpen) => set({ passphrasePopup: isOpen }),
 
   initializeUserType: async () => {
     const lastActiveUserType = localStorage.getItem("lastActiveUserType");
