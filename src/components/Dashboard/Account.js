@@ -42,7 +42,7 @@ const Account = ({}) => {
     >
       <div
         className={`flex-grow overflow-auto scrollbar-thin transition-all duration-300 ${
-          qrCodePopup && "filter blur-sm"
+          qrCodePopup != passphrasePopup && "filter blur-sm"
         }`}
       >
         <div className="px-4 py-4 w-full">
