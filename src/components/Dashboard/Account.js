@@ -26,7 +26,13 @@ const Account = ({}) => {
     handleCancelEdit,
   } = useUserStore();
 
-  const { qrCodePopup, setQrCodePopup, userType } = useMspStore();
+  const {
+    qrCodePopup,
+    setQrCodePopup,
+    passphrasePopup,
+    setPassphrasePopup,
+    userType,
+  } = useMspStore();
 
   return (
     <div
@@ -178,19 +184,6 @@ const Account = ({}) => {
                   </div>
                 )}
               </div>
-              {/* <div className="flex items-center justify-between h-[20px]">
-                <p className="w-18">Company ID</p>
-                <p>{userInputs?.companyId}</p>
-              </div> */}
-              {userType === "tech" && (
-                <div
-                  className="flex items-center gap-2 text-sm text-blue-800 font-extrabold cursor-pointer w-1/6"
-                  onClick={() => setQrCodePopup(true)}
-                >
-                  <p>Authenticator QR code</p>
-                  <BsQrCodeScan size={20} />
-                </div>
-              )}
             </div>
             <div className="flex flex-col w-full border dark:border-white/40 rounded-md p-5 gap-6">
               <p className="text-2xl">Contact Info</p>
@@ -391,23 +384,51 @@ const Account = ({}) => {
                 )}
               </div>
             </div>
+            {userType === "tech" && (
+              <div className="flex flex-col w-full border dark:border-white/40 rounded-md p-5">
+                <p className="text-2xl pb-6">Security Settings</p>
+                <div
+                  className="flex items-center justify-between h-[20px] cursor-pointer hover:bg-gray-200 p-5"
+                  onClick={() => setQrCodePopup(true)}
+                >
+                  {/* //TODO: set hover over, and add logic to popups */}
+                  <p className="w-18">Authenticator</p>
+                  {/* <div
+                //   className="flex items-center gap-2 text-blue-800 font-semibold cursor-pointer w-1/6"
+                //   onClick={() => setQrCodePopup(true)}
+                // >
+                //   <p>Authenticator QR code</p>
+                //   <BsQrCodeScan size={15} />
+                // </div>
+                */}
+                  <p className="font-bold text-lg">{">"}</p>
+                </div>
+                <div
+                  className="flex items-center justify-between h-[20px] cursor-pointer hover:bg-gray-200 p-5"
+                  onClick={() => setPassphrasePopup(true)}
+                >
+                  <p className="w-18">Passphrase</p>
+                  <p className="font-bold text-lg">{">"}</p>
+                </div>
+              </div>
+            )}
             {/* {userInputs?.password !== null && (
               <div className="flex flex-col w-full border dark:border-white/40 rounded-md p-5 gap-6">
-                <div className="flex items-center justify-between h-[40px]">
-                  <p className="w-18">Password</p>
-                  {editing?.["password"] ? (
-                    <div className="flex items-center gap-4">
-                      {passwordError && (
-                        <p className="text-red-500 text-sm">
-                          Incorrect password
-                        </p>
-                      )}
-                      <div className="flex flex-col gap-1">
-                        <input
-                          className="px-1 w-40 border bg-white text-black "
-                          type="password"
-                          value={userPasswords?.oldPassword}
-                          onChange={(e) =>
+              <div className="flex items-center justify-between h-[40px]">
+              <p className="w-18">Password</p>
+              {editing?.["password"] ? (
+                <div className="flex items-center gap-4">
+                {passwordError && (
+                  <p className="text-red-500 text-sm">
+                  Incorrect password
+                  </p>
+                  )}
+                  <div className="flex flex-col gap-1">
+                  <input
+                  className="px-1 w-40 border bg-white text-black "
+                  type="password"
+                  value={userPasswords?.oldPassword}
+                  onChange={(e) =>
                             handlePasswordChange("oldPassword", e.target.value)
                           }
                           placeholder="Old password"
@@ -447,20 +468,55 @@ const Account = ({}) => {
         </div>
       </div>
       {qrCodePopup && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
+        /* 
+          ? have switch based on boolean that when turned on shows qr code 
+          TODO: can make it more complex and add "Cant scan" button to change pop up to
+          In the Google Authenticator app tap the + then tap Enter a setup key
+          Enter your MSP domain and this key:
+          *secret*
+          Make sure Time based is selected
+          Tap Add to finish
+
+          todo: then verify code and once completed update 2fa boolean to true
+        */
+        <div className="fixed inset-0 flex items-center justify-center z-50 ">
           <div
-            className="p-6 rounded-lg shadow-lg max-w-md relative"
+            className="p-20 rounded-lg shadow-lg max-w-md relative"
             style={{ backgroundColor: "rgb(236, 236, 236)" }}
           >
-            <h2 className="text-xl font-semibold mb-4">Scan here:</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              Set up authenticator app
+            </h2>
+            <ul className="list-disc list-inside mb-4">
+              <li>Open your authentication app</li>
+              <li>Scan the QR code below</li>
+            </ul>
             <p className="items-center bg-blue">
               <img
+                className="mx-auto h-auto w-1/2 pt-[20%]"
                 src={`https://api.qrserver.com/v1/create-qr-code/?data=otpauth://totp/${user?.mspCustomDomain}:${user?.email}?secret=${user?.secret}&issuer=${user?.mspCustomDomain}`}
               />
             </p>
             <button
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
               onClick={() => setQrCodePopup(false)}
+            >
+              &#x2715; {/* Unicode for 'X' */}
+            </button>
+          </div>
+        </div>
+      )}
+      {passphrasePopup && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div
+            className="p-20 rounded-lg shadow-lg max-w-md relative"
+            style={{ backgroundColor: "rgb(236, 236, 236)" }}
+          >
+            <h2 className="text-xl font-semibold mb-4">Generate Passphrase</h2>
+            <p className="items-center bg-blue">Loading...</p>
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              onClick={() => setPassphrasePopup(false)}
             >
               &#x2715; {/* Unicode for 'X' */}
             </button>
