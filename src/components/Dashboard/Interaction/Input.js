@@ -132,10 +132,7 @@ const Input = () => {
               if (e.key === "Enter") {
                 e.preventDefault();
 
-                handleSendTroubleshootMessage(
-                  userInput,
-                  myQueueTicket?.ticketId
-                );
+                handleSendTroubleshootMessage(userInput);
               }
             }}
             value={userInput}
@@ -155,10 +152,7 @@ const Input = () => {
                   : "dark:text-gray-500 text-gray-300 select-none"
               } `}
               onClick={() => {
-                handleSendTroubleshootMessage(
-                  userInput,
-                  myQueueTicket?.ticketId
-                );
+                handleSendTroubleshootMessage(userInput);
               }}
             />
             <BsThreeDotsVertical

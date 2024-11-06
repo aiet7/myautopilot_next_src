@@ -380,59 +380,14 @@ const useInteractionStore = create((set, get) => ({
     }
   },
 
-  // handleSendMessage: async (message) => {
-  //   const { inputRef, messageIdRef } = useRefStore.getState();
-  //   const userStore = useUserStore.getState();
-  //   const {
-  //     handleIfConversationExists,
-  //     handleAddJarvisUserMessage,
-  //     handleAddJarvisAssistantMessage,
-  //   } = useConversationStore.getState();
-
-  //   let currentConversation = await handleIfConversationExists();
-  //   if (message.trim() !== "" && currentConversation) {
-  //     inputRef.current.focus();
-  //     handleAddJarvisUserMessage(message);
-  //     set({
-  //       isWaiting: true,
-  //       isServerError: false,
-  //       userInput: "",
-  //     });
-  //     try {
-  //       const response = await fetch(`${gptServiceUrl}/jarvis`, {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({
-  //           text: message,
-  //           conversationId: currentConversation.id,
-  //           technicianId: userStore.user.id,
-  //         }),
-  //       });
-
-  //       if (response.status === 200) {
-  //         const responseBody = await response.json();
-
-  //         messageIdRef.current = responseBody.id;
-  //         handleAddJarvisAssistantMessage(responseBody.aiContent, false);
-  //       }
-  //     } catch (e) {
-  //       console.log(e);
-  //     } finally {
-  //       set({
-  //         isWaiting: false,
-  //       });
-  //     }
-  //   }
-  // },
-
   handleSendTroubleshootMessage: async (message) => {
     const { inputRef, messageIdRef } = useRefStore.getState();
     const userStore = useUserStore.getState();
     const { handleIfConversationExists } = useConversationStore.getState();
 
     let currentConversation = await handleIfConversationExists(false, false);
+  
+
     const {
       handleAddUserTroubleshootMessage,
       handleAddAssistantTroubleshootMessage,
@@ -447,7 +402,6 @@ const useInteractionStore = create((set, get) => ({
         isServerError: false,
         userInput: "",
       });
-
       try {
         const response = await fetch(`${gptServiceUrl}/jarvis`, {
           method: "POST",
@@ -464,8 +418,9 @@ const useInteractionStore = create((set, get) => ({
         if (response.status === 200) {
           const responseBody = await response.json();
           messageIdRef.current = responseBody.id;
-
-          handleAddAssistantTroubleshootMessage(responseBody.aiContent);
+          handleAddAssistantTroubleshootMessage(
+            responseBody.aiContent
+          );
         }
       } catch (e) {
         console.log(e);
@@ -478,7 +433,7 @@ const useInteractionStore = create((set, get) => ({
   },
 
   handleCreateTicketTroubleShootMessage: async (message) => {
-    console.log("test")
+    console.log("test");
     const { handleAddAssistantMessage } =
       useTicketConversationsStore.getState();
     set({ isWaiting: true, isServerError: false });

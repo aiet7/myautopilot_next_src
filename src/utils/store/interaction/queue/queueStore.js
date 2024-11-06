@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import useRefStore from "../ref/refStore";
 import useUserStore from "../../user/userStore";
+import useInteractionStore from "../interactionsStore";
 
 const isBrowser = typeof window !== "undefined";
 const initialWidth = isBrowser ? window.innerWidth : 1023;
@@ -318,7 +319,8 @@ const useQueueStore = create((set, get) => ({
       activeQueueBotMode: "Queue Workspace",
       generatingTroubleShoot: true,
     });
-    const { handleAddTroubleShootMessage, handleNextQueueTicketNotes } = get();
+    const { handleNextQueueTicketNotes } = get();
+    const { handleSendTroubleshootMessage } = useInteractionStore.getState();
     try {
       const response = await fetch(
         `${dbServiceUrl}/api/ticketQueue/nextTicket?connectWiseTechnicanId=${cwTechId}&mspCustomDomain=${mspCustomDomain}&techId=${techId}`
@@ -350,10 +352,13 @@ const useQueueStore = create((set, get) => ({
                 mspCustomDomain,
                 myQueueTicket.ticketId
               ),
-              handleAddTroubleShootMessage(
-                myQueueTicket.ticketInformation || fallbackTicketInformation
+              handleSendTroubleshootMessage(
+                myQueueTicket.ticketInformation + fallbackTicketInformation
               ),
             ]);
+            set({
+              generatingTroubleShoot: false,
+            });
           } catch (e) {
             console.log(e);
           }
@@ -652,7 +657,7 @@ const useQueueStore = create((set, get) => ({
     const { messageIdRef } = useRefStore.getState();
     if (message.trim() !== "") {
       try {
-        const response = await fetch(`${gptServiceUrl}/message`, {
+        const response = await fetch(`${gptServiceUrl}/jarvisQandA`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

@@ -427,45 +427,49 @@ const useConversationStore = create((set, get) => ({
       handleNewConversation,
     } = get();
 
-    let currentConversation;
-
-    if (!forceNew) {
-      currentConversation = conversationHistories.find(
-        (conv) => conv.id === currentConversationIndex
-      );
-    }
+    let currentConversation =
+      !forceNew && currentConversationIndex
+        ? conversationHistories.find(
+            (conv) => conv.id === currentConversationIndex
+          )
+        : null;
 
     if (currentConversation) {
       return currentConversation;
     } else {
       const newConversation = await handleNewConversation(highlight);
+      if (newConversation) {
+        set({
+          currentConversationIndex: newConversation.id,
+        });
+      }
       return newConversation;
     }
   },
 
   handleNewConversation: async (highlight = true) => {
     const userStore = useUserStore.getState();
-
-    const { selectedAgent } = get();
-
     const timestamp = new Date().toISOString().replace(/[-:.]/g, "");
-
+    const { selectedAgent } = get();
     const newConversation = {
       userId: userStore.user.id,
       conversationName: `Chat - ${timestamp}`,
-      agentID: selectedAgent.id,
+      agentID:
+        selectedAgent && selectedAgent.id
+          ? selectedAgent.id
+          : "66e1fa8144a820f65619a4b4",
     };
+
     try {
       const response = await fetch(
         `${dbServiceUrl}/conversations/addConversation`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(newConversation),
         }
       );
+
       if (response.ok) {
         const addedConversation = await response.json();
 
@@ -474,9 +478,7 @@ const useConversationStore = create((set, get) => ({
             ...state.conversationHistories,
             addedConversation,
           ],
-          currentConversationIndex: highlight
-            ? addedConversation.id
-            : state.currentConversationIndex,
+          currentConversationIndex: addedConversation.id, // Ensure current index is set
         }));
 
         return addedConversation;
@@ -484,6 +486,7 @@ const useConversationStore = create((set, get) => ({
     } catch (e) {
       console.log(e);
     }
+    return null;
   },
 
   handleDeleteConversation: async (convoId) => {
