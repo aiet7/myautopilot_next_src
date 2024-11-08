@@ -87,9 +87,25 @@ const useMspStore = create((set, get) => ({
 
   passphrasePopup: false,
 
+  passphrase: [],
+
+  manualQr: false,
+
+  setManualQr: (isOpen) => set({ manualQr: isOpen }),
+
   setQrCodePopup: (isOpen) => set({ qrCodePopup: isOpen }),
 
-  setPassphrasePopup: (isOpen) => set({ passphrasePopup: isOpen }),
+  setPassphrasePopup: (isOpen) => {
+    set({ passphrasePopup: isOpen });
+
+    // const randomNumbers = [];
+    // for (let i = 0; i < 10; i++) {
+    //   const randomNumber = Math.floor(Math.random() * 10000); // Generate a random number between 0 and 9999
+    //   const formattedNumber = randomNumber.toString().padStart(4, "0"); // Format to 4 digits, padding with leading zeros
+    //   randomNumbers.push(formattedNumber);
+    // }
+    // set({ passphrase: randomNumbers });
+  },
 
   initializeUserType: async () => {
     const lastActiveUserType = localStorage.getItem("lastActiveUserType");
