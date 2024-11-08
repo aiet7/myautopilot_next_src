@@ -27,12 +27,27 @@ const Account = ({}) => {
   } = useUserStore();
 
   const {
+    manualQr,
+    setManualQr,
     qrCodePopup,
     setQrCodePopup,
     passphrasePopup,
     setPassphrasePopup,
     userType,
   } = useMspStore();
+
+  const passphrase = [
+    "3649",
+    "9627",
+    "2039",
+    "1492",
+    "2285",
+    "1104",
+    "0736",
+    "8171",
+    "3572",
+    "5660",
+  ];
 
   return (
     <div
@@ -391,7 +406,7 @@ const Account = ({}) => {
                   className="flex items-center justify-between h-[20px] cursor-pointer hover:bg-gray-200 p-5"
                   onClick={() => setQrCodePopup(true)}
                 >
-                  {/* //TODO: set hover over, and add logic to popups */}
+                  {/* //TODO: add logic to popups */}
                   <p className="w-18">Authenticator</p>
                   {/* <div
                 //   className="flex items-center gap-2 text-blue-800 font-semibold cursor-pointer w-1/6"
@@ -481,28 +496,59 @@ const Account = ({}) => {
         */
         <div className="fixed inset-0 flex items-center justify-center z-50 ">
           <div
-            className="p-20 rounded-lg shadow-lg max-w-md relative"
+            className="flex items-center flex-col absolute p-[5%] rounded-lg shadow-lg w-[30vw] h-[50vh]"
             style={{ backgroundColor: "rgb(236, 236, 236)" }}
           >
-            <h2 className="text-xl font-semibold mb-4">
+            <h2 className="text-xl font-semibold mb-4 dark:text-black">
               Set up authenticator app
             </h2>
-            <ul className="list-disc list-inside mb-4">
-              <li>Open your authentication app</li>
-              <li>Scan the QR code below</li>
-            </ul>
-            <p className="items-center bg-blue">
-              <img
-                className="mx-auto h-auto w-1/2 pt-[20%]"
-                src={`https://api.qrserver.com/v1/create-qr-code/?data=otpauth://totp/${user?.mspCustomDomain}:${user?.email}?secret=${user?.secret}&issuer=${user?.mspCustomDomain}`}
-              />
-            </p>
-            <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-              onClick={() => setQrCodePopup(false)}
-            >
-              &#x2715; {/* Unicode for 'X' */}
-            </button>
+            {manualQr ? (
+              <>
+                <ol className="list-decimal mb-4 dark:text-black">
+                  <li>In the Authenticator app enter the manual settings</li>
+                  <li>Account name: {user?.mspCustomDomain}</li>
+                  <li>Secret key: {user?.secret}</li>
+                </ol>
+                <button
+                  className="text-blue-500 hover:text-gray-700 font-semibold absolute bottom-7 left-7 flex space-x-4"
+                  onClick={() => setManualQr(false)}
+                >
+                  Back
+                </button>
+              </>
+            ) : (
+              <>
+                <ul className="list-disc mb-4 dark:text-black pb-[10px]">
+                  <li>Open your authentication app</li>
+                  <li>Scan the QR code below</li>
+                </ul>
+                <img
+                  className="mx-auto h-auto w-2/6"
+                  src={`https://api.qrserver.com/v1/create-qr-code/?data=otpauth://totp/${user?.mspCustomDomain}:${user?.email}?secret=${user?.secret}&issuer=${user?.mspCustomDomain}`}
+                />
+                <button
+                  className="mx-auto mt-4 text-blue-500 hover:text-gray-700 font-semibold block"
+                  onClick={() => setManualQr(true)}
+                >
+                  Can't scan?
+                </button>
+              </>
+            )}
+            <div className="absolute bottom-7 right-7 flex space-x-4">
+              <button
+                className="text-blue-500 hover:text-gray-700 font-semibold"
+                onClick={() => setQrCodePopup(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="text-blue-500 hover:text-gray-700 font-semibold"
+                // onClick={() => setSavedSettings(saved)}
+              >
+                {/* ? "Remove authenticator" : " */}+ Set up authenticator
+              </button>
+            </div>
+            {/* <button onClick={() => setSavedSettings(saved)}>{saved ? "Remove authenticator": "+ Set up authenticator"}</button> */}
           </div>
         </div>
       )}
@@ -513,13 +559,38 @@ const Account = ({}) => {
             style={{ backgroundColor: "rgb(236, 236, 236)" }}
           >
             <h2 className="text-xl font-semibold mb-4">Generate Passphrase</h2>
-            <p className="items-center bg-blue">Loading...</p>
-            <button
+            <div className="grid grid-cols-2 gap-2 place-items-center">
+              {/* {user?.passphrase?.map((num, index) => { */}
+              {passphrase?.map((num, index) => {
+                return (
+                  <p key={index} className="text-gray-1000 font-bold">
+                    {num}
+                  </p>
+                );
+              })}
+            </div>
+            {/* <p className="items-center bg-blue">Loading...</p> */}
+            {/* <button
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
               onClick={() => setPassphrasePopup(false)}
             >
-              &#x2715; {/* Unicode for 'X' */}
-            </button>
+              &#x2715; {/* Unicode for 'X' *
+            </button> */}
+            {/* <button onClick={() => setSavedSettings(saved)}>Set up</button> */}
+            <div className="absolute bottom-7 right-7 flex space-x-4">
+              <button
+                className="text-blue-500 hover:text-gray-700"
+                onClick={() => setPassphrasePopup(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="text-blue-500 hover:text-gray-700"
+                // onClick={() => setSavedSettings(saved)}
+              >
+                {/* ? "Remove passphrase" : "*/}+ Set up passphrase
+              </button>
+            </div>
           </div>
         </div>
       )}
