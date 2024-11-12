@@ -11,7 +11,7 @@ const useUiStore = create((set, get) => ({
 
   height: null,
   activeTab: null,
-  options: ["Tickets", "Queue", "Assistant", "Settings"],
+  options: ["Tickets", "Dispatch", "Assistant", "Settings"],
   currentNavOption: "Tickets",
   showQueueSubMenu: false,
   openHistory: initialWidth > 1023 ? true : false,
@@ -68,7 +68,7 @@ const useUiStore = create((set, get) => ({
 
     window.history.pushState({ option }, "", `#${option.toLowerCase()}`);
 
-    if (option === "Queue" && activeQueueBotMode === "All Queue Tickets") {
+    if (option === "Dispatch" && activeQueueBotMode === "All Queue Tickets") {
       await handleShowAllQueueTickets(mspCustomDomain);
     }
 
@@ -123,7 +123,7 @@ const useUiStore = create((set, get) => ({
     set({
       height: null,
       activeTab: null,
-      options: ["Tickets", "Queue", "Assistant", "Settings"],
+      options: ["Tickets", "Dispatch", "Assistant", "Settings"],
       currentNavOption: "Tickets",
       showQueueSubMenu: false,
       openHistory: initialWidth > 1023 ? true : false,

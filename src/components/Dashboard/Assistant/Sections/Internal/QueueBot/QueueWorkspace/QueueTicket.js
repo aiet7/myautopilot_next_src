@@ -16,7 +16,6 @@ const QueueTicket = () => {
     ticketSaved,
   } = useQueueStore();
 
-
   return (
     <div className="flex flex-col gap-2 ">
       <div>
@@ -229,29 +228,30 @@ const QueueTicket = () => {
             />
           )}
         </div>
+        <div className="w-full">
+          <span className="font-bold">Tier</span>
+          {editTicket ? (
+            <select
+              className="h-[30px] border outline-blue-500 w-full px-4 "
+              value={editingMyQueueTicket?.tier || ""}
+              onChange={(e) => setEditTicket({ tier: e.target.value })}
+            >
+              {tierOptions.map((tier) => (
+                <option key={tier} value={tier}>
+                  {tier}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              disabled
+              className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
+              value={myQueueTicket?.tier || ""}
+            />
+          )}
+        </div>
       </div>
-      <div>
-        <span className="font-bold">Tier</span>
-        {editTicket ? (
-          <select
-            className="h-[30px] border outline-blue-500 w-full px-4 "
-            value={editingMyQueueTicket?.tier || ""}
-            onChange={(e) => setEditTicket({ tier: e.target.value })}
-          >
-            {tierOptions.map((tier) => (
-              <option key={tier} value={tier}>
-                {tier}
-              </option>
-            ))}
-          </select>
-        ) : (
-          <input
-            disabled
-            className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
-            value={myQueueTicket?.tier || ""}
-          />
-        )}
-      </div>
+
       <div className="flex gap-4">
         <div className="w-full">
           <span className="font-bold">Impact Score</span>
@@ -302,33 +302,32 @@ const QueueTicket = () => {
           />
         )}
       </div>
-      
-        <div className="w-full">
-          <span className="font-bold">Name</span>
-          <input
-            disabled
-            className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
-            value={myQueueTicket?.name || ""}
-          />
-        </div>
-        <div className="w-full">
-          <span className="font-bold">Email</span>
-          <input
-            disabled
-            className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
-            value={myQueueTicket?.emailId || ""}
-          />
-        </div>
-        <div className="w-full">
-          <span className="font-bold">Phone Number</span>
-          <input
-            disabled
-            className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
-            value={myQueueTicket?.phoneNumber || ""}
-          />
-        </div>
-    
-      
+
+      <div className="w-full">
+        <span className="font-bold">Name</span>
+        <input
+          disabled
+          className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
+          value={myQueueTicket?.name || ""}
+        />
+      </div>
+      <div className="w-full">
+        <span className="font-bold">Email</span>
+        <input
+          disabled
+          className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
+          value={myQueueTicket?.emailId || ""}
+        />
+      </div>
+      <div className="w-full">
+        <span className="font-bold">Phone Number</span>
+        <input
+          disabled
+          className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
+          value={myQueueTicket?.phoneNumber || ""}
+        />
+      </div>
+
       <div>
         <span className="font-bold">Date Created</span>
         <p>

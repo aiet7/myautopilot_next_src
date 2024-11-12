@@ -15,7 +15,7 @@ const AssistantControl = () => {
         return <TicketSearch />;
       case "Assistant":
         return <ChatSearch />;
-      case "Queue":
+      case "Dispatch":
         return <QueueSearch />;
       default:
         return null;

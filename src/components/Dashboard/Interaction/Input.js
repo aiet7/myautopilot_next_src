@@ -22,16 +22,18 @@ const Input = () => {
     handleSendMessage,
   } = useInteractionStore();
   const { currentNavOption } = useUiStore();
-  const { myQueueTicket } = useQueueStore();
+  const { myQueueTicket, troubleshootMessages } =
+    useQueueStore();
 
   const { inputRef } = useRefStore();
+
 
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.style.height = "24px";
       inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
     }
-  }, [userInput, currentNavOption, myQueueTicket]);
+  }, [userInput, currentNavOption, myQueueTicket, troubleshootMessages]);
 
   return (
     <div className="relative max-w-[700px] mx-auto w-full ">
@@ -123,7 +125,7 @@ const Input = () => {
         </div>
       )}
 
-      {currentNavOption === "Queue" && myQueueTicket && (
+      {currentNavOption === "Dispatch" && myQueueTicket && troubleshootMessages.length > 0 && (
         <div className="relative flex items-center px-4 py-2 gap-2">
           <textarea
             ref={inputRef}

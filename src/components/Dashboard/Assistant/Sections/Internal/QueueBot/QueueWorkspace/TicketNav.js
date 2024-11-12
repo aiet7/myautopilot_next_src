@@ -12,7 +12,7 @@ const TicketNav = () => {
     handleWorkOnTicket,
     setActiveQueueTicketButton,
   } = useQueueStore();
-  console.log(activeQueueBotMode);
+
   return (
     <div className="flex justify-between items-center  text-base font-semibold">
       <div className="flex gap-4">

@@ -16,7 +16,7 @@ const SettingsRail = ({}) => {
         currentNavOption === "Assistant" ||
         currentNavOption === "Document" ||
         currentNavOption === "Tickets" ||
-        currentNavOption === "Queue" ||
+        currentNavOption === "Dispatch" ||
         currentNavOption === "Settings"
           ? "justify-between"
           : "justify-end"
@@ -26,7 +26,7 @@ const SettingsRail = ({}) => {
         currentNavOption === "Assistant" ||
         currentNavOption === "Document" ||
         currentNavOption === "Tickets" ||
-        currentNavOption === "Queue" ||
+        currentNavOption === "Dispatch" ||
         currentNavOption === "Settings") && (
         <>
           <AiOutlineMenu

@@ -32,7 +32,7 @@ const AssistantMenus = () => {
         return <TicketMode />;
       case "Assistant":
         return <ChatMode />;
-      case "Queue":
+      case "Dispatch":
         return <QueueMenus />;
       default:
         return null;
@@ -44,7 +44,7 @@ const AssistantMenus = () => {
     assistantMode !== "Edit" &&
     ((currentNavOption === "Tickets" && activeTicketBotMode === "History") ||
       currentNavOption === "Assistant" ||
-      (currentNavOption === "Queue" &&
+      (currentNavOption === "Dispatch" &&
         activeQueueBotMode === "All Queue Tickets"));
 
   return (
@@ -78,7 +78,7 @@ const AssistantMenus = () => {
               </button>
             </div>
           )}
-          {currentNavOption === "Queue" &&
+          {currentNavOption === "Dispatch" &&
             activeQueueBotMode === "All Queue Tickets" && (
               <button
                 onClick={() =>

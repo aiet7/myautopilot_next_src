@@ -92,7 +92,7 @@ const DashboardPage = ({}) => {
     <>
       {currentNavOption === "Tickets" ||
       currentNavOption === "Assistant" ||
-      currentNavOption === "Queue" ? (
+      currentNavOption === "Dispatch" ? (
         <>
           <Interaction />
 

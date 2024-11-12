@@ -48,7 +48,7 @@ const TabNavRail = ({}) => {
           (currentNavOption === "Assistant" ||
             currentNavOption === "Document" ||
             currentNavOption === "Tickets" ||
-            currentNavOption === "Queue")) ||
+            currentNavOption === "Dispatch")) ||
         currentNavOption === "Settings" ||
         activeTab === "admin" ||
         hoverTab === "admin") && (

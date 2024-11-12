@@ -48,7 +48,7 @@ const Pagination = () => {
 
   const isTickets = currentNavOption === "Tickets";
   const isChats = currentNavOption === "Assistant";
-  const isQueueTickets = currentNavOption === "Queue";
+  const isQueueTickets = currentNavOption === "Dispatch";
 
   const currentPage = isTickets
     ? currentTicketPage
@@ -104,7 +104,7 @@ const Pagination = () => {
         return <TicketFilterMenu />;
       case "Assistant":
         return <ChatFilterMenu />;
-      case "Queue":
+      case "Dispatch":
         return <QueueFilterMenu />;
 
       default:

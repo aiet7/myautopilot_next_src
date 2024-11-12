@@ -325,15 +325,16 @@ const TicketForm = () => {
                   value={ticket.currentTicketSeverity || ""}
                 />
               </div>
+              <div className="w-full">
+                <span className="font-bold">Tier</span>
+                <input
+                  disabled
+                  className={`h-[30px] px-4 w-full`}
+                  value={ticket.currentTicketTier || ""}
+                />
+              </div>
             </div>
-            <div>
-              <span className="font-bold">Tier</span>
-              <input
-                disabled
-                className={`h-[30px] px-4 w-full`}
-                value={ticket.currentTicketTier || ""}
-              />
-            </div>
+
             {userType === "tech" && (
               <div className="flex gap-4">
                 <div className="w-full">

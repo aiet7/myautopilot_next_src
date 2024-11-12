@@ -4,7 +4,7 @@ import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
 
 const Ticket = () => {
   const { currentTicket, ticketStatus } = useTicketsStore();
-
+  
   return (
     <div className="flex flex-col gap-2 ">
       <div>

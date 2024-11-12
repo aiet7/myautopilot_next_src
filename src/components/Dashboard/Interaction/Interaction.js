@@ -14,7 +14,7 @@ import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
 
 const Interaction = ({}) => {
   const {
-    openNav, // Access the navigation state
+    openNav, 
     currentNavOption,
     openAssistant,
     handleAssistantMenu,
@@ -72,7 +72,7 @@ const Interaction = ({}) => {
 
       {currentNavOption === "Tickets" && <TicketCreation />}
       {currentNavOption === "Assistant" && <EngineerChat />}
-      {currentNavOption === "Queue" && <Troubleshoot />}
+      {currentNavOption === "Dispatch" && <Troubleshoot />}
       <div className="px-4 py-2">
         {isServerError ? (
           <p className="text-red-600 text-xs">Server Error, try again please</p>

@@ -43,7 +43,11 @@ const ViewQueueTicket = () => {
         <span className="font-bold">Description</span>
         <textarea
           disabled
-          value={currentQueueTicket?.description || currentQueueTicket?.ticketInformation || ""}
+          value={
+            currentQueueTicket?.description ||
+            currentQueueTicket?.ticketInformation ||
+            ""
+          }
           maxLength={100}
           className="dark:bg-black max-h-[130px] min-h-[70px] border outline-blue-500 w-full px-4 bg-white"
         />
@@ -95,16 +99,17 @@ const ViewQueueTicket = () => {
             value={currentQueueTicket?.severity || ""}
           />
         </div>
-      </div>
-      <div>
-        <span className="font-bold">Tier</span>
+        <div className="w-full">
+          <span className="font-bold">Tier</span>
 
-        <input
-          disabled
-          className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
-          value={currentQueueTicket?.tier || ""}
-        />
+          <input
+            disabled
+            className="dark:bg-black h-[30px] border outline-blue-500 w-full px-4 bg-white"
+            value={currentQueueTicket?.tier || ""}
+          />
+        </div>
       </div>
+
       <div className="flex gap-4">
         <div className="w-full">
           <span className="font-bold">Impact Score</span>

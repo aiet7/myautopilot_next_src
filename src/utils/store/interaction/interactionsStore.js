@@ -386,7 +386,6 @@ const useInteractionStore = create((set, get) => ({
     const { handleIfConversationExists } = useConversationStore.getState();
 
     let currentConversation = await handleIfConversationExists(false, false);
-  
 
     const {
       handleAddUserTroubleshootMessage,
@@ -394,7 +393,9 @@ const useInteractionStore = create((set, get) => ({
     } = useQueueStore.getState();
 
     if (message.trim() !== "" && currentConversation) {
-      inputRef.current.focus();
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
       handleAddUserTroubleshootMessage(message);
 
       set({
@@ -418,9 +419,7 @@ const useInteractionStore = create((set, get) => ({
         if (response.status === 200) {
           const responseBody = await response.json();
           messageIdRef.current = responseBody.id;
-          handleAddAssistantTroubleshootMessage(
-            responseBody.aiContent
-          );
+          handleAddAssistantTroubleshootMessage(responseBody.aiContent);
         }
       } catch (e) {
         console.log(e);
@@ -433,7 +432,6 @@ const useInteractionStore = create((set, get) => ({
   },
 
   handleCreateTicketTroubleShootMessage: async (message) => {
-    console.log("test");
     const { handleAddAssistantMessage } =
       useTicketConversationsStore.getState();
     set({ isWaiting: true, isServerError: false });

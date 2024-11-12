@@ -542,7 +542,7 @@ const useQueueStore = create((set, get) => ({
   },
 
   handleWorkOnTicket: async (mspCustomDomain, techId, ticketId) => {
-    const { handleAddTroubleShootMessage } = get();
+    const { handleSendTroubleshootMessage } = useInteractionStore.getState();
 
     set({
       activeQueueBotMode: "Queue Workspace",
@@ -575,9 +575,12 @@ const useQueueStore = create((set, get) => ({
             newQueueTicket.title || "N/A"
           }`;
           try {
-            await handleAddTroubleShootMessage(
-              newQueueTicket.ticketInformation || fallbackTicketInformation
+            await handleSendTroubleshootMessage(
+              newQueueTicket.ticketInformation + fallbackTicketInformation
             );
+            set({
+              generatingTroubleShoot: false,
+            });
           } catch (e) {
             console.log(e);
           }
