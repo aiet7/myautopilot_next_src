@@ -60,7 +60,7 @@ const useMspStore = create((set, get) => ({
       email: "",
       password: "",
       login2FA: "",
-      authCode: ""
+      authCode: "",
     },
     clientInfo: {
       email: "",
@@ -83,29 +83,24 @@ const useMspStore = create((set, get) => ({
 
   successMessage: false,
 
-  qrCodePopup: false,
+  authError: false,
 
-  passphrasePopup: false,
+  authPopup: "closed",
+  // change 2faPopup to be a string and compare later to give more options for popup card ("open", "emailOpen, "emailVerification", "qrOpen", "manualQr", "qrVerification", "closed")
 
-  passphrase: [],
+  authCard: false,
 
-  manualQr: false,
+  authToken: "",
 
-  setManualQr: (isOpen) => set({ manualQr: isOpen }),
+  setAuthError: (bool) => set({ authError: bool }),
 
-  setQrCodePopup: (isOpen) => set({ qrCodePopup: isOpen }),
+  setSuccessMessage: (bool) => set({ successMessage: bool }),
 
-  setPassphrasePopup: (isOpen) => {
-    set({ passphrasePopup: isOpen });
+  setAuthToken: (num) => set({ authToken: num }),
 
-    // const randomNumbers = [];
-    // for (let i = 0; i < 10; i++) {
-    //   const randomNumber = Math.floor(Math.random() * 10000); // Generate a random number between 0 and 9999
-    //   const formattedNumber = randomNumber.toString().padStart(4, "0"); // Format to 4 digits, padding with leading zeros
-    //   randomNumbers.push(formattedNumber);
-    // }
-    // set({ passphrase: randomNumbers });
-  },
+  setAuthCard: (isOpen) => set({ authCard: isOpen }),
+
+  setAuthPopup: (isOpen) => set({ authPopup: isOpen }),
 
   initializeUserType: async () => {
     const lastActiveUserType = localStorage.getItem("lastActiveUserType");
@@ -597,6 +592,7 @@ const useMspStore = create((set, get) => ({
         const responseData = await response.text();
         set({
           qrUrl: responseData,
+          // authPreference: responseData,
           current2FA: true,
           errorMessage: {
             ...errorMessage,
@@ -661,6 +657,58 @@ const useMspStore = create((set, get) => ({
             emptyFields: false,
           },
         });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleSendEmailToken: async (user) => {
+    const { mspCustomDomain } = user;
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/sendEmailAuthRequest?email=${encodeURIComponent(
+          user.email
+        )}`
+      );
+
+      if (response.ok) {
+        set({ successMessage: true });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
+  handleTokenVerification: async (user, authType) => {
+    const { authToken, setAuthCard, setAuthToken, setAuthPopup } = get();
+    const { mspCustomDomain, email } = user;
+    try {
+      const response = await fetch(
+        `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/set-2faMethod`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: email,
+            preference: authType,
+            token: authToken,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        // TODO: set popup saying authentication activated
+        // TODO: update user state preference to = authType
+        setAuthCard(false);
+        setAuthToken("");
+        setAuthPopup("closed");
+        set({ authError: false });
+      } else {
+        set({ authError: true });
+        debugger;
       }
     } catch (e) {
       console.log(e);
