@@ -11,6 +11,7 @@ import useAuthStore from "@/utils/store/auth/authStore";
 
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { BsQrCodeScan } from "react-icons/bs";
+import { TfiEmail } from "react-icons/tfi";
 
 const MSPPage = ({}) => {
   const { height, setHeight } = useUiStore();
@@ -18,9 +19,12 @@ const MSPPage = ({}) => {
 
   const {
     qrUrl,
+    manualQr,
+    setManualQr,
+    authPreference,
     authCode,
-    setQrCodePopup,
-    qrCodePopup,
+    setAuthPopup,
+    authPopup,
     loginInputs,
     userType,
     current2FA,
@@ -35,6 +39,8 @@ const MSPPage = ({}) => {
     clearMSPCredentials,
     initializeUserType,
   } = useMspStore();
+
+  console.log("qrurl", qrUrl);
 
   const { showPassword, setShowPassword, handleShowForgotPassword } =
     useAuthStore();
@@ -69,11 +75,7 @@ const MSPPage = ({}) => {
 
   return (
     <>
-      <div
-        className={`transition-all duration-300 ${
-          qrCodePopup && "filter blur-sm"
-        }`}
-      >
+      <div className={`transition-all duration-300`}>
         {height && (
           <div
             className="relative z-[99]  bg-gradient-to-b from-white via-white to-gray-400 h-full flex justify-center items-center"
@@ -200,7 +202,7 @@ const MSPPage = ({}) => {
                           : loginInputs.clientInfo.login2FA || ""
                       }
                       type="text"
-                      placeholder="Enter gAuth Token"
+                      placeholder="Enter your 6 digit code"
                       className="w-full p-2 border border-gray-300 bg-white text-black"
                     />
                     <button
@@ -343,41 +345,11 @@ const MSPPage = ({}) => {
                 >
                   Forgot password?
                 </span>
-                {userType === "tech" && current2FA && (
-                  <div
-                    className="flex items-center gap-2 text-sm text-blue-800 font-extrabold cursor-pointer"
-                    onClick={() => setQrCodePopup(true)}
-                  >
-                    <p>Authenticator QR code</p>
-                    <BsQrCodeScan size={20} />
-                  </div>
-                )}
               </div>
             </form>
           </div>
         )}
       </div>
-      {qrCodePopup && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div
-            className="p-6 rounded-lg shadow-lg max-w-md relative"
-            style={{ backgroundColor: "rgb(236, 236, 236)" }}
-          >
-            <h2 className="text-xl font-semibold mb-4">
-              Authenticator QR Code
-            </h2>
-            <p className="items-center bg-blue">
-              <img src={qrUrl ? qrUrl : null} />
-            </p>
-            <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-              onClick={() => setQrCodePopup(false)}
-            >
-              &#x2715; {/* Unicode for 'X' */}
-            </button>
-          </div>
-        </div>
-      )}
     </>
   );
 };
