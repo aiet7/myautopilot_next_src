@@ -4,6 +4,7 @@ import { AiFillEdit } from "react-icons/ai";
 import { IoMdFingerPrint } from "react-icons/io";
 import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
 import { BsQrCodeScan } from "react-icons/bs";
+import { TfiEmail } from "react-icons/tfi";
 
 import useUserStore from "@/utils/store/user/userStore";
 import useUiStore from "@/utils/store/ui/uiStore";
@@ -27,27 +28,20 @@ const Account = ({}) => {
   } = useUserStore();
 
   const {
-    manualQr,
-    setManualQr,
-    qrCodePopup,
-    setQrCodePopup,
-    passphrasePopup,
-    setPassphrasePopup,
+    authError,
+    setAuthError,
+    authCard,
+    setAuthCard,
+    authToken,
+    setAuthToken,
+    authPopup,
+    setAuthPopup,
+    successMessage,
+    setSuccessMessage,
+    handleSendEmailToken,
+    handleTokenVerification,
     userType,
   } = useMspStore();
-
-  const passphrase = [
-    "3649",
-    "9627",
-    "2039",
-    "1492",
-    "2285",
-    "1104",
-    "0736",
-    "8171",
-    "3572",
-    "5660",
-  ];
 
   return (
     <div
@@ -57,7 +51,7 @@ const Account = ({}) => {
     >
       <div
         className={`flex-grow overflow-auto scrollbar-thin transition-all duration-300 ${
-          qrCodePopup != passphrasePopup && "filter blur-sm"
+          authCard && "filter blur-sm"
         }`}
       >
         <div className="px-4 py-4 w-full">
@@ -403,26 +397,10 @@ const Account = ({}) => {
               <div className="flex flex-col w-full border dark:border-white/40 rounded-md p-5">
                 <p className="text-2xl pb-6">Security Settings</p>
                 <div
-                  className="flex items-center justify-between h-[20px] cursor-pointer hover:bg-gray-200 p-5"
-                  onClick={() => setQrCodePopup(true)}
+                  className="flex items-center justify-between h-[20px] cursor-pointer hover:bg-gray-100 p-5"
+                  onClick={() => setAuthCard(true)}
                 >
-                  {/* //TODO: add logic to popups */}
-                  <p className="w-18">Authenticator</p>
-                  {/* <div
-                //   className="flex items-center gap-2 text-blue-800 font-semibold cursor-pointer w-1/6"
-                //   onClick={() => setQrCodePopup(true)}
-                // >
-                //   <p>Authenticator QR code</p>
-                //   <BsQrCodeScan size={15} />
-                // </div>
-                */}
-                  <p className="font-bold text-lg">{">"}</p>
-                </div>
-                <div
-                  className="flex items-center justify-between h-[20px] cursor-pointer hover:bg-gray-200 p-5"
-                  onClick={() => setPassphrasePopup(true)}
-                >
-                  <p className="w-18">Passphrase</p>
+                  <p className="w-18">2-Step verification setup</p>
                   <p className="font-bold text-lg">{">"}</p>
                 </div>
               </div>
@@ -482,115 +460,214 @@ const Account = ({}) => {
           </div>
         </div>
       </div>
-      {qrCodePopup && (
-        /* 
-          ? have switch based on boolean that when turned on shows qr code 
-          TODO: can make it more complex and add "Cant scan" button to change pop up to
-          In the Google Authenticator app tap the + then tap Enter a setup key
-          Enter your MSP domain and this key:
-          *secret*
-          Make sure Time based is selected
-          Tap Add to finish
-
-          todo: then verify code and once completed update 2fa boolean to true
-        */
-        <div className="fixed inset-0 flex items-center justify-center z-50 ">
+      {authCard && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
           <div
-            className="flex items-center flex-col absolute p-[5%] rounded-lg shadow-lg w-[30vw] h-[50vh]"
+            className="items-center flex-col absolute p-2 rounded-lg shadow-lg w-[300px] sm:w-[450px] h-[500px]"
             style={{ backgroundColor: "rgb(236, 236, 236)" }}
           >
-            <h2 className="text-xl font-semibold mb-4 dark:text-black">
-              Set up authenticator app
-            </h2>
-            {manualQr ? (
+            {authPopup == "closed" && (
               <>
-                <ol className="list-decimal mb-4 dark:text-black">
-                  <li>In the Authenticator app enter the manual settings</li>
-                  <li>Account name: {user?.mspCustomDomain}</li>
-                  <li>Secret key: {user?.secret}</li>
-                </ol>
-                <button
-                  className="text-blue-500 hover:text-gray-700 font-semibold absolute bottom-7 left-7 flex space-x-4"
-                  onClick={() => setManualQr(false)}
+                <h2 className="text-xl font-semibold mb-4 dark:text-black text-center p-10">
+                  Select 2FA Method
+                </h2>
+                <div
+                  className="flex items-center justify-between h-[80px] cursor-pointer hover:bg-gray-100 p-5"
+                  onClick={() => setAuthPopup("qrOpen")}
+                  // TODO: have onclick change popup to qr popup
                 >
-                  Back
-                </button>
+                  <BsQrCodeScan className="w-7 h-7 flex-shrink-0 mr-4" />
+                  <div className="flex flex-col flex-grow">
+                    <h2 className="font-semibold">App Authentication</h2>
+                    <p className="text-sm text-gray-500">
+                      Use a mobile app to authenticate.
+                    </p>
+                  </div>
+                  <p className="font-bold text-lg">{">"}</p>
+                </div>
+                <div
+                  className="flex items-center justify-between h-[80px] cursor-pointer hover:bg-gray-100 p-5"
+                  onClick={() => setAuthPopup("emailOpen")}
+                >
+                  <TfiEmail className="w-7 h-7 flex-shrink-0 mr-4" />
+                  <div className="flex flex-col flex-grow">
+                    <h2 className="font-semibold">Email Authentication</h2>
+                    <p className="text-sm text-gray-500">
+                      Receive an email with an authentication code.
+                    </p>
+                  </div>
+                  <p className="font-bold text-lg">{">"}</p>
+                </div>
               </>
-            ) : (
+            )}
+            {authPopup == "qrOpen" && (
               <>
-                <ul className="list-disc mb-4 dark:text-black pb-[10px]">
+                <h2 className="text-xl font-semibold dark:text-black text-center p-10">
+                  Set up authenticator app
+                </h2>
+                <ul className="list-disc mb-4 dark:text-black pb-[30px] pl-10">
                   <li>Open your authentication app</li>
                   <li>Scan the QR code below</li>
                 </ul>
                 <img
-                  className="mx-auto h-auto w-2/6"
+                  className="mx-auto sm:w-[150px] h-auto w-3/5"
                   src={`https://api.qrserver.com/v1/create-qr-code/?data=otpauth://totp/${user?.mspCustomDomain}:${user?.email}?secret=${user?.secret}&issuer=${user?.mspCustomDomain}`}
                 />
                 <button
                   className="mx-auto mt-4 text-blue-500 hover:text-gray-700 font-semibold block"
-                  onClick={() => setManualQr(true)}
+                  onClick={() => setAuthPopup("manualQr")}
                 >
                   Can't scan?
                 </button>
+                <button
+                  className="text-blue-500 hover:text-gray-700 font-semibold absolute bottom-7 right-7 space-x-4"
+                  onClick={() => setAuthPopup("qrValidate")}
+                >
+                  Next
+                </button>
               </>
             )}
-            <div className="absolute bottom-7 right-7 flex space-x-4">
+            {authPopup == "manualQr" && (
+              <>
+                <ol className="list-decimal mb-4 dark:text-black p-10">
+                  <li>In the Authenticator app enter account details</li>
+                  <li>
+                    Account name: <strong>{user?.mspCustomDomain}</strong>
+                  </li>
+                  <li>
+                    Secret key: <strong>{user?.secret}</strong>
+                  </li>
+                </ol>
+                <button
+                  className="text-blue-500 hover:text-gray-700 font-semibold absolute bottom-7 left-7 flex space-x-4"
+                  onClick={() => setAuthPopup("qrOpen")}
+                >
+                  Back
+                </button>
+                <button
+                  className="text-blue-500 hover:text-gray-700 font-semibold absolute bottom-7 right-7 space-x-4"
+                  onClick={() => setAuthPopup("qrValidate")}
+                >
+                  Next
+                </button>
+              </>
+            )}
+            {authPopup == "qrValidate" && (
+              <>
+                <h2 className="text-xl font-semibold dark:text-black text-center p-10">
+                  Set up authenticator app
+                </h2>
+                <input
+                  placeholder="code here"
+                  value={authToken || ""}
+                  onChange={(e) => setAuthToken(e.target.value)}
+                />
+                {authError && (
+                  <p className="text-sm text-red-500 p-4">Incorrect code</p>
+                )}
+                <button
+                  className="text-blue-500 hover:text-gray-700 font-semibold absolute bottom-7 left-7 flex space-x-4"
+                  onClick={() => {
+                    setAuthError(false);
+                    setAuthPopup("qrOpen");
+                  }}
+                >
+                  Back
+                </button>
+                <button
+                  className="text-blue-500 hover:text-gray-700 font-semibold absolute bottom-7 right-7 space-x-4"
+                  onClick={() => handleTokenVerification(user, "authenticator")}
+                >
+                  Verify
+                </button>
+              </>
+            )}
+            {authPopup == "emailOpen" && (
+              <>
+                <h2 className="text-xl font-semibold dark:text-black text-center p-10">
+                  Set up email authentication
+                </h2>
+                <p className="pl-4">
+                  Send code to: <strong>{user.email}</strong>
+                </p>
+                {/* // ? offer option to put their own email? if yes, set up attribute to hold new email */}
+                <button
+                  className="pl-4 text-blue-500 hover:text-gray-600"
+                  onClick={() => {
+                    handleSendEmailToken(user);
+                    setAuthPopup("emailValidate");
+                  }}
+                >
+                  Send Code
+                </button>
+              </>
+            )}
+            {authPopup == "emailValidate" && (
+              <>
+                <input
+                  className="m-4 h-7"
+                  placeholder=" code here"
+                  value={authToken || ""}
+                  onChange={(e) => setAuthToken(e.target.value)}
+                />
+                <p className="text-base text-gray-500 pl-4">
+                  Didn't receive code?
+                  <button
+                    className="pl-1 text-blue-500 hover:text-gray-600"
+                    onClick={() => {
+                      handleSendEmailToken(user);
+                      setSuccessMessage(false);
+                    }}
+                  >
+                    Re-send code
+                  </button>
+                </p>
+                {authError && (
+                  <p className="text-sm text-red-500 p-4">Incorrect code</p>
+                )}
+                {successMessage && (
+                  <p className="text-sm text-gray-500 p-4">Code sent</p>
+                )}
+                <button
+                  className="text-blue-500 hover:text-gray-700 font-semibold absolute bottom-7 left-7 flex space-x-4"
+                  onClick={() => {
+                    setAuthError(false);
+                    setAuthPopup("emailOpen");
+                  }}
+                >
+                  Back
+                </button>
+                <button
+                  className="text-blue-500 hover:text-gray-700 font-semibold absolute bottom-7 right-7 space-x-4"
+                  onClick={() => handleTokenVerification(user, "email")}
+                >
+                  Verify
+                </button>
+              </>
+            )}
+            {authPopup != "closed" && (
               <button
-                className="text-blue-500 hover:text-gray-700 font-semibold"
-                onClick={() => setQrCodePopup(false)}
+                className="text-blue-500 hover:text-gray-700 font-semibold absolute bottom-7 right-[80px]"
+                onClick={() => {
+                  setAuthPopup("closed");
+                  setSuccessMessage(false);
+                  setAuthError(false);
+                }}
               >
                 Cancel
               </button>
-              <button
-                className="text-blue-500 hover:text-gray-700 font-semibold"
-                // onClick={() => setSavedSettings(saved)}
-              >
-                {/* ? "Remove authenticator" : " */}+ Set up authenticator
-              </button>
-            </div>
-            {/* <button onClick={() => setSavedSettings(saved)}>{saved ? "Remove authenticator": "+ Set up authenticator"}</button> */}
-          </div>
-        </div>
-      )}
-      {passphrasePopup && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div
-            className="p-20 rounded-lg shadow-lg max-w-md relative"
-            style={{ backgroundColor: "rgb(236, 236, 236)" }}
-          >
-            <h2 className="text-xl font-semibold mb-4">Generate Passphrase</h2>
-            <div className="grid grid-cols-2 gap-2 place-items-center">
-              {/* {user?.passphrase?.map((num, index) => { */}
-              {passphrase?.map((num, index) => {
-                return (
-                  <p key={index} className="text-gray-1000 font-bold">
-                    {num}
-                  </p>
-                );
-              })}
-            </div>
-            {/* <p className="items-center bg-blue">Loading...</p> */}
-            {/* <button
+            )}
+            <button
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-              onClick={() => setPassphrasePopup(false)}
+              onClick={() => {
+                setAuthPopup("closed");
+                setAuthCard(false);
+                setSuccessMessage(false);
+                setAuthError(false);
+              }}
             >
-              &#x2715; {/* Unicode for 'X' *
-            </button> */}
-            {/* <button onClick={() => setSavedSettings(saved)}>Set up</button> */}
-            <div className="absolute bottom-7 right-7 flex space-x-4">
-              <button
-                className="text-blue-500 hover:text-gray-700"
-                onClick={() => setPassphrasePopup(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="text-blue-500 hover:text-gray-700"
-                // onClick={() => setSavedSettings(saved)}
-              >
-                {/* ? "Remove passphrase" : "*/}+ Set up passphrase
-              </button>
-            </div>
+              &#x2715;
+            </button>
           </div>
         </div>
       )}
