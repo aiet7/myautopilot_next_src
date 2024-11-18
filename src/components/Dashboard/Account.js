@@ -35,6 +35,7 @@ const Account = ({}) => {
     authToken,
     setAuthToken,
     authPopup,
+    authUpdatedPopup,
     setAuthPopup,
     successMessage,
     setSuccessMessage,
@@ -405,7 +406,8 @@ const Account = ({}) => {
                 </div>
               </div>
             )}
-            {/* {userInputs?.password !== null && (
+            <>
+              {/* {userInputs?.password !== null && (
               <div className="flex flex-col w-full border dark:border-white/40 rounded-md p-5 gap-6">
               <div className="flex items-center justify-between h-[40px]">
               <p className="w-18">Password</p>
@@ -457,6 +459,7 @@ const Account = ({}) => {
                 </div>
               </div>
             )} */}
+            </>
           </div>
         </div>
       </div>
@@ -474,7 +477,6 @@ const Account = ({}) => {
                 <div
                   className="flex items-center justify-between h-[80px] cursor-pointer hover:bg-gray-100 p-5"
                   onClick={() => setAuthPopup("qrOpen")}
-                  // TODO: have onclick change popup to qr popup
                 >
                   <BsQrCodeScan className="w-7 h-7 flex-shrink-0 mr-4" />
                   <div className="flex flex-col flex-grow">
@@ -498,6 +500,9 @@ const Account = ({}) => {
                   </div>
                   <p className="font-bold text-lg">{">"}</p>
                 </div>
+                <p className="bottom-7 absolute left-7">
+                  Current method: {user?.authPreference}
+                </p>
               </>
             )}
             {authPopup == "qrOpen" && (
@@ -590,7 +595,6 @@ const Account = ({}) => {
                 <p className="pl-4">
                   Send code to: <strong>{user.email}</strong>
                 </p>
-                {/* // ? offer option to put their own email? if yes, set up attribute to hold new email */}
                 <button
                   className="pl-4 text-blue-500 hover:text-gray-600"
                   onClick={() => {
@@ -669,6 +673,11 @@ const Account = ({}) => {
               &#x2715;
             </button>
           </div>
+        </div>
+      )}
+      {authUpdatedPopup && (
+        <div className="absolute w-[200px] bg-opacity-80 top-20 right-20 bg-gray-700 text-white text-center p-4 rounded-lg">
+          2-Step method updated!
         </div>
       )}
     </div>
