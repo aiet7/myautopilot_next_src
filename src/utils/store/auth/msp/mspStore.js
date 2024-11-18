@@ -92,6 +92,10 @@ const useMspStore = create((set, get) => ({
 
   authToken: "",
 
+  authUpdatedPopup: false,
+
+  setAuthUpdatedPopup: (bool) => set({ authUpdatedPopup: bool }),
+
   setAuthError: (bool) => set({ authError: bool }),
 
   setSuccessMessage: (bool) => set({ successMessage: bool }),
@@ -681,7 +685,13 @@ const useMspStore = create((set, get) => ({
   },
 
   handleTokenVerification: async (user, authType) => {
-    const { authToken, setAuthCard, setAuthToken, setAuthPopup } = get();
+    const {
+      authToken,
+      setAuthCard,
+      setAuthToken,
+      setAuthPopup,
+      setAuthUpdatedPopup,
+    } = get();
     const { mspCustomDomain, email } = user;
     try {
       const response = await fetch(
@@ -698,17 +708,18 @@ const useMspStore = create((set, get) => ({
           }),
         }
       );
-
       if (response.ok) {
-        // TODO: set popup saying authentication activated
-        // TODO: update user state preference to = authType
+        user.authPreference = authType;
+        setAuthUpdatedPopup(true);
+        setTimeout(() => {
+          setAuthUpdatedPopup(false);
+        }, 2500);
         setAuthCard(false);
         setAuthToken("");
         setAuthPopup("closed");
         set({ authError: false });
       } else {
         set({ authError: true });
-        debugger;
       }
     } catch (e) {
       console.log(e);
