@@ -562,9 +562,13 @@ const Account = ({}) => {
                 <h2 className="text-xl font-semibold dark:text-black text-center p-10">
                   Set up authenticator app
                 </h2>
+                <label className="pl-1 text-gray-600">
+                  Enter the 6-digit code you see in the app
+                </label>
                 <input
-                  placeholder="code here"
-                  value={authToken || ""}
+                  className="w-full px-4 py-2 mt-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter Code"
+                  value={authToken}
                   onChange={(e) => setAuthToken(e.target.value)}
                 />
                 {authError && (
@@ -596,7 +600,7 @@ const Account = ({}) => {
                   Send code to: <strong>{user.email}</strong>
                 </p>
                 <button
-                  className="pl-4 text-blue-500 hover:text-gray-600"
+                  className="pl-4 pt-4 text-blue-500 font-semibold hover:text-gray-600"
                   onClick={() => {
                     handleSendEmailToken(user);
                     setAuthPopup("emailValidate");
@@ -607,14 +611,17 @@ const Account = ({}) => {
               </>
             )}
             {authPopup == "emailValidate" && (
-              <>
+              <div className="pt-10">
+                <label className="pl-1 text-gray-600">
+                  Enter the 6-digit code from your email
+                </label>
                 <input
-                  className="m-4 h-7"
-                  placeholder=" code here"
-                  value={authToken || ""}
+                  className="w-full px-4 py-2 mt-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter Code"
+                  value={authToken}
                   onChange={(e) => setAuthToken(e.target.value)}
                 />
-                <p className="text-base text-gray-500 pl-4">
+                <p className="text-base text-gray-500 pl-4 pt-3">
                   Didn't receive code?
                   <button
                     className="pl-1 text-blue-500 hover:text-gray-600"
@@ -647,7 +654,7 @@ const Account = ({}) => {
                 >
                   Verify
                 </button>
-              </>
+              </div>
             )}
             {authPopup != "closed" && (
               <button
