@@ -18,16 +18,19 @@ const MSPPage = ({}) => {
   const { mspSubDomain, initializeSubDomain } = useInitializeAppStore();
 
   const {
-    qrUrl,
-    manualQr,
-    setManualQr,
-    authPreference,
+    // qrUrl,
+    // manualQr,
+    // setManualQr,
+    // authPreference,
+    // setAuthPopup,
+    // authPopup,
+    handleSendEmailToken,
+    tokenEmailSent,
+    setTokenEmailSent,
     authCode,
-    setAuthPopup,
-    authPopup,
-    loginInputs,
     userType,
     current2FA,
+    loginInputs,
     errorMessage,
     setLoginInputs,
     handleSwitchMspLoginFlow,
@@ -40,7 +43,6 @@ const MSPPage = ({}) => {
     initializeUserType,
   } = useMspStore();
 
-  console.log("qrurl", qrUrl);
 
   const { showPassword, setShowPassword, handleShowForgotPassword } =
     useAuthStore();
@@ -314,37 +316,55 @@ const MSPPage = ({}) => {
                     </button>
                   </>
                 )}
-                <div className="flex flex-col w-full">
-                  {router.asPath.includes("/public") ? (
+                <div>
+                  {current2FA && (
                     <span
-                      onClick={() => handleNavigatePublicSignup(router.push)}
-                      className="text-sm text-blue-800 font-semibold cursor-pointer"
+                      onClick={() => {
+                        let user = {
+                          mspCustomDomain: mspSubDomain?.customDomain,
+                          email: loginInputs?.techInfo?.email,
+                        };
+                        setTokenEmailSent(true);
+                        handleSendEmailToken(user);
+                        setLoginInputs("techInfo", "authPreference", "email");
+                      }}
+                      className="text-sm text-blue-500 font-semibold cursor-pointer absolute right-12 hover:text-blue-800"
                     >
-                      Sign Up
+                      {tokenEmailSent ? "Re-send email" : "sign in via email"}
                     </span>
-                  ) : (
-                    <Link
-                      onClick={() => clearMSPCredentials()}
-                      href={`/${mspSubDomain?.customDomain}/activate`}
-                    >
-                      <span className="text-sm text-blue-800 font-semibold">
-                        Activate Account
-                      </span>
-                    </Link>
                   )}
+                  <div className="flex flex-col w-full">
+                    {router.asPath.includes("/public") ? (
+                      <span
+                        onClick={() => handleNavigatePublicSignup(router.push)}
+                        className="text-sm text-blue-800 font-semibold cursor-pointer"
+                      >
+                        Sign Up
+                      </span>
+                    ) : (
+                      <Link
+                        onClick={() => clearMSPCredentials()}
+                        href={`/${mspSubDomain?.customDomain}/activate`}
+                      >
+                        <span className="text-sm text-blue-800 font-semibold">
+                          Activate Account
+                        </span>
+                      </Link>
+                    )}
+                  </div>
+                  <span
+                    onClick={() => {
+                      clearMSPCredentials();
+                      handleShowForgotPassword(
+                        router.push,
+                        mspSubDomain?.customDomain
+                      );
+                    }}
+                    className="text-sm text-blue-800 font-extrabold cursor-pointer"
+                  >
+                    Forgot password?
+                  </span>
                 </div>
-                <span
-                  onClick={() => {
-                    clearMSPCredentials();
-                    handleShowForgotPassword(
-                      router.push,
-                      mspSubDomain?.customDomain
-                    );
-                  }}
-                  className="text-sm text-blue-800 font-extrabold cursor-pointer"
-                >
-                  Forgot password?
-                </span>
               </div>
             </form>
           </div>
