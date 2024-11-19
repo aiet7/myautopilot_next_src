@@ -52,7 +52,7 @@ const useMspStore = create((set, get) => ({
     },
   },
 
-  qrUrl: null,
+  // qrUrl: null,
   current2FA: false,
   loginInputs: {
     mspCustomDomain: "",
@@ -93,6 +93,10 @@ const useMspStore = create((set, get) => ({
   authToken: "",
 
   authUpdatedPopup: false,
+
+  tokenEmailSent: false,
+
+  setTokenEmailSent: (bool) => set({ tokenEmailSent: bool }),
 
   setAuthUpdatedPopup: (bool) => set({ authUpdatedPopup: bool }),
 
@@ -569,7 +573,7 @@ const useMspStore = create((set, get) => ({
   },
 
   handleTechnicianLogin: async (mspCustomDomain) => {
-    const { loginInputs, errorMessage } = get();
+    const { loginInputs, errorMessage, setTokenEmailSent } = get();
     const { techInfo } = loginInputs;
     if (techInfo.email === "" || techInfo.password === "") {
       set({
@@ -593,9 +597,12 @@ const useMspStore = create((set, get) => ({
         }
       );
       if (response.ok) {
-        const responseData = await response.text();
+        const res = await response.text();
+        if (res == "email") {
+          setTokenEmailSent(true);
+        }
         set({
-          qrUrl: responseData,
+          // qrUrl: responseData,
           // authPreference: responseData,
           current2FA: true,
           errorMessage: {
@@ -668,11 +675,11 @@ const useMspStore = create((set, get) => ({
   },
 
   handleSendEmailToken: async (user) => {
-    const { mspCustomDomain } = user;
+    const { mspCustomDomain, email } = user;
     try {
       const response = await fetch(
         `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/sendEmailAuthRequest?email=${encodeURIComponent(
-          user.email
+          email
         )}`
       );
 
@@ -727,7 +734,7 @@ const useMspStore = create((set, get) => ({
   },
 
   handleTechnician2FALogin: async (navigator, mspCustomDomain) => {
-    const { loginInputs, errorMessage } = get();
+    const { loginInputs, errorMessage, setTokenEmailSent } = get();
     const { techInfo } = loginInputs;
 
     if (techInfo.authCode === "") {
@@ -747,6 +754,7 @@ const useMspStore = create((set, get) => ({
           },
 
           body: JSON.stringify({
+            preference: techInfo?.authPreference || "",
             email: techInfo.email,
             token: techInfo.authCode,
           }),
@@ -755,6 +763,7 @@ const useMspStore = create((set, get) => ({
 
       if (response.ok) {
         const tech = await response.json();
+        setTokenEmailSent(false);
         set({
           errorMessage: {
             ...errorMessage,
