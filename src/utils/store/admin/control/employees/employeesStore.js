@@ -30,7 +30,15 @@ const useEmployeesStore = create((set, get) => ({
     password: "",
   },
 
+  errors: {
+    emptyFields: false,
+    uniqueEmail: false,
+  },
+
   addEmployee: false,
+
+  resetErrors: () =>
+    set({ errors: { emptyFields: false, uniqueEmail: false } }),
 
   initializeEmployees: async () => {
     const userStore = useUserStore.getState();
@@ -164,42 +172,58 @@ const useEmployeesStore = create((set, get) => ({
   },
 
   handleSaveNewEmployee: async (mspCustomDomain) => {
-    const { activeEmployees, addEmployeeInputs } = get();
-    try {
-      const response = await fetch(
-        `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/add`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            firstName: addEmployeeInputs.firstName,
-            lastName: addEmployeeInputs.lastName,
-            phoneNumber: addEmployeeInputs.phone,
-            email: addEmployeeInputs.email,
-            password: addEmployeeInputs.password,
-          }),
-        }
-      );
+    const { activeEmployees, addEmployeeInputs, resetErrors } = get();
+    const { firstName, lastName, phone, email, password } = addEmployeeInputs;
 
-      if (response.status === 200) {
-        const newEmployee = await response.json();
-        console.log("Employee Added!");
-        set({
-          activeEmployees: [...activeEmployees, newEmployee],
-          successMessage: true,
-          errorMessage: false,
-        });
-      } else {
-        console.log("Employee Addition Failed!");
-        set({
-          successMessage: false,
-          errorMessage: true,
-        });
+    resetErrors();
+
+    if (!firstName || !lastName || !phone || !email || !password) {
+      set({
+        errorMessage: true,
+        errors: { emptyFields: true },
+      });
+    }
+
+    if (!get().errors.emptyFields) {
+      try {
+        const response = await fetch(
+          `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/add`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              firstName: firstName,
+              lastName: lastName,
+              phoneNumber: phone,
+              email: email,
+              password: password,
+            }),
+          }
+        );
+
+        if (response.status === 200) {
+          const newEmployee = await response.json();
+          console.log("Employee Added!");
+          set({
+            activeEmployees: [...activeEmployees, newEmployee],
+            successMessage: true,
+            errorMessage: false,
+          });
+          resetErrors();
+        } else if (response.status === 400) {
+          set({ errors: { uniqueEmail: true } });
+        } else {
+          console.log("Employee Addition Failed!");
+          set({
+            successMessage: false,
+            errorMessage: true,
+          });
+        }
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.log(e);
     }
   },
 
