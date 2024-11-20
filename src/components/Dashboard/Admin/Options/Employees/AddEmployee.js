@@ -6,6 +6,7 @@ import { AiOutlineClose } from "react-icons/ai";
 const AddEmployee = () => {
   const { user } = useUserStore();
   const {
+    errors,
     successMessage,
     errorMessage,
     setAddEmployee,
@@ -83,7 +84,18 @@ const AddEmployee = () => {
                     }
                   />
                 </div>
+                {/* // TODO: set up 2fa options here
+                    // ? initialize user with email if admin creates acct for tech?
+                    // ? how to design it, do i add drop down and onclick a popup to verify?
+                    // TODO: create validations for all inputs
+                */}
               </div>
+              {errors.uniqueEmail &&  (
+                <p className="font-semibold text-red-500">Account already exists with that email</p>
+              )}
+              {errors.emptyFields &&  (
+                <p className="font-semibold text-red-500">Fields cannot be empty</p>
+              )}
             </div>
           </div>
           <div className="flex items-end gap-4 justify-end h-full w-full ">
