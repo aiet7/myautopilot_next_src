@@ -26,7 +26,7 @@ const Account = ({}) => {
     handleSaveChanges,
     handleCancelEdit,
   } = useUserStore();
-  console.log(userInputs);
+
   const {
     authError,
     setAuthError,
@@ -328,7 +328,7 @@ const Account = ({}) => {
                     </div>
                   ) : (
                     <div className="flex items-center gap-4">
-                      <p>{userInputs?.companyAddress?.["street"]}</p>
+                      <p>{userInputs?.["street"]}</p>
                       <AiFillEdit
                         size={25}
                         className="cursor-pointer"
@@ -351,7 +351,7 @@ const Account = ({}) => {
                           userInputs?.city == "" &&
                           "border-red-500 border-2 rounded-md focus:outline-none"
                         }`}
-                        value={userInputs?.companyAddress?.["city"]}
+                        value={userInputs?.["city"]}
                         onChange={(e) =>
                           handleEditOnChange("city", e.target.value)
                         }
@@ -364,7 +364,7 @@ const Account = ({}) => {
                             userInputs?.city != "" &&
                               handleSaveChanges(
                                 "city",
-                                userInputs?.companyAddress?.["city"]
+                                userInputs?.["city"]
                               );
                           }
                         }}
@@ -376,7 +376,7 @@ const Account = ({}) => {
                     </div>
                   ) : (
                     <div className="flex items-center gap-4">
-                      <p>{userInputs?.companyAddress?.["city"]}</p>
+                      <p>{userInputs?.["city"]}</p>
                       <AiFillEdit
                         size={25}
                         className="cursor-pointer"
@@ -400,7 +400,7 @@ const Account = ({}) => {
                           userInputs?.zipcode == "" &&
                           "border-red-500 border-2 rounded-md focus:outline-none"
                         }`}
-                        value={userInputs?.companyAddress?.["zipcode"]}
+                        value={userInputs?.["zipcode"]}
                         onChange={(e) =>
                           handleEditOnChange("zipcode", e.target.value)
                         }
@@ -413,7 +413,7 @@ const Account = ({}) => {
                             userInputs?.zipcode != "" &&
                               handleSaveChanges(
                                 "zipcode",
-                                userInputs?.companyAddress?.["zipcode"]
+                                userInputs?.["zipcode"]
                               );
                           }
                         }}
@@ -425,7 +425,7 @@ const Account = ({}) => {
                     </div>
                   ) : (
                     <div className="flex items-center gap-4">
-                      <p>{userInputs?.companyAddress?.["zipcode"]}</p>
+                      <p>{userInputs?.["zipcode"]}</p>
                       <AiFillEdit
                         size={25}
                         className="cursor-pointer"
