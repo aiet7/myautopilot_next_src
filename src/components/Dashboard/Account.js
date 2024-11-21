@@ -525,6 +525,12 @@ const Account = ({}) => {
                   Can't scan?
                 </button>
                 <button
+                  className="text-blue-500 hover:text-gray-700 font-semibold absolute bottom-7 left-7 flex space-x-4"
+                  onClick={() => setAuthPopup("closed")}
+                >
+                  Back
+                </button>
+                <button
                   className="text-blue-500 hover:text-gray-700 font-semibold absolute bottom-7 right-7 space-x-4"
                   onClick={() => setAuthPopup("qrValidate")}
                 >
@@ -608,6 +614,12 @@ const Account = ({}) => {
                 >
                   Send Code
                 </button>
+                <button
+                  className="text-blue-500 hover:text-gray-700 font-semibold absolute bottom-7 left-7 flex space-x-4"
+                  onClick={() => setAuthPopup("closed")}
+                >
+                  Back
+                </button>
               </>
             )}
             {authPopup == "emailValidate" && (
@@ -661,6 +673,7 @@ const Account = ({}) => {
                 className="text-blue-500 hover:text-gray-700 font-semibold absolute bottom-7 right-[80px]"
                 onClick={() => {
                   setAuthPopup("closed");
+                  setAuthCard(false);
                   setSuccessMessage(false);
                   setAuthError(false);
                 }}
