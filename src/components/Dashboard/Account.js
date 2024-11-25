@@ -181,52 +181,9 @@ const Account = ({}) => {
               </div>
               <div className="flex items-center justify-between h-[20px]">
                 <p className="w-18">Company Name</p>
-                {editing?.["mspCustomDomain"] ? (
-                  <div className="flex items-center gap-4">
-                    {userInputs?.mspCustomDomain == "" && (
-                      <label className="text-xs text-red-500">
-                        Input can't be blank
-                      </label>
-                    )}
-                    <input
-                      className={`px-1 w-40 border bg-white text-black ${
-                        userInputs?.mspCustomDomain == "" &&
-                        "border-red-500 border-2 rounded-md focus:outline-none"
-                      }`}
-                      value={userInputs?.["mspCustomDomain"]}
-                      onChange={(e) =>
-                        handleEditOnChange("mspCustomDomain", e.target.value)
-                      }
-                      placeholder="Company name"
-                    />
-                    <AiOutlineCheck
-                      className="cursor-pointer"
-                      onClick={() => {
-                        {
-                          userInputs?.mspCustomDomain != "" &&
-                            handleSaveChanges(
-                              "mspCustomDomain",
-                              userInputs?.["mspCustomDomain"]
-                            );
-                        }
-                      }}
-                    />
-
-                    <AiOutlineClose
-                      className="cursor-pointer"
-                      onClick={() => handleCancelEdit("mspCustomDomain")}
-                    />
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-4">
-                    <p>{userInputs?.["mspCustomDomain"]}</p>
-                    <AiFillEdit
-                      size={25}
-                      className="cursor-pointer"
-                      onClick={() => handleStartEdit("mspCustomDomain")}
-                    />
-                  </div>
-                )}
+                <div className="flex items-center gap-4">
+                  <p>{userInputs?.["mspCustomDomain"]}</p>
+                </div>
               </div>
             </div>
             <div className="flex flex-col w-full border dark:border-white/40 rounded-md p-5 gap-6">
@@ -362,10 +319,7 @@ const Account = ({}) => {
                         onClick={() => {
                           {
                             userInputs?.city != "" &&
-                              handleSaveChanges(
-                                "city",
-                                userInputs?.["city"]
-                              );
+                              handleSaveChanges("city", userInputs?.["city"]);
                           }
                         }}
                       />
