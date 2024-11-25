@@ -37,7 +37,6 @@ const MSPPage = ({}) => {
     initializeUserType,
   } = useMspStore();
 
-
   const { showPassword, setShowPassword, handleShowForgotPassword } =
     useAuthStore();
   const router = useRouter();

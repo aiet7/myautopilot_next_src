@@ -52,7 +52,6 @@ const useMspStore = create((set, get) => ({
     },
   },
 
-  // qrUrl: null,
   current2FA: false,
   loginInputs: {
     mspCustomDomain: "",
