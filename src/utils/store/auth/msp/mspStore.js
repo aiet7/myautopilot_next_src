@@ -602,8 +602,6 @@ const useMspStore = create((set, get) => ({
           setTokenEmailSent(true);
         }
         set({
-          // qrUrl: responseData,
-          // authPreference: responseData,
           current2FA: true,
           errorMessage: {
             ...errorMessage,
@@ -787,51 +785,6 @@ const useMspStore = create((set, get) => ({
       console.log(e);
     }
   },
-  // handleTechnician2FALogin: async (navigator, mspCustomDomain) => {
-  //   const { loginInputs, errorMessage } = get();
-  //   const { techInfo } = loginInputs;
-
-  //   if (techInfo.login2FA === "") {
-  //     set({
-  //       errorMessage: { ...errorMessage, emptyFields: true, emailCheck: false },
-  //     });
-  //     return;
-  //   }
-
-  //   const encodedEmail = encodeURIComponent(techInfo.email);
-  // const encodedToken = encodeURIComponent(techInfo.login2FA);
-
-  //   try {
-  //     const response = await fetch(
-  // `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/validateResetToken?email=${encodedEmail}&token=${encodedToken}`
-  //     );
-
-  //     if (response.ok) {
-  //       const tech = await response.json();
-  //       set({
-  //         errorMessage: {
-  //           ...errorMessage,
-  //           login2FA: false,
-  //           emptyFields: false,
-  //         },
-  //       });
-  //       navigator(`/${tech?.mspCustomDomain}/dashboard/${tech?.id}`);
-  //       Cookie.set("session_token", tech?.id, { expires: 7 });
-  //       Cookie.set("client_id", tech?.id, { expires: 7 });
-  //     } else {
-  //       debugger
-  //       set({
-  //         errorMessage: {
-  //           ...errorMessage,
-  //           login2FA: true,
-  //           emptyFields: false,
-  //         },
-  //       });
-  //     }
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // },
 
   handleClient2FALogin: async (navigator, mspCustomDomain) => {
     const { loginInputs, errorMessage } = get();
