@@ -40,6 +40,7 @@ const useCompaniesStore = create((set, get) => ({
 
   successMessage: false,
   errorMessage: false,
+  emptyFields: false,
 
   initializeCompanies: async () => {
     const userStore = useUserStore.getState();
@@ -160,44 +161,62 @@ const useCompaniesStore = create((set, get) => ({
 
   handleSaveNewCompanyEmployee: async (mspCustomDomain) => {
     const { companyPSAEmployees, addEmployeeInputs, selectedCompanyId } = get();
+    const { firstName, lastName, phone, email, emailTypeId, phoneTypeId } =
+      addEmployeeInputs;
 
-    try {
-      const response = await fetch(
-        `${connectWiseServiceUrl}/addConnectWiseContact?mspCustomDomain=${mspCustomDomain}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            firstName: addEmployeeInputs.firstName,
-            lastName: addEmployeeInputs.lastName,
-            email: addEmployeeInputs.email,
-            phone: addEmployeeInputs.phone,
-            companyId: selectedCompanyId,
-            emailTypeId: addEmployeeInputs.emailTypeId,
-            phoneTypeId: addEmployeeInputs.phoneTypeId,
-          }),
+    set({ emptyFields: false });
+
+    if (
+      !firstName ||
+      !lastName ||
+      !phone ||
+      !email ||
+      !emailTypeId ||
+      !phoneTypeId
+    ) {
+      set({ emptyFields: true });
+    }
+
+    if (!get().emptyFields) {
+      try {
+        const response = await fetch(
+          `${connectWiseServiceUrl}/addConnectWiseContact?mspCustomDomain=${mspCustomDomain}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              firstName: firstName,
+              lastName: lastName,
+              email: email,
+              phone: phone,
+              companyId: selectedCompanyId,
+              emailTypeId: emailTypeId,
+              phoneTypeId: phoneTypeId,
+            }),
+          }
+        );
+
+        if (response.status === 200) {
+          const newCompanyEmployee = await response.json();
+          console.log("EMPLOYEE ADDED!");
+          set({
+            companyPSAEmployees: [...companyPSAEmployees, newCompanyEmployee],
+            successMessage: true,
+            errorMessage: false,
+          });
+          set({ emptyFields: false });
+        } else {
+          console.log("EMPLOYEE ADD FAILED!");
+          set({
+            successMessage: false,
+            errorMessage: true,
+          });
         }
-      );
-
-      if (response.status === 200) {
-        const newCompanyEmployee = await response.json();
-        console.log("EMPLOYEE ADDED!");
-        set({
-          companyPSAEmployees: [...companyPSAEmployees, newCompanyEmployee],
-          successMessage: true,
-          errorMessage: false,
-        });
-      } else {
-        console.log("EMPLOYEE ADD FAILED!");
-        set({
-          successMessage: false,
-          errorMessage: true,
-        });
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.log(e);
     }
   },
 
