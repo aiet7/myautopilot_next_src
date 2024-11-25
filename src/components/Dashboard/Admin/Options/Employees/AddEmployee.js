@@ -84,17 +84,16 @@ const AddEmployee = () => {
                     }
                   />
                 </div>
-                {/* // TODO: set up 2fa options here
-                    // ? initialize user with email if admin creates acct for tech?
-                    // ? how to design it, do i add drop down and onclick a popup to verify?
-                    // TODO: create validations for all inputs
-                */}
               </div>
-              {errors.uniqueEmail &&  (
-                <p className="font-semibold text-red-500">Account already exists with that email</p>
+              {errors.uniqueEmail && (
+                <p className="font-semibold text-red-500">
+                  Account already exists with that email
+                </p>
               )}
-              {errors.emptyFields &&  (
-                <p className="font-semibold text-red-500">Fields cannot be empty</p>
+              {errors.emptyFields && (
+                <p className="font-semibold text-red-500">
+                  Fields cannot be empty
+                </p>
               )}
             </div>
           </div>
@@ -110,7 +109,7 @@ const AddEmployee = () => {
             <button
               onClick={() => handleSaveNewEmployee(user?.mspCustomDomain)}
               className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white rounded-lg py-2 px-20 font-bold"
-              >
+            >
               Save
             </button>
           </div>
