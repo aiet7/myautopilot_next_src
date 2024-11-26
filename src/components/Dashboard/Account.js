@@ -104,7 +104,7 @@ const Account = ({}) => {
                       placeholder="First name"
                     />
                     <AiOutlineCheck
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:text-blue-700"
                       onClick={() => {
                         userInputs.firstName != "" &&
                           handleSaveChanges(
@@ -115,7 +115,7 @@ const Account = ({}) => {
                     />
 
                     <AiOutlineClose
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:text-blue-700"
                       onClick={() => handleCancelEdit("firstName")}
                     />
                   </div>
@@ -124,7 +124,7 @@ const Account = ({}) => {
                     <p>{userInputs?.["firstName"]}</p>
                     <AiFillEdit
                       size={25}
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:text-blue-700"
                       onClick={() => handleStartEdit("firstName")}
                     />
                   </div>
@@ -151,7 +151,7 @@ const Account = ({}) => {
                       placeholder="Last name"
                     />
                     <AiOutlineCheck
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:text-blue-700"
                       onClick={() => {
                         {
                           userInputs?.lastName != "" &&
@@ -164,7 +164,7 @@ const Account = ({}) => {
                     />
 
                     <AiOutlineClose
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:text-blue-700"
                       onClick={() => handleCancelEdit("lastName")}
                     />
                   </div>
@@ -173,7 +173,7 @@ const Account = ({}) => {
                     <p>{userInputs?.["lastName"]}</p>
                     <AiFillEdit
                       size={25}
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:text-blue-700"
                       onClick={() => handleStartEdit("lastName")}
                     />
                   </div>
@@ -214,7 +214,7 @@ const Account = ({}) => {
                       placeholder="Business phone"
                     />
                     <AiOutlineCheck
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:text-blue-700"
                       onClick={() => {
                         {
                           userInputs?.phoneNumber != "" &&
@@ -226,7 +226,7 @@ const Account = ({}) => {
                       }}
                     />
                     <AiOutlineClose
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:text-blue-700"
                       onClick={() => handleCancelEdit("phoneNumber")}
                     />
                   </div>
@@ -235,7 +235,7 @@ const Account = ({}) => {
                     <p>{userInputs?.["phoneNumber"]}</p>
                     <AiFillEdit
                       size={25}
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:text-blue-700"
                       onClick={() => handleStartEdit("phoneNumber")}
                     />
                   </div>
@@ -267,7 +267,7 @@ const Account = ({}) => {
                         placeholder="Street"
                       />
                       <AiOutlineCheck
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:text-blue-700"
                         onClick={() => {
                           {
                             userInputs?.street != "" &&
@@ -279,7 +279,7 @@ const Account = ({}) => {
                         }}
                       />
                       <AiOutlineClose
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:text-blue-700"
                         onClick={() => handleCancelEdit("street")}
                       />
                     </div>
@@ -288,7 +288,7 @@ const Account = ({}) => {
                       <p>{userInputs?.["street"]}</p>
                       <AiFillEdit
                         size={25}
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:text-blue-700"
                         onClick={() => handleStartEdit("street")}
                       />
                     </div>
@@ -315,7 +315,7 @@ const Account = ({}) => {
                         placeholder="City"
                       />
                       <AiOutlineCheck
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:text-blue-700"
                         onClick={() => {
                           {
                             userInputs?.city != "" &&
@@ -324,7 +324,7 @@ const Account = ({}) => {
                         }}
                       />
                       <AiOutlineClose
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:text-blue-700"
                         onClick={() => handleCancelEdit("city")}
                       />
                     </div>
@@ -333,7 +333,7 @@ const Account = ({}) => {
                       <p>{userInputs?.["city"]}</p>
                       <AiFillEdit
                         size={25}
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:text-blue-700"
                         onClick={() => handleStartEdit("city")}
                       />
                     </div>
@@ -361,7 +361,7 @@ const Account = ({}) => {
                         placeholder="Zipcode"
                       />
                       <AiOutlineCheck
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:text-blue-700"
                         onClick={() => {
                           {
                             userInputs?.zipcode != "" &&
@@ -373,7 +373,7 @@ const Account = ({}) => {
                         }}
                       />
                       <AiOutlineClose
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:text-blue-700"
                         onClick={() => handleCancelEdit("zipcode")}
                       />
                     </div>
@@ -382,7 +382,7 @@ const Account = ({}) => {
                       <p>{userInputs?.["zipcode"]}</p>
                       <AiFillEdit
                         size={25}
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:text-blue-700"
                         onClick={() => handleStartEdit("zipcode")}
                       />
                     </div>
@@ -410,7 +410,7 @@ const Account = ({}) => {
                         placeholder="State"
                       />
                       <AiOutlineCheck
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:text-blue-700"
                         onClick={() => {
                           {
                             userInputs?.state != "" &&
@@ -422,7 +422,7 @@ const Account = ({}) => {
                         }}
                       />
                       <AiOutlineClose
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:text-blue-700"
                         onClick={() => handleCancelEdit("state")}
                       />
                     </div>
@@ -431,7 +431,7 @@ const Account = ({}) => {
                       <p>{userInputs?.companyAddress?.["state"]}</p>
                       <AiFillEdit
                         size={25}
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:text-blue-700"
                         onClick={() => handleStartEdit("state")}
                       />
                     </div>
@@ -485,10 +485,10 @@ const Account = ({}) => {
                       </div>
                       <AiOutlineCheck
                         onClick={handleResetPassword}
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:text-blue-700"
                       />
                       <AiOutlineClose
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:text-blue-700"
                         onClick={() => handleCancelEdit("password")}
                       />
                     </div>
@@ -496,7 +496,7 @@ const Account = ({}) => {
                     <div className="flex items-center gap-4">
                       <AiFillEdit
                         size={25}
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:text-blue-700"
                         onClick={() => handleStartEdit("password")}
                       />
                     </div>
@@ -546,7 +546,10 @@ const Account = ({}) => {
                   <p className="font-bold text-lg">{">"}</p>
                 </div>
                 <p className="bottom-7 absolute left-7">
-                  Current method: {user?.authPreference}
+                  Current 2FA method:{" "}
+                  {user?.authPreference == "email"
+                    ? "Email Authentication"
+                    : "App Authentication"}
                 </p>
               </>
             )}
@@ -555,10 +558,15 @@ const Account = ({}) => {
                 <h2 className="text-xl font-semibold dark:text-black text-center p-10">
                   Set up authenticator app
                 </h2>
-                <ul className="list-disc mb-4 dark:text-black pb-[30px] pl-10">
-                  <li>Open your authentication app</li>
-                  <li>Scan the QR code below</li>
+                <ul className="list-disc mb-4 dark:text-black pb-[30px] pl-[25%]">
+                  <li>
+                    Open your authentication app
+                    </li>
+                  <li>
+                    Scan the QR code below
+                    </li>
                 </ul>
+                
                 <img
                   className="mx-auto sm:w-[150px] h-auto w-3/5"
                   src={`https://api.qrserver.com/v1/create-qr-code/?data=otpauth://totp/${user?.mspCustomDomain}:${user?.email}?secret=${user?.secret}&issuer=${user?.mspCustomDomain}`}
@@ -585,15 +593,17 @@ const Account = ({}) => {
             )}
             {authPopup == "manualQr" && (
               <>
-                <ol className="list-decimal mb-4 dark:text-black p-10">
-                  <li>In the Authenticator app enter account details</li>
-                  <li>
+                <h2 className="text-lg font-semibold dark:text-black text-center pt-10">
+                  In the Authenticator app enter account details:
+                </h2>
+                <div className="dark:text-black pl-7 pt-6 absolute">
+                  <p>
                     Account name: <strong>{user?.mspCustomDomain}</strong>
-                  </li>
-                  <li>
+                  </p>
+                  <p>
                     Secret key: <strong>{user?.secret}</strong>
-                  </li>
-                </ol>
+                  </p>
+                </div>
                 <button
                   className="text-blue-500 hover:text-gray-700 font-semibold absolute bottom-7 left-7 flex space-x-4"
                   onClick={() => setAuthPopup("qrOpen")}
@@ -647,11 +657,11 @@ const Account = ({}) => {
                 <h2 className="text-xl font-semibold dark:text-black text-center p-10">
                   Set up email authentication
                 </h2>
-                <p className="pl-4">
+                <p className="pl-[25%]">
                   Send code to: <strong>{user.email}</strong>
                 </p>
                 <button
-                  className="pl-4 pt-4 text-blue-500 font-semibold hover:text-gray-600"
+                  className="pl-[25%] pt-4 text-blue-500 font-semibold hover:text-gray-600"
                   onClick={() => {
                     handleSendEmailToken(user);
                     setAuthPopup("emailValidate");
@@ -694,7 +704,7 @@ const Account = ({}) => {
                   <p className="text-sm text-red-500 p-4">Incorrect code</p>
                 )}
                 {successMessage && (
-                  <p className="text-sm text-gray-500 p-4">Code sent</p>
+                  <p className="text-sm text-gray-500 p-4">Code sent!</p>
                 )}
                 <button
                   className="text-blue-500 hover:text-gray-700 font-semibold absolute bottom-7 left-7 flex space-x-4"
