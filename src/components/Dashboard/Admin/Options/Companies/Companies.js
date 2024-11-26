@@ -8,6 +8,7 @@ import ViewEmployees from "./ViewEmployees/ViewEmployees";
 import ViewCompanies from "./ViewCompanies";
 import ViewAllTickets from "./ViewAllTickets";
 import ViewEmployeeTickets from "./ViewEmployeeTickets";
+import { IoArrowBack } from "react-icons/io5";
 
 const Companies = () => {
   const { user } = useUserStore();
@@ -24,12 +25,16 @@ const Companies = () => {
   useEffect(() => {
     initializeCompanies();
   }, [user]);
-  
+
   const renderBreadCrumb = () => {
     switch (currentView) {
       case "CompanyEmployees":
         return (
           <h1 className="text-2xl">
+            <IoArrowBack
+              onClick={() => setCurrentView("Companies")}
+              className="hover:underline cursor-pointer hover:text-blue-700"
+            />
             <span
               onClick={() => setCurrentView("Companies")}
               className="hover:underline cursor-pointer"
@@ -42,6 +47,10 @@ const Companies = () => {
       case "CompanyAllTickets":
         return (
           <h1 className="text-2xl">
+            <IoArrowBack
+              onClick={() => setCurrentView("CompanyEmployees")}
+              className="hover:underline cursor-pointer hover:text-blue-700"
+            />
             <span
               onClick={() => setCurrentView("Companies")}
               className="hover:underline cursor-pointer"
@@ -61,6 +70,10 @@ const Companies = () => {
       case "CompanyEmployeeTickets":
         return (
           <h1 className="text-2xl">
+            <IoArrowBack
+              onClick={() => setCurrentView("CompanyEmployees")}
+              className="hover:underline cursor-pointer hover:text-blue-700"
+            />
             <span
               onClick={() => setCurrentView("Companies")}
               className="hover:underline cursor-pointer"

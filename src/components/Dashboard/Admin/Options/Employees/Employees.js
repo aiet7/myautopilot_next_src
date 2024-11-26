@@ -44,7 +44,7 @@ const Employees = ({}) => {
         <span
           onClick={() => setCurrentView("Active")}
           className={`${
-            currentView !== "Technicians" && "font-bold"
+            currentView !== "Technicians" ? "font-bold" : "hover:text-blue-700"
           } cursor-pointer`}
         >
           Active
@@ -53,7 +53,7 @@ const Employees = ({}) => {
         <span
           onClick={() => setCurrentView("Technicians")}
           className={`${
-            currentView === "Technicians" && "font-bold"
+            currentView === "Technicians" ? "font-bold" : "hover:text-blue-700"
           } cursor-pointer`}
         >
           Technicians

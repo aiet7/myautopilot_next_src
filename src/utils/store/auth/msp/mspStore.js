@@ -85,7 +85,7 @@ const useMspStore = create((set, get) => ({
   authError: false,
 
   authPopup: "closed",
-  // change 2faPopup to be a string and compare later to give more options for popup card ("open", "emailOpen, "emailVerification", "qrOpen", "manualQr", "qrVerification", "closed")
+  // string to give more options for popup card ("open", "emailOpen, "emailVerification", "qrOpen", "manualQr", "qrVerification", "closed")
 
   authCard: false,
 

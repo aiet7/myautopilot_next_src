@@ -33,7 +33,9 @@ const ViewEmployees = () => {
             <span
               onClick={() => setCurrentEmployeeView("Active")}
               className={`${
-                currentEmployeeView !== "PSA Contacts" && "font-bold"
+                currentEmployeeView !== "PSA Contacts"
+                  ? "font-bold"
+                  : "hover:text-blue-700"
               } cursor-pointer`}
             >
               Active
@@ -43,7 +45,9 @@ const ViewEmployees = () => {
             <span
               onClick={() => setCurrentEmployeeView("PSA Contacts")}
               className={`${
-                currentEmployeeView === "PSA Contacts" && "font-bold"
+                currentEmployeeView === "PSA Contacts"
+                  ? "font-bold"
+                  : "hover:text-blue-700"
               } cursor-pointer`}
             >
               PSA Contacts
