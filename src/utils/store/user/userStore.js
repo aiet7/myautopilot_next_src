@@ -47,8 +47,10 @@ const useUserStore = create((set, get) => ({
     if (storedUser && storedUser.id === id) {
       userData = storedUser;
     } else if (msp && id) {
+      
       const fetchUser = userType === "tech" ? handleGetTech : handleGetClient;
       const fetchedUser = await fetchUser(msp, id);
+     
       if (fetchedUser) {
         saveUser(fetchedUser);
         userData = fetchedUser;
@@ -121,7 +123,6 @@ const useUserStore = create((set, get) => ({
         }
       : { ...user, [field]: value };
 
-    console.log("updated", updatedUser);
     try {
       const response = await fetch(
         `${dbServiceUrl}/${user.mspCustomDomain}/${userTypeEndpoint}/edit`,

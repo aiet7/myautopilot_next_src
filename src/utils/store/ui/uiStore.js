@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import useQueueStore from "../interaction/queue/queueStore";
-import useAssistantStore from "../assistant/assistantStore";
 import useConversationStore from "../interaction/conversations/conversationsStore";
 
 const isBrowser = typeof window !== "undefined";
@@ -12,7 +11,7 @@ const useUiStore = create((set, get) => ({
   height: null,
   activeTab: null,
   options: ["Tickets", "Dispatch", "Assistant", "Settings"],
-  currentNavOption: "Tickets",
+  currentNavOption: null,
   showQueueSubMenu: false,
   openHistory: initialWidth > 1023 ? true : false,
   openAssistant: initialWidth > 1023 ? true : false,

@@ -14,7 +14,7 @@ import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
 
 const Interaction = ({}) => {
   const {
-    openNav, 
+    openNav,
     currentNavOption,
     openAssistant,
     handleAssistantMenu,

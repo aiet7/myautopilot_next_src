@@ -4,9 +4,12 @@ import useAssistantStore from "../assistant/assistantStore";
 import useConversationStore from "../interaction/conversations/conversationsStore";
 import useAdminStore from "../admin/adminStore";
 import useUserStore from "../user/userStore";
+import useMspStore from "../auth/msp/mspStore";
 
 const useLocalStorageStore = create((set, get) => ({
   getStorage: (navigator, option) => {
+    const isInIframe = window.self !== window.top;
+
     const lastActiveDirectory =
       localStorage.getItem("lastActiveDirectory") || "{}";
     const lastUI = localStorage.getItem("lastUI") || "{}";
@@ -28,7 +31,11 @@ const useLocalStorageStore = create((set, get) => ({
     useUiStore.setState({
       activeTab:
         parsedLastUI.activeTab || (isOnAdminRoute ? "admin" : "iTAgent"),
-      currentNavOption: parsedLastUI.currentNavOption || "Tickets",
+      currentNavOption:
+        parsedLastUI.currentNavOption ||
+        (navigator.includes("/etech7/") && !navigator.includes("/dashboard/")
+          ? "Assistant"
+          : "Tickets"),
     });
 
     useAssistantStore.setState({
@@ -39,9 +46,9 @@ const useLocalStorageStore = create((set, get) => ({
     });
 
     useConversationStore.setState({
-      currentConversationIndex: parsedLastConvoIndex.currentConversationIndex || null,
+      currentConversationIndex:
+        parsedLastConvoIndex.currentConversationIndex || null,
     });
-   
   },
 
   setStorage: () => {
@@ -50,7 +57,6 @@ const useLocalStorageStore = create((set, get) => ({
     const { activeTab, currentNavOption } = useUiStore.getState();
     const { isIntroScreen } = useAssistantStore.getState();
     const { currentConversationIndex } = useConversationStore.getState();
-    
 
     localStorage.setItem("lastActiveDirectory", JSON.stringify(user));
     localStorage.setItem(
@@ -114,7 +120,6 @@ const useLocalStorageStore = create((set, get) => ({
       currentConversationIndex:
         defaultStates.conversation.currentConversationIndex,
     });
-  
 
     localStorage.removeItem("lastActiveDirectory");
     localStorage.removeItem("lastUI");

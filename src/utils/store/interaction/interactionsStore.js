@@ -100,12 +100,20 @@ const useInteractionStore = create((set, get) => ({
 
   handleScrollToBottom: (smooth) => {
     const { latestMessageRef } = useRefStore.getState();
-    latestMessageRef.current?.scrollIntoView({
-      behavior: smooth ? "smooth" : "auto",
-      block: "end",
-    });
+    const isInIframe = window.self !== window.top;
+  
+    if (isInIframe) {
+      latestMessageRef.current?.scrollIntoView({
+        behavior: smooth ? "smooth" : "auto",
+        block: "center", 
+      });
+    } else {
+      latestMessageRef.current?.scrollIntoView({
+        behavior: smooth ? "smooth" : "auto",
+        block: "end",
+      });
+    }
   },
-
   handleCheckScroll: () => {
     const { chatContainerRef } = useRefStore.getState();
     const container = chatContainerRef.current;
@@ -313,6 +321,7 @@ const useInteractionStore = create((set, get) => ({
     const { inputRef, messageIdRef } = useRefStore.getState();
     const userStore = useUserStore.getState();
     const {
+      podDetails,
       handleIfConversationExists,
       handleAddJarvisUserMessage,
       handleAddJarvisAssistantMessage,
@@ -348,7 +357,9 @@ const useInteractionStore = create((set, get) => ({
           body: JSON.stringify({
             text: userMessage,
             conversationId: currentConversation.id,
-            technicianId: userStore.user.id,
+            technicianId: userStore.user
+              ? userStore.user.id
+              : `Pod-${podDetails.cw_id}-${podDetails.msp}`,
           }),
         });
 
@@ -418,6 +429,7 @@ const useInteractionStore = create((set, get) => ({
 
         if (response.status === 200) {
           const responseBody = await response.json();
+          console.log(responseBody);
           messageIdRef.current = responseBody.id;
           handleAddAssistantTroubleshootMessage(responseBody.aiContent);
         }

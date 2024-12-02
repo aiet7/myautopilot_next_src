@@ -30,14 +30,14 @@ const MSPPage = ({}) => {
     clearMSPCredentials,
     initializeUserType,
   } = useMspStore();
-
   const { showPassword, setShowPassword, handleShowForgotPassword } =
     useAuthStore();
   const router = useRouter();
-  
+
   useEffect(() => {
     if (router.isReady) {
       const { msp } = router.query;
+
       if (msp) {
         initializeSubDomain(msp);
       } else {

@@ -174,3 +174,26 @@ export const isPhoneInputValid = (phoneInput) => {
   const cleanedInput = phoneInput.trim().replace(/\D/g, "");
   return cleanedInput.length === 9 || cleanedInput.length === 10;
 };
+
+export const isPasswordValid = (password) => {
+  const minLength = 8;
+  const specialCharPattern = /[!@#$%^&*(),.?":{}|<>]/;
+  const upperCasePattern = /[A-Z]/;
+
+  const errors = [];
+
+  if (password.length < minLength) {
+    errors.push(`Password needs to be at least ${minLength} characters.`);
+  }
+  if (!specialCharPattern.test(password)) {
+    errors.push(`Password needs at least one special character.`);
+  }
+  if (!upperCasePattern.test(password)) {
+    errors.push(`Password needs at least one uppercase character.`);
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+  };
+};

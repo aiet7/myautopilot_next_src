@@ -15,7 +15,7 @@ const LoginPage = () => {
     handleNavigateTechnicianPage,
     handleNavigateMSPSignup,
     handleNavigateClientPage,
-  } = useMspStore.getState();
+  } = useMspStore();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -28,7 +28,7 @@ const LoginPage = () => {
       };
     }
   }, []);
-
+  
   return (
     <>
       {height && (

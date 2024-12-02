@@ -18,7 +18,25 @@ const MSPSignupPage = () => {
     setFileSizeError,
     handleSignupProgression,
     clearMSPCredentials,
+    submit,
   } = useMspStore();
+
+  const allErrors = [];
+
+  if (errorMessage?.publicSignup) {
+    allErrors.push("Email Already Exists*.");
+  }
+  if (!errorMessage?.validEmail) {
+    allErrors.push("Email is not valid*");
+  }
+  if (errorMessage?.emptyFields) {
+    allErrors.push("Please fill out required fields*.");
+  }
+
+  if (errorMessage?.validPassword) {
+    allErrors.push(...errorMessage.validPassword);
+  }
+
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -63,9 +81,7 @@ const MSPSignupPage = () => {
                   ? "Enter Your MSP Details."
                   : "Enter Your Technician Details."}
               </h1>
-              {errorMessage?.emailCheck && (
-                <p className="text-red-500">Email does not exist.</p>
-              )}
+
               {errorMessage?.fileSize && (
                 <p className="text-red-500">
                   Maximum image size exeeds 400x400.
@@ -116,7 +132,7 @@ const MSPSignupPage = () => {
                     onChange={(e) =>
                       setSignupInputs("mspInfo", "phoneNumber", e.target.value)
                     }
-                    type="text"
+                    type="number"
                     placeholder="Company Phone Number*"
                     className="rounded w-full p-2 border border-gray-300  bg-white text-black"
                   />
@@ -136,17 +152,16 @@ const MSPSignupPage = () => {
                       if (file) {
                         const img = new Image();
                         img.onload = () => {
-                          
                           if (img.width >= 400 || img.height >= 400) {
                             setSignupInputs("mspInfo", "brandLogoFile", null);
                             setFileSizeError(true);
-                            e.target.value = ""; 
+                            e.target.value = "";
                           } else {
                             setSignupInputs("mspInfo", "brandLogoFile", file);
                             setFileSizeError(false);
                           }
                         };
-                        img.src = URL.createObjectURL(file); 
+                        img.src = URL.createObjectURL(file);
                       }
                     }}
                     type="file"
@@ -155,63 +170,104 @@ const MSPSignupPage = () => {
                 </>
               ) : (
                 <>
+                  <div>
+                    {submit && (
+                      <>
+                        {allErrors.map((error, index) => (
+                          <p key={index} className="text-red-500">
+                            {error}
+                          </p>
+                        ))}
+                      </>
+                    )}
+                  </div>
                   <div className="flex gap-2">
+                    <div>
+                      <label>First Name</label>
+                      <input
+                        value={signupInputs.techInfo.firstName}
+                        onChange={(e) =>
+                          setSignupInputs(
+                            "techInfo",
+                            "firstName",
+                            e.target.value
+                          )
+                        }
+                        type="text"
+                        placeholder="First name*"
+                        className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                      />
+                    </div>
+                    <div>
+                      <label>Last Name</label>
+                      <input
+                        value={signupInputs.techInfo.lastName}
+                        onChange={(e) =>
+                          setSignupInputs(
+                            "techInfo",
+                            "lastName",
+                            e.target.value
+                          )
+                        }
+                        type="text"
+                        placeholder="Last name*"
+                        className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label>Email</label>
                     <input
-                      value={signupInputs.techInfo.firstName}
+                      value={signupInputs.techInfo.email}
                       onChange={(e) =>
-                        setSignupInputs("techInfo", "firstName", e.target.value)
+                        setSignupInputs("techInfo", "email", e.target.value)
                       }
-                      type="text"
-                      placeholder="First name*"
-                      className="rounded w-full p-2 border border-gray-300  bg-white text-black"
-                    />
-                    <input
-                      value={signupInputs.techInfo.lastName}
-                      onChange={(e) =>
-                        setSignupInputs("techInfo", "lastName", e.target.value)
-                      }
-                      type="text"
-                      placeholder="Last name*"
+                      type="email"
+                      placeholder="Email address*"
                       className="rounded w-full p-2 border border-gray-300  bg-white text-black"
                     />
                   </div>
+                  <div>
+                    <label>Role</label>
+                    <input
+                      value={signupInputs.techInfo.role}
+                      onChange={(e) =>
+                        setSignupInputs("techInfo", "role", e.target.value)
+                      }
+                      type="text"
+                      placeholder="Role*"
+                      className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                    />
+                  </div>
+                  <div>
+                    <label>Phone Number</label>
 
-                  <input
-                    value={signupInputs.techInfo.email}
-                    onChange={(e) =>
-                      setSignupInputs("techInfo", "email", e.target.value)
-                    }
-                    type="email"
-                    placeholder="Email address*"
-                    className="rounded w-full p-2 border border-gray-300  bg-white text-black"
-                  />
-                  <input
-                    value={signupInputs.techInfo.role}
-                    onChange={(e) =>
-                      setSignupInputs("techInfo", "role", e.target.value)
-                    }
-                    type="text"
-                    placeholder="Role*"
-                    className="rounded w-full p-2 border border-gray-300  bg-white text-black"
-                  />
-                  <input
-                    value={signupInputs.techInfo.phoneNumber}
-                    onChange={(e) =>
-                      setSignupInputs("techInfo", "phoneNumber", e.target.value)
-                    }
-                    type="text"
-                    placeholder="Phone number*"
-                    className="rounded w-full p-2 border border-gray-300  bg-white text-black"
-                  />
-                  <input
-                    value={signupInputs.techInfo.password}
-                    onChange={(e) =>
-                      setSignupInputs("techInfo", "password", e.target.value)
-                    }
-                    type="password"
-                    placeholder="Password*"
-                    className="rounded w-full p-2 border border-gray-300  bg-white text-black"
-                  />
+                    <input
+                      value={signupInputs.techInfo.phoneNumber}
+                      onChange={(e) =>
+                        setSignupInputs(
+                          "techInfo",
+                          "phoneNumber",
+                          e.target.value
+                        )
+                      }
+                      type="number"
+                      placeholder="Phone number*"
+                      className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                    />
+                  </div>
+                  <div>
+                    <label>Password</label>
+                    <input
+                      value={signupInputs.techInfo.password}
+                      onChange={(e) =>
+                        setSignupInputs("techInfo", "password", e.target.value)
+                      }
+                      type="password"
+                      placeholder="Password*"
+                      className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                    />
+                  </div>
                 </>
               )}
             </div>

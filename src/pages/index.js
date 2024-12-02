@@ -22,12 +22,13 @@ const WelcomePage = () => {
 
       const handleResize = () => setHeight(window.innerHeight);
       window.addEventListener("resize", handleResize);
+
       return () => {
         window.removeEventListener("resize", handleResize);
       };
     }
   }, []);
-
+  
   return (
     <>
       {height && (
@@ -52,7 +53,6 @@ const WelcomePage = () => {
               with Intelligent AI Automation
             </h2>
             <div className="flex gap-4 ">
-             
               <button
                 onClick={handleShowLogin}
                 className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white w-full  py-3 rounded-lg lg:w-[150px]"
