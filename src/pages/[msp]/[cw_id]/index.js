@@ -22,7 +22,7 @@ const PodPage = () => {
       getStorage(currentPath, null);
 
       if ((msp, cw_id)) {
-        initializePod(msp, 632006);
+        initializePod(msp, cw_id ? cw_id : 632006);
       }
     }
   }, [router.isReady, router.asPath]);

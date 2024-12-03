@@ -180,9 +180,9 @@ const useConversationStore = create((set, get) => ({
     if (ticketResponse.status === 200) {
       const ticket = await ticketResponse.json();
       let ticketInformation = `Category: ${
-        ticket.type.name || "N/A"
-      }, Subcategory: ${ticket.subType.name || "N/A"}, Title: ${
-        ticket.summary
+        ticket.type?.name || "N/A"
+      }, Subcategory: ${ticket.subType?.name || "N/A"}, Title: ${
+        ticket?.summary
       } `;
 
       const notesReponse = await fetch(
