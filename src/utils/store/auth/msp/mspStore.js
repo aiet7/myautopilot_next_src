@@ -493,7 +493,6 @@ const useMspStore = create((set, get) => ({
       });
       return;
     }
-    console.log(window.location);
     try {
       const response = await fetch(`${dbServiceUrl}/technicianUsers/signin`, {
         method: "POST",
@@ -680,7 +679,7 @@ const useMspStore = create((set, get) => ({
     }
   },
 
-  handleTechnician2FALogin: async (navigator, mspCustomDomain) => {
+  handleTechnician2FALogin: async (navigator, mspCustomDomain, window) => {
     const { loginInputs, errorMessage } = get();
     const { techInfo } = loginInputs;
 

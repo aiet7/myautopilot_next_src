@@ -155,15 +155,6 @@ export const handleGetConversations = async (agentId, clientId) => {
   return response.json();
 };
 
-//   const response = await fetch(
-//     `http://localhost:9019/conversations/getConversationsByAgentID?agentId=${encodeURIComponent(
-//       agentId
-//     )}&userId=${encodeURIComponent(clientId)}`
-//   );
-
-//   return response.json();
-// };
-
 export const handleGetMessages = async (conversationId) => {
   const response = await fetch(
     `${dbServiceUrl}/getMessages?conversationId=${encodeURIComponent(

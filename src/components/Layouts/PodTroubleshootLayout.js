@@ -3,7 +3,7 @@
 import useUiStore from "@/utils/store/ui/uiStore";
 import { useEffect } from "react";
 
-const PodLayout = ({ children }) => {
+const PodTroubleshootLayout = ({ children }) => {
   const { height, setHeight } = useUiStore();
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const PodLayout = ({ children }) => {
     <>
       {height && (
         <div
-          id="PodLayout_Container"
+          id="PodTroubleshootLayout_Container"
           className="flex flex-col h-full w-full "
           style={{ height: `calc(${height}px - 1px)` }}
         >
@@ -40,4 +40,4 @@ const PodLayout = ({ children }) => {
   );
 };
 
-export default PodLayout;
+export default PodTroubleshootLayout;
