@@ -17,7 +17,6 @@ const TicketForm = () => {
   useEffect(() => {
     handleCreateTicketCategories();
   }, []);
-
   return (
     <div className="flex flex-col gap-2 overflow-y-auto p-4 h-full scrollbar-thin">
       {ticket?.currentTicketTitle === "" ? (
@@ -66,10 +65,10 @@ const TicketForm = () => {
                     Select Company
                   </option>
                   {ticket.currentCompanies?.map((company) => {
-                    const { name, connectWiseCompanyId } = company;
+                    const {id, name, connectWiseCompanyId } = company;
                     return (
                       <option
-                        key={connectWiseCompanyId}
+                        key={id}
                         value={connectWiseCompanyId}
                       >
                         {name}
