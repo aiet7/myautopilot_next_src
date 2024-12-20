@@ -199,7 +199,8 @@ const Manage = () => {
 
                 {!mspIntegrations?.connectWiseManageIntegrator && (
                   <>
-                    {mspIntegrations?.connectWiseManageIntegration?.publicKey ? (
+                    {mspIntegrations?.connectWiseManageIntegration
+                      ?.publicKey ? (
                       <button
                         onClick={() =>
                           handleRemoveManageKeys(user?.mspCustomDomain)
@@ -220,7 +221,6 @@ const Manage = () => {
                     )}
                   </>
                 )}
-
               </div>
 
               <div className="p-4 flex items-center justify-end gap-4">

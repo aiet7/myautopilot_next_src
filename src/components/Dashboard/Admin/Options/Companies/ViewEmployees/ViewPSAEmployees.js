@@ -10,7 +10,7 @@ const ViewPSAEmployees = () => {
     handleViewCompanyEmployeeTickets,
     handleSaveCompanyEmployee,
   } = useCompaniesStore();
-
+console.log(companyPSAEmployees)
   return (
     <>
       {companyPSAEmployees?.length !== 0 ? (
@@ -37,9 +37,8 @@ const ViewPSAEmployees = () => {
                     id,
                     firstName,
                     lastName,
-                    connectWiseEmailId,
-                    connectWisePhoneNumber,
-                    defaultPhoneNbr,
+                    email,
+                    phone,
                   } = employee;
                   return (
                     <tr
@@ -67,10 +66,10 @@ const ViewPSAEmployees = () => {
                         {firstName + " " + lastName}
                       </td>
                       <td className="p-2 truncate border-r border-b">
-                        {connectWiseEmailId}
+                        {email}
                       </td>
                       <td className="p-2 truncate border-r border-b">
-                        {connectWisePhoneNumber || defaultPhoneNbr}
+                        {phone}
                       </td>
                     </tr>
                   );

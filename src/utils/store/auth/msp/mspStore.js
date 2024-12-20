@@ -843,15 +843,15 @@ const useMspStore = create((set, get) => ({
     const { signupInputs, selectedTechnician } = get();
     const { techInfo } = signupInputs;
 
-    const { id, connectWiseMembersId, primaryEmail, ...restTechnicianDetails } =
+    const { id, psaMembersId, email, ...restTechnicianDetails } =
       selectedTechnician;
 
     const payload = {
       ...restTechnicianDetails,
-      email: primaryEmail,
+      email: email,
       password: techInfo.password,
-      connectWiseMembersAutopilotDbId: id,
-      connectWiseTechnicanId: connectWiseMembersId,
+      psaMembersAutopilotDbId: id,
+      psaMembersId: psaMembersId,
     };
 
     try {
@@ -882,13 +882,13 @@ const useMspStore = create((set, get) => ({
     const { clientInfo } = signupInputs;
     const payload = {
       ...selectedClient,
-      email: selectedClient.connectWiseEmailId,
+      email: selectedClient.email,
       password: clientInfo.password,
     };
 
     try {
       const response = await fetch(
-        `${dbServiceUrl}/${mspCustomDomain}/clientUsers/createAccount?connectWiseCompanyId=${selectedClient.connectWiseCompanyId}&clientId=${selectedClient.id}`,
+        `${dbServiceUrl}/${mspCustomDomain}/clientUsers/createAccount?psaCompanyId=${selectedClient.psaCompanyId}`,
         {
           method: "POST",
           headers: {

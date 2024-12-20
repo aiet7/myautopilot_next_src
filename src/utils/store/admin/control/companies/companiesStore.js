@@ -1,7 +1,4 @@
-import {
-  handleGetManageDBClients,
-  handleGetRoles,
-} from "@/utils/api/serverProps";
+import { handleGetPsaDBClients, handleGetRoles } from "@/utils/api/serverProps";
 import useUserStore from "@/utils/store/user/userStore";
 import { create } from "zustand";
 
@@ -52,7 +49,7 @@ const useCompaniesStore = create((set, get) => ({
     if (userStore.user) {
       try {
         const [dbClients, newRoles] = await Promise.all([
-          handleGetManageDBClients(userStore.user.mspCustomDomain),
+          handleGetPsaDBClients(userStore.user.mspCustomDomain),
           handleGetRoles(userStore.user.mspCustomDomain),
         ]);
         set({
@@ -100,15 +97,15 @@ const useCompaniesStore = create((set, get) => ({
     mspCustomDomain,
     companyId,
     companyName,
-    connectWiseClientsAutopilotDbId,
-    connectWiseCompanyId
+    psaClientsAutopilotDbId,
+    psaCompanyId
   ) => {
     try {
       const activeEmployeesPromise = fetch(
         `${dbServiceUrl}/${mspCustomDomain}/clientUsersOfEachClient?clientId=${companyId}`
       );
       const psaEmployeesPromise = fetch(
-        `${dbServiceUrl}/${mspCustomDomain}/connectWiseContactsByClientId?connectWiseCompanyId=${connectWiseCompanyId}`
+        `${dbServiceUrl}/${mspCustomDomain}/psaContactsByClientId?psaCompanyId=${psaCompanyId}`
       );
 
       const [activeResponse, psaResponse] = await Promise.all([
@@ -121,8 +118,8 @@ const useCompaniesStore = create((set, get) => ({
         set({
           companyActiveEmployees: details,
           selectedCompany: companyName,
-          selectedCompanyDbId: connectWiseClientsAutopilotDbId,
-          selectedCompanyId: connectWiseCompanyId,
+          selectedCompanyDbId: psaClientsAutopilotDbId,
+          selectedCompanyId: psaCompanyId,
           currentView: "CompanyEmployees",
         });
       }

@@ -12,7 +12,6 @@ const ViewActiveEmployees = () => {
     handleViewCompanyEmployeeTickets,
     handleSaveCompanyEmployee,
   } = useCompaniesStore();
-
   return (
     <>
       {companyActiveEmployees?.length !== 0 ? (

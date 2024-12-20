@@ -2,10 +2,14 @@
 
 import useBoardStore from "@/utils/store/admin/control/board/boardStore";
 
-const BoardTable = () => {
-    const { boards, selectedBoard, searchValue } = useBoardStore();
-    
-  const filteredBoards = (selectedBoard || boards?.boardDetails)
+const ConnectWiseTable = () => {
+  const { boards, searchValue, selectedBoard } = useBoardStore();
+
+  const filteredBoards = (
+    selectedBoard ||
+    boards?.connectWiseConfig?.boardDetails ||
+    []
+  )
     ?.map((board) => ({
       ...board,
       mspConnectWiseBoardTypes: board.mspConnectWiseBoardTypes?.map((type) => ({
@@ -29,8 +33,8 @@ const BoardTable = () => {
       })),
     }))
     .filter((board) =>
-      board.mspConnectWiseBoardTypes.some(
-        (type) => type.mspConnectWiseBoardSubTypes.length > 0
+      board.mspConnectWiseBoardTypes?.some(
+        (type) => type.mspConnectWiseBoardSubTypes?.length > 0
       )
     );
 
@@ -53,13 +57,26 @@ const BoardTable = () => {
   return (
     <div>
       {filteredBoards?.length > 0 ? (
-        filteredBoards?.map((board) => (
+        filteredBoards.map((board) => (
           <div key={board.boardId}>
-            <h1 className="font-bold pt-4 pb-2 ">
-              Board Name: <span className="font-normal">{board.boardName}</span>
-            </h1>
+            <div className="flex items-center gap-4 font-bold pt-6 pb-2">
+              <h2>
+                Board Name:{" "}
+                <span className="font-normal">{board.boardName}</span>
+              </h2>
+              <h2>
+                Ticket Opening Status:{" "}
+                <span className="font-normal">
+                  {board.newCreatingTicketStatus}
+                </span>
+              </h2>
+              <h2>
+                Ticket Closing Status:{" "}
+                <span className="font-normal">{board.closingTicketStatus}</span>
+              </h2>
+            </div>
             <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
-              <thead className="dark:text-white dark:bg-gray-700  text-black/60 bg-[#F5F8FA]">
+              <thead className="dark:text-white dark:bg-gray-700 text-black/60 bg-[#F5F8FA]">
                 <tr>
                   <th className="p-2 border-t border-b border-r border-l">
                     Type Name
@@ -75,50 +92,40 @@ const BoardTable = () => {
                     Priority Score
                   </th>
                   <th className="p-2 border-t border-b border-r">Tier</th>
-                  <th className="p-2 border-t border-b border-r">SLA Score</th>
+                  <th className="p-2 border-t border-b border-r">
+                    SLA Deadline (hr)
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {board.mspConnectWiseBoardTypes.map((type) =>
-                  type.mspConnectWiseBoardSubTypes.map((subtype, index) => (
+                {board.mspConnectWiseBoardTypes?.map((type) =>
+                  type.mspConnectWiseBoardSubTypes?.map((subtype, index) => (
                     <tr key={subtype.subTypeId}>
                       {index === 0 && (
                         <td
                           className="p-2 border-l border-b"
                           rowSpan={type.mspConnectWiseBoardSubTypes.length}
                         >
-                          {highlightText(type.typeName, searchValue)}
+                          {highlightText(type.typeName)}
                         </td>
                       )}
                       <td className="p-2 border-l border-b">
-                        {highlightText(subtype.subTypeName, searchValue)}
+                        {highlightText(subtype.subTypeName)}
                       </td>
                       <td className="p-2 border-l border-b">
-                        {highlightText(
-                          subtype.subTypeScore?.toString(),
-                          searchValue
-                        )}
+                        {highlightText(subtype.subTypeScore?.toString())}
                       </td>
                       <td className="p-2 border-l border-b">
-                        {highlightText(
-                          subtype.priority?.toString(),
-                          searchValue
-                        )}
+                        {highlightText(subtype.priority?.toString())}
                       </td>
                       <td className="p-2 border-l border-b">
-                        {highlightText(
-                          subtype.priorityScore?.toString(),
-                          searchValue
-                        )}
+                        {highlightText(subtype.priorityScore?.toString())}
                       </td>
-                      <td  className="p-2 border-l border-b">
-                        {highlightText(subtype.tier?.toString(), searchValue)}
+                      <td className="p-2 border-l border-b">
+                        {highlightText(subtype.tier?.toString())}
                       </td>
                       <td className="p-2 border-l border-r border-b">
-                        {highlightText(
-                          subtype.slaDeadLineInHours?.toString(),
-                          searchValue
-                        )}
+                        {highlightText(subtype.slaDeadLineInHours?.toString())}
                       </td>
                     </tr>
                   ))
@@ -136,4 +143,4 @@ const BoardTable = () => {
   );
 };
 
-export default BoardTable;
+export default ConnectWiseTable;

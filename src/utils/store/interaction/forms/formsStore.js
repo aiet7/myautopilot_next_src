@@ -5,7 +5,7 @@ import useTicketConversationsStore from "../conversations/ticketConversationsSto
 import useUserStore from "../../user/userStore";
 import useMspStore from "../../auth/msp/mspStore";
 
-import { handleGetManageDBClients } from "@/utils/api/serverProps";
+import { handleGetPsaDBClients } from "@/utils/api/serverProps";
 import useInteractionStore from "../interactionsStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
@@ -190,7 +190,7 @@ const useFormsStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `${dbServiceUrl}/${userStore.user.mspCustomDomain}/connectWiseBoardDetails`
+        `${dbServiceUrl}/${userStore.user.mspCustomDomain}/getPSATicketingConfiguration`
       );
       if (response.status === 200) {
         const ticketMerge = await response.json();
@@ -228,7 +228,7 @@ const useFormsStore = create((set, get) => ({
       boardId,
       boardName,
     } = responseBody;
-    const companies = await handleGetManageDBClients(
+    const companies = await handleGetPsaDBClients(
       userStore.user.mspCustomDomain
     );
 

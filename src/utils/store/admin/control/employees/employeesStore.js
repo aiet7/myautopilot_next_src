@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import useUserStore from "@/utils/store/user/userStore";
 import {
-  handleGetManageInactiveDBTechnicians,
-  handleGetManageActiveDBTechnicians,
+  handleGetPsaInactiveDBTechnicians,
+  handleGetPsaActiveDBTechnicians,
   handleGetRoles,
 } from "@/utils/api/serverProps";
 
@@ -39,8 +39,8 @@ const useEmployeesStore = create((set, get) => ({
     if (userStore.user) {
       try {
         const [dbEmployees, dbActiveEmployees, newRoles] = await Promise.all([
-          handleGetManageInactiveDBTechnicians(userStore.user.mspCustomDomain),
-          handleGetManageActiveDBTechnicians(userStore.user.mspCustomDomain),
+          handleGetPsaInactiveDBTechnicians(userStore.user.mspCustomDomain),
+          handleGetPsaActiveDBTechnicians(userStore.user.mspCustomDomain),
           handleGetRoles(userStore.user.mspCustomDomain),
         ]);
 

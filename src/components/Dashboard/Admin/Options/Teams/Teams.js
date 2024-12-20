@@ -22,7 +22,7 @@ const Teams = () => {
   useEffect(() => {
     initializeTeams();
   }, [user]);
-
+  
   return (
     <div
       onClick={() => {

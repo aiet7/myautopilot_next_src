@@ -45,14 +45,14 @@ export const handleGetManageTechnicians = async (msp) => {
   return response.json();
 };
 
-export const handleGetManageInactiveDBTechnicians = async (msp) => {
+export const handleGetPsaInactiveDBTechnicians = async (msp) => {
   const response = await fetch(
-    `${dbServiceUrl}/${encodeURIComponent(msp)}/connectWiseMembers`
+    `${dbServiceUrl}/${encodeURIComponent(msp)}/psaMembers`
   );
   return response.json();
 };
 
-export const handleGetManageActiveDBTechnicians = async (msp) => {
+export const handleGetPsaActiveDBTechnicians = async (msp) => {
   const response = await fetch(
     `${dbServiceUrl}/${encodeURIComponent(
       msp
@@ -79,7 +79,7 @@ export const handleGetManageClientAndContactTypes = async (msp) => {
   return response.json();
 };
 
-export const handleGetManageDBClients = async (msp) => {
+export const handleGetPsaDBClients = async (msp) => {
   const response = await fetch(
     `${dbServiceUrl}/${encodeURIComponent(msp)}/clients/getAll`
   );
@@ -124,7 +124,7 @@ export const handleGetManageDBClientContactsActive = async (msp, companyId) => {
 
 export const handleGetDBBoard = async (msp) => {
   const response = await fetch(
-    `${dbServiceUrl}/${encodeURIComponent(msp)}/connectWiseBoardDetails`
+    `${dbServiceUrl}/${encodeURIComponent(msp)}/getPSATicketingConfiguration`
   );
   return response.json();
 };

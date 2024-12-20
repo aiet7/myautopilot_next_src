@@ -10,7 +10,7 @@ import useTicketsStore from "./tickets/ticketsStore";
 import useQueueStore from "./queue/queueStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
-const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
+const connectWiseServiceUrl = process.env.NEXT_PUBLIC_PSA_SERVICE_URL;
 const gptServiceUrl = process.env.NEXT_PUBLIC_GPT_SERVICE_URL;
 
 const useInteractionStore = create((set, get) => ({
@@ -101,11 +101,11 @@ const useInteractionStore = create((set, get) => ({
   handleScrollToBottom: (smooth) => {
     const { latestMessageRef } = useRefStore.getState();
     const isInIframe = window.self !== window.top;
-  
+
     if (isInIframe) {
       latestMessageRef.current?.scrollIntoView({
         behavior: smooth ? "smooth" : "auto",
-        block: "center", 
+        block: "center",
       });
     } else {
       latestMessageRef.current?.scrollIntoView({
@@ -212,7 +212,7 @@ const useInteractionStore = create((set, get) => ({
     const userStore = useUserStore.getState();
     const { isDiagnosticTicketStep, diagnosticTicketMessage } =
       useInteractionStore.getState();
-
+    console.log(userStore);
     const { inputRef } = useRefStore.getState();
     const { handleAddUserMessage, handleAddAssistantMessage } =
       useTicketConversationsStore.getState();
@@ -225,11 +225,11 @@ const useInteractionStore = create((set, get) => ({
       set({ isWaiting: true, isServerError: false, userInput: "" });
 
       try {
-        let endpointUrl = `${connectWiseServiceUrl}/getTicketBoardCategorizationDiagnosticQandA`;
+        let endpointUrl = `${connectWiseServiceUrl}/getTicketCategorizationDiagnosticQandA`;
         let userMessage = message;
 
         if (!isDiagnosticTicketStep) {
-          endpointUrl = `${connectWiseServiceUrl}/getTicketBoardCategorization`;
+          endpointUrl = `${connectWiseServiceUrl}/getTicketCategorizationDiagnosticQandA`;
           userMessage = `${diagnosticTicketMessage}\n${message}`;
         }
 
@@ -240,7 +240,7 @@ const useInteractionStore = create((set, get) => ({
           },
           body: JSON.stringify({
             userMessage: userMessage,
-            userId: userStore.user.id,
+            techId: userStore.user.id,
             mspCustomDomain: userStore.user.mspCustomDomain,
           }),
         });

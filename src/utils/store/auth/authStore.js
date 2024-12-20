@@ -6,6 +6,7 @@ import {
   isInputEmpty,
   isEmailInputValid,
 } from "../../../utils/formValidations.js";
+import useMspStore from "./msp/mspStore.js";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
@@ -341,6 +342,8 @@ const useAuthStore = create((set, get) => ({
 
   handleForgotPasswordEmailCheck: async (navigator, mspCustomDomain) => {
     const { email } = get();
+    const { userType } = useMspStore.getState();
+    const endpoint = userType === "tech" ? "technicianUsers" : "clientUsers";
     if (isInputEmpty(email) || !isEmailInputValid(email)) {
       set({ errorMessage: "A valid email is required." });
 
@@ -350,7 +353,7 @@ const useAuthStore = create((set, get) => ({
     const encodedDomain = encodeURIComponent(mspCustomDomain);
     try {
       const response = await fetch(
-        `${dbServiceUrl}/${encodedDomain}/technicianUsers/forgotPassword?email=${encodedClientUser}`
+        `${dbServiceUrl}/${encodedDomain}/${endpoint}/forgotPassword?email=${encodedClientUser}`
       );
       set({ errorMessage: "" });
 
@@ -364,6 +367,8 @@ const useAuthStore = create((set, get) => ({
 
   handleForgotPasswordVerifyCode: async (navigator, mspCustomDomain) => {
     const { email, verificationCode } = get();
+    const { userType } = useMspStore.getState();
+    const endpoint = userType === "tech" ? "technicianUsers" : "clientUsers";
     if (isInputEmpty(verificationCode)) {
       set({ errorMessage: "A valid verification code required." });
       return;
@@ -374,7 +379,7 @@ const useAuthStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `${dbServiceUrl}/${encodedDomain}/technicianUsers/validateResetToken?email=${encodedClientUser}&token=${encodedVerificationCode}`
+        `${dbServiceUrl}/${encodedDomain}/${endpoint}/validateResetToken?email=${encodedClientUser}&token=${encodedVerificationCode}`
       );
       set({ errorMessage: "", resentCodeMessage: "" });
       if (response.ok) {
@@ -393,6 +398,8 @@ const useAuthStore = create((set, get) => ({
 
   handleCreateNewPassword: async (navigator, mspCustomDomain) => {
     const { email, verificationCode, password, verifyPassword } = get();
+    const { userType } = useMspStore.getState();
+    const endpoint = userType === "tech" ? "technicianUsers" : "clientUsers";
     if (isInputEmpty(password) || isInputEmpty(verifyPassword)) {
       set({ errorMessage: "A valid email is required." });
       return;
@@ -408,7 +415,7 @@ const useAuthStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `${dbServiceUrl}/${encodedDomain}/technicianUsers/changePassword?token=${encodedVerificationCode}`,
+        `${dbServiceUrl}/${encodedDomain}/${endpoint}/changePassword?token=${encodedVerificationCode}`,
         {
           method: "POST",
           headers: {

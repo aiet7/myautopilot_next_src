@@ -16,6 +16,7 @@ const TeamsTable = () => {
     setDeleteMenu,
   } = useTeamsStore();
 
+
   const filteredTeams = (selectedTeam || teams)
     ?.map((team) => ({
       ...team,
@@ -51,10 +52,11 @@ const TeamsTable = () => {
       {deleteMenu && <Confirmation />}
       {filteredTeams?.length > 0 ? (
         filteredTeams?.map((team) => (
+          
           <div key={team.id}>
-            <div className="flex flex-col  pt-[40px] pb-2">
+            <div className="flex flex-col  pt-6 pb-2">
               <h1 className="font-bold">
-                Board Name:{" "}
+                Board/Queue Name:{" "}
                 <span className="font-normal">{team.boardName}</span>
               </h1>
               <h1 className="font-bold">
@@ -87,7 +89,7 @@ const TeamsTable = () => {
               </thead>
               <tbody>
                 {team.members.map((member) => (
-                  <tr key={member.connectWiseTechnicanId}>
+                  <tr key={member.psaMemberId}>
                     <td className="p-2 border-l border-b">
                       <div className="flex gap-3 w-44 xl:w-8">
                         <span

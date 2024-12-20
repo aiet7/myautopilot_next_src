@@ -5,9 +5,7 @@ import useUserStore from "@/utils/store/user/userStore";
 const ViewCompanies = () => {
   const { user } = useUserStore();
   const { companies, handleViewCompanyEmployees } = useCompaniesStore();
- 
   return (
-    
     <div className="flex flex-col  ">
       <div className="flex flex-col gap-7  ">
         <div className="flex flex-col  p-4">
@@ -27,9 +25,7 @@ const ViewCompanies = () => {
                       <th className="p-2 border-t border-b border-r">
                         Address
                       </th>
-                      <th className="p-2 border-t border-b border-r">
-                        Contact
-                      </th>
+                     
                       <th className="p-2 border-t border-b border-r">
                         Phone Number
                       </th>
@@ -40,8 +36,8 @@ const ViewCompanies = () => {
                       const {
                         id,
                         name,
-                        connectWiseCompanyId,
-                        connectWiseClientsAutopilotDbId,
+                        psaCompanyId,
+                        psaClientsAutopilotDbId,
                         addressLine1,
                         addressLine2,
                         city,
@@ -58,8 +54,8 @@ const ViewCompanies = () => {
                               user?.mspCustomDomain,
                               id,
                               name,
-                              connectWiseClientsAutopilotDbId,
-                              connectWiseCompanyId
+                              psaClientsAutopilotDbId,
+                              psaCompanyId
                             )
                           }
                         >
@@ -67,7 +63,7 @@ const ViewCompanies = () => {
                             {name}
                           </td>
                           <td className="p-2 truncate border-r border-b">
-                            {connectWiseCompanyId}
+                            {psaCompanyId}
                           </td>
                           <td className="p-2 truncate border-r border-b">
                             {addressLine1 +
@@ -78,9 +74,7 @@ const ViewCompanies = () => {
                               " " +
                               zip}
                           </td>
-                          <td className="p-2 truncate border-r border-b">
-                            {defaultContact?.name}
-                          </td>
+                         
                           <td className="p-2 truncate border-r border-b">
                             {phoneNumber}
                           </td>
