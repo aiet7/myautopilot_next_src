@@ -17,8 +17,9 @@ const TicketForm = () => {
   useEffect(() => {
     handleCreateTicketCategories();
   }, []);
+
   return (
-    <div className="flex flex-col gap-2 overflow-y-auto p-4 h-full scrollbar-thin">
+    <div className="bg-white dark:bg-black flex flex-col gap-2 overflow-y-auto p-10 h-full scrollbar-thin ">
       {ticket?.currentTicketTitle === "" ? (
         <div className="flex flex-col gap-2">
           <p className="text-xl font-semibold">
@@ -30,21 +31,111 @@ const TicketForm = () => {
           </p>
         </div>
       ) : (
-        <div className="flex flex-col  justify-between h-full">
-          <div className="flex flex-col gap-2">
+        <div className="flex flex-col justify-between h-full">
+          <div className=" flex flex-col gap-2">
             {userType === "tech" && (
-              <div>
-                <span className="font-bold">Company</span>
-                <select
-                  className={`h-[30px] px-3 w-full border ${
-                    formError?.currentTicketCWCompanyId
+              <>
+                <div className=" flex w-full">
+                  <div className=" flex w-[50%]">
+                    <span className="font-bold w-[25%] mr-3">Company:</span>
+                    <select
+                      className={`dark:bg-transparent dark:border-white px-3 w-[75%] bg-transparent border-b ${
+                        formError?.currentTicketCWCompanyId
+                          ? "border-red-500"
+                          : "border-black"
+                      } focus:outline-none focus:ring-0`}
+                      value={ticket.currentTicketCWCompanyId || ""}
+                      onChange={(e) => {
+                        setTicket(
+                          "currentTicketCWCompanyId",
+                          e.target.value,
+                          null,
+                          null,
+                          null,
+                          null,
+                          null,
+                          null,
+                          null,
+                          null,
+                          null,
+                          null,
+                          null,
+                          null
+                        );
+                      }}
+                    >
+                      <option value="" disabled>
+                        Select Company
+                      </option>
+                      {ticket.currentCompanies?.map((company) => {
+                        const { name, connectWiseCompanyId } = company;
+                        return (
+                          <option
+                            key={connectWiseCompanyId}
+                            value={connectWiseCompanyId}
+                          >
+                            {name}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                  <div className=" flex w-[50%]">
+                    <span className="px-3 font-bold w-[25%]">Board: </span>
+                    <select
+                      className={`dark:bg-transparent dark:border-white px-3 w-[75%] bg-transparent border-b  ${
+                        formError?.currentTicketBoardId
+                          ? "border-red-500"
+                          : "border-black"
+                      } focus:outline-none focus:ring-0}`}
+                      value={ticket.currentTicketBoardId || ""}
+                      onChange={(e) => {
+                        const newBoardId = parseInt(e.target.value, 10);
+                        setTicket(
+                          "currentTicketBoardId",
+                          newBoardId,
+                          newBoardId,
+                          null,
+                          null,
+                          null,
+                          null,
+                          null,
+                          null,
+                          null,
+                          null,
+                          null,
+                          null,
+                          null
+                        );
+                      }}
+                    >
+                      <option value="" disabled>
+                        Select Board
+                      </option>
+                      {ticket.categories?.boardDetails?.map((board) => (
+                        <option key={board.boardId} value={board.boardId}>
+                          {board.boardName}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </>
+            )}
+
+            <div className=" flex w-full">
+              <div className=" flex w-[50%]">
+                <span className=" font-bold w-[25%] mr-3">Ticket Name:</span>
+                <input
+                  className={`dark:bg-transparent dark:border-white px-3 w-[75%] bg-transparent border-b ${
+                    formError?.currentTicketTitle
                       ? "border-red-500"
-                      : "border-transparent"
-                  }`}
-                  value={ticket.currentTicketCWCompanyId || ""}
-                  onChange={(e) => {
+                      : "border-black"
+                  } focus:outline-none focus:ring-0}`}
+                  value={ticket.currentTicketTitle || ""}
+                  onChange={(e) =>
                     setTicket(
-                      "currentTicketCWCompanyId",
+                      "currentTicketTitle",
                       e.target.value,
                       null,
                       null,
@@ -58,106 +149,16 @@ const TicketForm = () => {
                       null,
                       null,
                       null
-                    );
-                  }}
-                >
-                  <option value="" disabled>
-                    Select Company
-                  </option>
-                  {ticket.currentCompanies?.map((company) => {
-                    const {id, name, connectWiseCompanyId } = company;
-                    return (
-                      <option
-                        key={id}
-                        value={connectWiseCompanyId}
-                      >
-                        {name}
-                      </option>
-                    );
-                  })}
-                </select>
+                    )
+                  }
+                />
               </div>
-            )}
-
-            {userType === "tech" && (
-              <div>
-                <span className="font-bold">Board</span>
-                <select
-                  className={`h-[30px] px-3 w-full border ${
-                    formError?.currentTicketBoardId
-                      ? "border-red-500"
-                      : "border-transparent"
-                  }`}
-                  value={ticket.currentTicketBoardId || ""}
-                  onChange={(e) => {
-                    const newBoardId = parseInt(e.target.value, 10);
-                    setTicket(
-                      "currentTicketBoardId",
-                      newBoardId,
-                      newBoardId,
-                      null,
-                      null,
-                      null,
-                      null,
-                      null,
-                      null,
-                      null,
-                      null,
-                      null,
-                      null,
-                      null
-                    );
-                  }}
-                >
-                  <option value="" disabled>
-                    Select Board
-                  </option>
-                  {ticket.categories?.boardDetails?.map((board) => (
-                    <option key={board.boardId} value={board.boardId}>
-                      {board.boardName}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-            <div>
-              <span className="font-bold">Ticket Name</span>
-              <input
-                className={`h-[30px] px-4 w-full border ${
-                  formError?.currentTicketTitle
-                    ? "border-red-500"
-                    : "border-transparent"
-                }`}
-                value={ticket.currentTicketTitle || ""}
-                onChange={(e) =>
-                  setTicket(
-                    "currentTicketTitle",
-                    e.target.value,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                  )
-                }
-              />
             </div>
-            <div>
-              <span className="font-bold">Description</span>
+            <div className=" flex w-full">
+              <span className="font-bold w-[12.5%] mr-3">Description:</span>
               <textarea
                 maxLength={100}
-                className={`dark:bg-black max-h-[130px] min-h-[70px] border outline-blue-500 w-full px-4 bg-white ${
-                  formError?.currentTicketDescription
-                    ? "border-red-500"
-                    : "border-transparent"
-                }`}
+                className={`dark:text-black bg-white max-h-[150px] min-h-[100px] px-3 w-[87.5%] border-2 focus:outline-none focus:ring-0`}
                 value={ticket.currentTicketDescription || ""}
                 onChange={(e) =>
                   setTicket(
@@ -179,15 +180,16 @@ const TicketForm = () => {
                 }
               />
             </div>
-            <div className="flex gap-4">
-              <div className="w-full">
-                <span className="font-bold">Type</span>
+
+            <div className=" flex w-full">
+              <div className="flex w-[50%]">
+                <span className="font-bold w-[25%] mr-3">Type:</span>
                 <select
-                  className={`h-[30px] px-3 w-full border ${
+                  className={`dark:bg-transparent dark:border-white px-3 w-[75%] bg-transparent border-b ${
                     formError?.currentTicketCategoryId
                       ? "border-red-500"
-                      : "border-transparent"
-                  }`}
+                      : "border-black"
+                  } focus:outline-none focus:ring-0`}
                   value={ticket.currentTicketCategoryId || ""}
                   onChange={(e) => {
                     const newCategoryId = parseInt(e.target.value, 10);
@@ -232,14 +234,14 @@ const TicketForm = () => {
                 </select>
               </div>
 
-              <div className="w-full">
-                <span className="font-bold">Subtype</span>
+              <div className="flex w-[50%]">
+                <span className="font-bold w-[25%] px-3">Subtype:</span>
                 <select
-                  className={`h-[30px] px-3 w-full border ${
+                  className={`dark:bg-transparent dark:border-white px-3 w-[75%] bg-transparent border-b ${
                     formError?.currentTicketSubCategoryId
                       ? "border-red-500"
-                      : "border-transparent"
-                  }`}
+                      : "border-black"
+                  } focus:outline-none focus:ring-0`}
                   value={ticket.currentTicketSubCategoryId || ""}
                   onChange={(e) => {
                     const newSubCategoryId = parseInt(e.target.value, 10);
@@ -299,51 +301,58 @@ const TicketForm = () => {
                 </select>
               </div>
             </div>
-            <div className="flex gap-4">
-              <div className="w-full">
-                <span className="font-bold">Priority</span>
+
+            <div className="flex w-full ">
+              <div className="  w-[50%] flex">
+                <span className=" font-bold w-[25%] mr-3">Priority:</span>
+
                 <input
                   disabled
-                  className={`h-[30px] px-4 w-full`}
+                  className="dark:bg-transparent dark:border-white px-4  w-[75%] bg-transparent border-b border-black truncate"
                   value={ticket.currentTicketPriority || ""}
                 />
               </div>
-              <div className="w-full">
-                <span className="font-bold">Impact</span>
+              <div className="flex w-[50%]">
+                <span className="font-bold w-[25%] px-3 ">Impact:</span>
                 <input
                   disabled
-                  className={`h-[30px] px-4 w-full`}
+                  className="dark:bg-transparent dark:border-white px-4 w-[75%] bg-transparent border-b border-black truncate"
                   value={ticket.currentTicketImpact || ""}
                 />
               </div>
-              <div className="w-full">
-                <span className="font-bold">Severity</span>
+            </div>
+
+            <div className="flex w-full">
+              <div className="flex w-[50%]">
+                <span className="font-bold w-[25%] mr-3 ">Severity:</span>
                 <input
                   disabled
-                  className={`h-[30px] px-4 w-full`}
+                  className="dark:bg-transparent dark:border-white px-4  w-[75%] bg-transparent border-b border-black truncate"
                   value={ticket.currentTicketSeverity || ""}
                 />
               </div>
-              <div className="w-full">
-                <span className="font-bold">Tier</span>
+              <div className="flex w-[50%]">
+                <span className="font-bold w-[25%] px-3">Tier:</span>
                 <input
                   disabled
-                  className={`h-[30px] px-4 w-full`}
+                  className="dark:bg-transparent dark:border-white px-4  w-[75%] bg-transparent border-b border-black truncate"
                   value={ticket.currentTicketTier || ""}
                 />
               </div>
             </div>
 
             {userType === "tech" && (
-              <div className="flex gap-4">
-                <div className="w-full">
-                  <span className="font-bold">Impact Score</span>
+              <div className=" flex w-full">
+                <div className=" flex w-[50%]">
+                  <span className="font-bold whitespace-nowrap w-[25%] mr-3">
+                    Impact Score:
+                  </span>
                   <input
-                    className={`h-[30px] px-4 w-full border ${
+                    className={`dark:bg-transparent dark:border-white px-4 w-[75%] bg-transparent border-b  ${
                       formError?.currentTicketImpactScore
                         ? "border-red-500"
-                        : "border-transparent"
-                    }`}
+                        : "border-black"
+                    } focus:outline-none focus:ring-0`}
                     value={ticket.currentTicketImpactScore || ""}
                     onChange={(e) =>
                       setTicket(
@@ -365,14 +374,16 @@ const TicketForm = () => {
                     }
                   />
                 </div>
-                <div className="w-full">
-                  <span className="font-bold">Severity Score</span>
+                <div className="flex w-[50%] ">
+                  <span className="font-bold w-[25%] px-3">
+                    Severity Score:
+                  </span>
                   <input
-                    className={`h-[30px] px-4 w-full border ${
+                    className={`dark:bg-transparent dark:border-white px-4 w-[75%] bg-transparent border-b  ${
                       formError?.currentTicketSeverityScore
                         ? "border-red-500"
-                        : "border-transparent"
-                    }`}
+                        : "border-black"
+                    } focus:outline-none focus:ring-0`}
                     value={ticket.currentTicketSeverityScore || ""}
                     onChange={(e) =>
                       setTicket(
@@ -400,72 +411,76 @@ const TicketForm = () => {
               ticket.currentTicketSubCategory === "NEW_EMPLOYEE_ONBOARDING" && (
                 <TicketOnboarding />
               )}
-            <div>
-              <span className="font-bold">Name</span>
-              <input
-                className={`h-[30px] px-4 w-full border ${
-                  formError?.currentTicketName
-                    ? "border-red-500"
-                    : "border-transparent"
-                }`}
-                value={ticket.currentTicketName || ""}
-                onChange={(e) =>
-                  setTicket(
-                    "currentTicketName",
-                    e.target.value,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                  )
-                }
-              />
+            <div className="flex w-full">
+              <div className="w-[50%] flex">
+                <span className=" font-bold whitespace-nowrap w-[25%] mr-3">
+                  Name:
+                </span>
+                <input
+                  className={`dark:bg-transparent dark:border-white px-4 w-[75%] bg-transparent border-b  ${
+                    formError?.currentTicketName
+                      ? "border-red-500"
+                      : "border-black"
+                  } focus:outline-none focus:ring-0`}
+                  value={ticket.currentTicketName || ""}
+                  onChange={(e) =>
+                    setTicket(
+                      "currentTicketName",
+                      e.target.value,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null
+                    )
+                  }
+                />
+              </div>
+              <div className="flex w-[50%]">
+                <span className="font-bold  w-[25%] px-3">Email:</span>
+                <input
+                  className={`dark:bg-transparent dark:border-whitepx-4 w-[75%]  bg-transparent border-b ${
+                    formError?.currentTicketEmailId
+                      ? "border-red-500"
+                      : "border-black"
+                  } focus:outline-none focus:ring-0`}
+                  value={ticket.currentTicketEmailId || ""}
+                  onChange={(e) =>
+                    setTicket(
+                      "currentTicketEmailId",
+                      e.target.value,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null
+                    )
+                  }
+                />
+              </div>
             </div>
-            <div>
-              <span className="font-bold">Email</span>
+            <div className="flex w-[50%]">
+              <span className="font-bold  w-[25%] mr-3">Phone:</span>
               <input
-                className={`h-[30px] px-4 w-full border ${
-                  formError?.currentTicketEmailId
-                    ? "border-red-500"
-                    : "border-transparent"
-                }`}
-                value={ticket.currentTicketEmailId || ""}
-                onChange={(e) =>
-                  setTicket(
-                    "currentTicketEmailId",
-                    e.target.value,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                  )
-                }
-              />
-            </div>
-            <div>
-              <span className="font-bold">Phone Number</span>
-              <input
-                className={`h-[30px] px-4 w-full border  ${
+                className={`dark:bg-transparent dark:border-white px-4 w-[75%] bg-transparent border-b  ${
                   formError?.currentTicketPhoneNumber
                     ? "border-red-500"
-                    : "border-transparent"
-                }`}
+                    : "border-black"
+                } focus:outline-none focus:ring-0`}
                 value={ticket.currentTicketPhoneNumber || ""}
                 onChange={(e) =>
                   setTicket(

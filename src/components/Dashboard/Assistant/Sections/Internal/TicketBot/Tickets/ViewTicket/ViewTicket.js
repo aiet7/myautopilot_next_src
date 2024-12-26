@@ -3,32 +3,25 @@
 import { IoMdArrowRoundBack } from "react-icons/io";
 import Ticket from "./Ticket";
 import Notes from "./Notes";
+import Company from "./Company";
 import TicketNav from "./TicketNav";
 import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
 
 const ViewTicket = () => {
   const { activeTicketButton, setViewTicket } = useTicketsStore();
 
-  const renderComponent = () => {
-    switch (activeTicketButton) {
-      case "Ticket":
-        return <Ticket />;
-      case "Notes":
-        return <Notes />;
-      default:
-        return null;
-    }
-  };
-
   return (
-    <div className="flex flex-col gap-2 ">
+    <div className="flex flex-col gap-4 pb-4">
       <IoMdArrowRoundBack
         className="cursor-pointer self-end"
-        onClick={() => setViewTicket(false)}
+        onClick={() => {
+          setViewTicket(false);
+        }}
         size={20}
       />
-      <TicketNav />
-      {renderComponent()}
+      <Company />
+      <Ticket />
+      <Notes />
     </div>
   );
 };
