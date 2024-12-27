@@ -6,7 +6,7 @@ import { BsStars, BsRobot } from "react-icons/bs";
 
 const QueueGuide = () => {
   const { user } = useUserStore();
-  const { handleNextQueueTicket } = useQueueStore();
+  const { handleNextQueueTicket, timer, startTimer } = useQueueStore();
 
   return (
     <div className="flex flex-col items-center justify-between p-4 text-xs h-full  max-w-[700px] mx-auto">
@@ -26,13 +26,14 @@ const QueueGuide = () => {
       </div>
       <div className="grid grid-cols-1 gap-2 ">
         <div
-          onClick={() =>
+          onClick={() => {
+            startTimer();
             handleNextQueueTicket(
               user?.mspCustomDomain,
               user?.connectWiseTechnicanId,
               user?.id
-            )
-          }
+            );
+          }}
           className="dark:hover:bg-white/20 hover:bg-black/20 flex flex-col   border p-4 rounded-xl w-full cursor-pointer"
         >
           <p className="text-center font-semibold text-xl">

@@ -12,7 +12,6 @@ const InternalPilot = () => {
   return (
     <div className={`flex-grow flex flex-col overflow-auto text-xs`}>
       <AssistantMenus />
-
       {currentNavOption === "Tickets" && <TicketBot />}
       {currentNavOption === "Assistant" && <ChatBot />}
       {currentNavOption === "Dispatch" && <QueueBot />}

@@ -9,11 +9,12 @@ import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
 import useQueueStore from "@/utils/store/interaction/queue/queueStore";
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
 import useUserStore from "@/utils/store/user/userStore";
+import { MdFullscreen } from "react-icons/md";
 
 const AssistantMenus = () => {
   const { user } = useUserStore();
 
-  const { currentNavOption } = useUiStore();
+  const { currentNavOption, setToggleFullScreen } = useUiStore();
 
   const { activeTicketBotMode } = useTicketsStore();
   const {
@@ -52,6 +53,7 @@ const AssistantMenus = () => {
       <div className="grid gap-4 grid-cols-1 grid-cols-[auto,1fr] items-center">
         <div className="flex items-center gap-2  flex-wrap">
           {renderModeComponent()}
+
           {currentNavOption === "Assistant" && (
             <div className="flex items-center gap-1 flex-wrap">
               <button
@@ -99,6 +101,11 @@ const AssistantMenus = () => {
 
         <div className="flex justify-end  w-full ">
           {showPagination && <Pagination />}
+          <MdFullscreen
+            size="25"
+            className="transition-transform duration-200 ease-in-out hover:scale-125 hover:cursor-pointer"
+            onClick={setToggleFullScreen}
+          />
         </div>
       </div>
     </div>

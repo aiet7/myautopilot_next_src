@@ -7,21 +7,18 @@ import useAssistantStore from "@/utils/store/assistant/assistantStore";
 
 const AssistantRail = ({}) => {
   const { openAssistant, handleAssistantMenu } = useUiStore();
-  const {
-    setAssistantWidth,
-    activeAssistantTab,
-    handleAssistantTabChange,
-  } = useAssistantStore();
+  const { setAssistantWidth, activeAssistantTab, handleAssistantTabChange } =
+    useAssistantStore();
 
   return (
     <div
       className={`${
         openAssistant && window.innerWidth > 1023 ? "translate-x-[0px]" : ""
-      } dark:bg-[#373737] dark:border-white/10 relative z-[100] flex flex-col bg-[#eaf1fb] px-1 pt-2 transition-all duration-300 ease border-r lg:border-l lg:border-black/10`}
+      } w-[50px] dark:bg-[#373737] dark:border-white/10 relative z-[100] flex flex-col bg-[#eaf1fb] px-1 pt-2 transition-all duration-300 ease border-r lg:border-l lg:border-black/10`}
     >
       <FaAlignLeft
         onClick={() => {
-          setAssistantWidth(450);
+          setAssistantWidth(600);
           if (!openAssistant) {
             handleAssistantMenu();
           }

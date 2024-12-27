@@ -58,6 +58,19 @@ const useQueueStore = create((set, get) => ({
   cardView: false,
 
   eligibleView: false,
+  timer: 0,
+  timerId: null,
+
+  startTimer: () => {
+    set((state) => {
+      if (!state.timerId) {
+        const intervalId = setInterval(() => {
+          set((state) => ({ timer: state.timer + 1 }));
+        }, 1000);
+        return { timerId: intervalId };
+      }
+    });
+  },
 
   setTotalQueueTicketPages: (pages) => set({ totalQueueTicketPages: pages }),
   setFilteredQueueTicketCount: (count) =>

@@ -21,6 +21,7 @@ const QueueCompany = () => {
     ticketRequeued,
     ticketClosed,
     ticketSaved,
+    timer,
   } = useQueueStore();
 
   const { toggleCompanyView, setToggleCompanyView } = useUiStore();
@@ -33,10 +34,12 @@ const QueueCompany = () => {
     };
   }, [setToggleCompanyView]);
 
+  console.log(timer);
+
   return (
     <div className="relative border-2 shadow-md bg-white dark:bg-black">
       <div className="flex justify-between items-center px-10 py-3">
-        <h1 className="font-bold text-blue-600">Company: </h1>
+        <h1 className="font-bold text-[#465E89]">Company: </h1>
         {toggleCompanyView ? (
           <IoIosArrowUp size="20" onClick={() => setToggleCompanyView(false)} />
         ) : (
@@ -160,7 +163,7 @@ const QueueCompany = () => {
             <input
               disabled
               className="dark:bg-transparent dark:border-white border-black border-b w-[65%] px-4  bg-transparent"
-              value={myQueueTicket?.country.name || ""}
+              value={myQueueTicket?.country?.name || ""}
             />
           </div>
         </div>

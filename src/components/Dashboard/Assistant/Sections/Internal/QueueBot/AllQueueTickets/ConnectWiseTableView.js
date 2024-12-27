@@ -2,10 +2,13 @@
 
 import useQueueStore from "@/utils/store/interaction/queue/queueStore";
 import useUserStore from "@/utils/store/user/userStore";
+import useUiStore from "@/utils/store/ui/uiStore.js";
 import { useEffect } from "react";
 
 const ConnectWiseTableView = () => {
   const { user } = useUserStore();
+
+  const { toggleFullScreen } = useUiStore();
 
   const {
     cardView,
@@ -101,10 +104,22 @@ const ConnectWiseTableView = () => {
   return (
     <>
       {paginatedTickets?.length !== 0 ? (
-        <div className="block text-sm max-h-full w-full">
+        <div
+          className={`${
+            toggleFullScreen
+              ? `flex justify-center items-center w-full`
+              : `block text-sm max-h-full w-full`
+          }`}
+        >
           {allQueueTickets && (
-            <div className="h-full min-w-full ">
-              <table className=" table-fixed border-separate text-left overflow-auto scrollbar-thin">
+            <div className="h-full w-auto">
+              <table
+                className={`${
+                  toggleFullScreen
+                    ? `w-full table-fixed border-separate text-left overflow-auto scrollbar-thin`
+                    : `table-fixed border-separate text-left overflow-auto scrollbar-thin`
+                }`}
+              >
                 <thead className=" dark:text-white dark:bg-gray-700  sticky top-0 z-10 text-black/60 bg-[#F5F8FA] ">
                   <tr>
                     <th className="truncate p-2 border-l border-t border-b border-r">

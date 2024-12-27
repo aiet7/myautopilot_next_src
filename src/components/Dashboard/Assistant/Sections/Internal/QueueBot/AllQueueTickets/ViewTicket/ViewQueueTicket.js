@@ -22,7 +22,7 @@ const ViewQueueTicket = () => {
   return (
     <div className="relative border-2 shadow-md bg-white dark:bg-black">
       <div className="flex justify-between items-center px-10 py-3">
-        <h1 className="font-bold text-blue-600">
+        <h1 className="font-bold text-[#465E89]">
           Ticket # {currentQueueTicket?.ticketId}
         </h1>
         {toggleTicketView ? (

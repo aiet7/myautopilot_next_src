@@ -11,7 +11,7 @@ const useAssistantStore = create((set, get) => ({
   activeAssistantTabOpen: false,
   showProgress: true,
   isIntroScreen: false,
-  assistantWidth: 600,
+  assistantWidth: 800,
 
   assistantWidthOpen: false,
 
