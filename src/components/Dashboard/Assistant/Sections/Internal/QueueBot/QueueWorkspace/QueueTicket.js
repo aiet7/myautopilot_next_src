@@ -38,9 +38,17 @@ const QueueTicket = () => {
           Ticket # {myQueueTicket?.ticketId}
         </h1>
         {toggleTicketView ? (
-          <IoIosArrowUp size="20" onClick={() => setToggleTicketView(false)} />
+          <IoIosArrowUp
+            size="20"
+            onClick={() => setToggleTicketView(false)}
+            className="hover:cursor-pointer"
+          />
         ) : (
-          <IoIosArrowDown size="20" onClick={() => setToggleTicketView(true)} />
+          <IoIosArrowDown
+            size="20"
+            onClick={() => setToggleTicketView(true)}
+            className="hover:cursor-pointer"
+          />
         )}
       </div>
 

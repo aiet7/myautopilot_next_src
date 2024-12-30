@@ -3,9 +3,7 @@
 import useQueueStore from "@/utils/store/interaction/queue/queueStore";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
-import { IoMdContact } from "react-icons/io";
-import { BsFillTelephoneFill } from "react-icons/bs";
-import { MdEmail } from "react-icons/md";
+
 import useUiStore from "@/utils/store/ui/uiStore";
 import { useEffect } from "react";
 
@@ -28,11 +26,16 @@ const ViewQueueCompany = () => {
           Company: {currentQueueTicket?.company}
         </h1>
         {toggleCompanyView ? (
-          <IoIosArrowUp size="20" onClick={() => setToggleCompanyView(false)} />
+          <IoIosArrowUp
+            size="20"
+            onClick={() => setToggleCompanyView(false)}
+            className="hover:cursor-pointer"
+          />
         ) : (
           <IoIosArrowDown
             size="20"
             onClick={() => setToggleCompanyView(true)}
+            className="hover:cursor-pointer"
           />
         )}
       </div>
@@ -71,9 +74,6 @@ const ViewQueueCompany = () => {
                 className="dark:bg-transparent dark:border-white border-black border-b flex-grow px-4 bg-white"
                 value={currentQueueTicket?.name || ""}
               />
-              <div className=" flex justify-center items-center ml-3">
-                <IoMdContact size="20" />
-              </div>
             </div>
           </div>
           <div className="flex justify-center items-center w-full ">
@@ -85,16 +85,13 @@ const ViewQueueCompany = () => {
             />
           </div>
           <div className="flex justify-center items-center w-full">
-            <span className="font-bold w-[35%]">Ticket:</span>
+            <span className="font-bold w-[35%]">Phone:</span>
             <div className="flex items-center w-[65%]">
               <input
                 disabled
                 className="dark:bg-transparent dark:border-white border-black border-b flex-grow px-4 bg-white"
                 value={currentQueueTicket?.phoneNumber || ""}
               />
-              <div className=" flex justify-center items-center ml-3">
-                <BsFillTelephoneFill size="15" />
-              </div>
             </div>
           </div>
           <div className="flex justify-center items-center w-full ">
@@ -113,9 +110,6 @@ const ViewQueueCompany = () => {
                 className="dark:bg-transparent dark:border-white border-black border-b flex-grow px-4  bg-white"
                 value={currentQueueTicket?.emailId || ""}
               />
-              <div className=" flex justify-center items-center ml-3">
-                <MdEmail size="20" />
-              </div>
             </div>
           </div>
           <div className="flex justify-center items-center w-full ">

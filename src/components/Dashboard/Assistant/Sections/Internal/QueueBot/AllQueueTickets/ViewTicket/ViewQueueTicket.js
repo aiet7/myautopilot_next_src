@@ -26,9 +26,17 @@ const ViewQueueTicket = () => {
           Ticket # {currentQueueTicket?.ticketId}
         </h1>
         {toggleTicketView ? (
-          <IoIosArrowUp size="20" onClick={() => setToggleTicketView(false)} />
+          <IoIosArrowUp
+            size="20"
+            onClick={() => setToggleTicketView(false)}
+            className="hover:cursor-pointer"
+          />
         ) : (
-          <IoIosArrowDown size="20" onClick={() => setToggleTicketView(true)} />
+          <IoIosArrowDown
+            size="20"
+            onClick={() => setToggleTicketView(true)}
+            className="hover:cursor-pointer"
+          />
         )}
       </div>
       <div
@@ -152,13 +160,30 @@ const ViewQueueTicket = () => {
             />
           </div>
           <div></div>
-          <div className="flex justify-center items-center w-full ">
+          <div className="flex justify-center items-center w-full">
             <span className="font-bold w-[35%]">Priority:</span>
-            <input
-              disabled
-              className="dark:bg-transparent dark:border-white border-black border-b w-[65%] px-4  bg-white"
-              value={currentQueueTicket?.priority || ""}
-            />
+
+            <div className="relative w-[65%]">
+              <div
+                className={`absolute top-1/2 transform -translate-y-1/2 left-0 w-5 h-3 rounded ${
+                  currentQueueTicket?.priority === "Priority 1 - Critical"
+                    ? "bg-red-500 border border-black"
+                    : currentQueueTicket?.priority === "Priority 2 - High"
+                    ? "bg-orange-500 border border-black"
+                    : currentQueueTicket?.priority === "Priority 3 - Medium"
+                    ? "bg-yellow-500 border border-black"
+                    : currentQueueTicket?.priority === "Priority 4 - Low"
+                    ? "bg-green-500 border border-black"
+                    : "bg-white border border-black"
+                }`}
+              ></div>
+
+              <input
+                disabled
+                className="dark:bg-transparent dark:border-white border-black border-b w-full px-4 pl-6"
+                value={`${currentQueueTicket?.priority} ` || ""}
+              />
+            </div>
           </div>
           <div></div>
           <div className="flex justify-center items-center w-full ">

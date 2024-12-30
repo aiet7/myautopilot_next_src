@@ -1,9 +1,6 @@
 "use client";
 
 import useTicketsStore from "@/utils/store/interaction/tickets/ticketsStore";
-import { IoMdContact } from "react-icons/io";
-import { BsFillTelephoneFill } from "react-icons/bs";
-import { MdEmail } from "react-icons/md";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
@@ -31,11 +28,13 @@ const Company = () => {
             <IoIosArrowUp
               size="20"
               onClick={() => setToggleCompanyView(false)}
+              className="hover:cursor-pointer"
             />
           ) : (
             <IoIosArrowDown
               size="20"
               onClick={() => setToggleCompanyView(true)}
+              className="hover:cursor-pointer"
             />
           )}
         </div>
@@ -74,9 +73,6 @@ const Company = () => {
                   className="dark:bg-transparent dark:border-white border-black border-b flex-grow px-4 bg-white"
                   value={currentTicket?.name || ""}
                 />
-                <div className=" flex justify-center items-center ml-3">
-                  <IoMdContact size="20" />
-                </div>
               </div>
             </div>
             <div className="flex justify-center items-center w-full ">
@@ -90,16 +86,13 @@ const Company = () => {
               />
             </div>
             <div className="flex justify-center items-center w-full">
-              <span className="font-bold w-[35%]">Ticket:</span>
+              <span className="font-bold w-[35%]">Phone:</span>
               <div className="flex items-center w-[65%]">
                 <input
                   disabled
                   className="dark:bg-transparent dark:border-white border-black border-b flex-grow px-4 bg-white"
                   value={currentTicket?.phoneNumber || ""}
                 />
-                <div className=" flex justify-center items-center ml-3">
-                  <BsFillTelephoneFill size="15" />
-                </div>
               </div>
             </div>
             <div className="flex justify-center items-center w-full ">
@@ -120,9 +113,6 @@ const Company = () => {
                   className="dark:bg-transparent dark:border-white border-black border-b flex-grow px-4  bg-white"
                   value={currentTicket?.emailId || ""}
                 />
-                <div className=" flex justify-center items-center ml-3">
-                  <MdEmail size="20" />
-                </div>
               </div>
             </div>
             <div className="flex justify-center items-center w-full ">

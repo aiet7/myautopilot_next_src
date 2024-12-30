@@ -82,6 +82,8 @@ const Tickets = () => {
     setFilteredTicketCount(filteredAndSortedTickets?.length || 0);
   }, [tickets, ticketsPerPage, searchValue, filterTicketMode]);
 
+  console.log();
+
   return (
     <div className="flex flex-col h-full p-4 ">
       {viewTicket ? (

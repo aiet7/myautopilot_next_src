@@ -46,7 +46,7 @@ const Nav = () => {
           setHoverTab(null);
         }
       }}
-      className={`absolute z-10 top-0 bottom-0 left-0 text-sm ${
+      className={`absolute z-20 top-0 bottom-0 left-0 text-sm ${
         openNav || hoverTab === "iTAgent"
           ? "translate-x-0 w-full md:w-[250px]"
           : "-translate-x-full w-full md:w-[250px]"

@@ -14,7 +14,7 @@ const AssistantRail = ({}) => {
     <div
       className={`${
         openAssistant && window.innerWidth > 1023 ? "translate-x-[0px]" : ""
-      } w-[50px] dark:bg-[#373737] dark:border-white/10 relative z-[100] flex flex-col bg-[#eaf1fb] px-1 pt-2 transition-all duration-300 ease border-r lg:border-l lg:border-black/10`}
+      }  dark:bg-[#373737] dark:border-white/10 relative z-[100] flex flex-col bg-[#eaf1fb] px-1 pt-2 transition-all duration-300 ease border-r lg:border-l lg:border-black/10`}
     >
       <FaAlignLeft
         onClick={() => {
