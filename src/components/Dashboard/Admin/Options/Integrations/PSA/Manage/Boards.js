@@ -539,6 +539,7 @@ const Board = () => {
                           {customBoard || isNew ? (
                             <div className="flex items-center gap-1">
                               <input
+                                className="border p-1 my-1"
                                 type="text"
                                 placeholder={categoryName}
                                 onChange={(e) => {
@@ -569,7 +570,7 @@ const Board = () => {
                                       tempIndex
                                     )
                                   }
-                                  className="hover:bg-blue-500 bg-blue-800 text-white px-2 py-1rounded-lg "
+                                  className="hover:bg-blue-500 bg-blue-800 text-white px-2 py-1 rounded-lg "
                                 >
                                   Save
                                 </button>
@@ -593,6 +594,7 @@ const Board = () => {
                                   {customBoard || isNew ? (
                                     <div className="flex items-center gap-1">
                                       <input
+                                        className="border p-1 my-1"
                                         type="text"
                                         placeholder={subCategoryName}
                                         onChange={(e) => {
@@ -909,7 +911,7 @@ const Board = () => {
             <p className="text-red-500">Error Saving Board</p>
           )}
           {successMessageSubCategory && (
-            <p className="text-emerald-500">Saved Category Successfully!</p>
+            <p className="text-emerald-500">Saved Sub Category Successfully!</p>
           )}
           {errorMessageSubCategory && (
             <p className="text-red-500">Error Saving Board</p>

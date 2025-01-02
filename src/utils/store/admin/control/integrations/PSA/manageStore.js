@@ -11,6 +11,7 @@ import {
   handleGetRoles,
   handleGetManageClientAndContactTypes,
 } from "@/utils/api/serverProps";
+import { subCategories } from "@/utils/tickets/ticketCreation";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_PSA_SERVICE_URL;
@@ -1059,6 +1060,12 @@ const useManageStore = create((set, get) => ({
         customBoardMetadata: true,
         connectwiseOpenStatuses: null,
         connectwiseClosedStatuses: null,
+        successMessageCategory: false,
+        successMessageSubCategory: false,
+        successMessageStatus: false,
+        errorMessageCategory: false,
+        errorMessageSubCategory: false,
+        errorMessageStatus: false,
       });
       await handleCustomBoardMetadata();
     } else {
@@ -1069,6 +1076,12 @@ const useManageStore = create((set, get) => ({
         customBoardMetadata: false,
         connectwiseOpenStatuses: null,
         connectwiseClosedStatuses: null,
+        successMessageCategory: false,
+        successMessageSubCategory: false,
+        successMessageStatus: false,
+        errorMessageCategory: false,
+        errorMessageSubCategory: false,
+        errorMessageStatus: false,
       });
       try {
         const response = await fetch(
@@ -1078,7 +1091,16 @@ const useManageStore = create((set, get) => ({
         if (response.status === 200) {
           await handleGetBoardStatuses(id, mspCustomDomain);
           const merge = await response.json();
-          set({ connectwiseMerge: merge, loadingMerge: false });
+          set({
+            connectwiseMerge: merge,
+            loadingMerge: false,
+            successMessageCategory: false,
+            successMessageSubCategory: false,
+            successMessageStatus: false,
+            errorMessageCategory: false,
+            errorMessageSubCategory: false,
+            errorMessageStatus: false,
+          });
         } else {
           console.log("Error");
         }
@@ -1279,6 +1301,28 @@ const useManageStore = create((set, get) => ({
 
       if (response.status === 200) {
         console.log("created new category");
+        const newCategory = await response.json();
+        set((state) => {
+          const updatedCategories =
+            state.connectwiseMerge.mspConnectWiseManageCategorizations.map(
+              (category) => {
+                if (category.tempIndex === tempIndex) {
+                  return { ...category, categoryId: newCategory.id }; 
+                }
+                return category;
+              }
+            );
+
+          return {
+            connectwiseMerge: {
+              ...state.connectwiseMerge,
+              mspConnectWiseManageCategorizations: updatedCategories,
+            },
+            successMessageCategory: true,
+            errorMessageCategory: false,
+          };
+        });
+
         set({
           successMessageCategory: true,
           errorMessageCategory: false,
@@ -1309,6 +1353,7 @@ const useManageStore = create((set, get) => ({
         (subCategory) => subCategory.tempIndex === tempIndex
       );
 
+    console.log("catId", categoryId);
     try {
       const response = await fetch(
         `${connectWiseServiceUrl}/createSubCategory?mspCustomDomain=${mspCustomDomain}&boardId=${activeBoardDetails.id}&subCategoryName=${subCategoryToSave.subCategoryName}&categoryId=${categoryId}`,

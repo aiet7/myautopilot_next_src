@@ -230,7 +230,7 @@ const Manage = () => {
                   </p>
                 )}
                 {errorManageIntegration && (
-                  <p className="text-red-500">Error Integrating Manage!</p>
+                  <p className="text-red-500">Error Integrating Manage!  Keys Are Invalid.</p>
                 )}
                 {successManageDisconnect && (
                   <p className="text-emerald-500">

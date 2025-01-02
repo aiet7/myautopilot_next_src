@@ -70,6 +70,7 @@ const useMspStore = create((set, get) => ({
 
   errorMessage: {
     techSignup: false,
+    clientSignup: false,
     publicSignup: false,
     fileSize: false,
     fileMissing: false,
@@ -840,11 +841,39 @@ const useMspStore = create((set, get) => ({
   },
 
   handleActivateTechnician: async (navigator, mspCustomDomain) => {
-    const { signupInputs, selectedTechnician } = get();
+    const { signupInputs, selectedTechnician, errorMessage } = get();
     const { techInfo } = signupInputs;
 
     const { id, psaMembersId, email, ...restTechnicianDetails } =
       selectedTechnician;
+
+    const emailValidation = isEmailInputValid(techInfo.email);
+    const passwordValidation = isPasswordValid(techInfo.password);
+
+    set({ submit: true });
+    if (!passwordValidation.isValid || !emailValidation) {
+      set({
+        errorMessage: {
+          ...errorMessage,
+          validPassword: passwordValidation.errors,
+          validEmail: emailValidation,
+          emptyFields: false,
+        },
+      });
+      return;
+    }
+
+    if (techInfo.password === "" || techInfo.email === "") {
+      set({
+        errorMessage: {
+          ...errorMessage,
+          emptyFields: true,
+          validPassword: false,
+          validEmail: false,
+        },
+      });
+      return;
+    }
 
     const payload = {
       ...restTechnicianDetails,
@@ -870,6 +899,12 @@ const useMspStore = create((set, get) => ({
         console.log("Technician Activated");
         navigator(`/${mspCustomDomain}`);
       } else {
+        set({
+          errorMessage: {
+            ...errorMessage,
+            techSignup: true,
+          },
+        });
         console.log("Technician Activation Failed");
       }
     } catch (e) {
@@ -878,13 +913,46 @@ const useMspStore = create((set, get) => ({
   },
 
   handleActivateClient: async (navigator, mspCustomDomain) => {
-    const { signupInputs, selectedClient } = get();
+    const { signupInputs, selectedClient, errorMessage } = get();
     const { clientInfo } = signupInputs;
+
+    const emailValidation = isEmailInputValid(clientInfo.email);
+    const passwordValidation = isPasswordValid(clientInfo.password);
+
+    set({ submit: true });
+    if (!passwordValidation.isValid || !emailValidation) {
+      set({
+        errorMessage: {
+          ...errorMessage,
+          validPassword: passwordValidation.errors,
+          validEmail: emailValidation,
+          emptyFields: false,
+        },
+      });
+      return;
+    }
+
+    if (clientInfo.password === "" || clientInfo.email === "") {
+      set({
+        errorMessage: {
+          ...errorMessage,
+          emptyFields: true,
+          validPassword: false,
+          validEmail: false,
+        },
+      });
+      return;
+    }
     const payload = {
       ...selectedClient,
       email: selectedClient.email,
       password: clientInfo.password,
+      psaContactAutopilotDbId: selectedClient.id,
+      phoneNumber: selectedClient.phone,
+      id:null,
     };
+
+    console.log(payload);
 
     try {
       const response = await fetch(
@@ -902,6 +970,12 @@ const useMspStore = create((set, get) => ({
         console.log("Client Activated");
         navigator(`/${mspCustomDomain}`);
       } else {
+        set({
+          errorMessage: {
+            ...errorMessage,
+            clientSignup: true,
+          },
+        });
         console.log("Client Activation Failed");
       }
     } catch (e) {
@@ -975,6 +1049,7 @@ const useMspStore = create((set, get) => ({
 
       errorMessage: {
         techSignup: false,
+        clientSignup: false,
         publicSignup: false,
         fileSize: false,
         fileMissing: false,

@@ -28,8 +28,9 @@ const ActivatePage = () => {
     handleActivateClient,
     handleNavigateMSPSignup,
     initializeUserType,
+    submit,
   } = useMspStore();
-  
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       setHeight(window.innerHeight);
@@ -46,6 +47,15 @@ const ActivatePage = () => {
     initializeUserType();
   }, []);
 
+  const allErrors = [];
+
+  if (errorMessage?.validPassword) {
+    allErrors.push(...errorMessage.validPassword);
+  }
+
+  if (errorMessage?.emptyFields) {
+    allErrors.push("All fields are required");
+  }
   return (
     <>
       {height && (
@@ -80,7 +90,18 @@ const ActivatePage = () => {
 
               {selectedTechnician || selectedClient ? (
                 <div className="flex flex-col gap-4 w-full">
-                  <h1 className="text-2xl font-bold ">Activate Your Account</h1>
+                  <h1 className="text-2xl font-bold ">Activate Your Account</h1>{" "}
+                  <>
+                    {submit && (
+                      <>
+                        {allErrors.map((error, index) => (
+                          <p key={index} className="text-red-500">
+                            {error}
+                          </p>
+                        ))}
+                      </>
+                    )}
+                  </>
                   <p className="font-bold text-lg text-black">
                     {selectedTechnician && selectedTechnician?.primaryEmail}
                     {selectedClient && selectedClient?.primaryEmail}
@@ -121,7 +142,7 @@ const ActivatePage = () => {
                         : handleActivateClient(router.push, msp)
                     }
                     className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89] w-full  bg-[#465E89] text-white py-3 rounded-lg"
-                    >
+                  >
                     Activate
                   </button>
                 </div>
@@ -189,16 +210,14 @@ const ActivatePage = () => {
                         <p className="text-black/60">
                           Please fill out all of the required fields*
                         </p>
-                        {errorMessage.clientEmailCheck && (
-                          <p className="text-sm text-red-500">
-                            Please contact MSP manager to send invite to proceed
-                            with client account activiation.
+                        {errorMessage?.techEmailCheck && (
+                          <p className="text-red-500">
+                            Account Already Activated or Invalid Email
                           </p>
                         )}
-                        {errorMessage.techEmailCheck && (
-                          <p className="text-sm text-red-500">
-                            Please contact MSP manager to send invite to proceed
-                            with technician account activiation.
+                        {errorMessage?.clientEmailCheck && (
+                          <p className="text-red-500">
+                            Account Already Activated or Invalid Email
                           </p>
                         )}
                       </div>
@@ -242,7 +261,7 @@ const ActivatePage = () => {
                           }
                         }}
                         className="border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89] w-full  bg-[#465E89] text-white py-3 rounded-lg"
-                        >
+                      >
                         Continue
                       </button>
                     </>
