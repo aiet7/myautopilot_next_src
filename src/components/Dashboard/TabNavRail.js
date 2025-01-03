@@ -42,7 +42,7 @@ const TabNavRail = ({}) => {
   };
 
   return (
-    <div className="dark:bg-[#373737] dark:border-white/10 bg-[#eaf1fb] flex items-center justify-evenly p-3 gap-4 transition-all duration-300 ease lg:relative lg:flex-col lg:justify-start lg:border-r lg:border-black/10">
+    <div className="dark:bg-[#373737] dark:border-white/10 bg-[#eaf1fb] flex items-center justify-evenly py-3 px-4 gap-4 transition-all duration-300 ease lg:relative lg:flex-col lg:justify-start lg:border-r lg:border-black/10">
       {(activeTab === "iTAgent" ||
         (hoverTab === "iTAgent" &&
           (currentNavOption === "Assistant" ||
@@ -72,7 +72,7 @@ const TabNavRail = ({}) => {
               onClick={() => {
                 handleTabChange("iTAgent", user?.mspCustomDomain, user?.id);
               }}
-              className="relative group flex flex-col gap-2 items-center cursor-pointer "
+              className="relative group flex flex-col gap-1 items-center cursor-pointer "
             >
               <AiOutlineHome
                 data-tooltip-id="Home"
@@ -81,28 +81,20 @@ const TabNavRail = ({}) => {
                   activeTab === "iTAgent" && "text-blue-600"
                 } outline-none`}
               />
-              <span className="shadow z-[100] font-semibold bg-white absolute left-3 top-full transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 pointer-events-none rounded p-2 text-xs text-black transition-opacity duration-200">
-                Home
-              </span>
+              <span className="text-xs">Home</span>
             </div>
           </Link>
 
           {hoverTab === "iTAgent" && (
-            <div className="absolute left-[2.91rem] top-0  bottom-0">
+            <div className="absolute left-[4.25rem] top-0  bottom-0">
               <Nav />
             </div>
           )}
         </>
       ) : (
-        <div className="relative group flex flex-col gap-2 items-center cursor-pointer">
-          <AiOutlineHome
-            data-tooltip-id="Home"
-            size={22}
-            className="text-blue-600 outline-none"
-          />
-          <span className="shadow z-[100] font-semibold bg-white absolute left-3 top-full transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 pointer-events-none rounded p-2 text-xs text-black transition-opacity duration-200">
-            Home
-          </span>
+        <div className="relative group flex flex-col gap-1 items-center cursor-pointer">
+          <AiOutlineHome size={22} className="text-blue-600 outline-none " />
+          <span className="text-xs text-blue-600">Home</span>
         </div>
       )}
 
@@ -154,7 +146,7 @@ const TabNavRail = ({}) => {
                         : "default"
                     );
                   }}
-                  className="relative group flex flex-col gap-2 items-center cursor-pointer"
+                  className="relative group flex flex-col gap-1 items-center cursor-pointer"
                   onMouseEnter={() => setHoverTab("admin")}
                 >
                   <RiAdminLine
@@ -163,21 +155,19 @@ const TabNavRail = ({}) => {
                       activeTab === "admin" && "text-blue-600"
                     } outline-none`}
                   />
-                  <span className="shadow z-[100] font-semibold bg-white absolute left-3 top-full transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 pointer-events-none rounded p-2 text-xs text-black transition-opacity duration-200">
-                    Admin
-                  </span>
+                  <span className="text-xs">Admin</span>
                 </div>
               </Link>
               {hoverTab === "admin" && (
-                <div className="absolute left-[2.91rem] top-0  bottom-0">
+                <div className="absolute left-[4.25rem] top-0  bottom-0">
                   <AdminNav />
                 </div>
               )}
             </>
           ) : (
-            <div className="relative group flex flex-col gap-2 items-center cursor-pointer">
+            <div className="relative group flex flex-col gap-1 items-center cursor-pointer">
               <RiAdminLine size={22} className="text-blue-600 outline-none" />
-              <span className="shadow z-[100] font-semibold bg-white absolute left-3 top-full transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 pointer-events-none rounded p-2 text-xs text-black transition-opacity duration-200">
+              <span className="text-xs text-blue-600">
                 Admin
               </span>
             </div>

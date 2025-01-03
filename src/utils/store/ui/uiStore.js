@@ -25,6 +25,9 @@ const useUiStore = create((set, get) => ({
   tabOpen: false,
   tabView: null,
   externalOnly: false,
+  toggleCompanyView: true,
+  toggleTicketView: true,
+  toggleFullScreen: false,
 
   setHoverTab: (tab) => {
     set({ hoverTab: tab });
@@ -37,6 +40,18 @@ const useUiStore = create((set, get) => ({
   setHeight: (heightValue) => set({ height: heightValue }),
 
   setCurrentNavOption: (option) => set({ currentNavOption: option }),
+
+  setToggleFullScreen: () => {
+    set((state) => ({ toggleFullScreen: !state.toggleFullScreen }));
+  },
+
+  setToggleCompanyView: (toggle) => {
+    set({ toggleCompanyView: toggle });
+  },
+
+  setToggleTicketView: (toggle) => {
+    set({ toggleTicketView: toggle });
+  },
 
   handleToggleAssistant: () =>
     set((state) => ({ openAssistant: !state.openAssistant })),
@@ -133,6 +148,9 @@ const useUiStore = create((set, get) => ({
       openQueue: initialWidth > 1023 ? true : false,
       openNav: initialWidth > 1023 ? true : false,
       openSettings: false,
+      toggleCompanyView: true,
+      toggleTicketView: true,
+      toggleFullScreen: false,
     });
   },
 }));

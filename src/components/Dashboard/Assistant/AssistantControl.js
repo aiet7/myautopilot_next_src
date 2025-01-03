@@ -7,7 +7,12 @@ import ChatSearch from "./Sections/Internal/ChatBot/ChatSearch";
 import QueueSearch from "./Sections/Internal/QueueBot/QueueSearch";
 
 const AssistantControl = () => {
-  const { currentNavOption, handleAssistantMenu } = useUiStore();
+  const {
+    currentNavOption,
+    handleAssistantMenu,
+    setToggleFullScreen,
+    toggleFullScreen,
+  } = useUiStore();
 
   const renderSearchComponent = () => {
     switch (currentNavOption) {
@@ -34,7 +39,10 @@ const AssistantControl = () => {
       <div className="dark:text-white flex items-center text-black gap-2">
         {window.innerWidth > 1023 && (
           <AiOutlineClose
-            onClick={handleAssistantMenu}
+            onClick={() => {
+              handleAssistantMenu();
+              toggleFullScreen ? setToggleFullScreen() : "";
+            }}
             size={20}
             className="cursor-pointer"
           />
