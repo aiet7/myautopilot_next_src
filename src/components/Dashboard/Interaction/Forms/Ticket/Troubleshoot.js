@@ -10,7 +10,6 @@ const Troubleshoot = () => {
   const { user } = useUserStore();
   const { noTicketsInQueue, generatingTroubleShoot, troubleshootMessages } =
     useQueueStore();
-
   return (
     <div className="flex-grow overflow-auto scrollbar-thin">
       {generatingTroubleShoot ? (

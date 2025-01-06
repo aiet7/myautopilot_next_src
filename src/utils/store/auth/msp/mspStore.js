@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import Cookie from "js-cookie";
-
+import { isEmailInputValid, isPasswordValid } from "@/utils/formValidations";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
@@ -78,9 +78,26 @@ const useMspStore = create((set, get) => ({
     clientEmailCheck: false,
     techEmailCheck: false,
     login2FA: false,
+    validPassword: [],
+    validEmail: false,
   },
+  submit: false,
 
   successMessage: false,
+
+  success2FAMessage: false,
+
+  authError: false,
+
+  authPopup: "closed",
+
+  authcard: false,
+
+  authToken: "",
+
+  authUpdatedPopup: false,
+
+  tokenEmailSent: false,
 
   showPassword: false,
 
@@ -98,6 +115,20 @@ const useMspStore = create((set, get) => ({
       });
     }
   },
+
+  setTokenEmailSent: (bool) => set({ tokenEmailSent: bool }),
+
+  setAuthUpdatedPopup: (bool) => set({ authUpdatedPopup: bool }),
+
+  setAuthError: (bool) => set({ authError: bool }),
+
+  setAuthToken: (num) => set({ authToken: num }),
+
+  setAuthCard: (isOpen) => set({ authCard: isOpen }),
+
+  setAuthPopup: (isOpen) => set({ authPopup: isOpen }),
+
+  setSuccess2FAMessage: (bool) => set({ success2FAMessage: bool }),
 
   setFileSizeError: (error) => {
     const { errorMessage } = get();
@@ -222,6 +253,23 @@ const useMspStore = create((set, get) => ({
   handleSignupPublic: async (navigator) => {
     const { signupInputs, errorMessage } = get();
     const { publicInfo } = signupInputs;
+    set({ submit: true });
+
+    const emailValidation = isEmailInputValid(publicInfo.email);
+
+    const passwordValidation = isPasswordValid(publicInfo.password);
+
+    if (!passwordValidation.isValid || !emailValidation) {
+      set({
+        errorMessage: {
+          ...errorMessage,
+          validPassword: passwordValidation.errors,
+          emptyFields: false,
+          validEmail: emailValidation,
+        },
+      });
+      return;
+    }
 
     if (
       publicInfo.firstName === "" ||
@@ -238,7 +286,6 @@ const useMspStore = create((set, get) => ({
       });
       return;
     }
-
     try {
       const response = await fetch(`${dbServiceUrl}/public/user/signup`, {
         method: "POST",
@@ -256,11 +303,14 @@ const useMspStore = create((set, get) => ({
 
       if (response.ok) {
         const publicUser = await response.json();
+
         set({
           errorMessage: {
             ...errorMessage,
             publicSignup: false,
             emptyFields: false,
+            validPassword: [],
+            validEmail: true,
           },
         });
         navigator(`/${publicUser.mspCustomDomain}/dashboard/${publicUser.id}`);
@@ -362,6 +412,8 @@ const useMspStore = create((set, get) => ({
       handleSignupMSP,
     } = get();
     const { techInfo, mspInfo, mspCustomDomain } = signupInputs;
+    const emailValidation = isEmailInputValid(techInfo.email);
+    const passwordValidation = isPasswordValid(techInfo.password);
 
     if (currentStep === 1) {
       if (
@@ -401,6 +453,18 @@ const useMspStore = create((set, get) => ({
         return;
       }
     } else {
+      set({ submit: true });
+      if (!passwordValidation.isValid || !emailValidation) {
+        set({
+          errorMessage: {
+            ...errorMessage,
+            validPassword: passwordValidation.errors,
+            emptyFields: false,
+            validEmail: emailValidation,
+          },
+        });
+        return;
+      }
       if (
         techInfo.firstName !== "" &&
         techInfo.lastName !== "" &&
@@ -457,7 +521,6 @@ const useMspStore = create((set, get) => ({
       });
       return;
     }
-
     try {
       const response = await fetch(`${dbServiceUrl}/technicianUsers/signin`, {
         method: "POST",
@@ -644,7 +707,7 @@ const useMspStore = create((set, get) => ({
     }
   },
 
-  handleTechnician2FALogin: async (navigator, mspCustomDomain) => {
+  handleTechnician2FALogin: async (navigator, mspCustomDomain, window) => {
     const { loginInputs, errorMessage } = get();
     const { techInfo } = loginInputs;
 
@@ -672,9 +735,19 @@ const useMspStore = create((set, get) => ({
             emptyFields: false,
           },
         });
+
         navigator(`/${tech?.mspCustomDomain}/dashboard/${tech?.id}`);
-        Cookie.set("session_token", tech?.id, { expires: 7 });
-        Cookie.set("client_id", tech?.id, { expires: 7 });
+
+        Cookie.set("session_token", tech?.id, {
+          expires: 7,
+          sameSite: "None",
+          secure: "true",
+        });
+        Cookie.set("client_id", tech?.id, {
+          expires: 7,
+          sameSite: "None",
+          secure: "true",
+        });
       } else {
         set({
           errorMessage: {
@@ -938,7 +1011,10 @@ const useMspStore = create((set, get) => ({
         clientEmailCheck: false,
         techEmailCheck: false,
         login2FA: false,
+        validPassword: [],
+        validEmail: false,
       },
+      submit: false,
 
       successMessage: false,
 

@@ -22,7 +22,7 @@ const QueueBot = () => {
   };
 
   return (
-    <div className="flex-grow overflow-y-auto flex flex-col">
+    <div className="flex-grow overflow-y-auto flex flex-col scrollbar-thin">
       {renderComponent()}
     </div>
   );

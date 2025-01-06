@@ -9,7 +9,7 @@ import useAssistantStore from "@/utils/store/assistant/assistantStore.js";
 import ExternalPilot from "./Sections/External/ExternalPilot.js";
 
 const Assistant = () => {
-  const { openAssistant } = useUiStore();
+  const { openAssistant, toggleFullScreen, setToggleFullScreen } = useUiStore();
   const {
     setAssistantWidth,
     assistantWidth,
@@ -39,7 +39,7 @@ const Assistant = () => {
     const adjustment = activeAssistantTabOpen ? 225 : 0;
     const newWidth = window.innerWidth - e.clientX - adjustment;
 
-    if (newWidth > 400 && newWidth < 800) {
+    if (newWidth > 600 && newWidth < 1000) {
       setAssistantWidth(newWidth);
     }
   };
@@ -75,30 +75,46 @@ const Assistant = () => {
 
   return (
     <>
-      <div
-        ref={resizableRef}
-        style={{
-          transform: openAssistant
-            ? activeAssistantTabOpen && !isMobile
-              ? `translateX(-225px)`
-              : `translateX(0)`
-            : `translateX(100%)`,
-          width: isMobile ? "100%" : `${assistantWidth || 400}px`,
-        }}
-        className={`w-full h-full dark:bg-[#111111] absolute top-0 bottom-0 right-0 lg:right-[45px] text-sm bg-gray-200 transition-transform duration-300 ease-in-out flex dark:border-white/10 lg:border-l lg:border-black/10 max-w-[100%]`}
-      >
-        {isMobile && <AssistantRail />}
-        <div className="flex flex-col w-full h-full relative">
-          <AssistantControl />
-          <InternalPilot />
+      {toggleFullScreen ? (
+        <div
+          style={{
+            width: isMobile ? "100%" : `calc(100% - 40px)`,
+          }}
+          className={`w-full h-full dark:bg-[#111111] absolute top-0 bottom-0 right-0 lg:right-[45px] text-sm bg-gray-200 transition-transform duration-300 ease-in-out flex dark:border-white/10 lg:border-l lg:border-black/10 max-w-[100%]`}
+        >
+          {isMobile && <AssistantRail />}
+
+          <div className="flex flex-col w-full h-full relative">
+            <AssistantControl />
+            <InternalPilot />
+          </div>
         </div>
-        {!isMobile && !noResizing && (
-          <div
-            className="absolute top-0 bottom-0 left-0 w-1 cursor-ew-resize bg-gray-300"
-            onMouseDown={startResize}
-          />
-        )}
-      </div>
+      ) : (
+        <div
+          ref={resizableRef}
+          style={{
+            transform: openAssistant
+              ? activeAssistantTabOpen && !isMobile
+                ? `translateX(-225px)`
+                : `translateX(0)`
+              : `translateX(100%)`,
+            width: isMobile ? "100%" : `${assistantWidth || 400}px`,
+          }}
+          className={`w-full h-full dark:bg-[#111111] absolute top-0 bottom-0 right-0 lg:right-[45px] text-sm bg-gray-200 transition-transform duration-300 ease-in-out flex dark:border-white/10 lg:border-l lg:border-black/10 max-w-[100%]`}
+        >
+          {isMobile && <AssistantRail />}
+          <div className="flex flex-col w-full h-full relative">
+            <AssistantControl />
+            <InternalPilot />
+          </div>
+          {!isMobile && !noResizing && (
+            <div
+              className="absolute top-0 bottom-0 left-0 w-1 cursor-ew-resize bg-gray-300"
+              onMouseDown={startResize}
+            />
+          )}
+        </div>
+      )}
     </>
   );
 };

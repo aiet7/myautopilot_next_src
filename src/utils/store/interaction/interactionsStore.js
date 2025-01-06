@@ -100,12 +100,20 @@ const useInteractionStore = create((set, get) => ({
 
   handleScrollToBottom: (smooth) => {
     const { latestMessageRef } = useRefStore.getState();
-    latestMessageRef.current?.scrollIntoView({
-      behavior: smooth ? "smooth" : "auto",
-      block: "end",
-    });
+    const isInIframe = window.self !== window.top;
+  
+    if (isInIframe) {
+      latestMessageRef.current?.scrollIntoView({
+        behavior: smooth ? "smooth" : "auto",
+        block: "center", 
+      });
+    } else {
+      latestMessageRef.current?.scrollIntoView({
+        behavior: smooth ? "smooth" : "auto",
+        block: "end",
+      });
+    }
   },
-
   handleCheckScroll: () => {
     const { chatContainerRef } = useRefStore.getState();
     const container = chatContainerRef.current;
@@ -313,6 +321,7 @@ const useInteractionStore = create((set, get) => ({
     const { inputRef, messageIdRef } = useRefStore.getState();
     const userStore = useUserStore.getState();
     const {
+      podDetails,
       handleIfConversationExists,
       handleAddJarvisUserMessage,
       handleAddJarvisAssistantMessage,
@@ -348,7 +357,9 @@ const useInteractionStore = create((set, get) => ({
           body: JSON.stringify({
             text: userMessage,
             conversationId: currentConversation.id,
-            technicianId: userStore.user.id,
+            technicianId: userStore.user
+              ? userStore.user.id
+              : `Pod-${podDetails.cw_id}-${podDetails.msp}`,
           }),
         });
 
@@ -380,66 +391,22 @@ const useInteractionStore = create((set, get) => ({
     }
   },
 
-  // handleSendMessage: async (message) => {
-  //   const { inputRef, messageIdRef } = useRefStore.getState();
-  //   const userStore = useUserStore.getState();
-  //   const {
-  //     handleIfConversationExists,
-  //     handleAddJarvisUserMessage,
-  //     handleAddJarvisAssistantMessage,
-  //   } = useConversationStore.getState();
-
-  //   let currentConversation = await handleIfConversationExists();
-  //   if (message.trim() !== "" && currentConversation) {
-  //     inputRef.current.focus();
-  //     handleAddJarvisUserMessage(message);
-  //     set({
-  //       isWaiting: true,
-  //       isServerError: false,
-  //       userInput: "",
-  //     });
-  //     try {
-  //       const response = await fetch(`${gptServiceUrl}/jarvis`, {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({
-  //           text: message,
-  //           conversationId: currentConversation.id,
-  //           technicianId: userStore.user.id,
-  //         }),
-  //       });
-
-  //       if (response.status === 200) {
-  //         const responseBody = await response.json();
-
-  //         messageIdRef.current = responseBody.id;
-  //         handleAddJarvisAssistantMessage(responseBody.aiContent, false);
-  //       }
-  //     } catch (e) {
-  //       console.log(e);
-  //     } finally {
-  //       set({
-  //         isWaiting: false,
-  //       });
-  //     }
-  //   }
-  // },
-
   handleSendTroubleshootMessage: async (message) => {
     const { inputRef, messageIdRef } = useRefStore.getState();
     const userStore = useUserStore.getState();
     const { handleIfConversationExists } = useConversationStore.getState();
 
     let currentConversation = await handleIfConversationExists(false, false);
+
     const {
       handleAddUserTroubleshootMessage,
       handleAddAssistantTroubleshootMessage,
     } = useQueueStore.getState();
 
     if (message.trim() !== "" && currentConversation) {
-      inputRef.current.focus();
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
       handleAddUserTroubleshootMessage(message);
 
       set({
@@ -447,7 +414,6 @@ const useInteractionStore = create((set, get) => ({
         isServerError: false,
         userInput: "",
       });
-
       try {
         const response = await fetch(`${gptServiceUrl}/jarvis`, {
           method: "POST",
@@ -463,8 +429,8 @@ const useInteractionStore = create((set, get) => ({
 
         if (response.status === 200) {
           const responseBody = await response.json();
+          console.log(responseBody);
           messageIdRef.current = responseBody.id;
-
           handleAddAssistantTroubleshootMessage(responseBody.aiContent);
         }
       } catch (e) {
@@ -478,7 +444,6 @@ const useInteractionStore = create((set, get) => ({
   },
 
   handleCreateTicketTroubleShootMessage: async (message) => {
-    console.log("test")
     const { handleAddAssistantMessage } =
       useTicketConversationsStore.getState();
     set({ isWaiting: true, isServerError: false });

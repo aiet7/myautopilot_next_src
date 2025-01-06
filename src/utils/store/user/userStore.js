@@ -47,8 +47,10 @@ const useUserStore = create((set, get) => ({
     if (storedUser && storedUser.id === id) {
       userData = storedUser;
     } else if (msp && id) {
+      
       const fetchUser = userType === "tech" ? handleGetTech : handleGetClient;
       const fetchedUser = await fetchUser(msp, id);
+     
       if (fetchedUser) {
         saveUser(fetchedUser);
         userData = fetchedUser;
@@ -121,7 +123,6 @@ const useUserStore = create((set, get) => ({
         }
       : { ...user, [field]: value };
 
-    console.log("updated", updatedUser);
     try {
       const response = await fetch(
         `${dbServiceUrl}/${user.mspCustomDomain}/${userTypeEndpoint}/edit`,
@@ -147,7 +148,7 @@ const useUserStore = create((set, get) => ({
           editing: { ...editing, [field]: false },
           errorMessage: "",
         });
-        console.log(updatedUser, "User Changes Saved!");
+        console.log("User Changes Saved!");
       } else {
         const errorData = await response.json();
         set({ errorMessage: errorData.message || "Failed to save changes" });

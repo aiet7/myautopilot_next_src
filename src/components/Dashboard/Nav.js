@@ -23,7 +23,7 @@ const Nav = () => {
     switch (option) {
       case "Tickets":
         return <IoTicketSharp size={20} />;
-      case "Queue":
+      case "Dispatch":
         return <MdAddToQueue size={20} />;
       case "Assistant":
         return <MdEngineering size={20} />;
@@ -37,7 +37,7 @@ const Nav = () => {
   const filteredOptions =
     userType === "tech"
       ? options
-      : options.filter((option) => option !== "Queue");
+      : options.filter((option) => option !== "Dispatch");
 
   return (
     <div

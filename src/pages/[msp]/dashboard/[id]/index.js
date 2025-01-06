@@ -14,7 +14,6 @@ import useUserStore from "@/utils/store/user/userStore";
 import useMspStore from "@/utils/store/auth/msp/mspStore";
 import Account from "@/components/Dashboard/Account";
 import ExternalPilot from "@/components/Dashboard/Assistant/Sections/External/ExternalPilot";
-import InternalPilot from "@/components/Dashboard/Assistant/Sections/Internal/InternalPilot";
 
 const Interaction = dynamic(() =>
   import("@/components/Dashboard/Interaction/Interaction.js")
@@ -86,13 +85,13 @@ const DashboardPage = ({}) => {
     return () => {
       window.removeEventListener("beforeunload", setStorage);
     };
-  }, [currentNavOption, activeTab, currentConversationIndex, ,]);
+  }, [currentNavOption, activeTab, currentConversationIndex]);
 
   return (
     <>
       {currentNavOption === "Tickets" ||
       currentNavOption === "Assistant" ||
-      currentNavOption === "Queue" ? (
+      currentNavOption === "Dispatch" ? (
         <>
           <Interaction />
 

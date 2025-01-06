@@ -18,6 +18,7 @@ const PublicSignupPage = () => {
     handleSignupPublic,
     clearMSPCredentials,
     initializeUserType,
+    submit,
   } = useMspStore();
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -30,6 +31,22 @@ const PublicSignupPage = () => {
       };
     }
   }, []);
+
+  const allErrors = [];
+
+  if (errorMessage?.publicSignup) {
+    allErrors.push("Email Already Exists*.");
+  }
+  if (!errorMessage?.validEmail) {
+    allErrors.push("Email is not valid*");
+  }
+  if (errorMessage?.emptyFields) {
+    allErrors.push("Please fill out required fields*.");
+  }
+
+  if (errorMessage?.validPassword) {
+    allErrors.push(...errorMessage.validPassword);
+  }
 
   useEffect(() => {
     initializeUserType();
@@ -47,19 +64,61 @@ const PublicSignupPage = () => {
               <h1 className="text-2xl font-bold text-black">
                 Enter Your User Details.
               </h1>
-              {errorMessage?.publicSignup && (
-                <p className="text-red-500">User Already Exists*.</p>
-              )}
-              {errorMessage?.emptyFields && (
-                <p className="text-red-500">Please fill out required field*.</p>
-              )}
+              <>
+                {submit && (
+                  <>
+                    {allErrors.map((error, index) => (
+                      <p key={index} className="text-red-500">
+                        {error}
+                      </p>
+                    ))}
+                  </>
+                )}
+              </>
             </div>
             <div className="flex flex-col gap-4 w-full">
               <div className="flex gap-2">
+                <div>
+                  
+                  <input
+                    value={signupInputs?.publicInfo?.firstName || ""}
+                    onChange={(e) =>
+                      setSignupInputs("publicInfo", "firstName", e.target.value)
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleSignupPublic(router.push);
+                      }
+                    }}
+                    type="text"
+                    placeholder="First name*"
+                    className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                  />
+                </div>
+                <div>
+                  <input
+                    value={signupInputs?.publicInfo?.lastName || ""}
+                    onChange={(e) =>
+                      setSignupInputs("publicInfo", "lastName", e.target.value)
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleSignupPublic(router.push);
+                      }
+                    }}
+                    type="text"
+                    placeholder="Last name*"
+                    className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                  />
+                </div>
+              </div>
+              <div>
                 <input
-                  value={signupInputs?.publicInfo?.firstName || ""}
+                  value={signupInputs?.publicInfo?.email || ""}
                   onChange={(e) =>
-                    setSignupInputs("publicInfo", "firstName", e.target.value)
+                    setSignupInputs("publicInfo", "email", e.target.value)
                   }
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
@@ -67,71 +126,45 @@ const PublicSignupPage = () => {
                       handleSignupPublic(router.push);
                     }
                   }}
-                  type="text"
-                  placeholder="First name*"
-                  className="rounded w-full p-2 border border-gray-300  bg-white text-black"
-                />
-                <input
-                  value={signupInputs?.publicInfo?.lastName || ""}
-                  onChange={(e) =>
-                    setSignupInputs("publicInfo", "lastName", e.target.value)
-                  }
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleSignupPublic(router.push);
-                    }
-                  }}
-                  type="text"
-                  placeholder="Last name*"
+                  type="email"
+                  placeholder="Email address*"
                   className="rounded w-full p-2 border border-gray-300  bg-white text-black"
                 />
               </div>
-              <input
-                value={signupInputs?.publicInfo?.email || ""}
-                onChange={(e) =>
-                  setSignupInputs("publicInfo", "email", e.target.value)
-                }
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    handleSignupPublic(router.push);
+              <div>
+                <input
+                  value={signupInputs?.publicInfo?.phoneNumber || ""}
+                  onChange={(e) =>
+                    setSignupInputs("publicInfo", "phoneNumber", e.target.value)
                   }
-                }}
-                type="email"
-                placeholder="Email address*"
-                className="rounded w-full p-2 border border-gray-300  bg-white text-black"
-              />
-              <input
-                value={signupInputs?.publicInfo?.phoneNumber || ""}
-                onChange={(e) =>
-                  setSignupInputs("publicInfo", "phoneNumber", e.target.value)
-                }
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    handleSignupPublic(router.push);
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleSignupPublic(router.push);
+                    }
+                  }}
+                  type="number"
+                  placeholder="Phone number*"
+                  className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                />
+              </div>
+              <div>
+                <input
+                  value={signupInputs?.publicInfo?.password || ""}
+                  onChange={(e) =>
+                    setSignupInputs("publicInfo", "password", e.target.value)
                   }
-                }}
-                type="text"
-                placeholder="Phone number*"
-                className="rounded w-full p-2 border border-gray-300  bg-white text-black"
-              />
-              <input
-                value={signupInputs?.publicInfo?.password || ""}
-                onChange={(e) =>
-                  setSignupInputs("publicInfo", "password", e.target.value)
-                }
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    handleSignupPublic(router.push);
-                  }
-                }}
-                type="password"
-                placeholder="Password*"
-                className="rounded w-full p-2 border border-gray-300  bg-white text-black"
-              />
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleSignupPublic(router.push);
+                    }
+                  }}
+                  type="password"
+                  placeholder="Password*"
+                  className="rounded w-full p-2 border border-gray-300  bg-white text-black"
+                />
+              </div>
               <button
                 onClick={() => handleSignupPublic(router.push)}
                 type="button"

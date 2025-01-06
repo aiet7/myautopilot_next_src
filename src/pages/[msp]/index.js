@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import useInitializeAppStore from "@/utils/store/init/initializeAppStore";
 import useMspStore from "@/utils/store/auth/msp/mspStore";
 import useAuthStore from "@/utils/store/auth/authStore";
-
+import Cookies from "js-cookie";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
 const MSPPage = ({}) => {
@@ -30,14 +30,27 @@ const MSPPage = ({}) => {
     clearMSPCredentials,
     initializeUserType,
   } = useMspStore();
-
   const { showPassword, setShowPassword, handleShowForgotPassword } =
     useAuthStore();
   const router = useRouter();
-  
+  const session_token = Cookies.get("session_token");
+
   useEffect(() => {
     if (router.isReady) {
       const { msp } = router.query;
+
+      if (session_token) {
+        router.push(`/${msp}/dashboard/${session_token}`);
+      } else {
+        router.push(`/${msp}`);
+      }
+    }
+  }, [router.isReady]);
+
+  useEffect(() => {
+    if (router.isReady) {
+      const { msp } = router.query;
+
       if (msp) {
         initializeSubDomain(msp);
       } else {
@@ -61,6 +74,7 @@ const MSPPage = ({}) => {
   useEffect(() => {
     initializeUserType();
   }, [userType]);
+
   return (
     <>
       {height && (
@@ -145,7 +159,8 @@ const MSPPage = ({}) => {
                         if (userType === "tech") {
                           handleTechnician2FALogin(
                             router.push,
-                            mspSubDomain?.customDomain
+                            mspSubDomain?.customDomain,
+                            window
                           );
                         } else {
                           handleClient2FALogin(
@@ -169,7 +184,8 @@ const MSPPage = ({}) => {
                       if (userType === "tech") {
                         handleTechnician2FALogin(
                           router.push,
-                          mspSubDomain?.customDomain
+                          mspSubDomain?.customDomain,
+                          window
                         );
                       } else {
                         handleClient2FALogin(

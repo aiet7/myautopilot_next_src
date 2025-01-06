@@ -50,7 +50,7 @@ const EngineerChat = () => {
               <span>
                 {item.role === "user" ? (
                   <div className="w-7 h-7  bg-blue-800 flex justify-center items-center text-white">
-                    {user?.firstName[0]}
+                    {user?.firstName[0] || "E7"}
                   </div>
                 ) : (
                   <div className="w-7 h-7  bg-[#ab68ff]  flex justify-center items-center text-white">

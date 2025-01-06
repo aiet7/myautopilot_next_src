@@ -13,7 +13,6 @@ import useConversationStore from "@/utils/store/interaction/conversations/conver
 import useAssistantStore from "@/utils/store/assistant/assistantStore";
 import useQueueStore from "@/utils/store/interaction/queue/queueStore";
 
-
 const Layout = ({ children }) => {
   const {
     height,
@@ -82,7 +81,6 @@ const Layout = ({ children }) => {
 
                 {children}
               </div>
-             
             </div>
             <TabNavRail />
           </div>

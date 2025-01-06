@@ -10,7 +10,7 @@ const ChatMode = () => {
     setActiveChatBotMode,
     setActiveChatFilterModeOpen,
   } = useConversationStore();
-
+  
   return (
     <div className="relative flex items-center ">
       <select

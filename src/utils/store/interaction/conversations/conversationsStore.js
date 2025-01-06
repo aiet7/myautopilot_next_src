@@ -7,6 +7,7 @@ import {
 } from "@/utils/api/serverProps";
 import useUserStore from "../../user/userStore";
 import { validateAssistantForm } from "@/utils/formValidations";
+import useInteractionStore from "../interactionsStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
@@ -46,6 +47,11 @@ const useConversationStore = create((set, get) => ({
   },
 
   formError: "",
+
+  podDetails: {
+    msp: null,
+    cw_id: null,
+  },
 
   setTempTitle: (title) => set((state) => ({ ...state, tempTitle: title })),
   setTempPrompt: (prompt) => set((state) => ({ ...state, tempPrompt: prompt })),
@@ -139,6 +145,58 @@ const useConversationStore = create((set, get) => ({
         },
       };
     }),
+
+  initializePod: async (msp, cw_id) => {
+    const { handleSendMessage } = useInteractionStore.getState();
+
+    set({
+      selectedAgent: {
+        agentName: "Jarvis Diagnostic Troubleshooting Agent",
+        custom: false,
+        defaultPrompt:
+          "As an AI assistant named Jarvis, your role is to assist technicians by guiding them through diagnostic and troubleshooting steps to resolve issues quickly and efficiently. Your interaction should be professional, helpful, and use clear, user-friendly language.\n\nObjectives:\n\n1. Identify Relevant Diagnostic Questions:\n   - Review the issue described in the ticket.\n   - Ask the most pertinent questions to narrow down the problem.\n   - Each question should aim to identify the root cause efficiently.\n\n2. Provide Step-by-Step Troubleshooting Instructions:\n   - Based on the technician's responses, offer clear, easy-to-follow steps.\n   - Ensure instructions are detailed yet concise.\n\n3. Confirm Resolution After Each Step:\n   - Ask if the issue has been resolved.\n   - If not, proceed with further troubleshooting steps.\n\n4. Maintain Professional and Supportive Tone:\n   - Be patient and encouraging.\n   - Let the technician know that additional support is available if needed.\n\nGuidelines:\n\n- Communication Style:\n  - Use clear and simple language.\n  - Avoid technical jargon unless necessary, and explain terms when used.\n\n- Efficiency:\n  - Aim to resolve the issue in as few steps as possible.\n  - Prioritize the most common and effective solutions first.\n\n- Feedback Loop:\n  - Encourage the technician to provide detailed responses.\n  - Adapt your troubleshooting based on their feedback.\n\nRemember: Your primary tasks are to offer diagnostic assistance based on the issue described and to guide the technician through the troubleshooting process until the issue is resolved or all options are exhausted.",
+        deleted: false,
+        description: null,
+        examplePrompts: null,
+        id: "66e1fa8144a820f65619a4b4",
+        mspCustomDomain: null,
+        objectives: null,
+        role: null,
+        techId: null,
+        userId: null,
+      },
+
+      podDetails: {
+        msp: msp,
+        cw_id: cw_id,
+      },
+    });
+
+
+    const ticketResponse = await fetch(
+      `${connectWiseServiceUrl}/getTicketsById?mspCustomDomain=${msp}&ticketId=${cw_id}`
+    );
+
+    if (ticketResponse.status === 200) {
+      const ticket = await ticketResponse.json();
+      let ticketInformation = `Category: ${
+        ticket.type?.name || "N/A"
+      }, Subcategory: ${ticket.subType?.name || "N/A"}, Title: ${
+        ticket?.summary
+      } `;
+
+      const notesReponse = await fetch(
+        `${connectWiseServiceUrl}/getTicketNotesById?mspCustomDomain=${msp}&ticketId=${cw_id}`
+      );
+
+      if (notesReponse.status === 200) {
+        const notes = await notesReponse.text();
+        ticketInformation += `\nNotes: ${notes || "N/A"}`;
+      }
+
+      await handleSendMessage(ticketInformation);
+    }
+  },
 
   initializeAgents: async () => {
     const userStore = useUserStore.getState();
@@ -427,45 +485,53 @@ const useConversationStore = create((set, get) => ({
       handleNewConversation,
     } = get();
 
-    let currentConversation;
-
-    if (!forceNew) {
-      currentConversation = conversationHistories.find(
-        (conv) => conv.id === currentConversationIndex
-      );
-    }
+    let currentConversation =
+      !forceNew && currentConversationIndex
+        ? conversationHistories.find(
+            (conv) => conv.id === currentConversationIndex
+          )
+        : null;
 
     if (currentConversation) {
       return currentConversation;
     } else {
       const newConversation = await handleNewConversation(highlight);
+      if (newConversation) {
+        set({
+          currentConversationIndex: newConversation.id,
+        });
+      }
       return newConversation;
     }
   },
 
   handleNewConversation: async (highlight = true) => {
     const userStore = useUserStore.getState();
+    const timestamp = new Date().toISOString().replace(/[-:.]/g, "");
+    const { podDetails } = get();
 
     const { selectedAgent } = get();
-
-    const timestamp = new Date().toISOString().replace(/[-:.]/g, "");
-
     const newConversation = {
-      userId: userStore.user.id,
+      userId: userStore.user
+        ? userStore.user.id
+        : `Pod-${podDetails.cw_id}-${podDetails.msp}`,
       conversationName: `Chat - ${timestamp}`,
-      agentID: selectedAgent.id,
+      agentID:
+        selectedAgent && selectedAgent.id
+          ? selectedAgent.id
+          : "66e1fa8144a820f65619a4b4",
     };
+
     try {
       const response = await fetch(
         `${dbServiceUrl}/conversations/addConversation`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(newConversation),
         }
       );
+
       if (response.ok) {
         const addedConversation = await response.json();
 
@@ -474,9 +540,7 @@ const useConversationStore = create((set, get) => ({
             ...state.conversationHistories,
             addedConversation,
           ],
-          currentConversationIndex: highlight
-            ? addedConversation.id
-            : state.currentConversationIndex,
+          currentConversationIndex: addedConversation.id, // Ensure current index is set
         }));
 
         return addedConversation;
@@ -484,6 +548,7 @@ const useConversationStore = create((set, get) => ({
     } catch (e) {
       console.log(e);
     }
+    return null;
   },
 
   handleDeleteConversation: async (convoId) => {

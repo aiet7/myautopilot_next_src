@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import useQueueStore from "../interaction/queue/queueStore";
-import useAssistantStore from "../assistant/assistantStore";
 import useConversationStore from "../interaction/conversations/conversationsStore";
 
 const isBrowser = typeof window !== "undefined";
@@ -11,8 +10,8 @@ const useUiStore = create((set, get) => ({
 
   height: null,
   activeTab: null,
-  options: ["Tickets", "Queue", "Assistant", "Settings"],
-  currentNavOption: "Tickets",
+  options: ["Tickets", "Dispatch", "Assistant", "Settings"],
+  currentNavOption: null,
   showQueueSubMenu: false,
   openHistory: initialWidth > 1023 ? true : false,
   openAssistant: initialWidth > 1023 ? true : false,
@@ -26,6 +25,9 @@ const useUiStore = create((set, get) => ({
   tabOpen: false,
   tabView: null,
   externalOnly: false,
+  toggleCompanyView: true,
+  toggleTicketView: true,
+  toggleFullScreen: false,
 
   setHoverTab: (tab) => {
     set({ hoverTab: tab });
@@ -38,6 +40,18 @@ const useUiStore = create((set, get) => ({
   setHeight: (heightValue) => set({ height: heightValue }),
 
   setCurrentNavOption: (option) => set({ currentNavOption: option }),
+
+  setToggleFullScreen: () => {
+    set((state) => ({ toggleFullScreen: !state.toggleFullScreen }));
+  },
+
+  setToggleCompanyView: (toggle) => {
+    set({ toggleCompanyView: toggle });
+  },
+
+  setToggleTicketView: (toggle) => {
+    set({ toggleTicketView: toggle });
+  },
 
   handleToggleAssistant: () =>
     set((state) => ({ openAssistant: !state.openAssistant })),
@@ -68,7 +82,7 @@ const useUiStore = create((set, get) => ({
 
     window.history.pushState({ option }, "", `#${option.toLowerCase()}`);
 
-    if (option === "Queue" && activeQueueBotMode === "All Queue Tickets") {
+    if (option === "Dispatch" && activeQueueBotMode === "All Queue Tickets") {
       await handleShowAllQueueTickets(mspCustomDomain);
     }
 
@@ -123,7 +137,7 @@ const useUiStore = create((set, get) => ({
     set({
       height: null,
       activeTab: null,
-      options: ["Tickets", "Queue", "Assistant", "Settings"],
+      options: ["Tickets", "Dispatch", "Assistant", "Settings"],
       currentNavOption: "Tickets",
       showQueueSubMenu: false,
       openHistory: initialWidth > 1023 ? true : false,
@@ -134,6 +148,9 @@ const useUiStore = create((set, get) => ({
       openQueue: initialWidth > 1023 ? true : false,
       openNav: initialWidth > 1023 ? true : false,
       openSettings: false,
+      toggleCompanyView: true,
+      toggleTicketView: true,
+      toggleFullScreen: false,
     });
   },
 }));

@@ -2,12 +2,14 @@
 
 import useConversationStore from "@/utils/store/interaction/conversations/conversationsStore";
 import useInteractionStore from "@/utils/store/interaction/interactionsStore";
+import { useEffect } from "react";
 import { BsStars } from "react-icons/bs";
 import { GiRobotAntennas } from "react-icons/gi";
 
 const EngineerGuide = () => {
   const { handleSendMessage } = useInteractionStore();
-  const { selectedAgent, activeChatBotMode } = useConversationStore();
+  const { selectedAgent, activeChatBotMode, initializePod } =
+    useConversationStore();
 
   const examplePrompts = selectedAgent?.examplePrompts
     ? Object.entries(selectedAgent.examplePrompts).map(([title, prompt]) => ({
@@ -15,6 +17,7 @@ const EngineerGuide = () => {
         prompt,
       }))
     : [];
+
 
   return (
     <div className="flex flex-col items-center justify-between p-4 h-full max-w-[700px] mx-auto text-xs">
