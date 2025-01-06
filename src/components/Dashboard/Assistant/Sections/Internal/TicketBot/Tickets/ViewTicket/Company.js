@@ -150,7 +150,7 @@ const Company = () => {
                 disabled
                 className="dark:bg-transparent dark:border-white border-black border-b w-[65%] px-4  bg-white"
                 value={
-                  ticketStatus?.[currentTicket.ticketId]?.country.name || ""
+                  ticketStatus?.[currentTicket.ticketId]?.country?.name || ""
                 }
               />
             </div>

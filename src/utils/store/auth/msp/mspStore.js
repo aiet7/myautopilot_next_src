@@ -85,6 +85,20 @@ const useMspStore = create((set, get) => ({
 
   successMessage: false,
 
+  success2FAMessage: false,
+
+  authError: false,
+
+  authPopup: "closed",
+
+  authcard: false,
+
+  authToken: "",
+
+  authUpdatedPopup: false,
+
+  tokenEmailSent: false,
+
   showPassword: false,
 
   initializeUserType: async () => {
@@ -101,6 +115,20 @@ const useMspStore = create((set, get) => ({
       });
     }
   },
+
+  setTokenEmailSent: (bool) => set({ tokenEmailSent: bool }),
+
+  setAuthUpdatedPopup: (bool) => set({ authUpdatedPopup: bool }),
+
+  setAuthError: (bool) => set({ authError: bool }),
+
+  setAuthToken: (num) => set({ authToken: num }),
+
+  setAuthCard: (isOpen) => set({ authCard: isOpen }),
+
+  setAuthPopup: (isOpen) => set({ authPopup: isOpen }),
+
+  setSuccess2FAMessage: (bool) => set({ success2FAMessage: bool }),
 
   setFileSizeError: (error) => {
     const { errorMessage } = get();

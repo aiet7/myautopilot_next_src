@@ -148,7 +148,7 @@ const useUserStore = create((set, get) => ({
           editing: { ...editing, [field]: false },
           errorMessage: "",
         });
-        console.log(updatedUser, "User Changes Saved!");
+        console.log("User Changes Saved!");
       } else {
         const errorData = await response.json();
         set({ errorMessage: errorData.message || "Failed to save changes" });
