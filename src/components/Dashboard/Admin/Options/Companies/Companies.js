@@ -8,6 +8,7 @@ import ViewEmployees from "./ViewEmployees/ViewEmployees";
 import ViewCompanies from "./ViewCompanies";
 import ViewAllTickets from "./ViewAllTickets";
 import ViewEmployeeTickets from "./ViewEmployeeTickets";
+import { IoIosArrowForward } from "react-icons/io";
 
 const Companies = () => {
   const { user } = useUserStore();
@@ -24,57 +25,61 @@ const Companies = () => {
   useEffect(() => {
     initializeCompanies();
   }, [user]);
-  
+
   const renderBreadCrumb = () => {
     switch (currentView) {
       case "CompanyEmployees":
         return (
-          <h1 className="text-2xl">
+          <h1 className="text-2xl flex items-center gap-1">
             <span
               onClick={() => setCurrentView("Companies")}
-              className="hover:underline cursor-pointer"
+              className="text-blue-600 font-medium underline cursor-pointer"
             >
               Companies
-            </span>{" "}
-            / {selectedCompany}
+            </span>
+            <IoIosArrowForward size={20} className="mt-1" />
+            {selectedCompany}
           </h1>
         );
       case "CompanyAllTickets":
         return (
-          <h1 className="text-2xl">
+          <h1 className="text-2xl flex items-center gap-1">
             <span
               onClick={() => setCurrentView("Companies")}
-              className="hover:underline cursor-pointer"
+              className="text-blue-600 font-medium underline cursor-pointer "
             >
               Companies
             </span>{" "}
-            /{" "}
+            <IoIosArrowForward size={20} className="mt-1" />
             <span
               onClick={() => setCurrentView("CompanyEmployees")}
-              className="hover:underline cursor-pointer"
+              className="text-blue-600 font-medium underline cursor-pointer "
             >
               {selectedCompany}
             </span>{" "}
-            / Tickets
+            <IoIosArrowForward size={20} className="mt-1" />
+            Tickets
           </h1>
         );
       case "CompanyEmployeeTickets":
         return (
-          <h1 className="text-2xl">
+          <h1 className="text-2xl flex items-center gap-1">
             <span
               onClick={() => setCurrentView("Companies")}
-              className="hover:underline cursor-pointer"
+              className="text-blue-600 font-medium underline cursor-pointer "
             >
               Companies
             </span>{" "}
-            /{" "}
+            <IoIosArrowForward size={20} className="mt-1" />
             <span
               onClick={() => setCurrentView("CompanyEmployees")}
-              className="hover:underline cursor-pointer"
+              className="text-blue-600 font-medium underline cursor-pointer "
             >
               {selectedCompany}
             </span>{" "}
-            / {selectedEmployee} / Tickets
+            <IoIosArrowForward size={20} className="mt-1" />
+            {selectedEmployee} <IoIosArrowForward size={20} className="mt-1" />
+            Tickets
           </h1>
         );
       default:

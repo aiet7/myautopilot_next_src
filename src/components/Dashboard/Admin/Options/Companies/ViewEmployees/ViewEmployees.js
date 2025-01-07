@@ -61,7 +61,7 @@ const ViewEmployees = () => {
             </div>
             <p
               onClick={() => handleViewCompanyAllTickets(user?.mspCustomDomain)}
-              className="hover:underline text-blue-800 cursor-pointer"
+              className="underline text-blue-600 cursor-pointer"
             >
               See All Tickets
             </p>

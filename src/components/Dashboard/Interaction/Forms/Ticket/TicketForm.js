@@ -540,7 +540,7 @@ const TicketForm = () => {
       {ticket?.currentTicketTitle === "" ? (
         <div className="flex flex-col gap-2">
           <p className="text-xl font-semibold">
-            No Tickets Are Currently Opened or Created
+            No Tickets Are Currently Being Opened or Created
           </p>
           <p className="text-gray-500">
             If you would like to open a ticket, please interact with our agent
@@ -549,7 +549,7 @@ const TicketForm = () => {
         </div>
       ) : (
         <div className="flex flex-col justify-between h-full">
-          <div className="bg-white border-2 shadow-md px-10 py-3 flex flex-col gap-2">
+          <div className="bg-white border-2 shadow-md px-10 py-3 flex flex-col gap-3">
             {userType === "tech" && (
               <>
                 <div className=" flex w-full">
