@@ -38,7 +38,7 @@ const Interaction = ({}) => {
       handleScrollToBottom(false);
     }
   }, [currentNavOption]);
-
+  
   useEffect(() => {
     handleScrollToBottom(false);
   }, [window.innerWidth]);
@@ -84,7 +84,7 @@ const Interaction = ({}) => {
           <FaSpinner
             className={`${
               isWaiting ? "opacity-100" : "opacity-0"
-            } animate-spin`}
+            } animate-spin text-xl`}
           />
         )}
       </div>

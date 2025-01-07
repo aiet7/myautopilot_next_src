@@ -536,7 +536,7 @@ const TicketForm = () => {
   }, []);
 
   return (
-    <div className="bg-white dark:bg-black flex flex-col gap-2 overflow-y-auto p-10 h-full scrollbar-thin ">
+    <div className=" dark:bg-black flex flex-col gap-2 overflow-y-auto p-4 h-full scrollbar-thin ">
       {ticket?.currentTicketTitle === "" ? (
         <div className="flex flex-col gap-2">
           <p className="text-xl font-semibold">
@@ -549,7 +549,7 @@ const TicketForm = () => {
         </div>
       ) : (
         <div className="flex flex-col justify-between h-full">
-          <div className=" flex flex-col gap-2">
+          <div className="bg-white border-2 shadow-md px-10 py-3 flex flex-col gap-2">
             {userType === "tech" && (
               <>
                 <div className=" flex w-full">

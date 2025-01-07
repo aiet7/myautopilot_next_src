@@ -120,7 +120,7 @@ const useInteractionStore = create((set, get) => ({
     const atBottom =
       Math.abs(
         container.scrollHeight - container.scrollTop - container.clientHeight
-      ) < 5;
+      ) < 10;
     set({
       isAtBottom: atBottom,
       isOverflowed: container.scrollHeight > container.clientHeight,

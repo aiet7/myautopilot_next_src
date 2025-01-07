@@ -22,14 +22,14 @@ const ViewActiveEmployees = () => {
       {addEmployee && <AddEmployee />}
       <div className="flex flex-col gap-7 ">
         <div className="flex  flex-col  p-4">
-          <div className="flex items-center justify-start gap-2  pb-4">
+          {/* <div className="flex items-center justify-start gap-2  pb-4">
             <button
               onClick={() => setAddEmployee(true)}
               className="text-sm border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white font-bold px-5 rounded-lg py-1"
               >
               Add Employee
             </button>
-          </div>
+          </div> */}
           {activeEmployees?.length !== 0 ? (
             <div className="block  max-h-full max-w-full">
               {activeEmployees && (
