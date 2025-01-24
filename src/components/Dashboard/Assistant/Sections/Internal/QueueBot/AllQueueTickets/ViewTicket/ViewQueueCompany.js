@@ -12,7 +12,6 @@ const ViewQueueCompany = () => {
   const { assistantWidth } = useAssistantStore();
   const { toggleCompanyView, setToggleCompanyView } = useUiStore();
 
-  console.log(currentQueueTicket);
   useEffect(() => {
     return () => {
       setToggleCompanyView(true);
