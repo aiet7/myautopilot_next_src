@@ -116,12 +116,10 @@ const Automate = () => {
                 </div>
               </div>
               <div className="p-4 flex gap-1 justify-end">
-                <button className="hover:bg-blue-500 bg-blue-800 text-white px-3 py-1">
-                  Save
+                <button className="hover:bg-blue-500 bg-blue-800 rounded text-white px-3 py-1">
+                  Authenticate
                 </button>
-                <button className="hover:bg-red-500 bg-red-600 text-white px-3 py-1">
-                  Disable Automate
-                </button>
+                
               </div>
             </div>
           </div>

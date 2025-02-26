@@ -32,6 +32,8 @@ const Technician = () => {
     initializeManageTechnicians();
   }, [user]);
 
+ 
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex flex-col  overflow-hidden">
@@ -60,16 +62,15 @@ const Technician = () => {
                 </div>
                 <div className="block overflow-auto scrollbar-thin max-h-full max-w-full">
                   <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
-                    <thead className="sticky top-0 bg-white  text-black/60">
+                    <thead className="sticky top-0  text-black/60 bg-[#F5F8FA]">
                       <tr className="">
                         <th className="p-2 border-l border-t border-b border-r">
                           <input
                             type="checkbox"
                             checked={currentTechs.every(
                               (technician) =>
-                                techniciansSelected[
-                                  technician.connectWiseMembersId
-                                ]?.selected
+                                techniciansSelected[technician.psaMemberId]
+                                  ?.selected
                             )}
                             onChange={(e) =>
                               setSelectAllTechnicians(e.target.checked)
@@ -80,15 +81,11 @@ const Technician = () => {
                         <th className="p-2 border-t border-b border-r ">
                           Name
                         </th>
-                        <th className="p-2 border-t border-b border-r">
-                          Identifier
-                        </th>
+                        
                         <th className="p-2 border-t border-b border-r">
                           Primary Email
                         </th>
-                        <th className="p-2 border-t border-b border-r">
-                          Office Email
-                        </th>
+                        
                         <th className="p-2 border-t border-b border-r">
                           Mobile Phone
                         </th>
@@ -112,31 +109,29 @@ const Technician = () => {
                     <tbody>
                       {currentTechs?.map((technician) => {
                         const {
-                          connectWiseMembersId,
+                          psaMemberId,
                           firstName,
                           lastName,
                           mobilePhone,
-                          identifier,
-                          officeEmail,
+                          email,
                           officePhone,
-                          primaryEmail,
                           isInDB,
                         } = technician;
                         return (
                           <tr
-                            key={connectWiseMembersId}
+                            key={psaMemberId}
                             className={`${isInDB ? "text-black/20" : ""}`}
                           >
                             <td className="p-2 truncate border-l border-r border-b">
                               {!isInDB && (
                                 <input
                                   checked={
-                                    techniciansSelected[connectWiseMembersId]
+                                    techniciansSelected[psaMemberId]
                                       ?.selected || false
                                   }
                                   onChange={(e) =>
                                     setSelectedTechnicians(
-                                      connectWiseMembersId,
+                                      psaMemberId,
                                       "selected",
                                       e.target.checked
                                     )
@@ -149,14 +144,10 @@ const Technician = () => {
                             <td className="p-2 truncate  border-r border-b">
                               {firstName + " " + lastName}
                             </td>
+                            
+                            
                             <td className="p-2 truncate border-r border-b">
-                              {identifier}
-                            </td>
-                            <td className="p-2 truncate border-r border-b">
-                              {primaryEmail}
-                            </td>
-                            <td className="p-2 truncate border-r border-b">
-                              {officeEmail}
+                              {email}
                             </td>
                             <td className="p-2 truncate border-r border-b">
                               {mobilePhone}
@@ -169,7 +160,7 @@ const Technician = () => {
                                 <select
                                   onChange={(e) =>
                                     setSelectedTechnicians(
-                                      connectWiseMembersId,
+                                      psaMemberId,
                                       "tier",
                                       e.target.value
                                     )
@@ -188,7 +179,7 @@ const Technician = () => {
                                 <select
                                   onChange={(e) =>
                                     setSelectedTechnicians(
-                                      connectWiseMembersId,
+                                      psaMemberId,
                                       "roleId",
                                       e.target.value
                                     )
@@ -216,9 +207,9 @@ const Technician = () => {
                   onClick={() =>
                     handleAddManageTechnician(user?.mspCustomDomain)
                   }
-                  className=" self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+                  className=" self-end bg-blue-800 text-white font-bold px-5 rounded py-2"
                 >
-                  Save
+                  Save Technicians
                 </button>
               </div>
             )}

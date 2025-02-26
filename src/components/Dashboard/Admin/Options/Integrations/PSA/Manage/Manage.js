@@ -204,7 +204,7 @@ const Manage = () => {
                         onClick={() =>
                           handleRemoveManageKeys(user?.mspCustomDomain)
                         }
-                        className="hover:bg-blue-500 self-start bg-blue-800 text-white rounded-lg px-3 py-1"
+                        className="hover:bg-blue-500 self-start bg-blue-800 text-white rounded px-3 py-1"
                       >
                         Remove Keys
                       </button>
@@ -213,7 +213,7 @@ const Manage = () => {
                         onClick={() =>
                           handleSaveManageKeys(user?.mspCustomDomain)
                         }
-                        className="hover:bg-blue-500 self-start bg-blue-800 text-white rounded-lg px-3 py-1"
+                        className="hover:bg-blue-500 self-start bg-blue-800 text-white rounded px-3 py-1"
                       >
                         Save Keys
                       </button>
@@ -244,7 +244,7 @@ const Manage = () => {
                 {mspIntegrations?.connectWiseManageIntegrator && (
                   <button
                     onClick={() => setActiveConfig(true, user?.mspCustomDomain)}
-                    className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg px-3 py-1"
+                    className="hover:bg-blue-500 bg-blue-800 text-white rounded px-3 py-1"
                   >
                     Configuration
                   </button>
@@ -257,7 +257,7 @@ const Manage = () => {
                       ? handleDisconnectManage(user?.mspCustomDomain)
                       : handleIntegrateManage(user?.mspCustomDomain)
                   }
-                  className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg px-3 py-1"
+                  className="hover:bg-blue-500 bg-blue-800 text-white rounded px-3 py-1"
                 >
                   {mspIntegrations?.connectWiseManageIntegrator
                     ? "Disconnect"

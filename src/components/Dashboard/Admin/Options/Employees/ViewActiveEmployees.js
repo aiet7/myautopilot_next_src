@@ -8,12 +8,10 @@ const ViewActiveEmployees = () => {
   const { user } = useUserStore();
 
   const {
-    
     addEmployee,
     activeEmployees,
     employeesRoleOptions,
     setSelectedEmployee,
-    setAddEmployee,
     handleSaveActiveEmployee,
   } = useEmployeesStore();
 
@@ -22,14 +20,6 @@ const ViewActiveEmployees = () => {
       {addEmployee && <AddEmployee />}
       <div className="flex flex-col gap-7 ">
         <div className="flex  flex-col  p-4">
-          {/* <div className="flex items-center justify-start gap-2  pb-4">
-            <button
-              onClick={() => setAddEmployee(true)}
-              className="text-sm border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white font-bold px-5 rounded-lg py-1"
-              >
-              Add Employee
-            </button>
-          </div> */}
           {activeEmployees?.length !== 0 ? (
             <div className="block  max-h-full max-w-full">
               {activeEmployees && (
@@ -45,7 +35,10 @@ const ViewActiveEmployees = () => {
                       </th>
 
                       <th className="p-2 border-t border-b border-r">
-                        Phone Number
+                        Mobile Number
+                      </th>
+                      <th className="p-2 border-t border-b border-r">
+                        Office Number
                       </th>
 
                       <th className="p-2 border-t border-b border-r">Roles</th>
@@ -58,8 +51,10 @@ const ViewActiveEmployees = () => {
                         email,
                         firstName,
                         lastName,
-                        phoneNumber,
+                        mobilePhone,
+                        officePhone,
                         roleId,
+                        phoneNumber,
                       } = employee;
                       return (
                         <tr key={id}>
@@ -82,11 +77,12 @@ const ViewActiveEmployees = () => {
                           <td className="p-2 truncate border-r border-b">
                             {email}
                           </td>
-
                           <td className="p-2 truncate border-r border-b">
-                            {phoneNumber}
+                            {mobilePhone || officePhone || phoneNumber}
                           </td>
-
+                          <td className="p-2 truncate border-r border-b">
+                            {mobilePhone || officePhone || phoneNumber}
+                          </td>
                           <td className="p-2 truncate border-r border-b">
                             <div className="flex flex-col">
                               <select
@@ -111,7 +107,6 @@ const ViewActiveEmployees = () => {
                               </select>
                             </div>
                           </td>
-                         
                         </tr>
                       );
                     })}

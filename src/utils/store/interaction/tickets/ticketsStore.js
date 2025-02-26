@@ -6,7 +6,8 @@ import { create } from "zustand";
 import useUserStore from "../../user/userStore";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
-const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
+const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL; 
+const psaServiceUrl = process.env.NEXT_PUBLIC_PSA_SERVICE_URL
 
 const useTicketsStore = create((set, get) => ({
   searchValue: "",
@@ -160,13 +161,14 @@ const useTicketsStore = create((set, get) => ({
   handleGetTicketStatus: async (ticketId) => {
     const userStore = useUserStore.getState();
     const encodedDomain = encodeURIComponent(userStore.user.mspCustomDomain);
+
     try {
       set((state) => ({
         ...state,
         ticketStatusLoading: { ...state.ticketStatusLoading, [ticketId]: true },
       }));
       const ticketStatusResponse = await fetch(
-        `${connectWiseServiceUrl}/getTicketsById?mspCustomDomain=${encodedDomain}&ticketId=${ticketId}`
+        `${psaServiceUrl}/getTicketsById?mspCustomDomain=${encodedDomain}&ticketId=${ticketId}`
       );
       if (ticketStatusResponse.status === 200) {
         const ticketStatus = await ticketStatusResponse.json();
@@ -193,7 +195,7 @@ const useTicketsStore = create((set, get) => ({
 
     try {
       const ticketNotesResponse = await fetch(
-        `${connectWiseServiceUrl}/getAllConnectWiseTicketNotesById?mspCustomDomain=${encodedDomain}&ticketId=${ticketId}`
+        `${psaServiceUrl}/getAllConnectWiseTicketNotesById?mspCustomDomain=${encodedDomain}&ticketId=${ticketId}`
       );
       if (ticketNotesResponse.status === 200) {
         const ticketNotes = await ticketNotesResponse.json();
@@ -218,7 +220,7 @@ const useTicketsStore = create((set, get) => ({
       });
       try {
         const response = await fetch(
-          `${connectWiseServiceUrl}/addNoteToTicketObject?mspCustomDomain=${userStore.user.mspCustomDomain}&ticketId=${ticketId}`,
+          `${psaServiceUrl}/addNoteToTicketObject?mspCustomDomain=${userStore.user.mspCustomDomain}&ticketId=${ticketId}`,
           {
             method: "POST",
             headers: {

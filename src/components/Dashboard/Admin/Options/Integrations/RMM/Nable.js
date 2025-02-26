@@ -118,7 +118,7 @@ const Nable = () => {
                 </div>
               </div>
               <div className="p-4 flex gap-1 justify-end">
-                <button className="hover:bg-blue-500 bg-blue-800 text-white px-3 py-1">
+                <button className="hover:bg-blue-500 bg-blue-800 rounded text-white px-3 py-1">
                   Authenticate
                 </button>
               </div>

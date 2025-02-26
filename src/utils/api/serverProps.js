@@ -1,5 +1,5 @@
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
-const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
+const psaServiceUrl = process.env.NEXT_PUBLIC_PSA_SERVICE_URL;
 
 export const handleGetTech = async (msp, techId) => {
   const response = await fetch(
@@ -36,23 +36,21 @@ export const handleGetClientIntegrations = async (msp, clientId) => {
   return response.json();
 };
 
-export const handleGetManageTechnicians = async (msp) => {
+export const handleGetPsaTechnicians = async (msp) => {
   const response = await fetch(
-    `${connectWiseServiceUrl}/getConnectWiseMembers?mspCustomDomain=${encodeURIComponent(
-      msp
-    )}`
+    `${psaServiceUrl}/psa/getMembers?mspCustomDomain=${encodeURIComponent(msp)}`
   );
   return response.json();
 };
 
-export const handleGetManageInactiveDBTechnicians = async (msp) => {
+export const handleGetPsaInactiveDBTechnicians = async (msp) => {
   const response = await fetch(
-    `${dbServiceUrl}/${encodeURIComponent(msp)}/connectWiseMembers`
+    `${dbServiceUrl}/${encodeURIComponent(msp)}/psaMembers`
   );
   return response.json();
 };
 
-export const handleGetManageActiveDBTechnicians = async (msp) => {
+export const handleGetPsaActiveDBTechnicians = async (msp) => {
   const response = await fetch(
     `${dbServiceUrl}/${encodeURIComponent(
       msp
@@ -61,48 +59,46 @@ export const handleGetManageActiveDBTechnicians = async (msp) => {
   return response.json();
 };
 
-export const handleGetManageClients = async (msp) => {
+export const handleGetPsaClients = async (msp) => {
   const response = await fetch(
-    `${connectWiseServiceUrl}/getConnectWiseClients?mspCustomDomain=${encodeURIComponent(
+    `${psaServiceUrl}/psa/getClients?mspCustomDomain=${encodeURIComponent(msp)}`
+  );
+  return response.json();
+};
+
+export const handleGetPsaClientAndContactTypes = async (msp) => {
+  const response = await fetch(
+    `${psaServiceUrl}/getCompanyTypes?mspCustomDomain=${encodeURIComponent(
       msp
     )}`
   );
   return response.json();
 };
 
-export const handleGetManageClientAndContactTypes = async (msp) => {
-  const response = await fetch(
-    `${connectWiseServiceUrl}/getCompanyTypes?mspCustomDomain=${encodeURIComponent(
-      msp
-    )}`
-  );
-  return response.json();
-};
-
-export const handleGetManageDBClients = async (msp) => {
+export const handleGetPsaDBClients = async (msp) => {
   const response = await fetch(
     `${dbServiceUrl}/${encodeURIComponent(msp)}/clients/getAll`
   );
   return response.json();
 };
 
-export const handleGetManageContacts = async (msp) => {
+export const handleGetPsaContacts = async (msp) => {
   const response = await fetch(
-    `${connectWiseServiceUrl}/getConnectWiseContacts?mspCustomDomain=${encodeURIComponent(
+    `${psaServiceUrl}/psa/getContacts?mspCustomDomain=${encodeURIComponent(
       msp
     )}`
   );
   return response.json();
 };
 
-export const handleGetManageDBContacts = async (msp) => {
+export const handleGetPsaDBContacts = async (msp) => {
   const response = await fetch(
-    `${dbServiceUrl}/${encodeURIComponent(msp)}/connectWiseContacts`
+    `${dbServiceUrl}/${encodeURIComponent(msp)}/psaContacts`
   );
   return response.json();
 };
 
-export const handleGetManageDBClientContactsPSA = async (msp, companyId) => {
+export const handleGetPsaDBClientContactsPSA = async (msp, companyId) => {
   const response = await fetch(
     `${dbServiceUrl}/${encodeURIComponent(
       msp
@@ -113,7 +109,7 @@ export const handleGetManageDBClientContactsPSA = async (msp, companyId) => {
   return response.json();
 };
 
-export const handleGetManageDBClientContactsActive = async (msp, companyId) => {
+export const handleGetPsaDBClientContactsActive = async (msp, companyId) => {
   const response = await fetch(
     `${dbServiceUrl}/${encodeURIComponent(
       msp
@@ -124,8 +120,18 @@ export const handleGetManageDBClientContactsActive = async (msp, companyId) => {
 
 export const handleGetDBBoard = async (msp) => {
   const response = await fetch(
-    `${dbServiceUrl}/${encodeURIComponent(msp)}/connectWiseBoardDetails`
+    `${dbServiceUrl}/${encodeURIComponent(msp)}/getPSATicketingConfiguration`
   );
+  return response.json();
+};
+
+export const handleGetConnectWiseBoards = async (msp) => {
+  const response = await fetch(
+    `${psaServiceUrl}/getConnectWiseBoards?mspCustomDomain=${encodeURIComponent(
+      msp
+    )}`
+  );
+
   return response.json();
 };
 

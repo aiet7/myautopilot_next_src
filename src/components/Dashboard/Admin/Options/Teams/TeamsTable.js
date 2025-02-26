@@ -15,7 +15,7 @@ const TeamsTable = () => {
     setAdding,
     setDeleteMenu,
   } = useTeamsStore();
-
+  
   const filteredTeams = (selectedTeam || teams)
     ?.map((team) => ({
       ...team,

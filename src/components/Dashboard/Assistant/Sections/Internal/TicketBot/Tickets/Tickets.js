@@ -241,7 +241,8 @@ const Tickets = () => {
         <ViewTicket />
       ) : (
         <div className="flex-grow overflow-y-auto scrollbar-thin">
-          {paginatedTickets?.map((ticket, index) => {
+            {paginatedTickets?.map((ticket, index) => {
+            console.log(ticket)
             const {
               id,
               type,
@@ -256,6 +257,7 @@ const Tickets = () => {
               emailId,
               phoneNumber,
               company,
+              clientsName,
             } = ticket;
             return (
               <div
@@ -284,7 +286,7 @@ const Tickets = () => {
                     <span className="font-bold">Ticket ID:</span> #{ticketId}
                   </p>
                   <p className="break-words whitespace-pre-wrap w-[50%]">
-                    <span className="font-bold">Company</span> {company}
+                    <span className="font-bold">Company:</span> {clientsName}
                   </p>
                 </div>
                 <div className="flex justify-between items-center">

@@ -10,7 +10,7 @@ const Confirmation = () => {
     handleDeleteMember,
     setCurrentMember,
   } = useTeamsStore();
-
+  
   return (
     <div className="h-full w-full flex justify-center items-center dark:bg-black/80 absolute bg-black/60 z-[99] top-0 bottom-0 right-0 left-0 p-2 lg:p-10">
       <div className="flex flex-col justify-center items-center bg-white w-full max-w-[400px] h-[175px] p-4 rounded-lg text-black mx-auto relative">

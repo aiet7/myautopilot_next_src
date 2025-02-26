@@ -1,14 +1,15 @@
 import { create } from "zustand";
 import useUserStore from "@/utils/store/user/userStore";
 import {
-  handleGetManageInactiveDBTechnicians,
-  handleGetManageActiveDBTechnicians,
+  handleGetPsaInactiveDBTechnicians,
+  handleGetPsaActiveDBTechnicians,
   handleGetRoles,
 } from "@/utils/api/serverProps";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 const emailConnectorUrl = process.env.NEXT_PUBLIC_EMAILCONNECTOR_URL;
+const psaServiceUrl = process.env.NEXT_PUBLIC_PSA_SERVICE_URL;
 
 const useEmployeesStore = create((set, get) => ({
   employees: null,
@@ -39,8 +40,8 @@ const useEmployeesStore = create((set, get) => ({
     if (userStore.user) {
       try {
         const [dbEmployees, dbActiveEmployees, newRoles] = await Promise.all([
-          handleGetManageInactiveDBTechnicians(userStore.user.mspCustomDomain),
-          handleGetManageActiveDBTechnicians(userStore.user.mspCustomDomain),
+          handleGetPsaInactiveDBTechnicians(userStore.user.mspCustomDomain),
+          handleGetPsaActiveDBTechnicians(userStore.user.mspCustomDomain),
           handleGetRoles(userStore.user.mspCustomDomain),
         ]);
 

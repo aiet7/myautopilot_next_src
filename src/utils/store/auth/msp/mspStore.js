@@ -867,19 +867,85 @@ const useMspStore = create((set, get) => ({
     }
   },
 
+  // handleActivateTechnician: async (navigator, mspCustomDomain) => {
+  //   const { signupInputs, selectedTechnician } = get();
+  //   const { techInfo } = signupInputs;
+
+  //   const { id, connectWiseMembersId, primaryEmail, ...restTechnicianDetails } =
+  //     selectedTechnician;
+
+  //   const payload = {
+  //     ...restTechnicianDetails,
+  //     email: primaryEmail,
+  //     password: techInfo.password,
+  //     connectWiseMembersAutopilotDbId: id,
+  //     connectWiseTechnicanId: connectWiseMembersId,
+  //   };
+
+  //   try {
+  //     const response = await fetch(
+  //       `${dbServiceUrl}/${mspCustomDomain}/technicianUsers/createAccount`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify(payload),
+  //       }
+  //     );
+
+  //     if (response.ok) {
+  //       console.log("Technician Activated");
+  //       navigator(`/${mspCustomDomain}`);
+  //     } else {
+  //       console.log("Technician Activation Failed");
+  //     }
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // },
+
   handleActivateTechnician: async (navigator, mspCustomDomain) => {
-    const { signupInputs, selectedTechnician } = get();
+    const { signupInputs, selectedTechnician, errorMessage } = get();
     const { techInfo } = signupInputs;
 
-    const { id, connectWiseMembersId, primaryEmail, ...restTechnicianDetails } =
+    const { id, psaMembersId, email, ...restTechnicianDetails } =
       selectedTechnician;
+
+    const emailValidation = isEmailInputValid(techInfo.email);
+    const passwordValidation = isPasswordValid(techInfo.password);
+
+    set({ submit: true });
+    if (!passwordValidation.isValid || !emailValidation) {
+      set({
+        errorMessage: {
+          ...errorMessage,
+          validPassword: passwordValidation.errors,
+          validEmail: emailValidation,
+          emptyFields: false,
+        },
+      });
+      return;
+    }
+
+    if (techInfo.password === "" || techInfo.email === "") {
+      set({
+        errorMessage: {
+          ...errorMessage,
+          emptyFields: true,
+          validPassword: false,
+          validEmail: false,
+        },
+      });
+      return;
+    }
 
     const payload = {
       ...restTechnicianDetails,
-      email: primaryEmail,
+      email: email,
       password: techInfo.password,
-      connectWiseMembersAutopilotDbId: id,
-      connectWiseTechnicanId: connectWiseMembersId,
+      psaMembersAutopilotDbId: id,
+      psaMembersId: psaMembersId,
     };
 
     try {
@@ -898,6 +964,12 @@ const useMspStore = create((set, get) => ({
         console.log("Technician Activated");
         navigator(`/${mspCustomDomain}`);
       } else {
+        set({
+          errorMessage: {
+            ...errorMessage,
+            techSignup: true,
+          },
+        });
         console.log("Technician Activation Failed");
       }
     } catch (e) {
@@ -905,18 +977,81 @@ const useMspStore = create((set, get) => ({
     }
   },
 
+  // handleActivateClient: async (navigator, mspCustomDomain) => {
+  //   const { signupInputs, selectedClient } = get();
+  //   const { clientInfo } = signupInputs;
+  //   const payload = {
+  //     ...selectedClient,
+  //     email: selectedClient.connectWiseEmailId,
+  //     password: clientInfo.password,
+  //   };
+
+  //   try {
+  //     const response = await fetch(
+  //       `${dbServiceUrl}/${mspCustomDomain}/clientUsers/createAccount?connectWiseCompanyId=${selectedClient.connectWiseCompanyId}&clientId=${selectedClient.id}`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify(payload),
+  //       }
+  //     );
+
+  //     if (response.ok) {
+  //       console.log("Client Activated");
+  //       navigator(`/${mspCustomDomain}`);
+  //     } else {
+  //       console.log("Client Activation Failed");
+  //     }
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // },
+
   handleActivateClient: async (navigator, mspCustomDomain) => {
-    const { signupInputs, selectedClient } = get();
+    const { signupInputs, selectedClient, errorMessage } = get();
     const { clientInfo } = signupInputs;
+
+    const emailValidation = isEmailInputValid(clientInfo.email);
+    const passwordValidation = isPasswordValid(clientInfo.password);
+
+    set({ submit: true });
+    if (!passwordValidation.isValid || !emailValidation) {
+      set({
+        errorMessage: {
+          ...errorMessage,
+          validPassword: passwordValidation.errors,
+          validEmail: emailValidation,
+          emptyFields: false,
+        },
+      });
+      return;
+    }
+
+    if (clientInfo.password === "" || clientInfo.email === "") {
+      set({
+        errorMessage: {
+          ...errorMessage,
+          emptyFields: true,
+          validPassword: false,
+          validEmail: false,
+        },
+      });
+      return;
+    }
     const payload = {
       ...selectedClient,
-      email: selectedClient.connectWiseEmailId,
+      email: selectedClient.email,
       password: clientInfo.password,
+      psaContactAutopilotDbId: selectedClient.id,
+      phoneNumber: selectedClient.phone,
+      id: null,
     };
 
     try {
       const response = await fetch(
-        `${dbServiceUrl}/${mspCustomDomain}/clientUsers/createAccount?connectWiseCompanyId=${selectedClient.connectWiseCompanyId}&clientId=${selectedClient.id}`,
+        `${dbServiceUrl}/${mspCustomDomain}/clientUsers/createAccount?psaCompanyId=${selectedClient.psaCompanyId}`,
         {
           method: "POST",
           headers: {
@@ -930,6 +1065,12 @@ const useMspStore = create((set, get) => ({
         console.log("Client Activated");
         navigator(`/${mspCustomDomain}`);
       } else {
+        set({
+          errorMessage: {
+            ...errorMessage,
+            clientSignup: true,
+          },
+        });
         console.log("Client Activation Failed");
       }
     } catch (e) {

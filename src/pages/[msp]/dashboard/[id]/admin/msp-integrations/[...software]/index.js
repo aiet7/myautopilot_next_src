@@ -18,7 +18,7 @@ const Openai = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/AI/Openai")
 );
 const DattoPSA = dynamic(() =>
-  import("@/components/Dashboard/Admin/Options/Integrations/PSA/DattoPSA")
+  import("@/components/Dashboard/Admin/Options/Integrations/PSA/DattoPSA/DattoPSA")
 );
 const Manage = dynamic(() =>
   import("@/components/Dashboard/Admin/Options/Integrations/PSA/Manage/Manage")

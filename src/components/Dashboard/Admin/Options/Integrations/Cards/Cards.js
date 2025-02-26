@@ -33,7 +33,7 @@ const Cards = () => {
   const filteredCards = selectedCategory
     ? cardsToDisplay.filter((card) => card.category === selectedCategory)
     : cardsToDisplay;
-
+  
   useEffect(() => {
     if (!isMSP) {
       initializeClientList();

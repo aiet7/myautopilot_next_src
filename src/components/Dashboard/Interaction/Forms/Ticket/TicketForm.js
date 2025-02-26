@@ -519,8 +519,10 @@ import useFormsStore from "@/utils/store/interaction/forms/formsStore";
 import TicketOnboarding from "./TicketOnboarding";
 import { useEffect } from "react";
 import useMspStore from "@/utils/store/auth/msp/mspStore";
+import useUserStore from "@/utils/store/user/userStore";
 
 const TicketForm = () => {
+  const { user } = useUserStore();
   const { userType } = useMspStore();
   const {
     loading,
@@ -528,9 +530,10 @@ const TicketForm = () => {
     ticket,
     setTicket,
     handleCreateTicketCategories,
+    handleCreateTicketContact,
     handleTicketConfirmation,
   } = useFormsStore();
-
+  
   useEffect(() => {
     handleCreateTicketCategories();
   }, []);
@@ -552,7 +555,7 @@ const TicketForm = () => {
           <div className="bg-white border-2 shadow-md px-10 py-3 flex flex-col gap-3">
             {userType === "tech" && (
               <>
-                <div className=" flex w-full">
+                <div className="flex w-full">
                   <div className=" flex w-[50%]">
                     <span className="font-bold w-[25%] mr-3">Company:</span>
                     <select
@@ -563,9 +566,15 @@ const TicketForm = () => {
                       } focus:outline-none focus:ring-0`}
                       value={ticket.currentTicketCWCompanyId || ""}
                       onChange={(e) => {
+                        handleCreateTicketContact(
+                          user?.mspCustomDomain,
+                          e.target.value
+                        );
                         setTicket(
                           "currentTicketCWCompanyId",
                           e.target.value,
+                          null,
+                          null,
                           null,
                           null,
                           null,
@@ -585,12 +594,9 @@ const TicketForm = () => {
                         Select Company
                       </option>
                       {ticket.currentCompanies?.map((company) => {
-                        const { name, connectWiseCompanyId } = company;
+                        const { name, psaCompanyId } = company;
                         return (
-                          <option
-                            key={connectWiseCompanyId}
-                            value={connectWiseCompanyId}
-                          >
+                          <option key={psaCompanyId} value={psaCompanyId}>
                             {name}
                           </option>
                         );
@@ -598,20 +604,21 @@ const TicketForm = () => {
                     </select>
                   </div>
                   <div className=" flex w-[50%]">
-                    <span className="px-3 font-bold w-[25%]">Board: </span>
+                    <span className="px-3 font-bold w-[25%]">Contact:</span>
                     <select
-                      className={`dark:bg-transparent dark:border-white px-3 w-[75%] bg-transparent border-b  ${
-                        formError?.currentTicketBoardId
+                      className={`dark:bg-transparent dark:border-white px-3 w-[75%] bg-transparent border-b ${
+                        formError?.currentTicketContactId || ""
                           ? "border-red-500"
                           : "border-black"
-                      } focus:outline-none focus:ring-0}`}
-                      value={ticket.currentTicketBoardId || ""}
-                      onChange={(e) => {
-                        const newBoardId = parseInt(e.target.value, 10);
+                      } focus:outline-none focus:ring-0`}
+                      value={ticket.currentTicketContactId}
+                      onChange={(e) =>
                         setTicket(
-                          "currentTicketBoardId",
-                          newBoardId,
-                          newBoardId,
+                          "currentTicketContactId",
+                          e.target.value,
+                          null,
+                          null,
+                          null,
                           null,
                           null,
                           null,
@@ -623,17 +630,21 @@ const TicketForm = () => {
                           null,
                           null,
                           null
-                        );
-                      }}
+                        )
+                      }
                     >
                       <option value="" disabled>
-                        Select Board
+                        Select Contact
                       </option>
-                      {ticket.categories?.boardDetails?.map((board) => (
-                        <option key={board.boardId} value={board.boardId}>
-                          {board.boardName}
-                        </option>
-                      ))}
+                      {ticket.currentContacts?.map((contact) => {
+                        const { psaContactId, firstName, lastName } = contact;
+
+                        return (
+                          <option key={psaContactId} value={psaContactId}>
+                            {firstName + " " + lastName}
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
                 </div>
@@ -665,10 +676,60 @@ const TicketForm = () => {
                       null,
                       null,
                       null,
+                      null,
+                      null,
                       null
                     )
                   }
                 />
+              </div>
+              <div className=" flex w-[50%]">
+                <span className="px-3 font-bold w-[25%]">Board/Queue:</span>
+                <select
+                  className={`dark:bg-transparent dark:border-white px-3 w-[75%] bg-transparent border-b  ${
+                    formError?.currentTicketBoardId
+                      ? "border-red-500"
+                      : "border-black"
+                  } focus:outline-none focus:ring-0}`}
+                  value={ticket.currentTicketBoardId || ""}
+                  onChange={(e) => {
+                    const newBoardId = parseInt(e.target.value, 10);
+                    setTicket(
+                      "currentTicketBoardId",
+                      newBoardId,
+                      newBoardId,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null
+                    );
+                  }}
+                >
+                  <option value="" disabled>
+                    Select Board
+                  </option>
+                  {ticket.currentPsaType === "ConnectWise" &&
+                    ticket.categories?.boardDetails?.map((board) => (
+                      <option key={board.boardId} value={board.boardId}>
+                        {board.boardName}
+                      </option>
+                    ))}
+                  {ticket.currentPsaType === "Autotask" &&
+                    ticket.categories?.ticketQueueDetails?.map((queue) => (
+                      <option key={queue.queueId} value={queue.queueId}>
+                        {queue.queueName}
+                      </option>
+                    ))}
+                </select>
               </div>
             </div>
             <div className=" flex w-full">
@@ -681,6 +742,8 @@ const TicketForm = () => {
                   setTicket(
                     "currentTicketDescription",
                     e.target.value,
+                    null,
+                    null,
                     null,
                     null,
                     null,
@@ -710,19 +773,33 @@ const TicketForm = () => {
                   value={ticket.currentTicketCategoryId || ""}
                   onChange={(e) => {
                     const newCategoryId = parseInt(e.target.value, 10);
-                    const selectedCategory = ticket.categories?.boardDetails
-                      ?.find(
-                        (board) => board.boardId === ticket.currentTicketBoardId
-                      )
-                      ?.mspConnectWiseBoardTypes.find(
-                        (type) => type?.typeId === newCategoryId
-                      );
-
+                    const selectedCategory =
+                      ticket.currentPsaType === "ConnectWise"
+                        ? ticket.categories?.boardDetails
+                            ?.find(
+                              (board) =>
+                                board.boardId === ticket.currentTicketBoardId
+                            )
+                            ?.mspConnectWiseBoardTypes.find(
+                              (type) => type?.typeId === newCategoryId
+                            )
+                        : ticket.categories?.ticketQueueDetails
+                            ?.find(
+                              (queue) =>
+                                queue.queueId === ticket.currentTicketBoardId
+                            )
+                            ?.issueTypes.find(
+                              (type) => type?.value === newCategoryId
+                            );
                     setTicket(
                       "currentTicketCategoryId",
-                      selectedCategory?.typeName,
+                      ticket.currentPsaType === "ConnectWise"
+                        ? selectedCategory?.typeName
+                        : selectedCategory?.label,
                       ticket.currentTicketBoardId,
                       newCategoryId,
+                      null,
+                      null,
                       null,
                       null,
                       null,
@@ -739,15 +816,27 @@ const TicketForm = () => {
                   <option value="" disabled>
                     Select a type
                   </option>
-                  {ticket.categories?.boardDetails
-                    ?.find(
-                      (board) => board.boardId === ticket.currentTicketBoardId
-                    )
-                    ?.mspConnectWiseBoardTypes.map((type) => (
-                      <option key={type?.typeId} value={type?.typeId}>
-                        {type?.typeName}
-                      </option>
-                    ))}
+
+                  {ticket.currentPsaType === "ConnectWise" &&
+                    ticket.categories?.boardDetails
+                      ?.find(
+                        (board) => board.boardId === ticket.currentTicketBoardId
+                      )
+                      ?.mspConnectWiseBoardTypes.map((type) => (
+                        <option key={type?.typeId} value={type?.typeId}>
+                          {type?.typeName}
+                        </option>
+                      ))}
+                  {ticket.currentPsaType === "Autotask" &&
+                    ticket.categories?.ticketQueueDetails
+                      ?.find(
+                        (queue) => queue.queueId === ticket.currentTicketBoardId
+                      )
+                      ?.issueTypes.map((type) => (
+                        <option key={type?.value} value={type?.value}>
+                          {type?.label}
+                        </option>
+                      ))}
                 </select>
               </div>
 
@@ -762,36 +851,90 @@ const TicketForm = () => {
                   value={ticket.currentTicketSubCategoryId || ""}
                   onChange={(e) => {
                     const newSubCategoryId = parseInt(e.target.value, 10);
-                    const selectedBoard = ticket.categories?.boardDetails.find(
-                      (board) => board.boardId === ticket.currentTicketBoardId
-                    );
+
+                    const selectedBoard =
+                      ticket.currentPsaType === "ConnectWise"
+                        ? ticket.categories?.boardDetails.find(
+                            (board) =>
+                              board.boardId === ticket.currentTicketBoardId
+                          )
+                        : ticket.categories?.ticketQueueDetails.find(
+                            (queue) =>
+                              queue.queueId === ticket.currentTicketBoardId
+                          );
 
                     const selectedCategory =
-                      selectedBoard?.mspConnectWiseBoardTypes.find(
-                        (type) =>
-                          type?.typeId === ticket.currentTicketCategoryId
-                      );
+                      ticket.currentPsaType === "ConnectWise"
+                        ? selectedBoard?.mspConnectWiseBoardTypes.find(
+                            (type) =>
+                              type?.typeId === ticket.currentTicketCategoryId
+                          )
+                        : selectedBoard?.issueTypes.find(
+                            (type) =>
+                              type?.value === ticket.currentTicketCategoryId
+                          );
 
                     const selectedSubcategory =
-                      selectedCategory?.mspConnectWiseBoardSubTypes.find(
-                        (sub) => sub?.subTypeId === newSubCategoryId
-                      );
+                      ticket.currentPsaType === "ConnectWise"
+                        ? selectedCategory?.mspConnectWiseBoardSubTypes.find(
+                            (sub) => sub?.subTypeId === newSubCategoryId
+                          )
+                        : selectedCategory?.subIssueTypes?.find(
+                            (sub) => sub?.value === newSubCategoryId
+                          );
 
                     setTicket(
                       "currentTicketSubCategoryId",
-                      selectedSubcategory?.subTypeName,
+                      ticket.currentPsaType === "ConnectWise"
+                        ? selectedSubcategory?.subTypeName
+                        : selectedSubcategory?.label,
+
                       ticket.currentTicketBoardId,
                       ticket.currentTicketCategoryId,
                       newSubCategoryId,
-                      selectedSubcategory?.priority,
-                      selectedSubcategory?.priorityId,
-                      selectedSubcategory?.priorityScore,
-                      selectedSubcategory?.impact,
-                      selectedSubcategory?.impactScore,
-                      selectedSubcategory?.severity,
-                      selectedSubcategory?.severityScore,
-                      selectedSubcategory?.tier,
-                      selectedSubcategory?.slaDeadLineInHours
+
+                      ticket.currentPsaType === "ConnectWise"
+                        ? selectedSubcategory?.priority
+                        : selectedSubcategory?.priorityLabel,
+
+                      ticket.currentPsaType === "ConnectWise"
+                        ? selectedSubcategory?.priorityId
+                        : selectedSubcategory?.priorityValue,
+
+                      ticket.currentPsaType === "ConnectWise"
+                        ? selectedSubcategory?.priorityScore
+                        : selectedSubcategory?.priorityScore,
+
+                      ticket.currentPsaType === "ConnectWise"
+                        ? selectedSubcategory?.impact
+                        : null,
+
+                      ticket.currentPsaType === "ConnectWise"
+                        ? selectedSubcategory?.impactScore
+                        : null,
+
+                      ticket.currentPsaType === "ConnectWise"
+                        ? selectedSubcategory?.severity
+                        : null,
+
+                      ticket.currentPsaType === "ConnectWise"
+                        ? selectedSubcategory?.severityScore
+                        : null,
+
+                      ticket.currentPsaType === "ConnectWise"
+                        ? selectedSubcategory?.tier
+                        : null,
+
+                      ticket.currentPsaType === "ConnectWise"
+                        ? selectedSubcategory?.slaDeadLineInHours
+                        : selectedSubcategory?.slaDeadLineInHours,
+
+                      ticket.currentPsaType === "ConnectWise"
+                        ? null
+                        : selectedSubcategory?.ticketTypeLabel,
+                      ticket.currentPsaType === "ConnectWise"
+                        ? null
+                        : selectedSubcategory?.ticketTypeValue
                     );
                   }}
                 >
@@ -800,9 +943,10 @@ const TicketForm = () => {
                       ? "Please select a subtype"
                       : "Select a type first"}
                   </option>
-                  {ticket.currentTicketCategoryId &&
-                    ticket.categories?.boardDetails
 
+                  {ticket.currentPsaType === "ConnectWise" &&
+                    ticket.currentTicketCategoryId &&
+                    ticket.categories?.boardDetails
                       ?.find(
                         (board) => board.boardId === ticket.currentTicketBoardId
                       )
@@ -810,9 +954,24 @@ const TicketForm = () => {
                         (type) =>
                           type?.typeId === ticket.currentTicketCategoryId
                       )
-                      ?.mspConnectWiseBoardSubTypes.map((sub) => (
+                      ?.mspConnectWiseBoardSubTypes?.map((sub) => (
                         <option key={sub?.subTypeId} value={sub?.subTypeId}>
                           {sub?.subTypeName}
+                        </option>
+                      ))}
+
+                  {ticket.currentPsaType === "Autotask" &&
+                    ticket.currentTicketCategoryId &&
+                    ticket.categories?.ticketQueueDetails
+                      ?.find(
+                        (queue) => queue.queueId === ticket.currentTicketBoardId
+                      )
+                      ?.issueTypes?.find(
+                        (type) => type?.value === ticket.currentTicketCategoryId
+                      )
+                      ?.subIssueTypes?.map((sub) => (
+                        <option key={sub?.value} value={sub?.value}>
+                          {sub?.label}
                         </option>
                       ))}
                 </select>
@@ -886,6 +1045,8 @@ const TicketForm = () => {
                         null,
                         null,
                         null,
+                        null,
+                        null,
                         null
                       )
                     }
@@ -916,6 +1077,8 @@ const TicketForm = () => {
                         null,
                         null,
                         e.target.value,
+                        null,
+                        null,
                         null
                       )
                     }
@@ -944,6 +1107,8 @@ const TicketForm = () => {
                     setTicket(
                       "currentTicketName",
                       e.target.value,
+                      null,
+                      null,
                       null,
                       null,
                       null,
@@ -984,6 +1149,8 @@ const TicketForm = () => {
                       null,
                       null,
                       null,
+                      null,
+                      null,
                       null
                     )
                   }
@@ -1003,6 +1170,8 @@ const TicketForm = () => {
                   setTicket(
                     "currentTicketPhoneNumber",
                     e.target.value,
+                    null,
+                    null,
                     null,
                     null,
                     null,

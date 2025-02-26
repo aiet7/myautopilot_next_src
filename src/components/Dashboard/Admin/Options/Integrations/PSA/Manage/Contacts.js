@@ -39,7 +39,7 @@ const Contacts = () => {
         {currentContacts?.length !== 0 ? (
           <div className="flex flex-col gap-7  overflow-hidden">
             {loadingContacts ? (
-              <div className="flex items-center gap-2 text-lg">
+              <div className="flex items-center gap-2">
                 <p className="font-bold">Loading your Contacts</p>
                 <FaSpinner className="animate-spin" size={20} />
               </div>
@@ -60,15 +60,14 @@ const Contacts = () => {
                 </div>
                 <div className="block overflow-auto scrollbar-thin max-h-full max-w-full ">
                   <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
-                    <thead className="sticky top-0 bg-white  text-black/60">
+                    <thead className="sticky top-0 bg-[#F5F8FA] text-black/60">
                       <tr className="">
                         <th className="p-2 border-l border-t border-b border-r">
                           <input
                             type="checkbox"
                             checked={currentContacts.every(
                               (contact) =>
-                                contactsSelected[contact.connectWiseContactId]
-                                  ?.selected
+                                contactsSelected[contact.psaContactId]?.selected
                             )}
                             onChange={(e) =>
                               setSelectAllContacts(e.target.checked)
@@ -79,12 +78,7 @@ const Contacts = () => {
                         <th className="p-2 border-t border-b border-r ">
                           Name
                         </th>
-                        <th className="p-2 border-t border-b border-r ">
-                          Company
-                        </th>
-                        <th className="p-2 border-t border-b border-r">
-                          Title
-                        </th>
+
                         <th className="p-2 border-t border-b border-r">
                           Company ID
                         </th>
@@ -97,9 +91,6 @@ const Contacts = () => {
                         <th className="p-2 border-t border-b border-r">
                           Phone Number
                         </th>
-                        <th className="p-2 border-t border-b border-r">
-                          Default Phone Number
-                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -107,31 +98,30 @@ const Contacts = () => {
                         const {
                           firstName,
                           lastName,
-                          title,
                           company,
-                          connectWiseEmailId,
-                          connectWiseCompanyId,
-                          connectWiseContactId,
-                          connectWisePhoneNumber,
+                          email,
+                          psaCompanyId,
+                          psaContactId,
+                          phone,
                           defaultPhoneNbr,
                           defaultPhoneType,
                           isInDB,
                         } = contact;
                         return (
                           <tr
-                            key={connectWiseContactId}
+                            key={psaContactId}
                             className={`${isInDB ? "text-black/20" : ""}`}
                           >
                             <td className="p-2 truncate border-l border-r border-b">
                               {!isInDB && (
                                 <input
                                   checked={
-                                    contactsSelected[connectWiseContactId]
-                                      ?.selected || false
+                                    contactsSelected[psaContactId]?.selected ||
+                                    false
                                   }
                                   onChange={(e) =>
                                     setSelectedContacts(
-                                      connectWiseContactId,
+                                      psaContactId,
                                       e.target.checked
                                     )
                                   }
@@ -143,26 +133,18 @@ const Contacts = () => {
                             <td className="p-2 truncate  border-r border-b">
                               {firstName + " " + lastName}
                             </td>
+
                             <td className="p-2 truncate border-r border-b">
-                              {company?.name}
+                              {psaCompanyId}
                             </td>
                             <td className="p-2 truncate border-r border-b">
-                              {title}
+                              {psaContactId}
                             </td>
                             <td className="p-2 truncate border-r border-b">
-                              {connectWiseCompanyId}
+                              {email}
                             </td>
                             <td className="p-2 truncate border-r border-b">
-                              {connectWiseContactId}
-                            </td>
-                            <td className="p-2 truncate border-r border-b">
-                              {connectWiseEmailId}
-                            </td>
-                            <td className="p-2 truncate border-r border-b">
-                              {connectWisePhoneNumber}
-                            </td>
-                            <td className="p-2 truncate border-r border-b">
-                              {defaultPhoneType + ": " + defaultPhoneNbr}
+                              {phone}
                             </td>
                           </tr>
                         );
@@ -173,9 +155,9 @@ const Contacts = () => {
                 <button
                   id="manageAuthenticated-saveContacts"
                   onClick={() => handleAddManageContacts(user?.mspCustomDomain)}
-                  className="self-end  bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+                  className="self-end  bg-blue-800 text-white font-bold px-5 rounded py-2"
                 >
-                  Save
+                  Save Contacts
                 </button>
               </div>
             )}
@@ -186,24 +168,7 @@ const Contacts = () => {
           </p>
         )}
       </div>
-      {finishedIntagrationShow && (
-        <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center z-[99]">
-          <div className="bg-gray-700 text-white flex flex-col justify-center gap-4 w-[320px] h-[220px] p-3 rounded-md">
-            <h2 className="font-bold">Finished Integrating</h2>
-            <p>
-              You have successfully integrated your ConnectWise Manage system
-              into our platform. You can now manage your tickets, board,
-              technicians and clients through our admin portal!
-            </p>
-            <button
-              onClick={() => setFinishedIntegratingToast(false)}
-              className="self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+     
     </div>
   );
 };

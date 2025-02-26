@@ -4,7 +4,7 @@ import useBoardStore from "@/utils/store/admin/control/board/boardStore";
 import useUiStore from "@/utils/store/ui/uiStore";
 import useUserStore from "@/utils/store/user/userStore";
 import { useEffect } from "react";
-import BoardTable from "./BoardTable";
+import BoardTable from "./BoardTables/BoardTables";
 
 const Board = () => {
   const { user } = useUserStore();
@@ -21,7 +21,67 @@ const Board = () => {
   useEffect(() => {
     intializeBoard();
   }, [user]);
-  
+
+  const renderConfigDetails = () => {
+    switch (boards?.psaType) {
+      case "ConnectWise":
+        return boards?.connectWiseConfig?.boardDetails || [];
+      case "Autotask":
+        return boards?.autotaskConfig?.ticketQueueDetails || [];
+      default:
+        return [];
+    }
+  };
+
+  const renderConfigKeyAndName = (detail) => {
+    switch (boards?.psaType) {
+      case "ConnectWise":
+        return { key: detail.boardId, name: detail.boardName };
+
+      case "Autotask":
+        return { key: detail.queueId, name: detail.queueName };
+
+      default:
+        return { key: null, name: null };
+    }
+  };
+
+  const renderBoardSelection = (value) => {
+    switch (boards?.psaType) {
+      case "ConnectWise":
+        return configDetails.filter((detail) => detail.boardName === value);
+      case "Autotask":
+        return configDetails.filter((detail) => detail.queueName === value);
+      default:
+        return [];
+    }
+  };
+
+  const renderTitle = () => {
+    switch (boards?.psaType) {
+      case "ConnectWise":
+        return "Boards";
+      case "Autotask":
+        return "Queue";
+
+      default:
+        return "";
+    }
+  };
+
+  const renderSelectAll = () => {
+    switch (boards?.psaType) {
+      case "ConnectWise":
+        return "All Boards";
+      case "Autotask":
+        return "All Queues";
+
+      default:
+        return "";
+    }
+  };
+
+  const configDetails = renderConfigDetails();
   return (
     <div
       onClick={() => {
@@ -39,22 +99,21 @@ const Board = () => {
 
       <div className="p-4 flex flex-col h-full overflow-auto scrollbar-thin pb-4">
         <div className="flex justify-between py-5">
-          <h1 className="underline font-bold text-2xl">Boards</h1>
+          <h1 className="underline font-bold text-2xl">{renderTitle()}</h1>
           <select
             className="w-[300px] h-[35px] border border-gray-300 rounded"
             onChange={(e) => {
-              const selectedBoard = boards.boardDetails.filter(
-                (board) => board.boardName === e.target.value
-              );
+              const selectedBoard = renderBoardSelection(e.target.value);
+
               setSelectedBoard(selectedBoard.length ? selectedBoard : null);
             }}
           >
-            <option value="">All Boards</option>
-            {boards?.boardDetails?.map((board) => {
-              const { boardId, boardName } = board;
+            <option value="">{renderSelectAll()}</option>
+            {configDetails?.map((board) => {
+              const { key, name } = renderConfigKeyAndName(board);
               return (
-                <option key={boardId} value={boardName}>
-                  {boardName}
+                <option key={key} value={name}>
+                  {name}
                 </option>
               );
             })}

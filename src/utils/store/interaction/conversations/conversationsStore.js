@@ -12,6 +12,7 @@ import useInteractionStore from "../interactionsStore";
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 const gptServiceUrl = process.env.NEXT_PUBLIC_GPT_SERVICE_URL;
+const psaServiceUrl = process.env.NEXT_PUBLIC_PSA_SERVICE_URL;
 
 const useConversationStore = create((set, get) => ({
   agents: [],
@@ -172,9 +173,8 @@ const useConversationStore = create((set, get) => ({
       },
     });
 
-
     const ticketResponse = await fetch(
-      `${connectWiseServiceUrl}/getTicketsById?mspCustomDomain=${msp}&ticketId=${cw_id}`
+      `${psaServiceUrl}/getTicketsById?mspCustomDomain=${msp}&ticketId=${cw_id}`
     );
 
     if (ticketResponse.status === 200) {
@@ -186,7 +186,7 @@ const useConversationStore = create((set, get) => ({
       } `;
 
       const notesReponse = await fetch(
-        `${connectWiseServiceUrl}/getTicketNotesById?mspCustomDomain=${msp}&ticketId=${cw_id}`
+        `${psaServiceUrl}/getTicketNotesById?mspCustomDomain=${msp}&ticketId=${cw_id}`
       );
 
       if (notesReponse.status === 200) {

@@ -8,6 +8,7 @@ const initialWidth = isBrowser ? window.innerWidth : 1023;
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 const gptServiceUrl = process.env.NEXT_PUBLIC_GPT_SERVICE_URL;
+const psaServiceUrl = process.env.NEXT_PUBLIC_PSA_SERVICE_URL
 
 const useQueueStore = create((set, get) => ({
   searchValue: "",
@@ -374,7 +375,7 @@ const useQueueStore = create((set, get) => ({
   handleNextQueueTicketNotes: async (mspCustomDomain, ticketId) => {
     try {
       const response = await fetch(
-        `${connectWiseServiceUrl}/getAllConnectWiseTicketNotesById?mspCustomDomain=${mspCustomDomain}&ticketId=${ticketId}`
+        `${psaServiceUrl}/getAllConnectWiseTicketNotesById?mspCustomDomain=${mspCustomDomain}&ticketId=${ticketId}`
       );
 
       if (response.status === 200) {
@@ -462,7 +463,7 @@ const useQueueStore = create((set, get) => ({
   handleEditTicketPriorites: async (mspCustomDomain) => {
     try {
       const response = await fetch(
-        `${connectWiseServiceUrl}/getConnectWisePriorities?mspCustomDomain=${mspCustomDomain}`
+        `${psaServiceUrl}/getConnectWisePriorities?mspCustomDomain=${mspCustomDomain}`
       );
       if (response.status === 200) {
         const ticketPriorities = await response.json();
@@ -479,7 +480,7 @@ const useQueueStore = create((set, get) => ({
   handleEditTicketStatuses: async (boardId, mspCustomDomain) => {
     try {
       const response = await fetch(
-        `${connectWiseServiceUrl}/getConnectWiseStatuses?boardId=${boardId}&mspCustomDomain=${mspCustomDomain}`
+        `${psaServiceUrl}/getConnectWiseStatuses?boardId=${boardId}&mspCustomDomain=${mspCustomDomain}`
       );
       if (response.status === 200) {
         const ticketStatuses = await response.json();
@@ -498,7 +499,7 @@ const useQueueStore = create((set, get) => ({
 
     try {
       const response = await fetch(
-        `${connectWiseServiceUrl}/updateTicket/${ticketId}?mspCustomDomain=${mspCustomDomain}`,
+        `${psaServiceUrl}/updateTicket/${ticketId}?mspCustomDomain=${mspCustomDomain}`,
         {
           method: "PUT",
           headers: {
@@ -607,7 +608,7 @@ const useQueueStore = create((set, get) => ({
       });
       try {
         const response = await fetch(
-          `${connectWiseServiceUrl}/addNoteToTicketObject?mspCustomDomain=${userStore.user.mspCustomDomain}&ticketId=${ticketId}`,
+          `${psaServiceUrl}/addNoteToTicketObject?mspCustomDomain=${userStore.user.mspCustomDomain}&ticketId=${ticketId}`,
           {
             method: "POST",
             headers: {
@@ -636,7 +637,7 @@ const useQueueStore = create((set, get) => ({
   handleViewQueueTicket: async (mspCustomDomain, ticketId, ticket) => {
     try {
       const response = await fetch(
-        `${connectWiseServiceUrl}/getAllConnectWiseTicketNotesById?mspCustomDomain=${mspCustomDomain}&ticketId=${ticketId}`
+        `${psaServiceUrl}/getAllConnectWiseTicketNotesById?mspCustomDomain=${mspCustomDomain}&ticketId=${ticketId}`
       );
 
       if (response.status === 200) {

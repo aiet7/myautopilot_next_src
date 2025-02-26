@@ -33,14 +33,7 @@ const ViewPSAEmployees = () => {
               </thead>
               <tbody>
                 {companyPSAEmployees?.map((employee) => {
-                  const {
-                    id,
-                    firstName,
-                    lastName,
-                    connectWiseEmailId,
-                    connectWisePhoneNumber,
-                    defaultPhoneNbr,
-                  } = employee;
+                  const { id, firstName, lastName, email, phone } = employee;
                   return (
                     <tr
                       className="dark:hover:bg-blue-950 hover:bg-blue-50 cursor-pointer"
@@ -67,10 +60,10 @@ const ViewPSAEmployees = () => {
                         {firstName + " " + lastName}
                       </td>
                       <td className="p-2 truncate border-r border-b">
-                        {connectWiseEmailId}
+                        {email}
                       </td>
                       <td className="p-2 truncate border-r border-b">
-                        {connectWisePhoneNumber || defaultPhoneNbr}
+                        {phone}
                       </td>
                     </tr>
                   );

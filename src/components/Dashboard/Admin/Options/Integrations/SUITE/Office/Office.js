@@ -197,7 +197,7 @@ const Office = () => {
                             selectedCompany
                           )
                         }
-                        className="hover:bg-blue-500 self-start bg-blue-800 text-white rounded-lg px-3 py-1"
+                        className="hover:bg-blue-500 self-start bg-blue-800 text-white rounded px-3 py-1"
                       >
                         Remove Keys
                       </button>
@@ -210,7 +210,7 @@ const Office = () => {
                             selectedCompany
                           )
                         }
-                        className="hover:bg-blue-500 self-start bg-blue-800 text-white rounded-lg px-3 py-1"
+                        className="hover:bg-blue-500 self-start bg-blue-800 text-white rounded px-3 py-1"
                       >
                         Save Keys
                       </button>
@@ -247,7 +247,7 @@ const Office = () => {
                         selectedCompany
                       )
                     }
-                    className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg px-3 py-1"
+                    className="hover:bg-blue-500 bg-blue-800 text-white rounded px-3 py-1"
                   >
                     View
                   </button>
@@ -264,7 +264,7 @@ const Office = () => {
                           selectedCompany
                         )
                   }
-                  className="hover:bg-blue-500 bg-blue-800 text-white rounded-lg px-3 py-1"
+                  className="hover:bg-blue-500 bg-blue-800 text-white rounded px-3 py-1"
                 >
                   {clientIntegrations?.microsoft
                     ? "Disconnect"

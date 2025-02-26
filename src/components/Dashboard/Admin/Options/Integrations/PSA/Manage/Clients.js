@@ -39,6 +39,7 @@ const Clients = () => {
       )
     : clients;
 
+
   const indexOfLastClient = activePage * activePerPage;
   const indexOfFirstClient = indexOfLastClient - activePerPage;
   const currentClients = filteredClients?.slice(
@@ -51,6 +52,7 @@ const Clients = () => {
       clients?.flatMap((client) => client.types?.map((type) => type.name))
     )
   );
+
   useEffect(() => {
     initializeManageClients();
   }, [user]);
@@ -58,7 +60,7 @@ const Clients = () => {
   return (
     <div className="relative flex flex-col h-full overflow-hidden">
       <div className="flex flex-col  overflow-hidden">
-        <div className="flex flex-col self-end gap-1">
+        {/* <div className="flex flex-col self-end gap-1">
           {clientAndContactTypes && (
             <div
               id="manageAuthenticated-clientContactAutoSync"
@@ -74,7 +76,7 @@ const Clients = () => {
                     setSelectedAutoSyncType(selectedType.id, selectedType.name);
                   }
                 }}
-                className="text-xs self-end p-1 border rounded-lg"
+                className="text-xs self-end p-1 border rounded"
               >
                 <option value="">All Types</option>
                 {clientAndContactTypes.map((type) => {
@@ -94,17 +96,17 @@ const Clients = () => {
                     selectedAutoSyncType.name
                   )
                 }
-                className=" self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+                className=" self-end bg-blue-800 text-white font-bold px-5 rounded py-1"
               >
                 Auto Sync Clients and Contacts
               </button>
             </div>
           )}
-        </div>
+        </div> */}
         {currentClients?.length !== 0 ? (
           <div className="flex flex-col gap-7  overflow-hidden">
             {loadingClients ? (
-              <div className="flex items-center gap-2 text-lg">
+              <div className="flex items-center gap-2 ">
                 <p className="font-bold">Loading your Clients</p>
                 <FaSpinner className="animate-spin" size={20} />
               </div>
@@ -127,15 +129,14 @@ const Clients = () => {
                 </div>
                 <div className="block  overflow-auto scrollbar-thin max-h-full max-w-full ">
                   <table className="min-w-full table-fixed border-separate border-spacing-0 text-left">
-                    <thead className="sticky top-0 bg-white  text-black/60">
+                    <thead className="sticky top-0 bg-[#F5F8FA] text-black/60">
                       <tr className="">
                         <th className="p-2 border-l border-t border-b border-r">
                           <input
                             type="checkbox"
                             checked={currentClients.every(
                               (client) =>
-                                clientsSelected[client.connectWiseCompanyId]
-                                  ?.selected
+                                clientsSelected[client.psaCompanyId]?.selected
                             )}
                             onChange={(e) =>
                               setSelectAllClients(e.target.checked)
@@ -165,13 +166,11 @@ const Clients = () => {
                         <th className="p-2 border-t border-b border-r">
                           Address
                         </th>
-                        <th className="p-2 border-t border-b border-r">
-                          Contact
-                        </th>
+
                         <th className="p-2 border-t border-b border-r">
                           Phone Number
                         </th>
-                        <th className="p-2 border-t border-b border-r">
+                        {/* <th className="p-2 border-t border-b border-r">
                           <div className="flex flex-col items-start lg:flex-row lg:items-center lg:gap-4">
                             Type
                             <select
@@ -191,7 +190,7 @@ const Clients = () => {
                         </th>
                         <th className="p-2 border-t border-b border-r">
                           Status
-                        </th>
+                        </th> */}
                       </tr>
                     </thead>
                     <tbody>
@@ -199,12 +198,11 @@ const Clients = () => {
                         const {
                           name,
                           identifier,
-                          connectWiseCompanyId,
+                          psaCompanyId,
                           addressLine1,
                           addressLine2,
                           city,
                           zip,
-                          defaultContact,
                           phoneNumber,
                           status,
                           types,
@@ -212,19 +210,19 @@ const Clients = () => {
                         } = client;
                         return (
                           <tr
-                            key={connectWiseCompanyId}
+                            key={psaCompanyId}
                             className={`${isInDB ? "text-black/20" : ""}`}
                           >
-                            <td className="p-2 truncate border-l border-r border-b">
+                            <td className="p-2 truncate border-l  border-b">
                               {!isInDB && (
                                 <input
                                   checked={
-                                    clientsSelected[connectWiseCompanyId]
-                                      ?.selected || false
+                                    clientsSelected[psaCompanyId]?.selected ||
+                                    false
                                   }
                                   onChange={(e) =>
                                     setSelectedClients(
-                                      connectWiseCompanyId,
+                                      psaCompanyId,
                                       e.target.checked
                                     )
                                   }
@@ -238,8 +236,8 @@ const Clients = () => {
                                 onClick={() =>
                                   handleSetDefaultCompany(
                                     user?.mspCustomDomain,
-                                    identifier,
-                                    connectWiseCompanyId
+                                    name,
+                                    psaCompanyId
                                   )
                                 }
                                 className="hover:underline text-blue-500"
@@ -251,7 +249,7 @@ const Clients = () => {
                               {name}
                             </td>
                             <td className="p-2 truncate border-r border-b">
-                              {connectWiseCompanyId}
+                              {psaCompanyId}
                             </td>
                             <td className="p-2 truncate border-r border-b">
                               {addressLine1 +
@@ -262,13 +260,11 @@ const Clients = () => {
                                 " " +
                                 zip}
                             </td>
-                            <td className="p-2 truncate border-r border-b">
-                              {defaultContact?.name}
-                            </td>
+
                             <td className="p-2 truncate border-r border-b">
                               {phoneNumber}
                             </td>
-                            <td className="p-2 truncate border-r border-b">
+                            {/* <td className="p-2 truncate border-r border-b">
                               <div className="flex flex-col gap-1">
                                 {types?.map((type) => {
                                   const { id, name } = type;
@@ -279,7 +275,7 @@ const Clients = () => {
 
                             <td className="p-2 truncate border-r border-b">
                               {status?.name}
-                            </td>
+                            </td> */}
                           </tr>
                         );
                       })}
@@ -289,9 +285,9 @@ const Clients = () => {
                 <button
                   id="manageAuthenticated-saveClients"
                   onClick={() => handleAddManageClients(user?.mspCustomDomain)}
-                  className="self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+                  className="self-end bg-blue-800 text-white font-bold px-5 rounded py-2"
                 >
-                  Save
+                  Save Clients
                 </button>
               </div>
             )}
@@ -320,14 +316,14 @@ const Clients = () => {
               {autoSyncLoading ? (
                 <button
                   onClick={() => setAutoSyncToast(false, null)}
-                  className=" self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+                  className=" self-end bg-blue-800 text-white font-bold px-5 rounded py-1"
                 >
                   Hide
                 </button>
               ) : (
                 <button
                   onClick={() => setAutoSyncToast(false, false)}
-                  className="self-end bg-blue-800 text-white font-bold px-5 rounded-lg py-1"
+                  className="self-end bg-blue-800 text-white font-bold px-5 rounded py-1"
                 >
                   OK
                 </button>

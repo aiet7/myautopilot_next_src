@@ -1,7 +1,7 @@
 import {
   handleGetClientIntegrations,
   handleGetMSPIntegrations,
-  handleGetManageDBClients,
+  handleGetPsaDBClients,
 } from "@/utils/api/serverProps";
 import useUserStore from "@/utils/store/user/userStore";
 import { create } from "zustand";
@@ -139,7 +139,7 @@ const useIntegrationsStore = create((set, get) => ({
     set({ clientList: null, selectedCompany: null });
 
     if (userStore.user) {
-      const clientList = await handleGetManageDBClients(
+      const clientList = await handleGetPsaDBClients(
         userStore.user.mspCustomDomain
       );
       set({ clientList: clientList });

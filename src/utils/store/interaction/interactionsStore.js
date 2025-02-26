@@ -12,6 +12,7 @@ import useQueueStore from "./queue/queueStore";
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 const gptServiceUrl = process.env.NEXT_PUBLIC_GPT_SERVICE_URL;
+const psaServiceUrl = process.env.NEXT_PUBLIC_PSA_SERVICE_URL;
 
 const useInteractionStore = create((set, get) => ({
   diagnosticTicketMessage: "",
@@ -101,11 +102,11 @@ const useInteractionStore = create((set, get) => ({
   handleScrollToBottom: (smooth) => {
     const { latestMessageRef } = useRefStore.getState();
     const isInIframe = window.self !== window.top;
-  
+
     if (isInIframe) {
       latestMessageRef.current?.scrollIntoView({
         behavior: smooth ? "smooth" : "auto",
-        block: "center", 
+        block: "center",
       });
     } else {
       latestMessageRef.current?.scrollIntoView({
@@ -212,7 +213,7 @@ const useInteractionStore = create((set, get) => ({
     const userStore = useUserStore.getState();
     const { isDiagnosticTicketStep, diagnosticTicketMessage } =
       useInteractionStore.getState();
-
+    const { userType } = useMspStore.getState();
     const { inputRef } = useRefStore.getState();
     const { handleAddUserMessage, handleAddAssistantMessage } =
       useTicketConversationsStore.getState();
@@ -225,24 +226,33 @@ const useInteractionStore = create((set, get) => ({
       set({ isWaiting: true, isServerError: false, userInput: "" });
 
       try {
-        let endpointUrl = `${connectWiseServiceUrl}/getTicketBoardCategorizationDiagnosticQandA`;
+        // let endpointUrl = `${connectWiseServiceUrl}/getTicketBoardCategorizationDiagnosticQandA`;
+        let endpointUrl = `${psaServiceUrl}/getTicketCategorizationDiagnosticQandA`;
+
         let userMessage = message;
 
         if (!isDiagnosticTicketStep) {
-          endpointUrl = `${connectWiseServiceUrl}/getTicketBoardCategorization`;
+          // endpointUrl = `${connectWiseServiceUrl}/getTicketBoardCategorization`;
+          endpointUrl = `${psaServiceUrl}/getTicketCategorizationDiagnosticQandA`;
+
           userMessage = `${diagnosticTicketMessage}\n${message}`;
         }
 
+        const requestBodyForTicket = {
+          userMessage: userMessage,
+          mspCustomDomain: userStore.user.mspCustomDomain,
+        };
+        if (userType === "tech") {
+          requestBodyForTicket.techId = userStore.user.id;
+        } else if (userType === "client") {
+          requestBodyForTicket.userId = userStore.user.id;
+        }
         const response = await fetch(endpointUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            userMessage: userMessage,
-            userId: userStore.user.id,
-            mspCustomDomain: userStore.user.mspCustomDomain,
-          }),
+          body: JSON.stringify(requestBodyForTicket),
         });
         if (response.status === 200) {
           const responseBody = await response.json();
@@ -293,7 +303,7 @@ const useInteractionStore = create((set, get) => ({
 
       try {
         const response = await fetch(
-          `${connectWiseServiceUrl}/addNoteToTicket?mspCustomDomain=${encodedDomain}&ticketId=${encodedTicketId}`,
+          `${psaServiceUrl}/addNoteToTicket?mspCustomDomain=${encodedDomain}&ticketId=${encodedTicketId}`,
           {
             method: "POST",
             headers: {
@@ -429,7 +439,6 @@ const useInteractionStore = create((set, get) => ({
 
         if (response.status === 200) {
           const responseBody = await response.json();
-          console.log(responseBody);
           messageIdRef.current = responseBody.id;
           handleAddAssistantTroubleshootMessage(responseBody.aiContent);
         }

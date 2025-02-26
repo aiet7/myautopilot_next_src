@@ -23,6 +23,7 @@ const Teams = () => {
     initializeTeams();
   }, [user]);
 
+
   return (
     <div
       onClick={() => {
