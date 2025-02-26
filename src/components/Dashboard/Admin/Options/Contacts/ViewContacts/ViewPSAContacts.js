@@ -4,6 +4,7 @@ import useContactsStore from "@/utils/store/admin/control/contacts/contactsStore
 
 const ViewPSAContacts = () => {
   const { psaContacts, handleViewContactTickets } = useContactsStore();
+
   return (
     <>
       {psaContacts?.length !== 0 ? (
@@ -33,20 +34,16 @@ const ViewPSAContacts = () => {
                     id,
                     firstName,
                     lastName,
-                    connectWiseEmailId,
-                    connectWisePhoneNumber,
-                    connectWiseCompanyId,
-                    connectWiseContactId,
+                    email,
+                    phone,
+                    psaCompanyId,
+                    psaContactId,
                   } = contact;
                   return (
                     <tr
                       className="dark:hover:bg-blue-950 hover:bg-blue-50 cursor-pointer"
                       onClick={() =>
-                        handleViewContactTickets(
-                          id,
-                          firstName,
-                          lastName
-                        )
+                        handleViewContactTickets(id, firstName, lastName)
                       }
                       key={id}
                     >
@@ -54,16 +51,16 @@ const ViewPSAContacts = () => {
                         {firstName + " " + lastName}
                       </td>
                       <td className="p-2 truncate border-r border-b">
-                        {connectWiseEmailId}
+                        {email}
                       </td>
                       <td className="p-2 truncate border-r border-b">
-                        {connectWisePhoneNumber}
+                        {phone}
                       </td>
                       <td className="p-2 truncate border-r border-b">
-                        {connectWiseCompanyId}
+                        {psaCompanyId}
                       </td>
                       <td className="p-2 truncate border-r border-b">
-                        {connectWiseContactId}
+                        {psaContactId}
                       </td>
                     </tr>
                   );

@@ -242,7 +242,6 @@ const Tickets = () => {
       ) : (
         <div className="flex-grow overflow-y-auto scrollbar-thin">
             {paginatedTickets?.map((ticket, index) => {
-            console.log(ticket)
             const {
               id,
               type,

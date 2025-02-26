@@ -2,8 +2,8 @@ import {} from "@/utils/api/serverProps";
 import useUserStore from "@/utils/store/user/userStore";
 import { create } from "zustand";
 import {
-  handleGetManageDBClientContactsActive,
-  handleGetManageDBClientContactsPSA,
+  handleGetPsaDBClientContactsActive,
+  handleGetPsaDBClientContactsPSA,
 } from "@/utils/api/serverProps";
 
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
@@ -64,13 +64,13 @@ const useContactsStore = create((set, get) => ({
 
     if (userStore.user) {
       try {
-        const activeContactsPromise = handleGetManageDBClientContactsActive(
+        const activeContactsPromise = handleGetPsaDBClientContactsActive(
           userStore.user.mspCustomDomain,
           userStore.user.clientsAutopilotDbid
         );
-        const psaContactsPromise = handleGetManageDBClientContactsPSA(
+        const psaContactsPromise = handleGetPsaDBClientContactsPSA(
           userStore.user.mspCustomDomain,
-          userStore.user.connectWiseCompanyId
+          userStore.user.psaCompanyId
         );
 
         const [activeResponse, psaResponse] = await Promise.all([

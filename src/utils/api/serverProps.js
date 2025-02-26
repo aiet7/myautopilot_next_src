@@ -102,9 +102,7 @@ export const handleGetPsaDBClientContactsPSA = async (msp, companyId) => {
   const response = await fetch(
     `${dbServiceUrl}/${encodeURIComponent(
       msp
-    )}/connectWiseContactsByClientId?connectWiseCompanyId=${encodeURIComponent(
-      companyId
-    )}`
+    )}/psaContactsByClientId?psaCompanyId=${encodeURIComponent(companyId)}`
   );
   return response.json();
 };
