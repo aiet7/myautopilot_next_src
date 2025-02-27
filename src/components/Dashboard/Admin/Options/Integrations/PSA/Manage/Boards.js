@@ -53,7 +53,6 @@ const Board = () => {
 
   const boardData = customBoard ? customBoardMerge : connectwiseMerge;
 
-
   useEffect(() => {
     if (
       boardData &&
