@@ -6,7 +6,7 @@ const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 
 const useMspStore = create((set, get) => ({
-  userType: null,
+  userType: "tech",
   mspDomains: null,
   msp: null,
   technicianList: null,

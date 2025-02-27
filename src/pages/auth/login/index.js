@@ -58,7 +58,7 @@ const LoginPage = () => {
                 </div>
               </div>
 
-              <div
+              {/* <div
                 onClick={() => handleNavigateClientPage(router.push)}
                 className="hover:shadow-blue-500 flex flex-col  justify-center items-center w-full shadow-xl rounded-lg  cursor-pointer lg:w-[275px]"
               >
@@ -73,7 +73,7 @@ const LoginPage = () => {
                 <div className="flex p-2">
                   <FaRegUserCircle size={25} />
                 </div>
-              </div>
+              </div> */}
             </div>
             <div className="cursor-pointer" onClick={() => handleNavigateMSPSignup(router.push)}>
               <span className="text-sm text-blue-800 font-semibold">

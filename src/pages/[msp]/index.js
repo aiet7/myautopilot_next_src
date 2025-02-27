@@ -126,7 +126,7 @@ const MSPPage = ({}) => {
               )}
             </div>
             <div className="flex flex-col gap-4 w-full">
-              {!current2FA && (
+              {/* {!current2FA && (
                 <div className="flex items-center justify-between  font-bold">
                   {userType === "tech" ? (
                     <p className="text-lg">Admin Login</p>
@@ -141,7 +141,7 @@ const MSPPage = ({}) => {
                     {userType === "tech" ? "user" : "admin"}
                   </button>
                 </div>
-              )}
+              )} */}
               {current2FA ? (
                 <>
                   <input
