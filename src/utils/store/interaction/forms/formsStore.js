@@ -1119,7 +1119,6 @@ const useFormsStore = create((set, get) => ({
               ticketId: ticketId,
             },
           }));
-       
 
           const aiContent = `Ticket Created!\n\nID: ${ticketId}\n\nTitle: ${
             ticket.currentTicketTitle
@@ -1135,7 +1134,6 @@ const useFormsStore = create((set, get) => ({
           } \n\nName: ${ticket.currentTicketName}\n\nEmail: ${
             ticket.currentTicketEmailId
           }\n\nPhone: ${ticket.currentTicketPhoneNumber}`;
-
           handleAddAssistantMessage(aiContent, false);
           addTicket({
             ticketId: newTicket.ticketId,
@@ -1145,11 +1143,12 @@ const useFormsStore = create((set, get) => ({
             closed: newTicket.closed,
             title: newTicket.title,
             priority: newTicket.priority,
-            company: newTicket.clientsName,
+            clientsName: newTicket.clientsName,
+            company: newTicket.company,
             name: newTicket.name,
             emailId: newTicket.emailId,
             phoneNumber: newTicket.phoneNumber,
-
+            boardName: newTicket.boardName,
             timeStamp: Date.now(newTicket.timeStamp),
           });
 

@@ -86,7 +86,7 @@ const TabNavRail = ({}) => {
           </Link>
 
           {hoverTab === "iTAgent" && (
-            <div className="absolute left-[4.25rem] top-0  bottom-0">
+            <div className="hidden lg:block absolute left-[4.25rem] top-0 bottom-0">
               <Nav />
             </div>
           )}
@@ -159,7 +159,7 @@ const TabNavRail = ({}) => {
                 </div>
               </Link>
               {hoverTab === "admin" && (
-                <div className="absolute left-[4.25rem] top-0  bottom-0">
+                <div className="hidden lg:block absolute left-[4.25rem] top-0 bottom-0">
                   <AdminNav />
                 </div>
               )}
@@ -167,9 +167,7 @@ const TabNavRail = ({}) => {
           ) : (
             <div className="relative group flex flex-col gap-1 items-center cursor-pointer">
               <RiAdminLine size={22} className="text-blue-600 outline-none" />
-              <span className="text-xs text-blue-600">
-                Admin
-              </span>
+              <span className="text-xs text-blue-600">Admin</span>
             </div>
           ))}
       </>

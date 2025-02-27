@@ -234,14 +234,14 @@ const Tickets = () => {
     setTotalTicketPages(total);
     setFilteredTicketCount(filteredAndSortedTickets?.length || 0);
   }, [tickets, ticketsPerPage, searchValue, filterTicketMode]);
-
+  
   return (
     <div className="flex flex-col h-full p-4 ">
       {viewTicket ? (
         <ViewTicket />
       ) : (
         <div className="flex-grow overflow-y-auto scrollbar-thin">
-            {paginatedTickets?.map((ticket, index) => {
+          {paginatedTickets?.map((ticket, index) => {
             const {
               id,
               type,
@@ -285,7 +285,7 @@ const Tickets = () => {
                     <span className="font-bold">Ticket ID:</span> #{ticketId}
                   </p>
                   <p className="break-words whitespace-pre-wrap w-[50%]">
-                    <span className="font-bold">Company:</span> {clientsName}
+                    <span className="font-bold">Company:</span> {clientsName || company}
                   </p>
                 </div>
                 <div className="flex justify-between items-center">

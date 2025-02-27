@@ -812,14 +812,14 @@ const useManageStore = create((set, get) => ({
       const techniciansSelected = { ...prevState.techniciansSelected };
 
       technicians.forEach((technician) => {
-        if (!techniciansSelected[technician.connectWiseMembersId]) {
-          techniciansSelected[technician.connectWiseMembersId] = {
+        if (!techniciansSelected[technician.psaMemberId]) {
+          techniciansSelected[technician.psaMemberId] = {
             selected: false,
             tier: "",
             roleId: "",
           };
         }
-        techniciansSelected[technician.connectWiseMembersId].selected =
+        techniciansSelected[technician.psaMemberId].selected =
           selectAll;
       });
 
@@ -843,13 +843,13 @@ const useManageStore = create((set, get) => ({
   setSelectAllClients: (selectAll) => {
     set((prevState) => {
       const clients = prevState.clients || [];
-      const clientsSelected = { ...prevState.clientsSelected };
+      const clientsSelected = { ...prevState.psaCompanyId };
 
       clients.forEach((client) => {
-        if (!clientsSelected[client.connectWiseCompanyId]) {
-          clientsSelected[client.connectWiseCompanyId] = { selected: false };
+        if (!clientsSelected[client.psaCompanyId]) {
+          clientsSelected[client.psaCompanyId] = { selected: false };
         }
-        clientsSelected[client.connectWiseCompanyId].selected = selectAll;
+        clientsSelected[client.psaCompanyId].selected = selectAll;
       });
 
       return { clientsSelected };
@@ -883,10 +883,10 @@ const useManageStore = create((set, get) => ({
       const contactsSelected = { ...prevState.contactsSelected };
 
       contacts.forEach((contact) => {
-        if (!contactsSelected[contact.connectWiseContactId]) {
-          contactsSelected[contact.connectWiseContactId] = { selected: false };
+        if (!contactsSelected[contact.psaContactId]) {
+          contactsSelected[contact.psaContactId] = { selected: false };
         }
-        contactsSelected[contact.connectWiseContactId].selected = selectAll;
+        contactsSelected[contact.psaContactId].selected = selectAll;
       });
 
       return { contactsSelected };
@@ -1314,7 +1314,6 @@ const useManageStore = create((set, get) => ({
 
         if (response.status === 200) {
           const merge = await response.json();
-
           await Promise.all([
             handleGetBoardStatuses(id, mspCustomDomain),
             handleGetBoardDefaultPriorities(mspCustomDomain),
@@ -1357,7 +1356,6 @@ const useManageStore = create((set, get) => ({
 
       if (response.status === 200) {
         const defaultPriorites = await response.json();
-        console.log("fetched", defaultPriorites);
 
         set({
           connectwiseDefaultPriorites: defaultPriorites,
@@ -1554,7 +1552,7 @@ const useManageStore = create((set, get) => ({
     );
     const categoryToSave = connectwiseMerge.connectWiseConfig.boardDetails
       .flatMap((board) => board.mspConnectWiseBoardTypes)
-      .find((subType) => subType.tempIndex === tempIndex);
+      .find((type) => type.tempIndex === tempIndex);
 
     try {
       const response = await fetch(
@@ -1568,6 +1566,40 @@ const useManageStore = create((set, get) => ({
       );
 
       if (response.status === 200) {
+        const newCategoryDetails = await response.json();
+        set((prevState) => {
+          const updatedMerge = { ...prevState.connectwiseMerge };
+
+          updatedMerge.connectWiseConfig.boardDetails =
+            updatedMerge.connectWiseConfig.boardDetails.map((board) => {
+              if (board.boardId === activeBoardDetails.id) {
+                return {
+                  ...board,
+                  mspConnectWiseBoardTypes: board.mspConnectWiseBoardTypes.map(
+                    (type) => {
+                      if (type.tempIndex === tempIndex) {
+                        return {
+                          ...type,
+                          typeId: newCategoryDetails.id,
+                          typeName: newCategoryDetails.name,
+                          isNew: false,
+                        };
+                      }
+                      return type;
+                    }
+                  ),
+                };
+              }
+              return board;
+            });
+
+          return {
+            ...prevState,
+            connectwiseMerge: updatedMerge,
+            successMessageCategory: true,
+            errorMessageCategory: false,
+          };
+        });
         console.log("created new category");
         set({
           successMessageCategory: true,
@@ -1599,6 +1631,7 @@ const useManageStore = create((set, get) => ({
       (subType) => subType.tempIndex === tempIndex
     );
 
+
     try {
       const response = await fetch(
         `${psaServiceUrl}/createSubCategory?mspCustomDomain=${mspCustomDomain}&boardId=${activeBoardDetails.id}&subCategoryName=${subCategoryToSave.subTypeName}&categoryId=${categoryId}`,
@@ -1611,10 +1644,52 @@ const useManageStore = create((set, get) => ({
       );
 
       if (response.status === 200) {
-        console.log("created new subcategory");
-        set({
-          successMessageSubCategory: true,
-          errorMessageSubCategory: false,
+        const newSubCategoryDetails = await response.json();
+
+       
+        set((prevState) => {
+          const updatedMerge = { ...prevState.connectwiseMerge };
+
+          updatedMerge.connectWiseConfig.boardDetails =
+            updatedMerge.connectWiseConfig.boardDetails.map((board) => {
+              if (board.boardId === activeBoardDetails.id) {
+                return {
+                  ...board,
+                  mspConnectWiseBoardTypes: board.mspConnectWiseBoardTypes.map(
+                    (type) => {
+                      if (type.typeId === categoryId) {
+                        return {
+                          ...type,
+                          mspConnectWiseBoardSubTypes:
+                            type.mspConnectWiseBoardSubTypes.map((subType) => {
+                              if (subType.tempIndex === tempIndex) {
+                                return {
+                                  ...subType,
+                                  subTypeId: newSubCategoryDetails.id,
+                                  subTypeName: newSubCategoryDetails.name,
+                                  isNew: false,
+                                  typeAssociationIds:
+                                    newSubCategoryDetails.typeAssociationIds,
+                                };
+                              }
+                              return subType;
+                            }),
+                        };
+                      }
+                      return type;
+                    }
+                  ),
+                };
+              }
+              return board;
+            });
+
+          return {
+            ...prevState,
+            connectwiseMerge: updatedMerge,
+            successMessageSubCategory: true,
+            errorMessageSubCategory: false,
+          };
         });
       } else {
         console.log("Failed to create subcategory");
@@ -1630,7 +1705,6 @@ const useManageStore = create((set, get) => ({
 
   handleSaveBoard: async (mspCustomDomain) => {
     const { connectwiseMerge } = get();
-
     try {
       const response = await fetch(
         `${dbServiceUrl}/${mspCustomDomain}/addUpdatePSATicketingConfiguration`,
@@ -1641,8 +1715,8 @@ const useManageStore = create((set, get) => ({
           },
           body: JSON.stringify({
             mspCustomDomain: mspCustomDomain,
-            connectWiseConfig: connectwiseMerge,
             psaType: connectwiseMerge.psaType,
+            ...connectwiseMerge,
           }),
         }
       );

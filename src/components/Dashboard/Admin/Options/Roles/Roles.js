@@ -56,7 +56,7 @@ const Roles = ({}) => {
                       <div className="flex items-center justify-start gap-2 py-4">
                         <button
                           onClick={() => setCreateRole(true)}
-                          className="text-sm border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white font-bold px-5 rounded-lg py-1"
+                          className="text-sm border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white font-bold px-5 rounded py-1"
                         >
                           Add Role
                         </button>

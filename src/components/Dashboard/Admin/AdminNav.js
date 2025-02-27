@@ -60,6 +60,8 @@ const AdminNav = ({}) => {
       <div className="overflow-y-auto h-full scrollbar-thin">
         {options
           .filter((option) => {
+            if (option === "teams") return false;
+
             const permissionMap = {
               employees: "technicianUserManagement",
               roles: "roleManagement",

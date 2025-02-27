@@ -147,7 +147,6 @@ const Ticket = () => {
       setToggleTicketView(true);
     };
   }, [setToggleTicketView]);
-
   return (
     <>
       <div className="relative border-2 shadow-md dark:bg-black bg-white">

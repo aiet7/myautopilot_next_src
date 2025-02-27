@@ -16,13 +16,12 @@ const Company = () => {
       setToggleCompanyView(true);
     };
   }, [setToggleCompanyView]);
-
   return (
     <>
       <div className="relative border-2 shadow-md bg-white dark:bg-black">
         <div className="flex justify-between items-center px-10 py-3">
           <h1 className="font-bold text-[#465E89]">
-            Company: {currentTicket?.company}
+            Company: {currentTicket?.clientsName}
           </h1>
           {toggleCompanyView ? (
             <IoIosArrowUp
@@ -54,7 +53,9 @@ const Company = () => {
               <input
                 disabled
                 className="dark:bg-transparent dark:border-white border-black border-b w-[65%] px-4 bg-white "
-                value={currentTicket?.company || ""}
+                value={
+                  currentTicket?.clientsName || currentTicket?.company || ""
+                }
               />
             </div>
             <div className="flex justify-center items-center w-full ">
