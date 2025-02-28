@@ -259,9 +259,6 @@ const useManageStore = create((set, get) => ({
           handleGetPsaContacts(userStore.user.mspCustomDomain),
         ]);
 
-        console.log("db", dbContacts);
-        console.log("cw", connectWiseContacts);
-
         const markedContacts = connectWiseContacts.map((cwContact) => ({
           ...cwContact,
           isInDB: dbContacts.some(
@@ -610,6 +607,16 @@ const useManageStore = create((set, get) => ({
                                     priorityId: parseInt(id),
                                     priority: name,
                                   };
+                                } else if (field === "priorityScore") {
+                                  return {
+                                    ...subType,
+                                    priorityScore: parseInt(value) || value,
+                                  };
+                                } else if (field === "subTypeScore") {
+                                  return {
+                                    ...subType,
+                                    subTypeScore: parseInt(value) || value,
+                                  };
                                 } else {
                                   return { ...subType, [field]: id };
                                 }
@@ -744,6 +751,8 @@ const useManageStore = create((set, get) => ({
     set((prevState) => {
       const mergeKey = isCustomBoard ? "customBoardMerge" : "connectwiseMerge";
 
+      const defaultPriority = prevState.connectwiseDefaultPriorites[0] 
+
       const updatedBoardDetails = prevState[
         mergeKey
       ].connectWiseConfig.boardDetails.map((board) => {
@@ -751,7 +760,7 @@ const useManageStore = create((set, get) => ({
           (category) => category.typeId === typeId
         );
 
-        if (categoryIndex === -1) return board; // Skip if category not found
+        if (categoryIndex === -1) return board; 
 
         const subcategories =
           board.mspConnectWiseBoardTypes[categoryIndex]
@@ -766,6 +775,9 @@ const useManageStore = create((set, get) => ({
           subTypeName: "",
           isNew: true,
           tempIndex: newTempIndex,
+          priorityId: defaultPriority ? defaultPriority.id : null, 
+          priority: defaultPriority ? defaultPriority.name : "", 
+          tier: "Tier1", 
         };
 
         const updatedBoardTypes = [...board.mspConnectWiseBoardTypes];
@@ -819,8 +831,7 @@ const useManageStore = create((set, get) => ({
             roleId: "",
           };
         }
-        techniciansSelected[technician.psaMemberId].selected =
-          selectAll;
+        techniciansSelected[technician.psaMemberId].selected = selectAll;
       });
 
       return { techniciansSelected };
@@ -1631,7 +1642,6 @@ const useManageStore = create((set, get) => ({
       (subType) => subType.tempIndex === tempIndex
     );
 
-
     try {
       const response = await fetch(
         `${psaServiceUrl}/createSubCategory?mspCustomDomain=${mspCustomDomain}&boardId=${activeBoardDetails.id}&subCategoryName=${subCategoryToSave.subTypeName}&categoryId=${categoryId}`,
@@ -1646,7 +1656,6 @@ const useManageStore = create((set, get) => ({
       if (response.status === 200) {
         const newSubCategoryDetails = await response.json();
 
-       
         set((prevState) => {
           const updatedMerge = { ...prevState.connectwiseMerge };
 

@@ -5,7 +5,6 @@ import useUserStore from "@/utils/store/user/userStore";
 import { FaClipboard, FaSpinner } from "react-icons/fa";
 import { AiOutlinePlus } from "react-icons/ai";
 
-
 const Board = () => {
   const { user } = useUserStore();
 
@@ -50,7 +49,7 @@ const Board = () => {
   } = useManageStore();
 
   const boardData = customBoard ? customBoardMerge : connectwiseMerge;
-
+ 
   // useEffect(() => {
   //   if (
   //     boardData &&
@@ -149,12 +148,7 @@ const Board = () => {
               connectwiseBoards.map((board) => {
                 const { id, name } = board;
                 return (
-                  <option
-                    key={id}
-                    value={id}
-                   
-                    
-                  >
+                  <option key={id} value={id}>
                     {name}
                   </option>
                 );
@@ -477,6 +471,16 @@ const Board = () => {
                     >
                       Sub-Type
                     </th>
+                    <th
+                      id={
+                        customBoard
+                          ? "manageAuthenticated-customSubcategory"
+                          : "manageAuthenticated-subcategory"
+                      }
+                      className="p-2 border-t border-b border-r"
+                    >
+                      Sub-Type Score
+                    </th>
                     {!customBoard && (
                       <>
                         <th
@@ -484,6 +488,13 @@ const Board = () => {
                           className="p-2 border-t border-b border-r"
                         >
                           Priority
+                        </th>
+
+                        <th
+                          id="manageAuthenticated-priority"
+                          className="p-2 border-t border-b border-r"
+                        >
+                          Priority Score
                         </th>
 
                         <th
@@ -625,6 +636,52 @@ const Board = () => {
                               }
                             />
                           </td>
+                          <td className="p-1 border-r border-b align-top">
+                            {mspConnectWiseBoardSubTypes.map((subType) => {
+                              const { subTypeId, subTypeScore } = subType;
+
+                              return (
+                                <div key={subTypeId}>
+                                  <input
+                                    className="border px-1 w-full"
+                                    type="number"
+                                    min="1"
+                                    max="100"
+                                    step="1"
+                                    value={subTypeScore || ""}
+                                    onInput={(e) => {
+                                      const newValue = e.target.value;
+
+                                      if (
+                                        newValue === "" ||
+                                        (newValue >= 1 &&
+                                          newValue <= 100 &&
+                                          /^[0-9]+$/.test(newValue))
+                                      ) {
+                                        customBoard
+                                          ? setCustomBoardInputs(
+                                              typeId,
+                                              subTypeId,
+                                              "subTypeScore",
+                                              newValue,
+                                              null,
+                                              null
+                                            )
+                                          : setBoardInputs(
+                                              typeId,
+                                              subTypeId,
+                                              "subTypeScore",
+                                              newValue,
+                                              null,
+                                              null
+                                            );
+                                      }
+                                    }}
+                                  />
+                                </div>
+                              );
+                            })}
+                          </td>
                           {!customBoard && (
                             <>
                               <td className="p-1 border-r border-b align-top">
@@ -681,7 +738,52 @@ const Board = () => {
                                   );
                                 })}
                               </td>
+                              <td className="p-1 border-r border-b align-top">
+                                {mspConnectWiseBoardSubTypes.map((subType) => {
+                                  const { subTypeId, priorityScore } = subType;
 
+                                  return (
+                                    <div key={subTypeId}>
+                                      <input
+                                        className="border px-1 w-full"
+                                        type="number"
+                                        min="1"
+                                        max="100"
+                                        step="1"
+                                        value={priorityScore || ""}
+                                        onInput={(e) => {
+                                          const newValue = e.target.value;
+
+                                          if (
+                                            newValue === "" ||
+                                            (newValue >= 1 &&
+                                              newValue <= 100 &&
+                                              /^[0-9]+$/.test(newValue))
+                                          ) {
+                                            customBoard
+                                              ? setCustomBoardInputs(
+                                                  typeId,
+                                                  subTypeId,
+                                                  "priorityScore",
+                                                  newValue,
+                                                  null,
+                                                  null
+                                                )
+                                              : setBoardInputs(
+                                                  typeId,
+                                                  subTypeId,
+                                                  "priorityScore",
+                                                  newValue,
+                                                  null,
+                                                  null
+                                                );
+                                          }
+                                        }}
+                                      />
+                                    </div>
+                                  );
+                                })}
+                              </td>{" "}
                               <td className="p-1 border-r border-b align-top">
                                 {mspConnectWiseBoardSubTypes.map((subType) => {
                                   const { subTypeId, tier } = subType;
