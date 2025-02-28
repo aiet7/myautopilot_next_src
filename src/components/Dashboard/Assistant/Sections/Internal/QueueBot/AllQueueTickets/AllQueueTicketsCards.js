@@ -258,7 +258,6 @@ const AllQueueTicketsCards = () => {
     filterQueueTicketMode,
   ]);
 
-  console.log(paginatedTickets);
 
   return (
     <>

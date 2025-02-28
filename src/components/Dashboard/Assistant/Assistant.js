@@ -47,7 +47,7 @@ const Assistant = () => {
   // Reset assistant width to 600px if window width is less than 3/4 of the screen
   useEffect(() => {
     if (noResizing && !isMobile) {
-      setAssistantWidth(500);
+      setAssistantWidth(600);
     }
   }, [noResizing, isMobile, setAssistantWidth]);
 

@@ -89,7 +89,7 @@ const History = () => {
       <div className="flex items-center w-full pb-4">
         <button
           onClick={handleNewConversation}
-          className="flex items-center gap-2 text-sm border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white font-bold px-5 rounded-lg py-2"
+          className="flex items-center gap-2 text-sm border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white font-bold px-5 rounded py-2"
         >
           <AiOutlinePlus size={15} />
           <span>New Chat</span>

@@ -8,7 +8,7 @@ const initialWidth = isBrowser ? window.innerWidth : 1023;
 const dbServiceUrl = process.env.NEXT_PUBLIC_DB_SERVICE_URL;
 const connectWiseServiceUrl = process.env.NEXT_PUBLIC_CONNECTWISE_SERVICE_URL;
 const gptServiceUrl = process.env.NEXT_PUBLIC_GPT_SERVICE_URL;
-const psaServiceUrl = process.env.NEXT_PUBLIC_PSA_SERVICE_URL
+const psaServiceUrl = process.env.NEXT_PUBLIC_PSA_SERVICE_URL;
 
 const useQueueStore = create((set, get) => ({
   searchValue: "",
@@ -324,7 +324,7 @@ const useQueueStore = create((set, get) => ({
     const { handleSendTroubleshootMessage } = useInteractionStore.getState();
     try {
       const response = await fetch(
-        `${dbServiceUrl}/api/ticketQueue/nextTicket?connectWiseTechnicanId=${cwTechId}&mspCustomDomain=${mspCustomDomain}&techId=${techId}`
+        `${dbServiceUrl}/api/ticketQueue/nextTicket?psaMembersId=${cwTechId}&mspCustomDomain=${mspCustomDomain}&techId=${techId}`
       );
 
       if (response.status === 200) {
@@ -412,12 +412,13 @@ const useQueueStore = create((set, get) => ({
           handleEditTicketPriorites(mspCustomDomain),
           handleEditTicketStatuses(ticketCategories.boardId, mspCustomDomain),
         ]);
-
+        console.log(myQueueTicket)
+        console.log(ticketCategories);
         const category =
           ticketCategories.mspConnectWiseManageCategorizations.find(
             (cat) => cat.categoryId === myQueueTicket.categoryId
           );
-
+        console.log(category);
         set({
           editingMyQueueTicket: {
             ...myQueueTicket,

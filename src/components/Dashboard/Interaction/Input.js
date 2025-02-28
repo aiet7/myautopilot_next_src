@@ -102,7 +102,7 @@ const Input = () => {
               className={`p-2 ${
                 userInput !== ""
                   ? "text-sm border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89]   bg-[#465E89] text-white font-bold px-5 rounded-lg py-1"
-                  : "dark:text-gray-400 dark:border-white/30  text-gray-400 select-none border cursor-default font-bold px-5 rounded-lg py-1"
+                  : "dark:text-gray-400 dark:border-white/30  text-gray-400 select-none border cursor-default font-bold px-5 rounded py-1"
               } `}
             >
               {user?.mspCustomDomain === "public" && isDiagnosticTicketStep

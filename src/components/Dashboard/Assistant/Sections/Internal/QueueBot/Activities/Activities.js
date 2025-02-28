@@ -33,7 +33,7 @@ const Activities = () => {
             currentActivitiesOption === "myActivities"
               ? "bg-[#465E89] text-white"
               : "bg-[#465E89]/10 text-white/30"
-          } text-sm border font-bold transition ease-in hover:bg-[#465E89] hover:text-white text-white py-2 rounded-lg w-[120px]`}
+          } text-sm border font-bold transition ease-in hover:bg-[#465E89] hover:text-white text-white py-2 rounded w-[120px]`}
         >
           My Activities
         </button>
@@ -43,7 +43,7 @@ const Activities = () => {
             currentActivitiesOption === "allActivities"
               ? "bg-[#465E89] text-white"
               : "bg-[#465E89]/10 text-white/30"
-          } text-sm border font-bold transition ease-in hover:bg-[#465E89] hover:text-white text-white py-2 rounded-lg w-[120px]`}
+          } text-sm border font-bold transition ease-in hover:bg-[#465E89] hover:text-white text-white py-2 rounded w-[120px]`}
         >
           All Activities
         </button>

@@ -17,7 +17,7 @@ const ViewQueueCompany = () => {
       setToggleCompanyView(true);
     };
   }, [setToggleCompanyView]);
-
+  
   return (
     <div className="relative border-2 shadow-md bg-white dark:bg-black">
       <div className="flex justify-between items-center px-10 py-3">

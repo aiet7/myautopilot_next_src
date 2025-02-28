@@ -11,7 +11,7 @@ const TicketSupport = () => {
       <div className="flex flex-col gap-6 overflow-hidden">
         <button
           onClick={() => handleTicketMode("Default", null)}
-          className="dark:border-white hover:bg-blue-800 hover:text-white  flex self-start items-center justify-center border border-black px-12 py-2 rounded-lg font-bold "
+          className="dark:border-white hover:bg-blue-800 hover:text-white  flex self-start items-center justify-center border border-black px-12 py-2 rounded font-bold "
         >
           <BsStars size={15} />
           <span>Create Ticket</span>

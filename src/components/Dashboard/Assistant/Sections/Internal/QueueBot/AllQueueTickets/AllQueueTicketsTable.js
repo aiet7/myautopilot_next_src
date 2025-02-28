@@ -285,7 +285,6 @@ const AllQueueTicketsTable = () => {
     filterQueueTicketMode,
   ]);
 
-  console.log(paginatedTickets);
 
   return (
     <>

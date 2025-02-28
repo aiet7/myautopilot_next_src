@@ -204,7 +204,7 @@ const AssistantMenus = () => {
                 onClick={() => setAssistantMode("Edit")}
                 className={`${
                   assistantMode === "Edit" ? "bg-blue-500" : "bg-[#465E89]"
-                } text-xs border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89] font-semibold text-white rounded-md px-2 py-1`}
+                } text-xs border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89] font-semibold text-white rounded px-2 py-1`}
               >
                 Edit
               </button>
@@ -212,13 +212,13 @@ const AssistantMenus = () => {
                 onClick={() => setAssistantMode("Create")}
                 className={`${
                   assistantMode === "Create" ? "bg-blue-500" : "bg-[#465E89]"
-                } text-xs border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89] font-semibold text-white rounded-md px-2 py-1`}
+                } text-xs border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89] font-semibold text-white rounded px-2 py-1`}
               >
                 Create Assistant
               </button>
               <button
                 onClick={() => handleDeleteAgent(selectedAgent?.id)}
-                className="text-xs border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89] bg-red-500 font-semibold text-white rounded-md px-2 py-1"
+                className="text-xs border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89] bg-red-500 font-semibold text-white rounded px-2 py-1"
               >
                 Delete
               </button>
@@ -237,7 +237,7 @@ const AssistantMenus = () => {
                         user?.connectWiseTechnicanId
                       )
                 }
-                className="text-xs border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89] bg-[#465E89] font-semibold text-white rounded-md px-2 py-1"
+                className="text-xs border transition ease-in hover:bg-[#FFFFFF] hover:text-[#465E89] bg-[#465E89] font-semibold text-white rounded px-2 py-1"
               >
                 {eligibleView ? "See All Tickets" : "See Eligible Tickets"}
               </button>
